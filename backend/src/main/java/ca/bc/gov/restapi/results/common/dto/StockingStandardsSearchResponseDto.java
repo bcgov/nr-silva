@@ -20,4 +20,4 @@ public record StockingStandardsSearchResponseDto(
     String becSeral,
     List<CodeDescriptionDto> orgUnits,
     List<ForestClientDto> clients,
-    LocalDateTime updateTimestamp) {}
+    LocalDateTime approvedDate) {}

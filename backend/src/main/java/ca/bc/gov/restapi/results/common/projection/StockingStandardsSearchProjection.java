@@ -48,7 +48,7 @@ public interface StockingStandardsSearchProjection {
   /** Comma-separated client numbers associated with this regime. */
   String getClientNumbers();
 
-  LocalDateTime getUpdateTimestamp();
+  LocalDateTime getApprovedDate();
 
   Long getTotalCount();
 }

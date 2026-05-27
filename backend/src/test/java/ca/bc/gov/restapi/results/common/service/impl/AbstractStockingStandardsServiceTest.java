@@ -75,7 +75,7 @@ class AbstractStockingStandardsServiceTest {
     lenient().when(p.getBecSiteSeries()).thenReturn(null);
     lenient().when(p.getBecSiteType()).thenReturn(null);
     lenient().when(p.getBecSeral()).thenReturn(null);
-    lenient().when(p.getUpdateTimestamp()).thenReturn(LocalDateTime.of(2024, 1, 1, 0, 0));
+    lenient().when(p.getApprovedDate()).thenReturn(LocalDateTime.of(2024, 1, 1, 0, 0));
     lenient().when(p.getTotalCount()).thenReturn(totalCount);
     return p;
   }

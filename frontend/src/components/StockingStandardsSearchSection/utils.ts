@@ -63,11 +63,11 @@ export const readStockingStandardsSearchUrlParams = (): Partial<StockingStandard
   const becSiteType = searchParams.get('becSiteType');
   if (becSiteType) params.becSiteType = becSiteType;
 
-  const updateDateStart = searchParams.get('updateDateStart');
-  if (updateDateStart) params.updateDateStart = updateDateStart;
+  const approvedDateStart = searchParams.get('approvedDateStart');
+  if (approvedDateStart) params.approvedDateStart = approvedDateStart;
 
-  const updateDateEnd = searchParams.get('updateDateEnd');
-  if (updateDateEnd) params.updateDateEnd = updateDateEnd;
+  const approvedDateEnd = searchParams.get('approvedDateEnd');
+  if (approvedDateEnd) params.approvedDateEnd = approvedDateEnd;
 
   const page = searchParams.get('page');
   if (page) {
@@ -143,12 +143,12 @@ export const updateStockingStandardsSearchUrlParams = (params?: Partial<Stocking
     searchParams.append('becSiteType', params.becSiteType);
   }
 
-  if (params.updateDateStart) {
-    searchParams.append('updateDateStart', params.updateDateStart);
+  if (params.approvedDateStart) {
+    searchParams.append('approvedDateStart', params.approvedDateStart);
   }
 
-  if (params.updateDateEnd) {
-    searchParams.append('updateDateEnd', params.updateDateEnd);
+  if (params.approvedDateEnd) {
+    searchParams.append('approvedDateEnd', params.approvedDateEnd);
   }
 
   if (params.page !== undefined) {

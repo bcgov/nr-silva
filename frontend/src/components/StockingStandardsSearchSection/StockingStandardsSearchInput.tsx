@@ -97,7 +97,7 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
         : undefined;
 
     handleSearchFieldChange(
-      isStartDate ? "updateDateStart" : "updateDateEnd",
+      isStartDate ? "approvedDateStart" : "approvedDateEnd",
       formattedDate
     );
   };
@@ -113,8 +113,8 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
     queryParams?.bgcPhase ||
     queryParams?.becSiteSeries ||
     queryParams?.becSiteType ||
-    queryParams?.updateDateStart ||
-    queryParams?.updateDateEnd
+    queryParams?.approvedDateStart ||
+    queryParams?.approvedDateEnd
   ));
 
   return (
@@ -124,8 +124,8 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
           ? (
             <Column sm={4} md={8} lg={16}>
               <InlineNotification
-                title="Standards ID takes priority"
-                subtitle="Other filters are ignored when a Standards ID is provided."
+                title="Stocking standards ID takes priority"
+                subtitle="Other filters are ignored when a Stocking standards ID is provided."
                 kind="warning"
                 lowContrast
                 className="inline-notification"
@@ -137,14 +137,14 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
           : null
       }
 
-      {/* Row 1: Standards ID + Preferred Species */}
+      {/* Row 1: Stocking Standards ID + Preferred Species */}
       <Column sm={4} md={4} lg={6} max={4}>
         <TextInput
           ref={ssidInputRef}
-          id="standards-id-input"
-          name="standards-id"
-          labelText="Standards ID"
-          placeholder="Enter standards ID"
+          id="stocking-standards-id-input"
+          name="stocking-standards-id"
+          labelText="Stocking standards ID"
+          placeholder="Enter SSID"
           onBlur={(e) => handleSearchFieldChange('standardsRegimeId', e.target.value ? Number(e.target.value) : undefined)}
           onKeyDown={(e) => enforceNumberInputOnKeyDown(e, SSID_MAX_LENGTH)}
           onPaste={(e) => enforceNumberInputOnPaste(ssidInputRef.current, e, SSID_MAX_LENGTH)}
@@ -249,9 +249,9 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
         </Grid>
       </Column>
 
-      {/* Row 3: Last updated date range */}
+      {/* Row 3: Approved date range */}
       <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
+        <label className="date-label" htmlFor="start-date-picker-input-id">Approved date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
@@ -261,9 +261,9 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              maxDate={getStartMaxDate(searchParams?.updateDateEnd)}
+              maxDate={getStartMaxDate(searchParams?.approvedDateEnd)}
               onChange={handleDateChange(true)}
-              value={getDatePickerValue(searchParams?.updateDateStart)}
+              value={getDatePickerValue(searchParams?.approvedDateStart)}
             >
               <DatePickerInput
                 id="start-date-picker-input-id"
@@ -281,10 +281,10 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
               datePickerType="single"
               dateFormat="Y/m/d"
               allowInput
-              minDate={getEndMinDate(searchParams?.updateDateStart)}
+              minDate={getEndMinDate(searchParams?.approvedDateStart)}
               maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
               onChange={handleDateChange(false)}
-              value={getDatePickerValue(searchParams?.updateDateEnd)}
+              value={getDatePickerValue(searchParams?.approvedDateEnd)}
             >
               <DatePickerInput
                 id="end-date-picker-input-id"

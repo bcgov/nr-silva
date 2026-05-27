@@ -142,13 +142,13 @@ public abstract class AbstractSearchEndpointStockingStandardsSearchIntegrationTe
   }
 
   @Test
-  @DisplayName("GET /api/search/stocking-standards with update date range should succeed")
-  void getStockingStandards_withUpdateDateRange_shouldSucceed() throws Exception {
+  @DisplayName("GET /api/search/stocking-standards with approved date range should succeed")
+  void getStockingStandards_withApprovedDateRange_shouldSucceed() throws Exception {
     mockMvc
         .perform(
             get("/api/search/stocking-standards")
-                .param("updateDateStart", "2005-01-01")
-                .param("updateDateEnd", "2025-12-31")
+                .param("approvedDateStart", "2005-01-01")
+                .param("approvedDateEnd", "2025-12-31")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray());

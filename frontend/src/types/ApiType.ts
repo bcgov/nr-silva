@@ -82,8 +82,8 @@ export type StockingStandardsSearchParams = {
   bgcPhase?: string;
   becSiteSeries?: string;
   becSiteType?: string;
-  updateDateStart?: string;
-  updateDateEnd?: string;
+  approvedDateStart?: string;
+  approvedDateEnd?: string;
   page?: number;
   size?: number;
   sort?: Array<string>;
