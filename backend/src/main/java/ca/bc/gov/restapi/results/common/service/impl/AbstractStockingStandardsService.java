@@ -38,7 +38,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
   @Override
   public Page<StockingStandardsSearchResponseDto> stockingStandardsSearch(
       StockingStandardsSearchFilterDto filters, Pageable pagination) {
-    DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
+    DateUtil.validateDateRange(filters.getApprovedDateStart(), filters.getApprovedDateEnd());
 
     long offset = pagination.getOffset();
     long size = pagination.getPageSize();
@@ -96,7 +96,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         StringUtil.nullIfBlank(projection.getBecSeral()),
         orgUnits,
         clients,
-        projection.getUpdateTimestamp());
+        projection.getApprovedDate());
   }
 
   private boolean isRegimeExpired(LocalDateTime expiryDate) {

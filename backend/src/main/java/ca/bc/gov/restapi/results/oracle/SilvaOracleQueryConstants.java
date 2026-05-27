@@ -2504,7 +2504,7 @@ public class SilvaOracleQueryConstants {
       WITH filtered_sr AS (
         SELECT
           sr.STANDARDS_REGIME_ID,
-          sr.UPDATE_TIMESTAMP,
+          sr.APPROVED_DATE,
           COUNT(*) OVER () AS totalCount
         FROM STANDARDS_REGIME sr
         WHERE
@@ -2616,24 +2616,24 @@ public class SilvaOracleQueryConstants {
             )
             AND (
               (
-                NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
-                AND NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+                NVL(:#{#filter.approvedDateStart},'NOVALUE') = 'NOVALUE'
+                AND NVL(:#{#filter.approvedDateEnd},'NOVALUE') = 'NOVALUE'
               )
               OR (
-                sr.UPDATE_TIMESTAMP IS NOT NULL
+                sr.APPROVED_DATE IS NOT NULL
                 AND (
                   (
-                    NVL(:#{#filter.updateDateStart},'NOVALUE') != 'NOVALUE'
-                    AND TRUNC(sr.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart},'YYYY-MM-DD')
+                    NVL(:#{#filter.approvedDateStart},'NOVALUE') != 'NOVALUE'
+                    AND TRUNC(sr.APPROVED_DATE) >= TO_DATE(:#{#filter.approvedDateStart},'YYYY-MM-DD')
                   )
-                  OR NVL(:#{#filter.updateDateStart},'NOVALUE') = 'NOVALUE'
+                  OR NVL(:#{#filter.approvedDateStart},'NOVALUE') = 'NOVALUE'
                 )
                 AND (
                   (
-                    NVL(:#{#filter.updateDateEnd},'NOVALUE') != 'NOVALUE'
-                    AND TRUNC(sr.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd},'YYYY-MM-DD') + 1
+                    NVL(:#{#filter.approvedDateEnd},'NOVALUE') != 'NOVALUE'
+                    AND TRUNC(sr.APPROVED_DATE) < TO_DATE(:#{#filter.approvedDateEnd},'YYYY-MM-DD') + 1
                   )
-                  OR NVL(:#{#filter.updateDateEnd},'NOVALUE') = 'NOVALUE'
+                  OR NVL(:#{#filter.approvedDateEnd},'NOVALUE') = 'NOVALUE'
                 )
               )
             )
@@ -2642,7 +2642,7 @@ public class SilvaOracleQueryConstants {
       paged_ids AS (
         SELECT STANDARDS_REGIME_ID, totalCount
         FROM filtered_sr
-        ORDER BY UPDATE_TIMESTAMP DESC NULLS LAST
+        ORDER BY APPROVED_DATE DESC NULLS LAST
         OFFSET :page ROWS FETCH NEXT :size ROWS ONLY
       ),
       distinct_species AS (
@@ -2751,7 +2751,7 @@ public class SilvaOracleQueryConstants {
         oa.org_unit_codes           AS orgUnitCodes,
         oa.org_unit_names           AS orgUnitNames,
         ca.client_numbers           AS clientNumbers,
-        sr.UPDATE_TIMESTAMP         AS updateTimestamp,
+        sr.APPROVED_DATE            AS approvedDate,
         pi.totalCount
       FROM STANDARDS_REGIME sr
       JOIN paged_ids pi ON pi.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
@@ -2760,6 +2760,6 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN orgunit_agg oa ON oa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN client_agg ca ON ca.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN first_site_series fss ON fss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-      ORDER BY sr.UPDATE_TIMESTAMP DESC NULLS LAST
+      ORDER BY sr.APPROVED_DATE DESC NULLS LAST
       """;
 }

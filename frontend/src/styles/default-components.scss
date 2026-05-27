@@ -487,3 +487,39 @@ ul.default-tab-accordion {
 .default-warning-icon {
   fill: var(--#{vars.$bcgov-prefix}-support-error);
 }
+
+
+.default-search-action-menu-option {
+  min-width: 16rem;
+  max-width: calc(100vw - 2rem);
+  width: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  max-height: 25rem;
+  overflow-y: scroll;
+
+  .default-search-action-menu-option-item {
+    width: 100%;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+
+    .helper-text {
+      width: 100%;
+      @include type.type-style('label-01');
+      padding: 0 1rem 1rem 1rem;
+    }
+  }
+
+  .#{vars.$bcgov-prefix}--form-item.#{vars.$bcgov-prefix}--checkbox-wrapper {
+    margin-block-end: 0;
+  }
+
+  .#{vars.$bcgov-prefix}--form-item.#{vars.$bcgov-prefix}--checkbox-wrapper:hover {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
+  }
+
+  .column-checkbox {
+    padding: 1rem;
+  }
+}

@@ -92,7 +92,7 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
           id="ssid-input"
           name="ssid"
           labelText="SSID"
-          placeholder="Enter Stocking Standard ID"
+          placeholder="Enter Stocking standards ID"
           onBlur={(e) => handleSearchFieldChange('standardsRegimeId', e.target.value ? Number(e.target.value) : undefined)}
           onKeyDown={(e) => enforceNumberInputOnKeyDown(e, SSID_MAX_LENGTH)}
           onPaste={(e) => enforceNumberInputOnPaste(ssidInputRef.current, e, SSID_MAX_LENGTH)}

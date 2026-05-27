@@ -66,7 +66,7 @@ export function formatForestClient(client?: ForestClientDto | null): string {
 
 /**
  * Return a compact label for a client for use in tight UI spaces.
- * Preference order: `acronym`, then `name`, then `clientNumber`.
+ * Preference order: `acronym`, then acronym generated from `name`, then `clientNumber`.
  * If none are present, returns the application `PLACE_HOLDER`.
  *
  * @param client - The client object (may be undefined or null).
@@ -79,7 +79,7 @@ export const getClientSimpleLabel = (
     return client.acronym;
   }
   if (client?.name) {
-    return client.name;
+    return getClientNameAcronym(client.name);
   }
   if (client?.id) {
     return client.id;

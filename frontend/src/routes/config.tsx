@@ -25,7 +25,7 @@ const StandardsUnitSearch = lazy(() => import('@/screens/StandardsUnitSearch'));
 const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
 const StockingStandardsSearch = lazy(() => import('@/screens/StockingStandardsSearch'));
 
-const PageLoader = () => <Loading withOverlay={false} />;
+const PageLoader = () => <Loading withOverlay />;
 
 export const DashboardRoute: RouteObject = {
   path: DASHBOARD_PATH,

@@ -2482,7 +2482,7 @@ public class SilvaPostgresQueryConstants {
 			WITH filtered_sr AS (
 				SELECT
 					sr.standards_regime_id,
-					sr.update_timestamp,
+					sr.approved_date,
 					COUNT(*) OVER () AS totalCount
 				FROM standards_regime sr
 				WHERE
@@ -2594,24 +2594,24 @@ public class SilvaPostgresQueryConstants {
 						)
 						AND (
 							(
-								COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
-								AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+								COALESCE(CAST(:#{#filter.approvedDateStart} AS text),'NOVALUE') = 'NOVALUE'
+								AND COALESCE(CAST(:#{#filter.approvedDateEnd} AS text),'NOVALUE') = 'NOVALUE'
 							)
 							OR (
-								sr.update_timestamp IS NOT NULL
+								sr.approved_date IS NOT NULL
 								AND (
 									(
-										COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') != 'NOVALUE'
-										AND sr.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text),'YYYY-MM-DD')
+										COALESCE(CAST(:#{#filter.approvedDateStart} AS text),'NOVALUE') != 'NOVALUE'
+										AND sr.approved_date >= TO_DATE(CAST(:#{#filter.approvedDateStart} AS text),'YYYY-MM-DD')
 									)
-									OR COALESCE(CAST(:#{#filter.updateDateStart} AS text),'NOVALUE') = 'NOVALUE'
+									OR COALESCE(CAST(:#{#filter.approvedDateStart} AS text),'NOVALUE') = 'NOVALUE'
 								)
 								AND (
 									(
-										COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') != 'NOVALUE'
-										AND sr.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
+										COALESCE(CAST(:#{#filter.approvedDateEnd} AS text),'NOVALUE') != 'NOVALUE'
+										AND sr.approved_date < TO_DATE(CAST(:#{#filter.approvedDateEnd} AS text),'YYYY-MM-DD') + INTERVAL '1 day'
 									)
-									OR COALESCE(CAST(:#{#filter.updateDateEnd} AS text),'NOVALUE') = 'NOVALUE'
+									OR COALESCE(CAST(:#{#filter.approvedDateEnd} AS text),'NOVALUE') = 'NOVALUE'
 								)
 							)
 						)
@@ -2620,7 +2620,7 @@ public class SilvaPostgresQueryConstants {
 			paged_ids AS (
 				SELECT standards_regime_id, totalCount
 				FROM filtered_sr
-				ORDER BY update_timestamp DESC NULLS LAST
+				ORDER BY approved_date DESC NULLS LAST
 				OFFSET :page LIMIT :size
 			),
 			preferred_species AS (
@@ -2726,7 +2726,7 @@ public class SilvaPostgresQueryConstants {
 				oa.org_unit_codes           AS orgUnitCodes,
 				oa.org_unit_names           AS orgUnitNames,
 				ca.client_numbers           AS clientNumbers,
-				sr.update_timestamp         AS updateTimestamp,
+				sr.approved_date            AS approvedDate,
 				pi.totalCount
 			FROM standards_regime sr
 			JOIN paged_ids pi ON pi.standards_regime_id = sr.standards_regime_id
@@ -2735,7 +2735,7 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN orgunit_agg oa ON oa.standards_regime_id = sr.standards_regime_id
 			LEFT JOIN client_agg ca ON ca.standards_regime_id = sr.standards_regime_id
 			LEFT JOIN first_site_series fss ON fss.standards_regime_id = sr.standards_regime_id
-			ORDER BY sr.update_timestamp DESC NULLS LAST
+			ORDER BY sr.approved_date DESC NULLS LAST
 			""";
 	}
 

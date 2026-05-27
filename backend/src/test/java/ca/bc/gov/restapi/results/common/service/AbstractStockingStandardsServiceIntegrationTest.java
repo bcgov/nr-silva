@@ -167,8 +167,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   }
 
   @Test
-  @DisplayName("Stocking standards search with update date range should succeed")
-  void stockingStandardsSearch_withUpdateDateRange_shouldSucceed() {
+  @DisplayName("Stocking standards search with approved date range should succeed")
+  void stockingStandardsSearch_withApprovedDateRange_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
             null,

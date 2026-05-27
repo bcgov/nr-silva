@@ -35,8 +35,8 @@ class StockingStandardsSearchFilterDtoTest {
     Assertions.assertNull(dto.getBecSiteSeries());
     Assertions.assertNull(dto.getBecSiteType());
     Assertions.assertNull(dto.getBecSeral());
-    Assertions.assertNull(dto.getUpdateDateStart());
-    Assertions.assertNull(dto.getUpdateDateEnd());
+    Assertions.assertNull(dto.getApprovedDateStart());
+    Assertions.assertNull(dto.getApprovedDateEnd());
   }
 
   // -------------------------------------------------------------------------
@@ -170,8 +170,8 @@ class StockingStandardsSearchFilterDtoTest {
   }
 
   @Test
-  @DisplayName("updateDateStart is trimmed; blank becomes null")
-  void updateDateStart_trimmedAndBlankIsNull() {
+  @DisplayName("approvedDateStart is trimmed; blank becomes null")
+  void approvedDateStart_trimmedAndBlankIsNull() {
     StockingStandardsSearchFilterDto dtoNonBlank =
         new StockingStandardsSearchFilterDto(
             null,
@@ -188,12 +188,12 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             " 2024-01-01 ",
             null);
-    Assertions.assertEquals("2024-01-01", dtoNonBlank.getUpdateDateStart());
+    Assertions.assertEquals("2024-01-01", dtoNonBlank.getApprovedDateStart());
 
     StockingStandardsSearchFilterDto dtoBlank =
         new StockingStandardsSearchFilterDto(
             null, null, null, null, null, null, null, null, null, null, null, null, "   ", null);
-    Assertions.assertNull(dtoBlank.getUpdateDateStart());
+    Assertions.assertNull(dtoBlank.getApprovedDateStart());
   }
 
   // -------------------------------------------------------------------------
@@ -247,8 +247,8 @@ class StockingStandardsSearchFilterDtoTest {
   }
 
   @Test
-  @DisplayName("hasAnyFilter returns true when updateDateStart is set")
-  void hasAnyFilter_updateDateStart_returnsTrue() {
+  @DisplayName("hasAnyFilter returns true when approvedDateStart is set")
+  void hasAnyFilter_approvedDateStart_returnsTrue() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
             null,

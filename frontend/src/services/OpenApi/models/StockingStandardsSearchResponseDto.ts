@@ -20,6 +20,6 @@ export type StockingStandardsSearchResponseDto = {
     becSeral?: string;
     orgUnits?: Array<CodeDescriptionDto>;
     clients?: Array<ForestClientDto>;
-    updateTimestamp?: string;
+    approvedDate?: string;
 };
 
