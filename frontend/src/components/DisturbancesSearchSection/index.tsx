@@ -215,10 +215,10 @@ const DisturbancesSearchSection = () => {
                 <TableToolbarMenu
                   className="edit-col-button"
                   iconDescription="Edit columns"
-                  menuOptionsClass="opening-search-action-menu-option"
+                  menuOptionsClass="default-search-action-menu-option"
                   renderIcon={() => <p>Edit columns</p>}
                 >
-                  <div className="opening-search-action-menu-option-item">
+                  <div className="default-search-action-menu-option-item">
                     <div className="helper-text">
                       Select columns you want to see
                     </div>
