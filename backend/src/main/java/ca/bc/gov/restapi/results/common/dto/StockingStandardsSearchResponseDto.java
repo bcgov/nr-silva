@@ -1,6 +1,6 @@
 package ca.bc.gov.restapi.results.common.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record StockingStandardsSearchResponseDto(
@@ -20,4 +20,4 @@ public record StockingStandardsSearchResponseDto(
     String becSeral,
     List<CodeDescriptionDto> orgUnits,
     List<ForestClientDto> clients,
-    LocalDate approvedDate) {}
+    LocalDateTime approvedDate) {}

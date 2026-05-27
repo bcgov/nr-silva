@@ -14,7 +14,6 @@ import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
 import ca.bc.gov.restapi.results.common.projection.StockingStandardsSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.StockingStandardsRepository;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -76,7 +75,7 @@ class AbstractStockingStandardsServiceTest {
     lenient().when(p.getBecSiteSeries()).thenReturn(null);
     lenient().when(p.getBecSiteType()).thenReturn(null);
     lenient().when(p.getBecSeral()).thenReturn(null);
-    lenient().when(p.getApprovedDate()).thenReturn(LocalDate.of(2024, 1, 1));
+    lenient().when(p.getApprovedDate()).thenReturn(LocalDateTime.of(2024, 1, 1, 0, 0));
     lenient().when(p.getTotalCount()).thenReturn(totalCount);
     return p;
   }
