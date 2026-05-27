@@ -5,10 +5,10 @@ import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { StockingStandardsHeaderKeyType, StockingStandardsHeaderType } from "@/types/TableHeader";
 import { CodeDescriptionDto, ForestClientDto, StockingStandardsSearchResponseDto } from "@/services/OpenApi";
 import { formatLocalDate } from "@/utils/DateUtils";
+import { getClientLabel, getClientSimpleLabel } from '@/utils/ForestClientUtils';
 import StackedTooltip from "../StackedTooltip";
 
 import "./styles.scss";
-import { getClientLabel, getClientSimpleLabel } from '../../utils/ForestClientUtils';
 
 type props = {
   headers: StockingStandardsHeaderType[];
