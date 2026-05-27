@@ -251,7 +251,7 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
 
       {/* Row 3: Approved date range */}
       <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label" htmlFor="approved-date-range">Approved date range</label>
+        <label className="date-label" htmlFor="start-date-picker-input-id">Approved date range</label>
 
         <Grid className="date-sub-grid">
           {/* Start date */}
