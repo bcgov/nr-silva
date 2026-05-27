@@ -86,6 +86,7 @@ export const mapKinds: LayerConfiguration[] = [
         'mapKindType': 'WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW',
         'polygonType': 'Standards Unit',
         'ssuid': properties?.STOCKING_STANDARD_UNIT_ID,
+        'ssid': properties?.STANDARDS_REGIME_ID,
         'standardUnitId': properties?.STANDARDS_UNIT_ID,
         'netArea': properties?.NET_AREA,
       }

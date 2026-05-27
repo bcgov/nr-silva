@@ -55,6 +55,7 @@ const OpeningsMapEntryPopup: React.FC<OpeningsMapEntryPopupProps> = ({
         return (
           <>
             <span>Opening ID:&nbsp;<span className="popup-value">{openingId}</span></span>
+            <span>SSID:&nbsp;<span className="popup-value">{data["ssid"]}</span></span>
             <span>Net area (ha):&nbsp;<span className="popup-value">{data["netArea"]}</span></span>
           </>
         );

@@ -1,16 +1,13 @@
 package ca.bc.gov.restapi.results.common.service;
 
 import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-/**
- * This service provides method for doing requests and GET calls.
- */
+/** This service provides method for doing requests and GET calls. */
 @Slf4j
 @Service
 public class OpenMapsService {
@@ -22,8 +19,7 @@ public class OpenMapsService {
    *
    * @param openMapsApi the open maps api
    */
-  public OpenMapsService(
-      @Qualifier("openMapsApi") RestClient openMapsApi) {
+  public OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
     this.restClient = openMapsApi;
   }
 
@@ -37,21 +33,21 @@ public class OpenMapsService {
     try {
       return restClient
           .get()
-          .uri(builder ->
-              builder
-                  .queryParam("service", "WFS")
-                  .queryParam("version", "2.0.0")
-                  .queryParam("request", "GetFeature")
-                  .queryParam("typeName", Optional
-                      .ofNullable(kind)
-                      .orElse("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW")
-                  )
-                  .queryParam("outputFormat", "application/json")
-                  .queryParam("SrsName", "EPSG:4326")
-                  .queryParam("PROPERTYNAME", getPropertyName(kind))
-                  .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
-                  .build(Map.of())
-          )
+          .uri(
+              builder ->
+                  builder
+                      .queryParam("service", "WFS")
+                      .queryParam("version", "2.0.0")
+                      .queryParam("request", "GetFeature")
+                      .queryParam(
+                          "typeName",
+                          Optional.ofNullable(kind)
+                              .orElse("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"))
+                      .queryParam("outputFormat", "application/json")
+                      .queryParam("SrsName", "EPSG:4326")
+                      .queryParam("PROPERTYNAME", getPropertyName(kind))
+                      .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
+                      .build(Map.of()))
           .retrieve()
           .body(FeatureCollection.class);
     } catch (Exception e) {
@@ -70,9 +66,13 @@ public class OpenMapsService {
 
     if (kindsSet.size() == 1 && kindsSet.contains("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW")) {
       return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
-    } else if (kindsSet.size() == 1 &&
-        kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
+    } else if (kindsSet.size() == 1
+        && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
       return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
+    } else if (kindsSet.size() == 1
+        && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW")) {
+      return propertyName
+          + ",STOCKING_STANDARD_UNIT_ID,STANDARDS_UNIT_ID,STANDARDS_REGIME_ID,NET_AREA";
     } else {
       return propertyName;
     }
