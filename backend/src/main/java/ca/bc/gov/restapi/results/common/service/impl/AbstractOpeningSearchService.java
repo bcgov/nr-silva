@@ -19,7 +19,6 @@ import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -116,11 +115,15 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
             .distinct()
             .toList();
 
-    // Forest client API doesn't have a single endpoint to fetch all at once, so we need to do
-    // one request per client number :/
-    for (String clientNumber : clientNumbers) {
-      Optional<ForestClientDto> dto = forestClientApiProvider.fetchClientByNumber(clientNumber);
-      dto.ifPresent(forestClientDto -> forestClientsMap.put(clientNumber, forestClientDto));
+    if (!clientNumbers.isEmpty()) {
+      // Fetch all client numbers in a single batch request instead of one per client
+      List<ForestClientDto> clients =
+          forestClientApiProvider.searchClientsByIds(0, clientNumbers.size(), clientNumbers);
+      clients.forEach(client -> forestClientsMap.put(client.clientNumber(), client));
+      log.info(
+          "Fetched {} unique clients out of {} client numbers",
+          forestClientsMap.size(),
+          clientNumbers.size());
     }
 
     result

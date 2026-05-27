@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -127,12 +128,11 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
   }
 
   private Map<String, ForestClientDto> buildClientMap(List<String> clientNumbers) {
-    Map<String, ForestClientDto> clientMap = new HashMap<>();
-    for (String clientNumber : clientNumbers) {
-      forestClientService
-          .getClientByNumber(clientNumber)
-          .ifPresent(dto -> clientMap.put(clientNumber, dto));
+    if (clientNumbers.isEmpty()) {
+      return new HashMap<>();
     }
-    return clientMap;
+    List<ForestClientDto> clients =
+        forestClientService.searchByClientNumbers(0, clientNumbers.size(), clientNumbers);
+    return clients.stream().collect(Collectors.toMap(ForestClientDto::clientNumber, c -> c));
   }
 }
