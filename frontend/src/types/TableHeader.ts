@@ -1,6 +1,6 @@
 import {
   ActivitySearchResponseDto, DisturbanceSearchResponseDto, ForestCoverSearchResponseDto,
-  OpeningSearchResponseDto, StandardUnitSearchResponseDto
+  OpeningSearchResponseDto, StandardUnitSearchResponseDto, StockingStandardsSearchResponseDto
 }
   from "@/services/OpenApi";
 
@@ -30,3 +30,7 @@ export type ForestCoverHeaderType = TableHeaderType<ForestCoverHeaderKeyType>;
 export type StandardsUnitHeaderKeyType = keyof StandardUnitSearchResponseDto | 'actions' | 'dueDates' | 'bgc';
 
 export type StandardsUnitHeaderType = TableHeaderType<StandardsUnitHeaderKeyType>;
+
+export type StockingStandardsHeaderKeyType = keyof StockingStandardsSearchResponseDto | 'bgc';
+
+export type StockingStandardsHeaderType = TableHeaderType<StockingStandardsHeaderKeyType>;

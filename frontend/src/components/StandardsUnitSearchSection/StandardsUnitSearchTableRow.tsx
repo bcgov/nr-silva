@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { TableRow, TableCell, Button, DefinitionTooltip, Stack, Tooltip } from "@carbon/react";
 import { Launch, Warning } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
-import { PLACE_HOLDER } from "@/constants";
+import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { StandardsUnitHeaderKeyType, StandardsUnitHeaderType } from "@/types/TableHeader";
 import { StandardUnitSearchResponseDto } from "@/services/OpenApi";
@@ -11,7 +11,6 @@ import StackedTooltip from "@/components/StackedTooltip";
 import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import SpatialCheckbox from "@/components/SpatialCheckbox";
-import { PREFERRED_SPECIES_LIMIT } from "./constants";
 
 import "./styles.scss";
 
@@ -87,8 +86,8 @@ const StandardsUnitSearchTableRow = ({
             {
               rowData.isStandardsRegimeExpired
                 ? (
-                  <Tooltip definition="Expired stocking standard">
-                    <Warning size={16} className="expired-standard-warning-icon" />
+                  <Tooltip label="Expired stocking standard" align="right">
+                    <Warning size={16} className="default-warning-icon" />
                   </Tooltip>
                 )
                 : null

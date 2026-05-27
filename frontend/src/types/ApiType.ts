@@ -70,6 +70,25 @@ export type StandardsUnitSearchParams = {
   sort?: Array<string>;
 };
 
+export type StockingStandardsSearchParams = {
+  standardsRegimeId?: number;
+  preferredSpecies?: Array<string>;
+  orgUnits?: Array<string>;
+  clientNumbers?: Array<string>;
+  fspId?: string;
+  bgcZone?: string;
+  bgcSubZone?: string;
+  bgcVariant?: string;
+  bgcPhase?: string;
+  becSiteSeries?: string;
+  becSiteType?: string;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  page?: number;
+  size?: number;
+  sort?: Array<string>;
+};
+
 export type CommentSearchParams = {
   searchTerm?: string;
   commentLocation?: Array<string>;

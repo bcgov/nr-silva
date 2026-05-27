@@ -12,3 +12,4 @@ export const ACTIVITY_SEARCH_PATH = '/activity-search';
 export const FOREST_COVER_SEARCH_PATH = '/forest-cover-search';
 export const STANDARDS_UNIT_SEARCH_PATH = '/standards-unit-search';
 export const COMMENT_SEARCH_PATH = '/comment-search';
+export const STOCKING_STANDARDS_SEARCH_PATH = '/stocking-standards-search';

@@ -11,6 +11,7 @@ import {
   FOREST_COVER_SEARCH_PATH,
   STANDARDS_UNIT_SEARCH_PATH,
   COMMENT_SEARCH_PATH,
+  STOCKING_STANDARDS_SEARCH_PATH,
 } from './paths';
 
 const Dashboard = lazy(() => import('@/screens/Dashboard'));
@@ -22,6 +23,7 @@ const ActivitySearch = lazy(() => import('@/screens/ActivitySearch'));
 const ForestCoverSearch = lazy(() => import('@/screens/ForestCoverSearch'));
 const StandardsUnitSearch = lazy(() => import('@/screens/StandardsUnitSearch'));
 const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
+const StockingStandardsSearch = lazy(() => import('@/screens/StockingStandardsSearch'));
 
 const PageLoader = () => <Loading withOverlay={false} />;
 
@@ -92,3 +94,9 @@ export const CommentSearchRoute: RouteObject = {
   path: COMMENT_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CommentSearch /></Suspense>} />,
 }
+
+export const StockingStandardsSearchRoute: RouteObject = {
+  path: STOCKING_STANDARDS_SEARCH_PATH,
+  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><StockingStandardsSearch /></Suspense>} />,
+}
+
