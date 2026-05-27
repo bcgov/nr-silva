@@ -50,10 +50,10 @@ public class StockingStandardsSearchFilterDto {
   private final String becSeral;
 
   @Schema(type = "string", format = "date", nullable = true)
-  private final String updateDateStart;
+  private final String approvedDateStart;
 
   @Schema(type = "string", format = "date", nullable = true)
-  private final String updateDateEnd;
+  private final String approvedDateEnd;
 
   public StockingStandardsSearchFilterDto() {
     this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
@@ -72,8 +72,8 @@ public class StockingStandardsSearchFilterDto {
       String becSiteSeries,
       String becSiteType,
       String becSeral,
-      String updateDateStart,
-      String updateDateEnd) {
+      String approvedDateStart,
+      String approvedDateEnd) {
     this.standardsRegimeId = standardsRegimeId;
     this.preferredSpecies =
         !CollectionUtils.isEmpty(preferredSpecies)
@@ -98,10 +98,10 @@ public class StockingStandardsSearchFilterDto {
         StringUtil.nullIfBlank(becSiteSeries == null ? null : becSiteSeries.trim());
     this.becSiteType = StringUtil.nullIfBlank(becSiteType == null ? null : becSiteType.trim());
     this.becSeral = StringUtil.nullIfBlank(becSeral == null ? null : becSeral.trim().toUpperCase());
-    this.updateDateStart =
-        StringUtil.nullIfBlank(updateDateStart == null ? null : updateDateStart.trim());
-    this.updateDateEnd =
-        StringUtil.nullIfBlank(updateDateEnd == null ? null : updateDateEnd.trim());
+    this.approvedDateStart =
+        StringUtil.nullIfBlank(approvedDateStart == null ? null : approvedDateStart.trim());
+    this.approvedDateEnd =
+        StringUtil.nullIfBlank(approvedDateEnd == null ? null : approvedDateEnd.trim());
   }
 
   public boolean hasAnyFilter() {
@@ -117,7 +117,7 @@ public class StockingStandardsSearchFilterDto {
         || (becSiteSeries != null && !becSiteSeries.isBlank())
         || (becSiteType != null && !becSiteType.isBlank())
         || (becSeral != null && !becSeral.isBlank())
-        || (updateDateStart != null && !updateDateStart.isBlank())
-        || (updateDateEnd != null && !updateDateEnd.isBlank());
+        || (approvedDateStart != null && !approvedDateStart.isBlank())
+        || (approvedDateEnd != null && !approvedDateEnd.isBlank());
   }
 }

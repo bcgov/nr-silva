@@ -26,8 +26,8 @@ export class SearchEndpointService {
      * @param becSiteSeries
      * @param becSiteType
      * @param becSeral
-     * @param updateDateStart
-     * @param updateDateEnd
+     * @param approvedDateStart
+     * @param approvedDateEnd
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -47,8 +47,8 @@ export class SearchEndpointService {
         becSiteSeries?: string,
         becSiteType?: string,
         becSeral?: string,
-        updateDateStart?: string,
-        updateDateEnd?: string,
+        approvedDateStart?: string,
+        approvedDateEnd?: string,
         page?: number,
         size: number = 20,
         sort?: Array<string>,
@@ -69,8 +69,8 @@ export class SearchEndpointService {
                 'becSiteSeries': becSiteSeries,
                 'becSiteType': becSiteType,
                 'becSeral': becSeral,
-                'updateDateStart': updateDateStart,
-                'updateDateEnd': updateDateEnd,
+                'approvedDateStart': approvedDateStart,
+                'approvedDateEnd': approvedDateEnd,
                 'page': page,
                 'size': size,
                 'sort': sort,

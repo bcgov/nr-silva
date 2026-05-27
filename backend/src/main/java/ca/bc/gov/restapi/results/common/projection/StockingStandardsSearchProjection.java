@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.projection;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /** Projection interface for stocking standards (standards regime) search native queries. */
@@ -48,7 +49,7 @@ public interface StockingStandardsSearchProjection {
   /** Comma-separated client numbers associated with this regime. */
   String getClientNumbers();
 
-  LocalDateTime getUpdateTimestamp();
+  LocalDate getApprovedDate();
 
   Long getTotalCount();
 }
