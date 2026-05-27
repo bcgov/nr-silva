@@ -11,14 +11,22 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: var(--bx-layer-hover-01);
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-01);
   }
 
   &--shaded {
-    background-color: var(--bx-layer-01);
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
 
     &:hover {
-      background-color: var(--bx-layer-hover-01);
+      background-color: var(--#{vars.$bcgov-prefix}-layer-hover-01);
+    }
+  }
+
+  &--focused {
+    border: 2px solid var(--#{vars.$bcgov-prefix}-border-interactive);
+
+    &:hover {
+      background-color: var(--#{vars.$bcgov-prefix}-layer-selected-hover-01);
     }
   }
 
@@ -27,7 +35,18 @@
     align-items: center;
     justify-content: space-between;
     margin-left: -0.25rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: background-color 0.1s ease;
 
+    &:hover {
+      background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
+    }
+
+    &:focus {
+      outline: 2px solid var(--#{vars.$bcgov-prefix}-ui-04);
+      outline-offset: 2px;
+    }
 
     .bookmark-title-tag {
       display: flex;
