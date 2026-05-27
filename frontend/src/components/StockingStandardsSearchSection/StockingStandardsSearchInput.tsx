@@ -124,8 +124,8 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
           ? (
             <Column sm={4} md={8} lg={16}>
               <InlineNotification
-                title="Standards ID takes priority"
-                subtitle="Other filters are ignored when a Standards ID is provided."
+                title="Stocking standards ID takes priority"
+                subtitle="Other filters are ignored when a Stocking standards ID is provided."
                 kind="warning"
                 lowContrast
                 className="inline-notification"
@@ -137,14 +137,14 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
           : null
       }
 
-      {/* Row 1: Standards ID + Preferred Species */}
+      {/* Row 1: Stocking Standards ID + Preferred Species */}
       <Column sm={4} md={4} lg={6} max={4}>
         <TextInput
           ref={ssidInputRef}
-          id="standards-id-input"
-          name="standards-id"
-          labelText="Standards ID"
-          placeholder="Enter standards ID"
+          id="stocking-standards-id-input"
+          name="stocking-standards-id"
+          labelText="Stocking standards ID"
+          placeholder="Enter SSID"
           onBlur={(e) => handleSearchFieldChange('standardsRegimeId', e.target.value ? Number(e.target.value) : undefined)}
           onKeyDown={(e) => enforceNumberInputOnKeyDown(e, SSID_MAX_LENGTH)}
           onPaste={(e) => enforceNumberInputOnPaste(ssidInputRef.current, e, SSID_MAX_LENGTH)}
