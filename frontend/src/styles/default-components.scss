@@ -483,3 +483,7 @@ ul.default-tab-accordion {
     text-decoration: underline;
   }
 }
+
+.default-warning-icon {
+  fill: var(--#{vars.$bcgov-prefix}-support-error);
+}

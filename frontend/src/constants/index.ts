@@ -72,3 +72,5 @@ export const BGC_VARIANT_MAX_LENGTH = 1; // VARCHAR2(1)
 export const BGC_PHASE_MAX_LENGTH = 1; // VARCHAR2(1)
 export const BEC_SITE_SERIES_MAX_LENGTH = 4; // VARCHAR2(4)
 export const BEC_SITE_PHASE_MAX_LENGTH = 3; // VARCHAR2(3)
+export const FSP_ID_MAX_LENGTH = 10; // VARCHAR2(10)
+export const PREFERRED_SPECIES_LIMIT = 3 as const;

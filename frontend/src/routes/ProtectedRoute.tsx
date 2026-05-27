@@ -10,11 +10,14 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectTo = '/'
 }) => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn } = useAuth();
 
-  // 1. If authentication is required and the user is not logged in, redirect to login
+  // If the user is not logged in, redirect to the landing page.
+  // Do NOT call logout() here — AuthProvider already cleared session state,
+  // and firing signOut() async during render creates a race condition where
+  // a subsequent signInWithRedirect() call on the Landing page is silently
+  // dropped by Amplify while signOut() is still in flight.
   if (!isLoggedIn) {
-    logout();
     return <Navigate to={redirectTo} replace />;
   }
 

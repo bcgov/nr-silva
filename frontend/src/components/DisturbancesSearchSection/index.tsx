@@ -57,7 +57,7 @@ const DisturbancesSearchSection = () => {
   // On page load, read URL params and prefill search (one time)
   useEffect(() => {
     const urlParams = readDisturbanceSearchUrlParams();
-    if (hasDisturbanceSearchFilters(urlParams) || urlParams.page !== undefined || urlParams.size !== undefined) {
+    if (hasDisturbanceSearchFilters(urlParams)) {
       const nextPage = urlParams.page ?? DEFAULT_PAGE_NUM;
       const nextSize = urlParams.size ?? PageSizesConfig[0]!;
       const paramsWithPagination = {
