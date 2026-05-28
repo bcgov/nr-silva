@@ -43,6 +43,7 @@ jobs:
       TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
       CI: true
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      PLAYWRIGHT_BROWSERS_PATH: 0
     steps:
       - uses: actions/checkout@v6
 
@@ -54,6 +55,7 @@ jobs:
       - name: Run E2E Tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          PLAYWRIGHT_BROWSERS_PATH: 0
         run: |
           npm ci
           npx playwright install-deps
