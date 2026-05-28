@@ -291,6 +291,12 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
     steps:
+      - name: Fix safe.directory for GitHub Actions
+        run: git config --global --add safe.directory /__w/nr-silva/nr-silva
+      - name: Install unzip
+        run: |
+          apt-get update
+          apt-get install -y unzip
       - uses: bcgov/action-test-and-analyse@87f88c90526b8b05cea760492ff33db4ba6e271b # v1.6.0
         env:
           VITE_ZONE: test
