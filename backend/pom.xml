@@ -47,13 +47,10 @@
     <logback.version>1.5.18</logback.version>
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-database.version>23.8.0.25.04</oracle-database.version>
-    <!-- Updated from 10.1.42 to 10.1.55 to address CVE-2025-52520, CVE-2025-53506, CVE-2025-48989, CVE-2025-55752, CVE-2025-55754, CVE-2025-61795, CVE-2025-66614, CVE-2026-24733, CVE-2026-24734, CVE-2026-24880, CVE-2026-25854, CVE-2026-34483, CVE-2026-34487, CVE-2026-41284, CVE-2026-41293, CVE-2026-42498, CVE-2026-43512, CVE-2026-43513, CVE-2026-43514, CVE-2026-43515; Spring Boot 3.5.14 BOM provides 10.1.54 which is insufficient -->
     <tomcat.version>10.1.55</tomcat.version>
-    <!-- Updated from 42.7.7 to 42.7.11 to address CVE-2026-42198 -->
     <postgresql.version>42.7.11</postgresql.version>
     <nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
     <spring-web.version>6.2.18</spring-web.version>
-    <!-- jackson-bom.version override removed; Spring Boot 3.5.14 BOM ships jackson-bom 2.21.2 which covers GHSA-72hv-8253-57qq -->
   </properties>
 
   <profiles>
