@@ -288,6 +288,8 @@ jobs:
     name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     steps:
       - uses: bcgov/action-test-and-analyse@87f88c90526b8b05cea760492ff33db4ba6e271b # v1.6.0
         env:
@@ -300,7 +302,8 @@ jobs:
         with:
           commands: |
             npm ci
-            npx playwright install chromium
+            npx playwright install-deps
+            npx playwright install
             npm run coverage
           dir: frontend
           node_version: "24"
