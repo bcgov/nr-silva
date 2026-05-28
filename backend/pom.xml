@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.11</version>
+    <version>3.5.12</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>ca.bc.gov.restapi</groupId>
@@ -44,14 +44,18 @@
     <testcontainers.version>1.21.1</testcontainers.version>
     <flyway.version>10.13.0</flyway.version>
     <spring-oauth2.version>3.5.11</spring-oauth2.version>
-    <spring-security.version>6.5.0</spring-security.version>
+    <!-- Updated from 6.5.0 to 6.5.10 to address CVE-2025-41248, CVE-2026-22748, CVE-2026-22746, CVE-2026-22751 -->
+    <spring-security.version>6.5.10</spring-security.version>
     <logback.version>1.5.18</logback.version>
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-database.version>23.8.0.25.04</oracle-database.version>
     <tomcat.version>10.1.42</tomcat.version>
-    <postgresql.version>42.7.7</postgresql.version>
+    <!-- Updated from 42.7.7 to 42.7.11 to address CVE-2026-42198 -->
+    <postgresql.version>42.7.11</postgresql.version>
     <nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
     <spring-web.version>6.2.18</spring-web.version>
+    <!-- Added to address GHSA-72hv-8253-57qq; remove once Spring Boot BOM ships jackson-bom >= 2.21.1 -->
+    <jackson-bom.version>2.21.1</jackson-bom.version>
   </properties>
 
   <profiles>
