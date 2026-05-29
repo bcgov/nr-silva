@@ -35,13 +35,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     env:
       HOME: /root
       BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
       TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
       TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
       CI: true
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      PLAYWRIGHT_BROWSERS_PATH: 0
     steps:
       - uses: actions/checkout@v6
 
@@ -50,14 +52,15 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install Dependencies
+      - name: Run E2E Tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          PLAYWRIGHT_BROWSERS_PATH: 0
         run: |
           npm ci
-          npx playwright install chromium
-        working-directory: frontend
-
-      - name: Run E2E Tests
-        run: npm run test:ui
+          npx playwright install-deps
+          npx playwright install
+          npm run test:ui
         working-directory: frontend
 
       - name: Publish Results

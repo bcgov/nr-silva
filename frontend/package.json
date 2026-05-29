@@ -63,7 +63,8 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@playwright/test": "^1.54.0",
+    "@playwright/test": "1.59.1",
+    "playwright": "1.59.1",
     "@testing-library/dom": "^10.2.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^16.0.0",
@@ -112,7 +113,8 @@
     "@babel/helpers": "7.29.2",
     "react-router": "7.13.1",
     "minimist": "1.2.8",
-    "uglify-js": "3.19.3"
+    "uglify-js": "3.19.3",
+    "uuid": "11.1.1"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
