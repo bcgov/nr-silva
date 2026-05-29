@@ -134,4 +134,15 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(jsonPath("$.features[0].properties.bbox[3]").value("56.07429"))
         .andReturn();
   }
+
+  @Test
+  @DisplayName("Get opening polygon and properties with non numeric opening id should fail")
+  void getOpeningPolygonAndProperties_nonNumericOpeningId_shouldFail() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/map/{openingId}", "123 OR 1=1")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
 }

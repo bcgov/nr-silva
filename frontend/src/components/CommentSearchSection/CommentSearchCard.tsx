@@ -4,7 +4,6 @@ import { Stack } from '@carbon/react';
 import OpeningBookmarkBtn from '../OpeningBookmarkBtn';
 import { CommentLocationTag } from '@/components/Tags';
 import { formatLocalDate } from '@/utils/DateUtils';
-import { Link } from 'react-router-dom';
 
 import './styles.scss';
 
@@ -15,6 +14,7 @@ type Props = {
 };
 
 const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const highlightKeyword = (text: string | null, searchTerm: string): (string | React.ReactNode)[] => {
     if (!text || !searchTerm.trim()) return [text ?? ''];
@@ -81,17 +81,39 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
     }
   }
 
+  const handleRowClick = () => {
+    window.open(getLinkPath(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleBookmarkClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+  };
+
 
   return (
-    <div className={`comment-search-card-container ${index % 2 !== 0 ? 'comment-search-card-container--shaded' : ''}`} id={`comment-search-card-${commentDto.openingId}-${commentDto.commentLocation.toLowerCase()}`}>
+    <div className={`comment-search-card-container ${index % 2 !== 0 ? 'comment-search-card-container--shaded' : ''} ${isFocused ? 'comment-search-card-container--focused' : ''}`} id={`comment-search-card-${commentDto.openingId}-${commentDto.commentLocation.toLowerCase()}`}>
       <Stack gap={2}>
-        <div className='comment-search-title-row'>
+        <div
+          className='comment-search-title-row'
+          onClick={handleRowClick}
+          onKeyDown={(e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === e.currentTarget) {
+              e.preventDefault();
+              handleRowClick();
+            }
+          }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          tabIndex={0}
+          role="link"
+          aria-label={`Open comment search result for Opening ID ${commentDto.openingId}, ${commentDto.commentLocation}`}
+        >
           <div className='bookmark-title-tag'>
             <div className='bookmark-and-title'>
-              <OpeningBookmarkBtn openingId={commentDto.openingId} tooltipPosition="right" btnSize="sm" className="comment-search-bookmark-btn" />
-              <Link className='opening-id-title default-plain-link' to={getLinkPath()} target='_blank' rel="noopener noreferrer">
+              <OpeningBookmarkBtn openingId={commentDto.openingId} tooltipPosition="right" btnSize="sm" className="comment-search-bookmark-btn" onClick={handleBookmarkClick} />
+              <div className='opening-id-title'>
                 {`Opening ID ${commentDto.openingId}`}
-              </Link>
+              </div>
             </div>
             <CommentLocationTag location={commentDto.commentLocation} activityKind={commentDto.activityKind} size="sm" suffixText={getSuffixText()} />
           </div>

@@ -27,7 +27,7 @@ public class OpeningMapsEndpoint {
    */
   @GetMapping("/{openingId}")
   public FeatureCollection getOpeningPolygonAndProperties(
-      @PathVariable String openingId,
+      @PathVariable Long openingId,
       @RequestParam(required = false, defaultValue = "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW") String kind
   ) {
     return openMapsService.getOpeningPolygonAndProperties(openingId, kind);

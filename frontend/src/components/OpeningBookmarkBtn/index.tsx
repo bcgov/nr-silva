@@ -12,11 +12,12 @@ type OpeningBookmarkBtnProps = {
   tooltipPosition?: ButtonTooltipPosition;
   btnSize?: "md" | "sm" | "lg" | "xl" | "2xl";
   className?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const BookmarkFilledIcon = () => <BookmarkFilled className="bookmark-filled-icon" data-testid="bookmark-filled-icon" />;
 
-const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top', btnSize = 'md', className }: OpeningBookmarkBtnProps) => {
+const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top', btnSize = 'md', className, onClick }: OpeningBookmarkBtnProps) => {
   const openingFavouriteQuery = useQuery({
     queryKey: ["openings", "favourites"],
     queryFn: () => API.OpeningEndpointService.getFavorites()
@@ -40,7 +41,9 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top', btnSize = 'md'
     }
   });
 
-  const handleFavouriteChange = () => {
+  const handleFavouriteChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick?.(e);
+
     if (openingFavouriteQuery.data === undefined || openingId === undefined) {
       return;
     }

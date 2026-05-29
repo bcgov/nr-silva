@@ -1,9 +1,11 @@
 package ca.bc.gov.restapi.results.common.provider;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
 import ca.bc.gov.restapi.results.common.util.UriUtils;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -97,10 +99,25 @@ public class ForestClientApiProvider {
    *
    * @param page Pagination parameter
    * @param size Pagination parameter
-   * @param value the value to search for
+   * @param ids the client numbers to search for
    * @return List of ForestClientDto
    */
   public List<ForestClientDto> searchClientsByIds(int page, int size, List<String> ids) {
+    if (ids.size() <= SilvaConstants.CLIENT_LOOKUP_BATCH_SIZE) {
+      return searchClientsByIdsBatch(page, size, ids);
+    }
+
+    List<ForestClientDto> clients = new ArrayList<>();
+    for (int start = 0; start < ids.size(); start += SilvaConstants.CLIENT_LOOKUP_BATCH_SIZE) {
+      List<String> idsBatch =
+          ids.subList(
+              start, Math.min(start + SilvaConstants.CLIENT_LOOKUP_BATCH_SIZE, ids.size()));
+      clients.addAll(searchClientsByIdsBatch(0, idsBatch.size(), idsBatch));
+    }
+    return clients;
+  }
+
+  private List<ForestClientDto> searchClientsByIdsBatch(int page, int size, List<String> ids) {
     try {
       URI uri =
           UriComponentsBuilder.fromPath("/api/clients/search")
