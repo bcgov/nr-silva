@@ -23,7 +23,8 @@
   }
 
   &--focused {
-    border: 2px solid var(--#{vars.$bcgov-prefix}-border-interactive);
+    outline: 0.125rem solid var(--#{vars.$bcgov-prefix}-border-interactive);
+    outline-offset: -0.125rem;
 
     &:hover {
       background-color: var(--#{vars.$bcgov-prefix}-layer-selected-hover-01);
