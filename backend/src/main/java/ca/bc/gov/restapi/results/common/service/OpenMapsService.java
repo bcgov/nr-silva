@@ -71,7 +71,7 @@ public class OpenMapsService {
       return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
     } else if (kindsSet.size() == 1
         && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW")) {
-      return propertyName + ",STANDARDS_UNIT_ID,STANDARDS_REGIME_ID,NET_AREA";
+      return propertyName + ",STANDARDS_REGIME_ID";
     } else {
       return propertyName;
     }
