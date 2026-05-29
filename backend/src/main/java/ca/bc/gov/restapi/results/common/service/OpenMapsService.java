@@ -72,7 +72,7 @@ public class OpenMapsService {
     } else if (kindsSet.size() == 1
         && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW")) {
       return propertyName
-          + ",STOCKING_STANDARD_UNIT_ID,STANDARDS_UNIT_ID,STANDARDS_REGIME_ID,NET_AREA";
+          + "STANDARDS_UNIT_ID,STANDARDS_REGIME_ID,NET_AREA";
     } else {
       return propertyName;
     }
