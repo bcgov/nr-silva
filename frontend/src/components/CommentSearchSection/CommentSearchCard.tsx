@@ -82,7 +82,7 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
   }
 
   const handleRowClick = () => {
-    window.open(getLinkPath(), '_blank');
+    window.open(getLinkPath(), '_blank', 'noopener,noreferrer');
   };
 
   const handleBookmarkClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -105,6 +105,8 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           tabIndex={0}
+          role="link"
+          aria-label={`Open comment search result for Opening ID ${commentDto.openingId}, ${commentDto.commentLocation}`}
         >
           <div className='bookmark-title-tag'>
             <div className='bookmark-and-title'>
