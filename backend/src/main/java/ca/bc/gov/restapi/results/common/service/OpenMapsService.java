@@ -29,7 +29,7 @@ public class OpenMapsService {
    * @param openingId The Opening identification.
    * @return An object with the response from WFS
    */
-  public FeatureCollection getOpeningPolygonAndProperties(String openingId, String kind) {
+  public FeatureCollection getOpeningPolygonAndProperties(Long openingId, String kind) {
     try {
       return restClient
           .get()

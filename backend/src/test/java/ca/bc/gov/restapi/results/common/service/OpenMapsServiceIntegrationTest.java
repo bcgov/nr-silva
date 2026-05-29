@@ -43,7 +43,7 @@ class OpenMapsServiceIntegrationTest {
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() {
 
-    String openingId = "123";
+    Long openingId = 123L;
     clientApiStub.stubFor(
         get(urlPathEqualTo("/"))
             .withQueryParam("service", equalTo("WFS"))
@@ -66,7 +66,7 @@ class OpenMapsServiceIntegrationTest {
   @DisplayName("Get opening polygon and properties not found should fail")
   void getOpeningPolygonAndProperties_notFound_shouldFail() {
 
-    String openingId = "123";
+    Long openingId = 123L;
     clientApiStub.stubFor(
         get(urlPathEqualTo("/"))
             .withQueryParam("service", equalTo("WFS"))
@@ -99,7 +99,7 @@ class OpenMapsServiceIntegrationTest {
   @DisplayName("Get cut block polygon and properties happy path should succeed")
   void getCutBlockPolygonAndProperties_happyPath_shouldSucceed() {
 
-    String openingId = "123";
+    Long openingId = 123L;
     clientApiStub.stubFor(
         get(urlPathEqualTo("/"))
             .withQueryParam("service", equalTo("WFS"))
