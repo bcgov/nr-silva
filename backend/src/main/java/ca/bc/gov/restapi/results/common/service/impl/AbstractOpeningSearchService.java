@@ -116,7 +116,6 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
             .toList();
 
     if (!clientNumbers.isEmpty()) {
-      // Fetch all client numbers in a single batch request instead of one per client
       List<ForestClientDto> clients =
           forestClientApiProvider.searchClientsByIds(0, clientNumbers.size(), clientNumbers);
       clients.forEach(client -> forestClientsMap.put(client.clientNumber(), client));

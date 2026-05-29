@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.common.provider;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.serviceUnavailable;
@@ -14,6 +16,7 @@ import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -196,6 +199,43 @@ class ForestClientApiProviderIntegrationTest {
 
     Assertions.assertEquals("00012797", clients.get(1).clientNumber());
     Assertions.assertEquals("Client B", clients.get(1).clientName());
+  }
+
+  @Test
+  @DisplayName("Search clients by IDs chunks large ID lists")
+  void searchClientsByIds_largeIdList_shouldChunkRequests() {
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/api/clients/search"))
+            .willReturn(
+                okJson(
+                    """
+                  [
+                    {
+                      "clientNumber": "00132184",
+                      "clientName": "Client A",
+                      "legalFirstName": "FirstA",
+                      "legalMiddleName": "MiddleA",
+                      "clientStatusCode": "ACT",
+                      "clientTypeCode": "F",
+                      "acronym": "A1"
+                    }
+                  ]
+                  """)));
+
+    List<String> ids =
+        IntStream.rangeClosed(1, 101).mapToObj(id -> String.format("%08d", id)).toList();
+
+    var clients = forestClientApiProvider.searchClientsByIds(0, ids.size(), ids);
+
+    Assertions.assertEquals(2, clients.size());
+    clientApiStub.verify(
+        1,
+        getRequestedFor(urlPathEqualTo("/api/clients/search"))
+            .withQueryParam("size", equalTo("100")));
+    clientApiStub.verify(
+        1,
+        getRequestedFor(urlPathEqualTo("/api/clients/search"))
+            .withQueryParam("size", equalTo("1")));
   }
 
   @Test
