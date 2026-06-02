@@ -28,7 +28,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
 
   const stockingTypeQuery = useQuery({
     queryKey: ["codes", "stocking-type"],
-    queryFn: () => API.CodesEndpointService.getStockingTypeCodes(),
+    queryFn: () => API.CodesEndpointService.getStockingTypeCodes()
   });
 
   const stockingStatusQuery = useQuery({
@@ -57,9 +57,10 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
     handleSearchFieldChange(field, selectedCodes.length > 0 ? selectedCodes : undefined);
   };
 
-  const getMultiSelectPlaceholder = (field: keyof ForestCoverSearchParams, defaultText = 'Choose one or more options') => {
+  const getMultiSelectPlaceholder = (field: keyof ForestCoverSearchParams, defaultText = 'Choose one or more options', valueMapper?: (v: string) => string) => {
     const values = searchParams?.[field] as unknown as string[] | undefined;
-    return values && values.length > 0 ? values.join(', ') : defaultText;
+    const mapped = valueMapper ? values?.map(valueMapper) : values;
+    return mapped && mapped.length > 0 ? mapped.join(', ') : defaultText;
   };
 
   const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
@@ -98,11 +99,14 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
           id="stocking-type-multiselect"
           className="default-search-multi-select"
           titleText="Stocking type"
-          placeholder={getMultiSelectPlaceholder("stockingTypes")}
-          items={stockingTypeQuery.data ?? []}
+          placeholder={getMultiSelectPlaceholder("stockingTypes", undefined, v => v.trim() === '' ? 'N/A' : v)}
+          items={(stockingTypeQuery.data ?? []).map(data => data.code?.trim() === '' ? { ...data, code: 'N/A' } : data)}
           itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('stockingTypes')}
-          selectedItems={(stockingTypeQuery.data ?? []).filter(data => searchParams?.stockingTypes?.includes(data.code ?? ''))}
+          onChange={(selected) => {
+            const selectedCodes = getMultiSelectedCodes(selected).map(code => code === 'N/A' ? ' ' : code);
+            handleSearchFieldChange('stockingTypes', selectedCodes.length > 0 ? selectedCodes : undefined);
+          }}
+          selectedItems={(stockingTypeQuery.data ?? []).filter(data => searchParams?.stockingTypes?.includes(data.code ?? '')).map(data => data.code?.trim() === '' ? { ...data, code: 'N/A' } : data)}
         />
       </Column>
 

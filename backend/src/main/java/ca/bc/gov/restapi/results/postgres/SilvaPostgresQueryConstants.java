@@ -2737,5 +2737,138 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN first_site_series fss ON fss.standards_regime_id = sr.standards_regime_id
 			ORDER BY sr.approved_date DESC NULLS LAST
 			""";
-	}
 
+	public static final String STOCKING_STANDARDS_COMMENT_SEARCH =
+		"""
+		WITH base_matches AS (
+			SELECT sr.standards_regime_id, 'STANDARDS_NAME' AS commentLocation,
+			       sr.standards_regime_name AS commentText, sr.update_timestamp
+			FROM standards_regime sr
+			WHERE sr.standards_regime_name IS NOT NULL
+			  AND UPPER(sr.standards_regime_name) LIKE '%' || UPPER(CAST(:#{#filter.searchTerm} AS text)) || '%'
+			  AND (
+			    'NOVALUE' IN (:#{#filter.commentLocationValues})
+			    OR 'STANDARDS_NAME' IN (:#{#filter.commentLocationValues})
+			  )
+			UNION ALL
+			SELECT sr.standards_regime_id, 'ADDITIONAL_STANDARDS',
+			       sr.additional_standards, sr.update_timestamp
+			FROM standards_regime sr
+			WHERE sr.additional_standards IS NOT NULL
+			  AND UPPER(sr.additional_standards) LIKE '%' || UPPER(CAST(:#{#filter.searchTerm} AS text)) || '%'
+			  AND (
+			    'NOVALUE' IN (:#{#filter.commentLocationValues})
+			    OR 'ADDITIONAL_STANDARDS' IN (:#{#filter.commentLocationValues})
+			  )
+			UNION ALL
+			SELECT sr.standards_regime_id, 'STANDARDS_OBJECTIVE',
+			       sr.standards_objective, sr.update_timestamp
+			FROM standards_regime sr
+			WHERE sr.standards_objective IS NOT NULL
+			  AND UPPER(sr.standards_objective) LIKE '%' || UPPER(CAST(:#{#filter.searchTerm} AS text)) || '%'
+			  AND (
+			    'NOVALUE' IN (:#{#filter.commentLocationValues})
+			    OR 'STANDARDS_OBJECTIVE' IN (:#{#filter.commentLocationValues})
+			  )
+		),
+		filtered AS (
+			SELECT bm.standards_regime_id, bm.commentLocation, bm.commentText,
+			       bm.update_timestamp, COUNT(*) OVER () AS totalCount
+			FROM base_matches bm
+			WHERE
+			  (
+			    'NOVALUE' IN (:#{#filter.orgUnits})
+			    OR EXISTS (
+			      SELECT 1 FROM standards_regime_org_unit srou
+			      JOIN org_unit ou ON ou.org_unit_no = srou.org_unit_no
+			      WHERE srou.standards_regime_id = bm.standards_regime_id
+			        AND UPPER(ou.org_unit_code) IN (:#{#filter.orgUnits})
+			    )
+			  )
+			  AND (
+			    'NOVALUE' IN (:#{#filter.clientNumbers})
+			    OR EXISTS (
+			      SELECT 1 FROM standards_regime_client src2
+			      WHERE src2.standards_regime_id = bm.standards_regime_id
+			        AND UPPER(src2.client_number) IN (:#{#filter.clientNumbers})
+			    )
+			  )
+			  AND (
+			    (
+			      COALESCE(CAST(:#{#filter.updateDateStart} AS text), 'NOVALUE') = 'NOVALUE'
+			      AND COALESCE(CAST(:#{#filter.updateDateEnd} AS text), 'NOVALUE') = 'NOVALUE'
+			    )
+			    OR (
+			      bm.update_timestamp IS NOT NULL
+			      AND (
+			        COALESCE(CAST(:#{#filter.updateDateStart} AS text), 'NOVALUE') = 'NOVALUE'
+			        OR bm.update_timestamp >= TO_DATE(CAST(:#{#filter.updateDateStart} AS text), 'YYYY-MM-DD')
+			      )
+			      AND (
+			        COALESCE(CAST(:#{#filter.updateDateEnd} AS text), 'NOVALUE') = 'NOVALUE'
+			        OR bm.update_timestamp < TO_DATE(CAST(:#{#filter.updateDateEnd} AS text), 'YYYY-MM-DD') + INTERVAL '1 day'
+			      )
+			    )
+			  )
+		),
+		paged_ids AS (
+			SELECT standards_regime_id, commentLocation, commentText, update_timestamp, totalCount
+			FROM filtered
+			ORDER BY update_timestamp DESC NULLS LAST
+			OFFSET :page LIMIT :size
+		),
+		orgunit_agg AS (
+			SELECT
+				standards_regime_id,
+				STRING_AGG(org_unit_code, ',' ORDER BY org_unit_code) AS org_unit_codes,
+				STRING_AGG(org_unit_name, '||' ORDER BY org_unit_code) AS org_unit_names
+			FROM (
+				SELECT DISTINCT pi.standards_regime_id, ou.org_unit_code, ou.org_unit_name
+				FROM paged_ids pi
+				JOIN standards_regime_org_unit srou ON srou.standards_regime_id = pi.standards_regime_id
+				JOIN org_unit ou ON ou.org_unit_no = srou.org_unit_no
+			) ou_dedup
+			GROUP BY standards_regime_id
+		),
+		client_agg AS (
+			SELECT
+				standards_regime_id,
+				STRING_AGG(client_number, ',' ORDER BY client_number) AS client_numbers
+			FROM (
+				SELECT DISTINCT pi.standards_regime_id, src2.client_number
+				FROM paged_ids pi
+				JOIN standards_regime_client src2 ON src2.standards_regime_id = pi.standards_regime_id
+			) client_dedup
+			GROUP BY standards_regime_id
+		),
+		fsp_agg AS (
+			SELECT
+				standards_regime_id,
+				STRING_AGG(CAST(fsp_id AS text), ',' ORDER BY fsp_id) AS fsp_ids
+			FROM (
+				SELECT DISTINCT pi.standards_regime_id, fsrx.fsp_id
+				FROM paged_ids pi
+				JOIN fsp_standards_regime_xref fsrx ON fsrx.standards_regime_id = pi.standards_regime_id
+			) fsp_dedup
+			GROUP BY standards_regime_id
+		)
+		SELECT
+			pi.standards_regime_id          AS standardsRegimeId,
+			pi.commentLocation              AS commentLocation,
+			sr.expiry_date                  AS expiryDate,
+			pi.commentText                  AS commentText,
+			pi.update_timestamp             AS updateTimestamp,
+                        sr.approved_date                AS approvedTimestamp,
+			oa.org_unit_codes               AS orgUnitCodes,
+			oa.org_unit_names               AS orgUnitNames,
+			ca.client_numbers               AS clientNumbers,
+			fa.fsp_ids                      AS fspIds,
+			pi.totalCount
+		FROM standards_regime sr
+		JOIN paged_ids pi ON pi.standards_regime_id = sr.standards_regime_id
+		LEFT JOIN orgunit_agg oa ON oa.standards_regime_id = sr.standards_regime_id
+		LEFT JOIN client_agg ca ON ca.standards_regime_id = sr.standards_regime_id
+		LEFT JOIN fsp_agg fa ON fa.standards_regime_id = sr.standards_regime_id
+		ORDER BY pi.update_timestamp DESC NULLS LAST
+		""";
+}

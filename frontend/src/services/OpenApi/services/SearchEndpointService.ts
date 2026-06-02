@@ -8,6 +8,7 @@ import type { PagedModelDisturbanceSearchResponseDto } from '../models/PagedMode
 import type { PagedModelForestCoverSearchResponseDto } from '../models/PagedModelForestCoverSearchResponseDto';
 import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { PagedModelStandardUnitSearchResponseDto } from '../models/PagedModelStandardUnitSearchResponseDto';
+import type { PagedModelStockingStandardsCommentSearchResponseDto } from '../models/PagedModelStockingStandardsCommentSearchResponseDto';
 import type { PagedModelStockingStandardsSearchResponseDto } from '../models/PagedModelStockingStandardsSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -71,6 +72,46 @@ export class SearchEndpointService {
                 'becSeral': becSeral,
                 'approvedDateStart': approvedDateStart,
                 'approvedDateEnd': approvedDateEnd,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param searchTerm
+     * @param commentLocations
+     * @param clientNumbers
+     * @param orgUnits
+     * @param updateDateStart
+     * @param updateDateEnd
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelStockingStandardsCommentSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static stockingStandardsCommentSearch(
+        searchTerm: string,
+        commentLocations?: Array<'STANDARDS_NAME' | 'ADDITIONAL_STANDARDS' | 'STANDARDS_OBJECTIVE'>,
+        clientNumbers?: Array<string>,
+        orgUnits?: Array<string>,
+        updateDateStart?: string,
+        updateDateEnd?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelStockingStandardsCommentSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/search/stocking-standards/comments',
+            query: {
+                'searchTerm': searchTerm,
+                'commentLocations': commentLocations,
+                'clientNumbers': clientNumbers,
+                'orgUnits': orgUnits,
+                'updateDateStart': updateDateStart,
+                'updateDateEnd': updateDateEnd,
                 'page': page,
                 'size': size,
                 'sort': sort,
