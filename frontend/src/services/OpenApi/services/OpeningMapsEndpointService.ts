@@ -14,7 +14,7 @@ export class OpeningMapsEndpointService {
      * @throws ApiError
      */
     public static getOpeningPolygonAndProperties(
-        openingId: string,
+        openingId: number,
         kind: string = 'WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW',
     ): CancelablePromise<FeatureCollection> {
         return __request(OpenAPI, {
