@@ -8,9 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ActivityService {
-  Page<ActivitySearchResponseDto> activitySearch(
+  Page<ActivitySearchResponseDto> searchActivity(
       ActivitySearchFiltersDto filters, Pageable pagination);
 
-  Page<DisturbanceSearchResponseDto> disturbanceSearch(
+  Page<DisturbanceSearchResponseDto> searchDisturbance(
       DisturbanceSearchFilterDto filters, Pageable pagination);
 }

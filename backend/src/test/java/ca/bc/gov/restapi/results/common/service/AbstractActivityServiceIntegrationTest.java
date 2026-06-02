@@ -49,7 +49,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto();
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(result.getNumberOfElements() >= 0, "Result should have content");
@@ -63,7 +63,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null, null, null, null, null, null, null, null, "TFL47", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // Verify results are for the specified file
@@ -98,7 +98,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // If there are results, verify they have the correct base code
@@ -133,7 +133,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -146,9 +146,9 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageableSecond = PageRequest.of(1, 5);
 
     Page<ActivitySearchResponseDto> resultFirst =
-        activityService.activitySearch(filters, pageableFirst);
+        activityService.searchActivity(filters, pageableFirst);
     Page<ActivitySearchResponseDto> resultSecond =
-        activityService.activitySearch(filters, pageableSecond);
+        activityService.searchActivity(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -164,7 +164,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null, null, null, null, null, null, null, null, "TFL47", null, null, null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     if (result.hasContent()) {
       ActivitySearchResponseDto dto = result.getContent().get(0);
@@ -196,7 +196,7 @@ public abstract class AbstractActivityServiceIntegrationTest
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(result.hasContent(), "Result should be empty for invalid file ID");
@@ -208,7 +208,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     ActivitySearchFiltersDto filters = new ActivitySearchFiltersDto();
     Pageable pageable = PageRequest.of(0, 50);
 
-    Page<ActivitySearchResponseDto> result = activityService.activitySearch(filters, pageable);
+    Page<ActivitySearchResponseDto> result = activityService.searchActivity(filters, pageable);
 
     if (result.hasContent()) {
       List<Long> activityIds =
@@ -228,7 +228,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(result.getNumberOfElements() >= 0, "Result should have content");
@@ -243,7 +243,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // Verify results are for the specified file
@@ -266,7 +266,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // If there are results, verify they have the correct disturbance code
@@ -291,7 +291,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // If there are results, verify they have the correct variant
@@ -314,7 +314,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     // If there are results, verify case-insensitive matching works
@@ -339,7 +339,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     if (result.hasContent()) {
@@ -363,7 +363,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     if (result.hasContent()) {
@@ -385,7 +385,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     if (result.hasContent()) {
@@ -407,7 +407,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     if (result.hasContent()) {
@@ -431,7 +431,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -445,7 +445,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -459,7 +459,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -483,7 +483,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -496,9 +496,9 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageableSecond = PageRequest.of(1, 5);
 
     Page<DisturbanceSearchResponseDto> resultFirst =
-        activityService.disturbanceSearch(filters, pageableFirst);
+        activityService.searchDisturbance(filters, pageableFirst);
     Page<DisturbanceSearchResponseDto> resultSecond =
-        activityService.disturbanceSearch(filters, pageableSecond);
+        activityService.searchDisturbance(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -515,7 +515,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     if (result.hasContent()) {
       DisturbanceSearchResponseDto dto = result.getContent().get(0);
@@ -535,7 +535,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(result.hasContent(), "Result should be empty for invalid file ID");
@@ -550,7 +550,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 50);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     if (result.hasContent()) {
       List<Long> activityIds =
@@ -582,7 +582,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -596,7 +596,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -610,7 +610,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -624,7 +624,7 @@ public abstract class AbstractActivityServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<DisturbanceSearchResponseDto> result =
-        activityService.disturbanceSearch(filters, pageable);
+        activityService.searchDisturbance(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }

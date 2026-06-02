@@ -40,7 +40,7 @@ const ForestCoverSearchSection = () => {
 
   const forestCoverSearchQuery = useQuery({
     queryKey: ['search', 'forest-cover', queryParams],
-    queryFn: () => API.SearchEndpointService.forestCoverSearch(
+    queryFn: () => API.SearchEndpointService.searchForestCover(
       queryParams?.openingId,
       queryParams?.stockingStatuses,
       queryParams?.stockingTypes,

@@ -36,7 +36,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
   protected ForestClientService forestClientService;
 
   @Override
-  public Page<StockingStandardsSearchResponseDto> stockingStandardsSearch(
+  public Page<StockingStandardsSearchResponseDto> searchStockingStandards(
       StockingStandardsSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getApprovedDateStart(), filters.getApprovedDateEnd());
 

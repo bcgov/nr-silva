@@ -51,7 +51,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(
@@ -68,7 +68,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -96,7 +96,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -124,7 +124,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -152,7 +152,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -167,7 +167,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -195,7 +195,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -211,9 +211,9 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageableSecond = PageRequest.of(1, 5);
 
     Page<StockingStandardsSearchResponseDto> resultFirst =
-        stockingStandardsService.stockingStandardsSearch(filters, pageableFirst);
+        stockingStandardsService.searchStockingStandards(filters, pageableFirst);
     Page<StockingStandardsSearchResponseDto> resultSecond =
-        stockingStandardsService.stockingStandardsSearch(filters, pageableSecond);
+        stockingStandardsService.searchStockingStandards(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -231,7 +231,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     if (result.hasContent()) {
       StockingStandardsSearchResponseDto dto = result.getContent().get(0);
@@ -267,7 +267,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(
@@ -284,7 +284,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -299,7 +299,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -314,7 +314,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -342,7 +342,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -357,7 +357,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsSearch(filters, pageable);
+        stockingStandardsService.searchStockingStandards(filters, pageable);
 
     result
         .getContent()
@@ -392,7 +392,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
 
     Assertions.assertThrows(
         org.springframework.web.server.ResponseStatusException.class,
-        () -> stockingStandardsService.stockingStandardsSearch(filters, pageable),
+        () -> stockingStandardsService.searchStockingStandards(filters, pageable),
         "Should throw ResponseStatusException for end-before-start date range");
   }
 }

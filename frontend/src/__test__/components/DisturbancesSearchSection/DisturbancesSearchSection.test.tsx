@@ -202,7 +202,7 @@ describe('DisturbancesSearchSection', () => {
 
   it('displays empty state when no results', async () => {
     const { wrapper } = renderWithProviders();
-    vi.mocked(API.SearchEndpointService.disturbanceSearch).mockResolvedValueOnce({
+    vi.mocked(API.SearchEndpointService.searchDisturbance).mockResolvedValueOnce({
       content: [],
       page: { totalElements: 0, size: 10, page: 0, totalPages: 0 },
     });

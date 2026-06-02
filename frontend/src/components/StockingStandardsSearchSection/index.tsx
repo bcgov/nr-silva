@@ -32,7 +32,7 @@ const StockingStandardsSearchSection = () => {
 
   const stockingStandardsSearchQuery = useQuery({
     queryKey: ['search', 'stocking-standards', queryParams],
-    queryFn: () => API.SearchEndpointService.stockingStandardsSearch(
+    queryFn: () => API.SearchEndpointService.searchStockingStandards(
       queryParams?.standardsRegimeId,
       queryParams?.preferredSpecies,
       queryParams?.orgUnits,

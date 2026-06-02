@@ -32,7 +32,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertTrue(
@@ -48,7 +48,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     if (result.hasContent()) {
@@ -68,7 +68,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -82,7 +82,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -96,7 +96,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -110,7 +110,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -124,7 +124,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -138,7 +138,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -151,9 +151,9 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageableSecond = PageRequest.of(1, 5);
 
     Page<ForestCoverSearchResponseDto> resultFirst =
-        forestCoverService.forestCoverSearch(filters, pageableFirst);
+        forestCoverService.searchForestCover(filters, pageableFirst);
     Page<ForestCoverSearchResponseDto> resultSecond =
-        forestCoverService.forestCoverSearch(filters, pageableSecond);
+        forestCoverService.searchForestCover(filters, pageableSecond);
 
     Assertions.assertNotNull(resultFirst, "First page result should not be null");
     Assertions.assertNotNull(resultSecond, "Second page result should not be null");
@@ -170,7 +170,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     if (result.hasContent()) {
       ForestCoverSearchResponseDto dto = result.getContent().get(0);
@@ -190,7 +190,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
     Assertions.assertFalse(result.hasContent(), "Result should be empty for invalid file ID");
@@ -203,7 +203,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 50);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     if (result.hasContent()) {
       List<Long> forestCoverIds =
@@ -226,7 +226,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> forestCoverService.forestCoverSearch(filters, pageable),
+        () -> forestCoverService.searchForestCover(filters, pageable),
         "Should throw ResponseStatusException for invalid date range");
   }
 
@@ -239,7 +239,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -253,7 +253,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -267,7 +267,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -281,7 +281,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -294,7 +294,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     Assertions.assertNotNull(result, "Result should not be null");
   }
@@ -308,7 +308,7 @@ public abstract class AbstractForestCoverServiceIntegrationTest
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<ForestCoverSearchResponseDto> result =
-        forestCoverService.forestCoverSearch(filters, pageable);
+        forestCoverService.searchForestCover(filters, pageable);
 
     result
         .getContent()

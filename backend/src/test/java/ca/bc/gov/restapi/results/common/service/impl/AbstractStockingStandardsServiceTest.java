@@ -102,7 +102,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -121,7 +121,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -138,7 +138,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -156,7 +156,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -176,7 +176,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -195,7 +195,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -211,7 +211,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -235,7 +235,7 @@ class AbstractStockingStandardsServiceTest {
         .thenReturn(List.of(client("00099001"), client("00099002"), client("00099003")));
 
     Page<StockingStandardsSearchResponseDto> result =
-        service.stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10));
+        service.searchStockingStandards(defaultFilters(), PageRequest.of(0, 10));
 
     // One batch call, not N+1
     verify(forestClientService).searchByClientNumbers(anyInt(), anyInt(), anyList());
@@ -256,7 +256,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -272,7 +272,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -292,7 +292,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -307,7 +307,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -327,7 +327,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -343,7 +343,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -360,7 +360,7 @@ class AbstractStockingStandardsServiceTest {
     when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of());
 
     Page<StockingStandardsSearchResponseDto> result =
-        service.stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10));
+        service.searchStockingStandards(defaultFilters(), PageRequest.of(0, 10));
 
     Assertions.assertEquals(0L, result.getTotalElements());
     Assertions.assertTrue(result.getContent().isEmpty());
@@ -373,7 +373,7 @@ class AbstractStockingStandardsServiceTest {
     when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
 
     Assertions.assertDoesNotThrow(
-        () -> service.stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10)));
+        () -> service.searchStockingStandards(defaultFilters(), PageRequest.of(0, 10)));
   }
 
   @Test
@@ -399,7 +399,7 @@ class AbstractStockingStandardsServiceTest {
 
     Assertions.assertThrows(
         org.springframework.web.server.ResponseStatusException.class,
-        () -> service.stockingStandardsSearch(filters, PageRequest.of(0, 10)));
+        () -> service.searchStockingStandards(filters, PageRequest.of(0, 10)));
   }
 
   // -------------------------------------------------------------------------
@@ -415,7 +415,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -433,7 +433,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -453,7 +453,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -469,7 +469,7 @@ class AbstractStockingStandardsServiceTest {
 
     StockingStandardsSearchResponseDto dto =
         service
-            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .searchStockingStandards(defaultFilters(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 

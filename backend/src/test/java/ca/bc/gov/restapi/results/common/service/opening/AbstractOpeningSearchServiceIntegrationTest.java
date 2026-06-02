@@ -47,7 +47,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             null, null, null, null, null);
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().size() > 0);
@@ -62,7 +62,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             null, null, null, null, "514");
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().size() > 0);
@@ -81,7 +81,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             null, null, null, null, null, null);
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().isEmpty());
@@ -97,7 +97,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
     PageRequest pagination = PageRequest.of(0, 2999);
     Assertions.assertThrows(
         MaxPageSizeException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, pagination));
+        () -> openingSearchService.searchOpeningExact(filterDto, pagination));
   }
 
   @Test
@@ -128,7 +128,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10)));
+        () -> openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10)));
   }
 
   @Test
@@ -158,7 +158,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             null);
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
   }
@@ -173,7 +173,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10)));
+        () -> openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10)));
   }
 
   @Test
@@ -186,7 +186,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10)));
+        () -> openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10)));
   }
 
   @Test
@@ -199,7 +199,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10)));
+        () -> openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10)));
   }
 
   @Test
@@ -212,7 +212,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
 
     Assertions.assertThrows(
         ResponseStatusException.class,
-        () -> openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10)));
+        () -> openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10)));
   }
 
   @Test
@@ -242,7 +242,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             null);
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     // Should succeed without throwing exception
@@ -257,7 +257,7 @@ public abstract class AbstractOpeningSearchServiceIntegrationTest<T extends Open
             "O", "045", "0", "0", null);
 
     Page<OpeningSearchResponseDto> result =
-        openingSearchService.openingSearchExact(filterDto, PageRequest.of(0, 10));
+        openingSearchService.searchOpeningExact(filterDto, PageRequest.of(0, 10));
 
     Assertions.assertNotNull(result);
     // Should succeed without throwing exception

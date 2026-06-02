@@ -6,6 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ForestCoverService {
-  Page<ForestCoverSearchResponseDto> forestCoverSearch(
+  Page<ForestCoverSearchResponseDto> searchForestCover(
       ForestCoverSearchFilterDto filters, Pageable pagination);
 }

@@ -35,7 +35,7 @@ const DisturbancesSearchSection = () => {
 
   const disturbanceSearchQuery = useQuery({
     queryKey: ['search', 'disturbances', queryParams],
-    queryFn: () => API.SearchEndpointService.disturbanceSearch(
+    queryFn: () => API.SearchEndpointService.searchDisturbance(
       queryParams?.disturbances,
       queryParams?.silvSystems,
       queryParams?.variants,

@@ -119,7 +119,7 @@ describe('StockingStandardsSearchSection', () => {
   it('should render table and results when search filters exist', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
@@ -144,7 +144,7 @@ describe('StockingStandardsSearchSection', () => {
   it('should display search results message with total count', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
@@ -202,7 +202,7 @@ describe('StockingStandardsSearchSection', () => {
 
     const mockApi = vi.fn().mockResolvedValue(emptyResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 

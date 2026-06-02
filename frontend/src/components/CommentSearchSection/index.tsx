@@ -34,9 +34,9 @@ const CommentSearchSection = () => {
   const commentSearchQuery = useQuery({
     queryKey: ['search', 'comments', queryParams],
     queryFn: () =>
-      API.SearchEndpointService.commentSearch(
+      API.SearchEndpointService.searchComments(
         queryParams!.searchTerm!,
-        queryParams?.commentLocation as Parameters<typeof API.SearchEndpointService.commentSearch>[1] ?? undefined,
+        queryParams?.commentLocation as Parameters<typeof API.SearchEndpointService.searchComments>[1] ?? undefined,
         queryParams?.clientNumbers,
         queryParams?.orgUnits,
         queryParams?.updateDateStart,

@@ -10,7 +10,7 @@ export const openingSearch = (params: OpeningSearchParamsType | undefined): Canc
     throw new Error('Search params required');
   }
 
-  return API.SearchEndpointService.openingSearchExact(
+  return API.SearchEndpointService.searchOpeningExact(
     params.openingId,
     params.categories,
     params.openingStatuses,

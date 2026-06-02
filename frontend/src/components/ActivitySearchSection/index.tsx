@@ -35,7 +35,7 @@ const ActivitiesSearchSection = () => {
 
   const activitySearchQuery = useQuery({
     queryKey: ['search', 'activities', queryParams],
-    queryFn: () => API.SearchEndpointService.activitySearch(
+    queryFn: () => API.SearchEndpointService.searchActivity(
       queryParams?.bases,
       queryParams?.techniques,
       queryParams?.methods,

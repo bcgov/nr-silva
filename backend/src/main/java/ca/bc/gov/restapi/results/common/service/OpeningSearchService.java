@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface OpeningSearchService {
   Page<OpeningSearchResponseDto> parsePageResult(
       Page<SilvicultureSearchProjection> searchResultPage);
-  
-  Page<OpeningSearchResponseDto> openingSearchExact(
-    OpeningSearchExactFiltersDto filtersDto, Pageable pagination);
+
+  Page<OpeningSearchResponseDto> searchOpeningExact(
+      OpeningSearchExactFiltersDto filtersDto, Pageable pagination);
 }

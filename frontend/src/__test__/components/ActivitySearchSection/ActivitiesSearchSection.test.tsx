@@ -189,7 +189,7 @@ describe('ActivitiesSearchSection', () => {
 
     // Mock with more results than page size
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockResolvedValueOnce({
       content: Array.from({ length: 10 }, (_, i) => ({
         activityId: `${i + 1}`,
@@ -221,7 +221,7 @@ describe('ActivitiesSearchSection', () => {
     const { wrapper } = renderWithProviders();
 
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockResolvedValueOnce({
       content: [],
       page: { totalElements: 0, size: 10, page: 0, totalPages: 0 },
@@ -281,7 +281,7 @@ describe('ActivitiesSearchSection', () => {
 
     // Mock a slow API response
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockImplementationOnce(
       () =>
         new Promise((resolve) =>
@@ -316,7 +316,7 @@ describe('ActivitiesSearchSection', () => {
     const { wrapper } = renderWithProviders();
 
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockResolvedValue({
       content: Array.from({ length: 10 }, (_, i) => ({
         activityId: `${i + 1}`,
@@ -400,7 +400,7 @@ describe('ActivitiesSearchSection', () => {
     }));
 
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockResolvedValueOnce({
       content: mockResults,
       page: { totalElements: 5, size: 10, page: 0, totalPages: 1 },
@@ -424,7 +424,7 @@ describe('ActivitiesSearchSection', () => {
     const { wrapper } = renderWithProviders();
 
     vi.mocked(
-      (await import('../../../services/API')).default.SearchEndpointService.activitySearch
+      (await import('../../../services/API')).default.SearchEndpointService.searchActivity
     ).mockResolvedValue({
       content: Array.from({ length: 10 }, (_, i) => ({
         activityId: `${i + 1}`,

@@ -115,7 +115,7 @@ describe('CommentSearchSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryClient.clear();
-    (API.SearchEndpointService.commentSearch as any).mockResolvedValue(
+    (API.SearchEndpointService.searchComments as any).mockResolvedValue(
       mockCommentSearchResponse
     );
     (API.CodesEndpointService.getOpeningOrgUnits as any).mockResolvedValue([]);
@@ -152,7 +152,7 @@ describe('CommentSearchSection', () => {
       render(<CommentSearchSection />, renderWithProviders());
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalledWith(
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalledWith(
           'test',
           undefined,
           undefined,
@@ -194,7 +194,7 @@ describe('CommentSearchSection', () => {
       await user.type(input, 'test');
 
       // Query should not be called yet
-      expect(API.SearchEndpointService.commentSearch).not.toHaveBeenCalled();
+      expect(API.SearchEndpointService.searchComments).not.toHaveBeenCalled();
     });
 
     it('should reject searchTerm less than 3 characters', async () => {
@@ -208,7 +208,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       // Should not call API
-      expect(API.SearchEndpointService.commentSearch).not.toHaveBeenCalled();
+      expect(API.SearchEndpointService.searchComments).not.toHaveBeenCalled();
     });
 
     it('should reject searchTerm greater than 2000 characters', async () => {
@@ -224,7 +224,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       // Should not call API
-      expect(API.SearchEndpointService.commentSearch).not.toHaveBeenCalled();
+      expect(API.SearchEndpointService.searchComments).not.toHaveBeenCalled();
     });
 
     it('should show validation error when showValidation is true and searchTerm is empty', async () => {
@@ -248,7 +248,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalledWith(
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalledWith(
           'test',
           undefined,
           undefined,
@@ -275,7 +275,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalled();
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalled();
       });
     });
 
@@ -290,7 +290,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       await waitFor(() => {
-        const calls = (API.SearchEndpointService.commentSearch as any).mock.calls;
+        const calls = (API.SearchEndpointService.searchComments as any).mock.calls;
         expect(calls[0][6]).toBe(0); // page param is 0
       });
     });
@@ -320,7 +320,7 @@ describe('CommentSearchSection', () => {
       const searchButton = screen.getByTestId('search-button');
       await user.click(searchButton);
 
-      expect(API.SearchEndpointService.commentSearch).not.toHaveBeenCalled();
+      expect(API.SearchEndpointService.searchComments).not.toHaveBeenCalled();
     });
   });
 
@@ -376,13 +376,13 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalled();
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalled();
       });
     });
 
     it('should not execute query when searchTerm invalid', () => {
       render(<CommentSearchSection />, renderWithProviders());
-      expect(API.SearchEndpointService.commentSearch).not.toHaveBeenCalled();
+      expect(API.SearchEndpointService.searchComments).not.toHaveBeenCalled();
     });
 
     it('should pass searchTerm to API', async () => {
@@ -396,7 +396,7 @@ describe('CommentSearchSection', () => {
       await user.click(searchButton);
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalledWith(
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalledWith(
           'keyword',
           undefined,
           undefined,
@@ -422,7 +422,7 @@ describe('CommentSearchSection', () => {
       render(<CommentSearchSection />, renderWithProviders());
 
       await waitFor(() => {
-        expect(API.SearchEndpointService.commentSearch).toHaveBeenCalledWith(
+        expect(API.SearchEndpointService.searchComments).toHaveBeenCalledWith(
           'test',
           ['OPENING', 'STANDARDS_UNIT'],
           undefined,
@@ -473,7 +473,7 @@ describe('CommentSearchSection', () => {
       const queryPromise = new Promise((resolve) => {
         resolveQuery = resolve;
       });
-      (API.SearchEndpointService.commentSearch as any).mockReturnValue(queryPromise);
+      (API.SearchEndpointService.searchComments as any).mockReturnValue(queryPromise);
 
       const user = userEvent.setup();
       render(<CommentSearchSection />, renderWithProviders());
@@ -495,7 +495,7 @@ describe('CommentSearchSection', () => {
 
   describe('Empty Results', () => {
     it('should show EmptySection when no results found', async () => {
-      (API.SearchEndpointService.commentSearch as any).mockResolvedValue(mockEmptyResponse);
+      (API.SearchEndpointService.searchComments as any).mockResolvedValue(mockEmptyResponse);
 
       const user = userEvent.setup();
       render(<CommentSearchSection />, renderWithProviders());
@@ -595,7 +595,7 @@ describe('CommentSearchSection', () => {
     });
 
     it('should not render pagination when no results', async () => {
-      (API.SearchEndpointService.commentSearch as any).mockResolvedValue(mockEmptyResponse);
+      (API.SearchEndpointService.searchComments as any).mockResolvedValue(mockEmptyResponse);
 
       const user = userEvent.setup();
       const { container } = render(<CommentSearchSection />, renderWithProviders());
