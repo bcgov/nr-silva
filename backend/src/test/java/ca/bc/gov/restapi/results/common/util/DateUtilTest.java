@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -93,5 +94,27 @@ class DateUtilTest {
   @DisplayName("validateDateRange | multi-year range | should pass")
   void validateDateRange_multiYearRange_shouldPass() {
     assertDoesNotThrow(() -> DateUtil.validateDateRange("2020-01-01", "2030-12-31"));
+  }
+
+  // -------------------------------------------------------------------------
+  // isStockingStandardsExpired
+  // -------------------------------------------------------------------------
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | null date | returns false")
+  void isStockingStandardsExpired_nullDate_returnsFalse() {
+    assertFalse(DateUtil.isExpired(null));
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | past date | returns true")
+  void isStockingStandardsExpired_pastDate_returnsTrue() {
+    assertTrue(DateUtil.isExpired(LocalDateTime.now().minusDays(1)));
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | future date | returns false")
+  void isStockingStandardsExpired_futureDate_returnsFalse() {
+    assertFalse(DateUtil.isExpired(LocalDateTime.now().plusYears(1)));
   }
 }

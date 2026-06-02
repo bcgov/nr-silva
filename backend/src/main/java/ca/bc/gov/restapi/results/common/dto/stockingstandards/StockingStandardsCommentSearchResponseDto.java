@@ -9,7 +9,7 @@ import java.util.List;
 public record StockingStandardsCommentSearchResponseDto(
     Long standardsRegimeId,
     StockingStandardsCommentLocationCode commentLocation,
-    CodeDescriptionDto standardRegimeStatus,
+    boolean isExpired,
     String commentText,
     LocalDateTime updateTimestamp,
     LocalDateTime approvedTimestamp,

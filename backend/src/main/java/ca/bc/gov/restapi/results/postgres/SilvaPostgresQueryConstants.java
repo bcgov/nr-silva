@@ -2855,8 +2855,7 @@ public class SilvaPostgresQueryConstants {
 		SELECT
 			pi.standards_regime_id          AS standardsRegimeId,
 			pi.commentLocation              AS commentLocation,
-			sr.standards_regime_status_code AS statusCode,
-			srsc.description                AS statusDescription,
+			sr.expiry_date                  AS expiryDate,
 			pi.commentText                  AS commentText,
 			pi.update_timestamp             AS updateTimestamp,
                         sr.approved_date                AS approvedTimestamp,
@@ -2867,8 +2866,6 @@ public class SilvaPostgresQueryConstants {
 			pi.totalCount
 		FROM standards_regime sr
 		JOIN paged_ids pi ON pi.standards_regime_id = sr.standards_regime_id
-		LEFT JOIN standards_regime_status_code srsc
-			ON srsc.standards_regime_status_code = sr.standards_regime_status_code
 		LEFT JOIN orgunit_agg oa ON oa.standards_regime_id = sr.standards_regime_id
 		LEFT JOIN client_agg ca ON ca.standards_regime_id = sr.standards_regime_id
 		LEFT JOIN fsp_agg fa ON fa.standards_regime_id = sr.standards_regime_id

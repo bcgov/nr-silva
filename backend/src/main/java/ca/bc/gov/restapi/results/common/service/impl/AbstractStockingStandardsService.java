@@ -14,9 +14,6 @@ import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.service.StockingStandardsService;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,8 +30,6 @@ import org.springframework.data.domain.Pageable;
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractStockingStandardsService implements StockingStandardsService {
-
-  private static final ZoneId VANCOUVER = ZoneId.of("America/Vancouver");
 
   protected StockingStandardsRepository stockingStandardsRepository;
   protected ForestClientService forestClientService;
@@ -115,15 +110,13 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     List<CodeDescriptionDto> orgUnits =
         parseCodeDescriptionList(projection.getOrgUnitCodes(), projection.getOrgUnitNames());
     List<String> fspIds = parseFspIds(projection.getFspIds());
-    CodeDescriptionDto status =
-        new CodeDescriptionDto(projection.getStatusCode(), projection.getStatusDescription());
     StockingStandardsCommentLocationCode commentLocation =
         StockingStandardsCommentLocationCode.valueOf(projection.getCommentLocation());
 
     return new StockingStandardsCommentSearchResponseDto(
         projection.getStandardsRegimeId(),
         commentLocation,
-        status,
+        DateUtil.isExpired(projection.getExpiryDate()),
         StringUtil.nullIfBlank(projection.getCommentText()),
         projection.getUpdateTimestamp(),
         projection.getApprovedTimestamp(),
@@ -145,7 +138,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     return new StockingStandardsSearchResponseDto(
         projection.getStandardsRegimeId(),
         StringUtil.nullIfBlank(projection.getStandardsRegimeName()),
-        isRegimeExpired(projection.getExpiryDate()),
+        DateUtil.isExpired(projection.getExpiryDate()),
         StringUtil.nullIfBlank(projection.getStandardsObjective()),
         preferredSpecies,
         fspIds,
@@ -159,13 +152,6 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         orgUnits,
         clients,
         projection.getApprovedDate());
-  }
-
-  private boolean isRegimeExpired(LocalDateTime expiryDate) {
-    if (expiryDate == null) {
-      return false;
-    }
-    return expiryDate.toLocalDate().isBefore(LocalDate.now(VANCOUVER));
   }
 
   private List<CodeDescriptionDto> parsePreferredSpecies(String codes, String names) {

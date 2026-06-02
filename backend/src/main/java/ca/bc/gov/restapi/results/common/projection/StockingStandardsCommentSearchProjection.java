@@ -8,9 +8,7 @@ public interface StockingStandardsCommentSearchProjection {
 
   String getCommentLocation();
 
-  String getStatusCode();
-
-  String getStatusDescription();
+  LocalDateTime getExpiryDate();
 
   String getCommentText();
 

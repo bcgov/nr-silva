@@ -48,8 +48,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
 
   private StockingStandardsCommentSearchProjection projection(
       String commentLocation,
-      String statusCode,
-      String statusDesc,
+      LocalDateTime expiryDate,
       String commentText,
       String orgCodes,
       String orgNames,
@@ -60,8 +59,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
         Mockito.mock(StockingStandardsCommentSearchProjection.class);
     lenient().when(p.getStandardsRegimeId()).thenReturn(1L);
     lenient().when(p.getCommentLocation()).thenReturn(commentLocation);
-    lenient().when(p.getStatusCode()).thenReturn(statusCode);
-    lenient().when(p.getStatusDescription()).thenReturn(statusDesc);
+    lenient().when(p.getExpiryDate()).thenReturn(expiryDate);
     lenient().when(p.getCommentText()).thenReturn(commentText);
     lenient().when(p.getUpdateTimestamp()).thenReturn(LocalDateTime.of(2024, 1, 1, 0, 0));
     lenient().when(p.getApprovedTimestamp()).thenReturn(LocalDateTime.of(2023, 6, 1, 0, 0));
@@ -74,7 +72,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   }
 
   private StockingStandardsCommentSearchProjection defaultProjection() {
-    return projection("STANDARDS_NAME", "APP", "Approved", "Some text", null, null, null, null, 1L);
+    return projection("STANDARDS_NAME", null, "Some text", null, null, null, null, 1L);
   }
 
   private StockingStandardsCommentSearchFilterDto defaultFilter() {
@@ -99,7 +97,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("commentLocation STANDARDS_NAME mapped to enum")
   void commentLocation_standardsName_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "text", null, null, null, null, 1L);
+        projection("STANDARDS_NAME", null, "text", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -117,7 +115,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("commentLocation ADDITIONAL_STANDARDS mapped to enum")
   void commentLocation_additionalStandards_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
-        projection("ADDITIONAL_STANDARDS", "APP", "Approved", "text", null, null, null, null, 1L);
+        projection("ADDITIONAL_STANDARDS", null, "text", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -135,7 +133,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("commentLocation STANDARDS_OBJECTIVE mapped to enum")
   void commentLocation_standardsObjective_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_OBJECTIVE", "APP", "Approved", "text", null, null, null, null, 1L);
+        projection("STANDARDS_OBJECTIVE", null, "text", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -150,14 +148,15 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   }
 
   // -------------------------------------------------------------------------
-  // standardRegimeStatus
+  // isStockingStandardsExpired
   // -------------------------------------------------------------------------
 
   @Test
-  @DisplayName("standardRegimeStatus code and description mapped from projection")
-  void standardRegimeStatus_mappedCorrectly() {
+  @DisplayName("isStockingStandardsExpired: past expiry date returns true")
+  void isStockingStandardsExpired_pastDate_returnsTrue() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "text", null, null, null, null, 1L);
+        projection(
+            "STANDARDS_NAME", LocalDateTime.now().minusDays(1), "text", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -167,8 +166,42 @@ class AbstractStockingStandardsServiceCommentSearchTest {
             .getContent()
             .get(0);
 
-    Assertions.assertEquals("APP", dto.standardRegimeStatus().code());
-    Assertions.assertEquals("Approved", dto.standardRegimeStatus().description());
+    Assertions.assertTrue(dto.isExpired());
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired: future expiry date returns false")
+  void isStockingStandardsExpired_futureDate_returnsFalse() {
+    StockingStandardsCommentSearchProjection p =
+        projection(
+            "STANDARDS_NAME", LocalDateTime.now().plusYears(1), "text", null, null, null, null, 1L);
+    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+        .thenReturn(List.of(p));
+
+    StockingStandardsCommentSearchResponseDto dto =
+        service
+            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertFalse(dto.isExpired());
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired: null expiry date returns false")
+  void isStockingStandardsExpired_nullDate_returnsFalse() {
+    StockingStandardsCommentSearchProjection p =
+        projection("STANDARDS_NAME", null, "text", null, null, null, null, 1L);
+    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+        .thenReturn(List.of(p));
+
+    StockingStandardsCommentSearchResponseDto dto =
+        service
+            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertFalse(dto.isExpired());
   }
 
   // -------------------------------------------------------------------------
@@ -179,7 +212,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("commentText blank string returns null in response")
   void commentText_blank_returnsNull() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "   ", null, null, null, null, 1L);
+        projection("STANDARDS_NAME", null, "   ", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -196,8 +229,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("commentText non-blank string kept as-is")
   void commentText_nonBlank_keptAsIs() {
     StockingStandardsCommentSearchProjection p =
-        projection(
-            "STANDARDS_NAME", "APP", "Approved", "Baseline standard", null, null, null, null, 1L);
+        projection("STANDARDS_NAME", null, "Baseline standard", null, null, null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -244,15 +276,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void orgUnits_pairedCorrectly() {
     StockingStandardsCommentSearchProjection p =
         projection(
-            "STANDARDS_NAME",
-            "APP",
-            "Approved",
-            "text",
-            "DAS,TWO",
-            "District A||District Two",
-            null,
-            null,
-            1L);
+            "STANDARDS_NAME", null, "text", "DAS,TWO", "District A||District Two", null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -287,7 +311,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("orgUnits blank name returns null description")
   void orgUnits_blankName_returnsNullDescription() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "text", "DAS", "  ", null, null, 1L);
+        projection("STANDARDS_NAME", null, "text", "DAS", "  ", null, null, 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -309,7 +333,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("fspIds comma-separated parsed to list")
   void fspIds_parsed() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "text", null, null, null, "1234,5678", 1L);
+        projection("STANDARDS_NAME", null, "text", null, null, null, "1234,5678", 1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
@@ -346,11 +370,9 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("clients batch-loaded from ForestClientService")
   void clients_batchLoaded() {
     StockingStandardsCommentSearchProjection p1 =
-        projection(
-            "STANDARDS_NAME", "APP", "Approved", "text", null, null, "00099001,00099002", null, 2L);
+        projection("STANDARDS_NAME", null, "text", null, null, "00099001,00099002", null, 2L);
     StockingStandardsCommentSearchProjection p2 =
-        projection(
-            "STANDARDS_NAME", "APP", "Approved", "text", null, null, "00099002,00099003", null, 2L);
+        projection("STANDARDS_NAME", null, "text", null, null, "00099002,00099003", null, 2L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p1, p2));
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), anyList()))
@@ -397,7 +419,7 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("totalCount null in projection does not throw")
   void totalCount_null_doesNotThrow() {
     StockingStandardsCommentSearchProjection p =
-        projection("STANDARDS_NAME", "APP", "Approved", "text", null, null, null, null, null);
+        projection("STANDARDS_NAME", null, "text", null, null, null, null, null);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 

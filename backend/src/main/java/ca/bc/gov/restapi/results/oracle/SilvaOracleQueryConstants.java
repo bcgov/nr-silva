@@ -2877,8 +2877,7 @@ public class SilvaOracleQueryConstants {
       SELECT
         pi.STANDARDS_REGIME_ID    AS standardsRegimeId,
         pi.commentLocation        AS commentLocation,
-        sr.STANDARDS_REGIME_STATUS_CODE AS statusCode,
-        srsc.DESCRIPTION          AS statusDescription,
+        sr.EXPIRY_DATE            AS expiryDate,
         pi.commentText            AS commentText,
         pi.UPDATE_TIMESTAMP       AS updateTimestamp,
         sr.APPROVED_DATE          AS approvedTimestamp,
@@ -2889,8 +2888,6 @@ public class SilvaOracleQueryConstants {
         pi.totalCount
       FROM STANDARDS_REGIME sr
       JOIN paged_ids pi ON pi.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-      LEFT JOIN STANDARDS_REGIME_STATUS_CODE srsc
-        ON srsc.STANDARDS_REGIME_STATUS_CODE = sr.STANDARDS_REGIME_STATUS_CODE
       LEFT JOIN orgunit_agg oa ON oa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN client_agg ca ON ca.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN fsp_agg fa ON fa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
