@@ -10,9 +10,6 @@ import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +25,6 @@ import org.springframework.data.domain.Pageable;
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractStandardUnitService implements StandardUnitService {
-
-  private static final ZoneId VANCOUVER = ZoneId.of("America/Vancouver");
 
   protected StandardUnitRepository standardUnitRepository;
   protected ForestClientService forestClientService;
@@ -77,7 +72,7 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
         StringUtil.nullIfBlank(projection.getCuttingPermit()),
         StringUtil.nullIfBlank(projection.getStandardsUnitId()),
         projection.getStandardsRegimeId(),
-        isRegimeExpired(projection.getStandardsRegimeExpiryDate()),
+        DateUtil.isExpired(projection.getStandardsRegimeExpiryDate()),
         projection.getNetArea(),
         projection.getRegenDueDate(),
         projection.getFreeGrowingDueDate(),
@@ -94,13 +89,6 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
         mapCode(projection.getOrgUnitCode(), projection.getOrgUnitName()),
         clientMap.getOrDefault(projection.getClientNumber(), null),
         projection.getUpdateTimestamp());
-  }
-
-  private boolean isRegimeExpired(LocalDateTime expiryDate) {
-    if (expiryDate == null) {
-      return false;
-    }
-    return expiryDate.toLocalDate().isBefore(LocalDate.now(VANCOUVER));
   }
 
   private List<CodeDescriptionDto> parsePreferredSpecies(String codes, String names) {

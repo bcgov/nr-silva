@@ -2,6 +2,10 @@ package ca.bc.gov.restapi.results.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -93,5 +97,31 @@ class DateUtilTest {
   @DisplayName("validateDateRange | multi-year range | should pass")
   void validateDateRange_multiYearRange_shouldPass() {
     assertDoesNotThrow(() -> DateUtil.validateDateRange("2020-01-01", "2030-12-31"));
+  }
+
+  // -------------------------------------------------------------------------
+  // isStockingStandardsExpired
+  // -------------------------------------------------------------------------
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | null date | returns false")
+  void isStockingStandardsExpired_nullDate_returnsFalse() {
+    assertFalse(DateUtil.isExpired(null));
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | past date | returns true")
+  void isStockingStandardsExpired_pastDate_returnsTrue() {
+    LocalDateTime pastDate =
+        LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID)).minusDays(1).atStartOfDay();
+    assertTrue(DateUtil.isExpired(pastDate));
+  }
+
+  @Test
+  @DisplayName("isStockingStandardsExpired | future date | returns false")
+  void isStockingStandardsExpired_futureDate_returnsFalse() {
+    LocalDateTime futureDate =
+        LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID)).plusYears(1).atStartOfDay();
+    assertFalse(DateUtil.isExpired(futureDate));
   }
 }

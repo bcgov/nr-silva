@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.postgres.repository;
 
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
+import ca.bc.gov.restapi.results.common.projection.StockingStandardsCommentSearchProjection;
 import ca.bc.gov.restapi.results.common.projection.StockingStandardsSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.StockingStandardsRepository;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants;
@@ -21,6 +23,13 @@ public interface StockingStandardsPostgresRepository
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.STOCKING_STANDARDS_SEARCH)
   List<StockingStandardsSearchProjection> stockingStandardsSearch(
       @Param("filter") StockingStandardsSearchFilterDto filters,
+      @Param("page") long offset,
+      @Param("size") long size);
+
+  @Override
+  @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.STOCKING_STANDARDS_COMMENT_SEARCH)
+  List<StockingStandardsCommentSearchProjection> stockingStandardsCommentSearch(
+      @Param("filter") StockingStandardsCommentSearchFilterDto filters,
       @Param("page") long offset,
       @Param("size") long size);
 }

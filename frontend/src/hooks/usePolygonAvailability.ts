@@ -77,7 +77,7 @@ const usePolygonAvailability = (
     queryKey: ["opening", "map", openingId, { kinds: [kind] }],
     queryFn: () =>
       API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(
-        openingId.toString(),
+        openingId,
         kind,
       ) as unknown as Promise<FeatureCollection>,
     enabled: !!extractor && compoundId !== null,
