@@ -28,6 +28,7 @@ public class SilvaConstants {
   public static final String CUT_BLOCK_ID = "cutBlockId";
   public static final String TIMBER_MARK = "timberMark";
   public static final String NOVALUE = "NOVALUE";
+  public static final String VANCOUVER_ZONE_ID = "America/Vancouver";
   public static final String MAPSHEET_GRID = "mapsheetGrid";
   public static final String MAPSHEET_LETTER = "mapsheetLetter";
   public static final String MAPSHEET_SQUARE = "mapsheetSquare";

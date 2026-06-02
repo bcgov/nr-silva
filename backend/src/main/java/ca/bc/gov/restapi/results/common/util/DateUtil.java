@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.util;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateUtil {
 
-  private static final ZoneId VANCOUVER = ZoneId.of("America/Vancouver");
+  private static final ZoneId VANCOUVER = ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID);
 
   /**
    * Returns true if the given expiry date is in the past (relative to today in Vancouver time).
