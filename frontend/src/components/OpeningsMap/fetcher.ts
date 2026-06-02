@@ -6,7 +6,7 @@ import { defaultLocation } from "./constants";
 const queries = (openingIds: number[], ...kinds: MapKindType[]) =>
   openingIds.map((id) => ({
     queryKey: ["opening", "map", id, { kinds }],
-    queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id.toString(), kinds.join(",")),
+    queryFn: () => API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(id, kinds.join(",")),
     refetchOnReconnect: false,
   }));
 
