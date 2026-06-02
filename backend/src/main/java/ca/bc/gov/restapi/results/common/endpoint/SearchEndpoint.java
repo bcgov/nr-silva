@@ -5,6 +5,8 @@ import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StandardUnitSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.activity.ActivitySearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.activity.DisturbanceSearchFilterDto;
@@ -16,6 +18,7 @@ import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchExactFiltersDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.CommentLocationCode;
+import ca.bc.gov.restapi.results.common.enums.StockingStandardsCommentLocationCode;
 import ca.bc.gov.restapi.results.common.exception.MissingSearchParameterException;
 import ca.bc.gov.restapi.results.common.service.ActivityService;
 import ca.bc.gov.restapi.results.common.service.CommentSearchService;
@@ -370,5 +373,28 @@ public class SearchEndpoint {
     }
 
     return stockingStandardsService.stockingStandardsSearch(filters, paginationParameters);
+  }
+
+  @GetMapping("/stocking-standards/comments")
+  public Page<StockingStandardsCommentSearchResponseDto> stockingStandardsCommentSearch(
+      @NotBlank
+          @Size(
+              min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
+              max = SilvaConstants.MAX_STOCKING_STD_CMT_SEARCH_TERM_LEN)
+          @RequestParam(value = "searchTerm")
+          String searchTerm,
+      @RequestParam(value = "commentLocations", required = false)
+          List<StockingStandardsCommentLocationCode> commentLocations,
+      @RequestParam(value = "clientNumbers", required = false) List<String> clientNumbers,
+      @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
+      @RequestParam(value = "updateDateStart", required = false) String updateDateStart,
+      @RequestParam(value = "updateDateEnd", required = false) String updateDateEnd,
+      @ParameterObject Pageable paginationParameters) {
+
+    StockingStandardsCommentSearchFilterDto filter =
+        new StockingStandardsCommentSearchFilterDto(
+            searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
+
+    return stockingStandardsService.stockingStandardsCommentSearch(filter, paginationParameters);
   }
 }

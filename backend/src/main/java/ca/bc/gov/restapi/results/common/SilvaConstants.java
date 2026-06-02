@@ -13,6 +13,7 @@ public class SilvaConstants {
   public static final int CLIENT_LOOKUP_BATCH_SIZE = 100;
   public static final int MIN_SEARCH_TERM_LENGTH = 3;
   public static final int MAX_COMMENT_SEARCH_TERM_LEN = 2000;
+  public static final int MAX_STOCKING_STD_CMT_SEARCH_TERM_LEN = 4000;
 
   public static final String SUBMITTED_TO_FRPA = "submittedToFrpa";
   public static final String DISTURBANCE_DATE_START = "disturbanceDateStart";

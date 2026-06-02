@@ -2762,4 +2762,138 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN first_site_series fss ON fss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       ORDER BY sr.APPROVED_DATE DESC NULLS LAST
       """;
+
+  public static final String STOCKING_STANDARDS_COMMENT_SEARCH =
+      """
+      WITH base_matches AS (
+        SELECT sr.STANDARDS_REGIME_ID, 'STANDARDS_NAME' AS commentLocation,
+               sr.STANDARDS_REGIME_NAME AS commentText, sr.UPDATE_TIMESTAMP
+        FROM STANDARDS_REGIME sr
+        WHERE sr.STANDARDS_REGIME_NAME IS NOT NULL
+          AND UPPER(sr.STANDARDS_REGIME_NAME) LIKE '%' || UPPER(:#{#filter.searchTerm}) || '%'
+          AND (
+            'NOVALUE' IN (:#{#filter.commentLocationValues})
+            OR 'STANDARDS_NAME' IN (:#{#filter.commentLocationValues})
+          )
+        UNION ALL
+        SELECT sr.STANDARDS_REGIME_ID, 'ADDITIONAL_STANDARDS',
+               sr.ADDITIONAL_STANDARDS, sr.UPDATE_TIMESTAMP
+        FROM STANDARDS_REGIME sr
+        WHERE sr.ADDITIONAL_STANDARDS IS NOT NULL
+          AND UPPER(sr.ADDITIONAL_STANDARDS) LIKE '%' || UPPER(:#{#filter.searchTerm}) || '%'
+          AND (
+            'NOVALUE' IN (:#{#filter.commentLocationValues})
+            OR 'ADDITIONAL_STANDARDS' IN (:#{#filter.commentLocationValues})
+          )
+        UNION ALL
+        SELECT sr.STANDARDS_REGIME_ID, 'STANDARDS_OBJECTIVE',
+               sr.STANDARDS_OBJECTIVE, sr.UPDATE_TIMESTAMP
+        FROM STANDARDS_REGIME sr
+        WHERE sr.STANDARDS_OBJECTIVE IS NOT NULL
+          AND UPPER(sr.STANDARDS_OBJECTIVE) LIKE '%' || UPPER(:#{#filter.searchTerm}) || '%'
+          AND (
+            'NOVALUE' IN (:#{#filter.commentLocationValues})
+            OR 'STANDARDS_OBJECTIVE' IN (:#{#filter.commentLocationValues})
+          )
+      ),
+      filtered AS (
+        SELECT bm.STANDARDS_REGIME_ID, bm.commentLocation, bm.commentText,
+               bm.UPDATE_TIMESTAMP, COUNT(*) OVER () AS totalCount
+        FROM base_matches bm
+        WHERE
+          (
+            'NOVALUE' IN (:#{#filter.orgUnits})
+            OR EXISTS (
+              SELECT 1 FROM STANDARDS_REGIME_ORG_UNIT srou
+              JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = srou.ORG_UNIT_NO
+              WHERE srou.STANDARDS_REGIME_ID = bm.STANDARDS_REGIME_ID
+                AND UPPER(ou.ORG_UNIT_CODE) IN (:#{#filter.orgUnits})
+            )
+          )
+          AND (
+            'NOVALUE' IN (:#{#filter.clientNumbers})
+            OR EXISTS (
+              SELECT 1 FROM STANDARDS_REGIME_CLIENT src
+              WHERE src.STANDARDS_REGIME_ID = bm.STANDARDS_REGIME_ID
+                AND UPPER(src.CLIENT_NUMBER) IN (:#{#filter.clientNumbers})
+            )
+          )
+          AND (
+            (
+              NVL(:#{#filter.updateDateStart}, 'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.updateDateEnd}, 'NOVALUE') = 'NOVALUE'
+            )
+            OR (
+              bm.UPDATE_TIMESTAMP IS NOT NULL
+              AND (
+                NVL(:#{#filter.updateDateStart}, 'NOVALUE') = 'NOVALUE'
+                OR TRUNC(bm.UPDATE_TIMESTAMP) >= TO_DATE(:#{#filter.updateDateStart}, 'YYYY-MM-DD')
+              )
+              AND (
+                NVL(:#{#filter.updateDateEnd}, 'NOVALUE') = 'NOVALUE'
+                OR TRUNC(bm.UPDATE_TIMESTAMP) < TO_DATE(:#{#filter.updateDateEnd}, 'YYYY-MM-DD') + 1
+              )
+            )
+          )
+      ),
+      paged_ids AS (
+        SELECT STANDARDS_REGIME_ID, commentLocation, commentText, UPDATE_TIMESTAMP, totalCount
+        FROM filtered
+        ORDER BY UPDATE_TIMESTAMP DESC NULLS LAST
+        OFFSET :page ROWS FETCH NEXT :size ROWS ONLY
+      ),
+      orgunit_agg AS (
+        SELECT STANDARDS_REGIME_ID,
+          LISTAGG(ORG_UNIT_CODE, ',') WITHIN GROUP (ORDER BY ORG_UNIT_CODE) AS org_unit_codes,
+          LISTAGG(ORG_UNIT_NAME, '||') WITHIN GROUP (ORDER BY ORG_UNIT_CODE) AS org_unit_names
+        FROM (
+          SELECT DISTINCT pi.STANDARDS_REGIME_ID, ou.ORG_UNIT_CODE, ou.ORG_UNIT_NAME
+          FROM paged_ids pi
+          JOIN STANDARDS_REGIME_ORG_UNIT srou ON srou.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
+          JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = srou.ORG_UNIT_NO
+        ) ou_dedup
+        GROUP BY STANDARDS_REGIME_ID
+      ),
+      client_agg AS (
+        SELECT STANDARDS_REGIME_ID,
+          LISTAGG(CLIENT_NUMBER, ',') WITHIN GROUP (ORDER BY CLIENT_NUMBER) AS client_numbers
+        FROM (
+          SELECT DISTINCT pi.STANDARDS_REGIME_ID, src2.CLIENT_NUMBER
+          FROM paged_ids pi
+          JOIN STANDARDS_REGIME_CLIENT src2 ON src2.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
+        ) client_dedup
+        GROUP BY STANDARDS_REGIME_ID
+      ),
+      fsp_agg AS (
+        SELECT STANDARDS_REGIME_ID,
+          LISTAGG(FSP_ID_STR, ',') WITHIN GROUP (ORDER BY FSP_ID_STR) AS fsp_ids
+        FROM (
+          SELECT DISTINCT pi.STANDARDS_REGIME_ID, TO_CHAR(fsrx.FSP_ID) AS FSP_ID_STR
+          FROM paged_ids pi
+          JOIN FSP_STANDARDS_REGIME_XREF fsrx ON fsrx.STANDARDS_REGIME_ID = pi.STANDARDS_REGIME_ID
+        ) fsp_dedup
+        GROUP BY STANDARDS_REGIME_ID
+      )
+      SELECT
+        pi.STANDARDS_REGIME_ID    AS standardsRegimeId,
+        pi.commentLocation        AS commentLocation,
+        sr.STANDARDS_REGIME_STATUS_CODE AS statusCode,
+        srsc.DESCRIPTION          AS statusDescription,
+        pi.commentText            AS commentText,
+        pi.UPDATE_TIMESTAMP       AS updateTimestamp,
+        sr.APPROVED_DATE          AS approvedTimestamp,
+        oa.org_unit_codes         AS orgUnitCodes,
+        oa.org_unit_names         AS orgUnitNames,
+        ca.client_numbers         AS clientNumbers,
+        fa.fsp_ids                AS fspIds,
+        pi.totalCount
+      FROM STANDARDS_REGIME sr
+      JOIN paged_ids pi ON pi.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
+      LEFT JOIN STANDARDS_REGIME_STATUS_CODE srsc
+        ON srsc.STANDARDS_REGIME_STATUS_CODE = sr.STANDARDS_REGIME_STATUS_CODE
+      LEFT JOIN orgunit_agg oa ON oa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
+      LEFT JOIN client_agg ca ON ca.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
+      LEFT JOIN fsp_agg fa ON fa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
+      ORDER BY pi.UPDATE_TIMESTAMP DESC NULLS LAST
+      """;
 }
