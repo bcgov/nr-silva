@@ -46,7 +46,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withStandardsRegimeIdFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -62,7 +63,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withBgcZoneFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, "CWH", null, null, null, null, null, null, null, null);
+            null, null, null, null, null, "CWH", null, null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -79,6 +81,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             List.of("DAS"),
+            null,
             null,
             null,
             null,
@@ -116,6 +119,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             null,
+            null,
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
@@ -143,6 +147,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             null,
+            null,
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
@@ -157,7 +162,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withFspIdFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, "1234", null, null, null, null, null, null, null, null, null);
+            null, null, null, null, "1234", null, null, null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -184,7 +190,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             "2005-01-01",
-            "2025-12-31");
+            "2025-12-31",
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -198,7 +205,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withPagination_shouldReturnCorrectPageNumbers() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Pageable pageableFirst = PageRequest.of(0, 5);
     Pageable pageableSecond = PageRequest.of(1, 5);
 
@@ -218,7 +226,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_responseDto_shouldHaveRequiredFields() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -253,6 +262,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             null,
+            null,
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
@@ -269,7 +279,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withBecSiteTypeFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, "01", null, null, null);
+            null, null, null, null, null, null, null, null, null, null, "01", null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -283,7 +294,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withBecSeralFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, null, "CL", null, null);
+            null, null, null, null, null, null, null, null, null, null, null, "CL", null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -297,7 +309,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_withBgcSubZoneFilter_shouldSucceed() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, "wm", null, null, null, null, null, null, null);
+            null, null, null, null, null, null, "wm", null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -324,6 +337,7 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             null,
+            null,
             null);
     Pageable pageable = PageRequest.of(0, 10);
 
@@ -338,7 +352,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
   void stockingStandardsSearch_preferredSpeciesList_neverNull() {
     StockingStandardsSearchFilterDto filters =
         new StockingStandardsSearchFilterDto(
-            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            36109L, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsSearchResponseDto> result =
@@ -371,7 +386,8 @@ public abstract class AbstractStockingStandardsServiceIntegrationTest
             null,
             null,
             "2025-12-31",
-            "2025-01-01");
+            "2025-01-01",
+            null);
     Pageable pageable = PageRequest.of(0, 10);
 
     Assertions.assertThrows(

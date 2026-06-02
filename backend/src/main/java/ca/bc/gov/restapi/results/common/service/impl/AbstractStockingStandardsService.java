@@ -79,6 +79,8 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     List<CodeDescriptionDto> preferredSpecies =
         parsePreferredSpecies(
             projection.getPreferredSpeciesCodes(), projection.getPreferredSpeciesNames());
+    List<String> bgcList = parseBgcList(projection.getBgcList());
+    boolean isDefaultStandard = "Y".equalsIgnoreCase(projection.getMofDefaultStandardInd());
 
     return new StockingStandardsSearchResponseDto(
         projection.getStandardsRegimeId(),
@@ -87,13 +89,8 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         StringUtil.nullIfBlank(projection.getStandardsObjective()),
         preferredSpecies,
         fspIds,
-        StringUtil.nullIfBlank(projection.getBgcZone()),
-        StringUtil.nullIfBlank(projection.getBgcSubZone()),
-        StringUtil.nullIfBlank(projection.getBgcVariant()),
-        StringUtil.nullIfBlank(projection.getBgcPhase()),
-        StringUtil.nullIfBlank(projection.getBecSiteSeries()),
-        StringUtil.nullIfBlank(projection.getBecSiteType()),
-        StringUtil.nullIfBlank(projection.getBecSeral()),
+        bgcList,
+        isDefaultStandard,
         orgUnits,
         clients,
         projection.getApprovedDate());
@@ -168,5 +165,12 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     List<ForestClientDto> clients =
         forestClientService.searchByClientNumbers(0, clientNumbers.size(), clientNumbers);
     return clients.stream().collect(Collectors.toMap(ForestClientDto::clientNumber, c -> c));
+  }
+
+  private List<String> parseBgcList(String raw) {
+    if (raw == null || raw.isBlank()) {
+      return List.of();
+    }
+    return Arrays.stream(raw.split("\\|\\|")).map(String::trim).filter(s -> !s.isBlank()).toList();
   }
 }

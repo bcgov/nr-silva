@@ -25,19 +25,13 @@ public interface StockingStandardsSearchProjection {
   /** Comma-separated FSP IDs associated with this regime. */
   String getFspIds();
 
-  String getBgcZone();
+  /**
+   * {@code ||}-separated BGC/BEC strings for all site series rows, each entry formatted as {@code
+   * zone.subzone.variant.phase.siteSeries.siteType.seral} with {@code -} for null fields.
+   */
+  String getBgcList();
 
-  String getBgcSubZone();
-
-  String getBgcVariant();
-
-  String getBgcPhase();
-
-  String getBecSiteSeries();
-
-  String getBecSiteType();
-
-  String getBecSeral();
+  String getMofDefaultStandardInd();
 
   /** Comma-separated org unit codes associated with this regime. */
   String getOrgUnitCodes();

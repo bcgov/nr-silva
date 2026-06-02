@@ -68,13 +68,8 @@ class AbstractStockingStandardsServiceTest {
     lenient().when(p.getOrgUnitNames()).thenReturn(orgNames);
     lenient().when(p.getClientNumbers()).thenReturn(clientNumbers);
     lenient().when(p.getFspIds()).thenReturn(fspIds);
-    lenient().when(p.getBgcZone()).thenReturn(null);
-    lenient().when(p.getBgcSubZone()).thenReturn(null);
-    lenient().when(p.getBgcVariant()).thenReturn(null);
-    lenient().when(p.getBgcPhase()).thenReturn(null);
-    lenient().when(p.getBecSiteSeries()).thenReturn(null);
-    lenient().when(p.getBecSiteType()).thenReturn(null);
-    lenient().when(p.getBecSeral()).thenReturn(null);
+    lenient().when(p.getBgcList()).thenReturn(null);
+    lenient().when(p.getMofDefaultStandardInd()).thenReturn("N");
     lenient().when(p.getApprovedDate()).thenReturn(LocalDateTime.of(2024, 1, 1, 0, 0));
     lenient().when(p.getTotalCount()).thenReturn(totalCount);
     return p;
@@ -399,10 +394,85 @@ class AbstractStockingStandardsServiceTest {
             null,
             null,
             "2025-12-31",
-            "2025-01-01");
+            "2025-01-01",
+            null);
 
     Assertions.assertThrows(
         org.springframework.web.server.ResponseStatusException.class,
         () -> service.stockingStandardsSearch(filters, PageRequest.of(0, 10)));
+  }
+
+  // -------------------------------------------------------------------------
+  // parseBgcList
+  // -------------------------------------------------------------------------
+
+  @Test
+  @DisplayName("parseBgcList: multiple rows are split into individual entries")
+  void parseBgcList_multipleRows_splitCorrectly() {
+    StockingStandardsSearchProjection p = projection(null, null, null, null, null, null, 1L);
+    lenient().when(p.getBgcList()).thenReturn("CWH.mm.-.-.-.-.-||IDFdk4.01.A.-.-.-.-");
+    when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
+
+    StockingStandardsSearchResponseDto dto =
+        service
+            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertEquals(2, dto.bgcList().size());
+    Assertions.assertEquals("CWH.mm.-.-.-.-.-", dto.bgcList().get(0));
+    Assertions.assertEquals("IDFdk4.01.A.-.-.-.-", dto.bgcList().get(1));
+  }
+
+  @Test
+  @DisplayName("parseBgcList: null bgcList returns empty list")
+  void parseBgcList_null_returnsEmpty() {
+    StockingStandardsSearchProjection p = projection(null, null, null, null, null, null, 1L);
+    lenient().when(p.getBgcList()).thenReturn(null);
+    when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
+
+    StockingStandardsSearchResponseDto dto =
+        service
+            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertTrue(dto.bgcList().isEmpty());
+  }
+
+  // -------------------------------------------------------------------------
+  // isDefaultStandard
+  // -------------------------------------------------------------------------
+
+  @Test
+  @DisplayName("isDefaultStandard: mofDefaultStandardInd Y maps to true")
+  void isDefaultStandard_Y_returnsTrue() {
+    StockingStandardsSearchProjection p = projection(null, null, null, null, null, null, 1L);
+    lenient().when(p.getMofDefaultStandardInd()).thenReturn("Y");
+    when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
+
+    StockingStandardsSearchResponseDto dto =
+        service
+            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertTrue(dto.isDefaultStandard());
+  }
+
+  @Test
+  @DisplayName("isDefaultStandard: mofDefaultStandardInd N maps to false")
+  void isDefaultStandard_N_returnsFalse() {
+    StockingStandardsSearchProjection p = projection(null, null, null, null, null, null, 1L);
+    lenient().when(p.getMofDefaultStandardInd()).thenReturn("N");
+    when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
+
+    StockingStandardsSearchResponseDto dto =
+        service
+            .stockingStandardsSearch(defaultFilters(), PageRequest.of(0, 10))
+            .getContent()
+            .get(0);
+
+    Assertions.assertFalse(dto.isDefaultStandard());
   }
 }

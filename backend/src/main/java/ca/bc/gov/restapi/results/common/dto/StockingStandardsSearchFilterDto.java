@@ -55,8 +55,11 @@ public class StockingStandardsSearchFilterDto {
   @Schema(type = "string", format = "date", nullable = true)
   private final String approvedDateEnd;
 
+  @Schema(type = "boolean", nullable = true)
+  private final Boolean defaultStandardsInd;
+
   public StockingStandardsSearchFilterDto() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
   public StockingStandardsSearchFilterDto(
@@ -73,7 +76,8 @@ public class StockingStandardsSearchFilterDto {
       String becSiteType,
       String becSeral,
       String approvedDateStart,
-      String approvedDateEnd) {
+      String approvedDateEnd,
+      Boolean defaultStandardsInd) {
     this.standardsRegimeId = standardsRegimeId;
     this.preferredSpecies =
         !CollectionUtils.isEmpty(preferredSpecies)
@@ -102,6 +106,7 @@ public class StockingStandardsSearchFilterDto {
         StringUtil.nullIfBlank(approvedDateStart == null ? null : approvedDateStart.trim());
     this.approvedDateEnd =
         StringUtil.nullIfBlank(approvedDateEnd == null ? null : approvedDateEnd.trim());
+    this.defaultStandardsInd = defaultStandardsInd;
   }
 
   public boolean hasAnyFilter() {
@@ -118,6 +123,7 @@ public class StockingStandardsSearchFilterDto {
         || (becSiteType != null && !becSiteType.isBlank())
         || (becSeral != null && !becSeral.isBlank())
         || (approvedDateStart != null && !approvedDateStart.isBlank())
-        || (approvedDateEnd != null && !approvedDateEnd.isBlank());
+        || (approvedDateEnd != null && !approvedDateEnd.isBlank())
+        || defaultStandardsInd != null;
   }
 }

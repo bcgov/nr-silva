@@ -11,13 +11,8 @@ public record StockingStandardsSearchResponseDto(
     String standardsObjective,
     List<CodeDescriptionDto> preferredSpecies,
     List<String> fspIds,
-    String bgcZone,
-    String bgcSubZone,
-    String bgcVariant,
-    String bgcPhase,
-    String becSiteSeries,
-    String becSiteType, // aka Site Phase
-    String becSeral,
+    List<String> bgcList,
+    boolean isDefaultStandard,
     List<CodeDescriptionDto> orgUnits,
     List<ForestClientDto> clients,
     LocalDateTime approvedDate) {}

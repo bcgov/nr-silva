@@ -346,6 +346,7 @@ public class SearchEndpoint {
       @RequestParam(value = "becSeral", required = false) String becSeral,
       @RequestParam(value = "approvedDateStart", required = false) String approvedDateStart,
       @RequestParam(value = "approvedDateEnd", required = false) String approvedDateEnd,
+      @RequestParam(value = "defaultStandardsInd", required = false) Boolean defaultStandardsInd,
       @ParameterObject Pageable paginationParameters) {
 
     StockingStandardsSearchFilterDto filters =
@@ -363,7 +364,8 @@ public class SearchEndpoint {
             becSiteType,
             becSeral,
             approvedDateStart,
-            approvedDateEnd);
+            approvedDateEnd,
+            defaultStandardsInd);
 
     if (!filters.hasAnyFilter()) {
       throw new MissingSearchParameterException();
