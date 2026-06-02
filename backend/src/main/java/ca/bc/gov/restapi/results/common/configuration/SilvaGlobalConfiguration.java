@@ -27,6 +27,8 @@ import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.*;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.AuditActionCodeEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
@@ -180,6 +182,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   CommentSearchResponseDto.class,
   StockingStandardsSearchFilterDto.class,
   StockingStandardsSearchResponseDto.class,
+  StockingStandardsCommentSearchFilterDto.class,
+  StockingStandardsCommentSearchResponseDto.class
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
