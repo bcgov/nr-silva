@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.service.impl;
+package ca.bc.gov.restapi.results.common.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -8,14 +8,17 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.StockingStandardsCommentLocationCode;
 import ca.bc.gov.restapi.results.common.projection.StockingStandardsCommentSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.StockingStandardsRepository;
-import ca.bc.gov.restapi.results.common.service.ForestClientService;
+import ca.bc.gov.restapi.results.common.service.impl.AbstractStockingStandardsService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -156,7 +159,14 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void isStockingStandardsExpired_pastDate_returnsTrue() {
     StockingStandardsCommentSearchProjection p =
         projection(
-            "STANDARDS_NAME", LocalDateTime.now().minusDays(1), "text", null, null, null, null, 1L);
+            "STANDARDS_NAME",
+            LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID)).minusDays(1).atStartOfDay(),
+            "text",
+            null,
+            null,
+            null,
+            null,
+            1L);
     when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 

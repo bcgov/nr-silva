@@ -1,4 +1,4 @@
-package ca.bc.gov.restapi.results.common.service.impl;
+package ca.bc.gov.restapi.results.common.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -8,13 +8,16 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
 import ca.bc.gov.restapi.results.common.projection.StockingStandardsSearchProjection;
 import ca.bc.gov.restapi.results.common.repository.StockingStandardsRepository;
-import ca.bc.gov.restapi.results.common.service.ForestClientService;
+import ca.bc.gov.restapi.results.common.service.impl.AbstractStockingStandardsService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -322,7 +325,10 @@ class AbstractStockingStandardsServiceTest {
   @DisplayName("isRegimeExpired: past expiry date returns true")
   void isRegimeExpired_past_returnsTrue() {
     StockingStandardsSearchProjection p = projection(null, null, null, null, null, null, 1L);
-    lenient().when(p.getExpiryDate()).thenReturn(LocalDateTime.now().minusDays(1));
+    lenient()
+        .when(p.getExpiryDate())
+        .thenReturn(
+            LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID)).minusDays(1).atStartOfDay());
     when(repository.stockingStandardsSearch(any(), anyLong(), anyLong())).thenReturn(List.of(p));
 
     StockingStandardsSearchResponseDto dto =
