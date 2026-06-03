@@ -10,6 +10,6 @@ public interface StockingStandardsRepository {
   List<StockingStandardsSearchProjection> stockingStandardsSearch(
       StockingStandardsSearchFilterDto filters, long offset, long size);
 
-  List<StockingStandardsCommentSearchProjection> stockingStandardsCommentSearch(
+  List<StockingStandardsCommentSearchProjection> searchStockingStandardsComments(
       StockingStandardsCommentSearchFilterDto filters, long offset, long size);
 }

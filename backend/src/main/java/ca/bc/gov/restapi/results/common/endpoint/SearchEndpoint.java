@@ -378,7 +378,7 @@ public class SearchEndpoint {
   }
 
   @GetMapping("/stocking-standards/comments")
-  public Page<StockingStandardsCommentSearchResponseDto> stockingStandardsCommentSearch(
+  public Page<StockingStandardsCommentSearchResponseDto> searchStockingStandardsComments(
       @NotBlank
           @Size(
               min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
@@ -397,6 +397,6 @@ public class SearchEndpoint {
         new StockingStandardsCommentSearchFilterDto(
             searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
 
-    return stockingStandardsService.stockingStandardsCommentSearch(filter, paginationParameters);
+    return stockingStandardsService.searchStockingStandardsComments(filter, paginationParameters);
   }
 }

@@ -94,7 +94,7 @@ export class SearchEndpointService {
      * @returns PagedModelStockingStandardsCommentSearchResponseDto OK
      * @throws ApiError
      */
-    public static stockingStandardsCommentSearch(
+    public static searchStockingStandardsComments(
         searchTerm: string,
         commentLocations?: Array<'STANDARDS_NAME' | 'ADDITIONAL_STANDARDS' | 'STANDARDS_OBJECTIVE'>,
         clientNumbers?: Array<string>,
