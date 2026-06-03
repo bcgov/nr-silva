@@ -198,4 +198,46 @@ describe("AuthProvider", () => {
       "useAuth must be used within an AuthProvider"
     );
   });
+
+  it("should sign out and retry when UserAlreadyAuthenticatedException is thrown", async () => {
+    setAuthCookies(sampleAuthToken);
+    const provider = "IDIR";
+    const envProvider = `${env.VITE_ZONE ?? "TEST"}-IDIR`;
+
+    const authModule = await import("aws-amplify/auth");
+    const alreadyAuthError = new Error("There is already a signed in user.");
+    alreadyAuthError.name = "UserAlreadyAuthenticatedException";
+
+    // First call throws, second call succeeds
+    (authModule.signInWithRedirect as ReturnType<typeof vi.fn>)
+      .mockRejectedValueOnce(alreadyAuthError)
+      .mockResolvedValueOnce(undefined);
+    (authModule.signOut as ReturnType<typeof vi.fn>).mockResolvedValueOnce(undefined);
+
+    const TestComponent = () => {
+      const { login } = useAuth();
+      return <button onClick={() => login(provider)}>Login</button>;
+    };
+
+    let getByText: any;
+    await act(async () => {
+      ({ getByText } = render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      ));
+    });
+
+    await act(async () => {
+      getByText("Login").click();
+    });
+
+    await waitFor(() => {
+      expect(authModule.signOut).toHaveBeenCalled();
+      expect(authModule.signInWithRedirect).toHaveBeenCalledTimes(2);
+      expect(authModule.signInWithRedirect).toHaveBeenLastCalledWith({
+        provider: { custom: envProvider.toUpperCase() },
+      });
+    });
+  });
 });
