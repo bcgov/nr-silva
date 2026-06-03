@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TableRow, TableCell, Stack, Tooltip, Button, DefinitionTooltip, Tag } from "@carbon/react";
+import { TableRow, TableCell, Tooltip, Button, DefinitionTooltip, Tag } from "@carbon/react";
 import { Warning } from "@carbon/icons-react";
 import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { StockingStandardsHeaderKeyType, StockingStandardsHeaderType } from "@/types/TableHeader";
