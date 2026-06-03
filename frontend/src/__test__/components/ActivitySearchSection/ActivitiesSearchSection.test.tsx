@@ -9,7 +9,7 @@ import { renderWithProviders } from '../../utils/testAuthProvider';
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      activitySearch: vi.fn().mockResolvedValue({
+      searchActivity: vi.fn().mockResolvedValue({
         content: [
           {
             activityId: '1',

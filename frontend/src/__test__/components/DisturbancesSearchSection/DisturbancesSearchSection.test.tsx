@@ -11,7 +11,7 @@ import API from '../../../services/API';
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      disturbanceSearch: vi.fn().mockResolvedValue({
+      searchDisturbance: vi.fn().mockResolvedValue({
         content: [
           {
             activityId: 1,

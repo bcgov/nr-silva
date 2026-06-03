@@ -42,7 +42,7 @@ const mockEmptyResponse = {
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      commentSearch: vi.fn(),
+      searchComments: vi.fn(),
     },
     CodesEndpointService: {
       getOpeningOrgUnits: vi.fn(),

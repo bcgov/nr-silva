@@ -32,7 +32,7 @@ const mockSearchResult = {
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      standardsUnitSearch: vi.fn(),
+      searchStandardsUnit: vi.fn(),
     },
     CodesEndpointService: {
       getSilvTreeSpeciesCodes: vi.fn(),
