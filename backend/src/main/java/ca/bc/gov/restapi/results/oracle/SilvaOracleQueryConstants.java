@@ -2573,8 +2573,8 @@ public class SilvaOracleQueryConstants {
               )
             )
             AND (
-              NVL(CAST(:#{#filter.defaultStandardsInd} AS VARCHAR2(10)),'NOVALUE') = 'NOVALUE'
-              OR sr.MOF_DEFAULT_STANDARD_IND = CASE WHEN :#{#filter.defaultStandardsInd} = 'true' THEN 'Y' ELSE 'N' END
+              NVL(:#{#filter.defaultStandardsIndStr},'NOVALUE') = 'NOVALUE'
+              OR sr.MOF_DEFAULT_STANDARD_IND = :#{#filter.defaultStandardsIndStr}
             )
             AND (
               (

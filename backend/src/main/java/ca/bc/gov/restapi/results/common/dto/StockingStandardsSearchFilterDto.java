@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.dto;
 
 import ca.bc.gov.restapi.results.common.SilvaConstants;
+import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -107,6 +108,16 @@ public class StockingStandardsSearchFilterDto {
     this.approvedDateEnd =
         StringUtil.nullIfBlank(approvedDateEnd == null ? null : approvedDateEnd.trim());
     this.defaultStandardsInd = defaultStandardsInd;
+  }
+
+  /**
+   * Returns {@link YesNoEnum#YES} value ('Y'), {@link YesNoEnum#NO} value ('N'), or null.
+   * Used by Oracle native queries to avoid ORA-01722: Oracle JDBC binds Java {@link Boolean}
+   * as numeric 1/0, causing type mismatch in string comparisons.
+   */
+  public String getDefaultStandardsIndStr() {
+    if (defaultStandardsInd == null) return null;
+    return (Boolean.TRUE.equals(defaultStandardsInd) ? YesNoEnum.YES : YesNoEnum.NO).value();
   }
 
   public boolean hasAnyFilter() {
