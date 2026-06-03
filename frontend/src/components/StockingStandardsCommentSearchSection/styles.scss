@@ -1,0 +1,14 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.stocking-standards-comment-search-section {
+  padding-top: 0;
+}
+
+.stocking-standards-comment-card {
+  padding: 1.25rem 1rem;
+  transition: background-color 0.2s ease;
+
+  &.--shaded {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+  }
+}

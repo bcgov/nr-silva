@@ -101,3 +101,15 @@ export type CommentSearchParams = {
   size?: number;
   sort?: Array<string>;
 };
+
+export type StockingStandardsCommentSearchParams = {
+  searchTerm?: string;
+  commentLocations?: Array<string>;
+  clientNumbers?: Array<string>;
+  orgUnits?: Array<string>;
+  updateDateStart?: string;
+  updateDateEnd?: string;
+  page?: number;
+  size?: number;
+  sort?: Array<string>;
+};
