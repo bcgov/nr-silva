@@ -108,6 +108,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await signInWithRedirect({
           provider: { custom: envProvider.toUpperCase() }
         });
+        return;
+      } else {
+        throw err;
       }
     }
   };
