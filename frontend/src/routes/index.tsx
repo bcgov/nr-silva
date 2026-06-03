@@ -14,6 +14,7 @@ import {
   StandardsUnitSearchRoute,
   CommentSearchRoute,
   StockingStandardsSearchRoute,
+  StockingStandardsCommentSearchRoute,
 } from "@/routes/config";
 
 export const publicRoutes: RouteObject[] = [
@@ -38,6 +39,7 @@ const protectedRouteList: RouteObject[] = [
   StandardsUnitSearchRoute,
   CommentSearchRoute,
   StockingStandardsSearchRoute,
+  StockingStandardsCommentSearchRoute,
 ] as const;
 
 export const validPaths = protectedRouteList

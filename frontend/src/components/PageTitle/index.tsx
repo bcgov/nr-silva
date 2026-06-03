@@ -1,6 +1,6 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Column } from "@carbon/react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { BreadCrumbType } from '@/types/BreadCrumbTypes';
 import Subtitle from '../Subtitle';
@@ -24,17 +24,22 @@ const PageTitle: React.FC<PageTitleProps> = ({
   breadCrumbs
 }: PageTitleProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Column className="page-title-col" sm={4} md={8} lg={16}>
       {
         breadCrumbs?.length
           ? (
-            <Breadcrumb className='page-title-breadcrumb'>
+            <Breadcrumb
+              className='page-title-breadcrumb'
+              noTrailingSlash
+            >
               {
                 breadCrumbs.map((crumb) => (
                   <BreadcrumbItem
                     key={crumb.name}
+                    isCurrentPage={location.pathname === crumb.path}
                     onClick={() => navigate(crumb.path)}
                   >
                     {crumb.name}
