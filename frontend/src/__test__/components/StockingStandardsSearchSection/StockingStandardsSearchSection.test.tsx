@@ -8,7 +8,7 @@ import * as urlUtils from '@/components/StockingStandardsSearchSection/utils';
 vi.mock('@/components/StockingStandardsSearchSection/StockingStandardsSearchInput', () => ({
   default: ({ handleSearchFieldChange }: any) => (
     <div data-testid="search-input">
-      <input 
+      <input
         data-testid="mock-search-input"
         onChange={(e) => handleSearchFieldChange('standardsRegimeId', e.target.value)}
       />
@@ -83,7 +83,7 @@ describe('StockingStandardsSearchSection', () => {
     });
 
     vi.clearAllMocks();
-    
+
     // Mock URL param utilities
     vi.spyOn(urlUtils, 'readStockingStandardsSearchUrlParams').mockReturnValue({});
     vi.spyOn(urlUtils, 'updateStockingStandardsSearchUrlParams').mockImplementation(vi.fn());
@@ -119,7 +119,7 @@ describe('StockingStandardsSearchSection', () => {
   it('should render table and results when search filters exist', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.searchStockingStandards = mockApi;
+    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
@@ -144,7 +144,7 @@ describe('StockingStandardsSearchSection', () => {
   it('should display search results message with total count', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.searchStockingStandards = mockApi;
+    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
@@ -202,7 +202,7 @@ describe('StockingStandardsSearchSection', () => {
 
     const mockApi = vi.fn().mockResolvedValue(emptyResponse);
     const API = await import('@/services/API');
-    API.default.SearchEndpointService.searchStockingStandards = mockApi;
+    API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 

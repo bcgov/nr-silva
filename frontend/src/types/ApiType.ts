@@ -84,6 +84,7 @@ export type StockingStandardsSearchParams = {
   becSiteType?: string;
   approvedDateStart?: string;
   approvedDateEnd?: string;
+  defaultStandardsInd?: boolean;
   page?: number;
   size?: number;
   sort?: Array<string>;

@@ -4,7 +4,7 @@ export const defaultStockingStandardsSearchTableHeaders: StockingStandardsHeader
   { key: 'standardsRegimeId', header: 'SSID', selected: true },
   { key: 'standardsRegimeName', header: 'Standards name', selected: true },
   { key: 'standardsObjective', header: 'Objective', selected: true },
-  { key: 'bgc', header: 'BGC', selected: true },
+  { key: 'bgcList', header: 'BGC', selected: true },
   { key: 'clients', header: 'Client', selected: true },
   { key: 'fspIds', header: 'FSP ID', selected: true },
   { key: 'orgUnits', header: 'Org unit', selected: false },
