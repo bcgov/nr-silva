@@ -70,7 +70,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
   }
 
   @Override
-  public Page<StockingStandardsCommentSearchResponseDto> stockingStandardsCommentSearch(
+  public Page<StockingStandardsCommentSearchResponseDto> searchStockingStandardsComments(
       StockingStandardsCommentSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 
@@ -78,7 +78,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     long size = pagination.getPageSize();
 
     List<StockingStandardsCommentSearchProjection> projections =
-        stockingStandardsRepository.stockingStandardsCommentSearch(filters, offset, size);
+        stockingStandardsRepository.searchStockingStandardsComments(filters, offset, size);
 
     long total = 0;
     if (!projections.isEmpty()) {

@@ -101,12 +101,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void commentLocation_standardsName_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "text", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -119,12 +119,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void commentLocation_additionalStandards_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
         projection("ADDITIONAL_STANDARDS", null, "text", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -137,12 +137,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void commentLocation_standardsObjective_mappedToEnum() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_OBJECTIVE", null, "text", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -167,12 +167,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
             null,
             null,
             1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -185,12 +185,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
     StockingStandardsCommentSearchProjection p =
         projection(
             "STANDARDS_NAME", LocalDateTime.now().plusYears(1), "text", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -202,12 +202,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void isStockingStandardsExpired_nullDate_returnsFalse() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "text", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -223,12 +223,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void commentText_blank_returnsNull() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "   ", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -240,12 +240,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void commentText_nonBlank_keptAsIs() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "Baseline standard", null, null, null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -264,12 +264,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
     StockingStandardsCommentSearchProjection p = defaultProjection();
     lenient().when(p.getUpdateTimestamp()).thenReturn(update);
     lenient().when(p.getApprovedTimestamp()).thenReturn(approved);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -287,12 +287,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
     StockingStandardsCommentSearchProjection p =
         projection(
             "STANDARDS_NAME", null, "text", "DAS,TWO", "District A||District Two", null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -305,12 +305,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("orgUnits null returns empty list")
   void orgUnits_null_returnsEmpty() {
     StockingStandardsCommentSearchProjection p = defaultProjection();
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -322,12 +322,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void orgUnits_blankName_returnsNullDescription() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "text", "DAS", "  ", null, null, 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -344,12 +344,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void fspIds_parsed() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "text", null, null, null, "1234,5678", 1L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -360,12 +360,12 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("fspIds null returns empty list")
   void fspIds_null_returnsEmpty() {
     StockingStandardsCommentSearchProjection p = defaultProjection();
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     StockingStandardsCommentSearchResponseDto dto =
         service
-            .stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10))
+            .searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10))
             .getContent()
             .get(0);
 
@@ -383,13 +383,13 @@ class AbstractStockingStandardsServiceCommentSearchTest {
         projection("STANDARDS_NAME", null, "text", null, null, "00099001,00099002", null, 2L);
     StockingStandardsCommentSearchProjection p2 =
         projection("STANDARDS_NAME", null, "text", null, null, "00099002,00099003", null, 2L);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p1, p2));
     when(forestClientService.searchByClientNumbers(anyInt(), anyInt(), anyList()))
         .thenReturn(List.of(client("00099001"), client("00099002"), client("00099003")));
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        service.stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10));
+        service.searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10));
 
     verify(forestClientService).searchByClientNumbers(anyInt(), anyInt(), anyList());
     Assertions.assertEquals(2, result.getContent().get(0).clients().size());
@@ -400,10 +400,10 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @DisplayName("clients empty when no client numbers present in projections")
   void clients_emptyWhenNoClientNumbers() {
     StockingStandardsCommentSearchProjection p = defaultProjection();
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
-    service.stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10));
+    service.searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10));
 
     Mockito.verifyNoInteractions(forestClientService);
   }
@@ -415,11 +415,11 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   @Test
   @DisplayName("Empty projections returns empty page with zero total")
   void emptyProjections_returnsEmptyPage() {
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of());
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        service.stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10));
+        service.searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10));
 
     Assertions.assertEquals(0L, result.getTotalElements());
     Assertions.assertTrue(result.getContent().isEmpty());
@@ -430,11 +430,11 @@ class AbstractStockingStandardsServiceCommentSearchTest {
   void totalCount_null_doesNotThrow() {
     StockingStandardsCommentSearchProjection p =
         projection("STANDARDS_NAME", null, "text", null, null, null, null, null);
-    when(repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong()))
+    when(repository.searchStockingStandardsComments(any(), anyLong(), anyLong()))
         .thenReturn(List.of(p));
 
     Assertions.assertDoesNotThrow(
-        () -> service.stockingStandardsCommentSearch(defaultFilter(), PageRequest.of(0, 10)));
+        () -> service.searchStockingStandardsComments(defaultFilter(), PageRequest.of(0, 10)));
   }
 
   @Test
@@ -446,6 +446,6 @@ class AbstractStockingStandardsServiceCommentSearchTest {
 
     Assertions.assertThrows(
         org.springframework.web.server.ResponseStatusException.class,
-        () -> service.stockingStandardsCommentSearch(filter, PageRequest.of(0, 10)));
+        () -> service.searchStockingStandardsComments(filter, PageRequest.of(0, 10)));
   }
 }

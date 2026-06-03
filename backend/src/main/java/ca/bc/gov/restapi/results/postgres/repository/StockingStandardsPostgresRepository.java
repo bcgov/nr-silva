@@ -28,7 +28,7 @@ public interface StockingStandardsPostgresRepository
 
   @Override
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.STOCKING_STANDARDS_COMMENT_SEARCH)
-  List<StockingStandardsCommentSearchProjection> stockingStandardsCommentSearch(
+  List<StockingStandardsCommentSearchProjection> searchStockingStandardsComments(
       @Param("filter") StockingStandardsCommentSearchFilterDto filters,
       @Param("page") long offset,
       @Param("size") long size);
