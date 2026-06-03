@@ -111,9 +111,9 @@ public class StockingStandardsSearchFilterDto {
   }
 
   /**
-   * Returns {@link YesNoEnum#YES} value ('Y'), {@link YesNoEnum#NO} value ('N'), or null.
-   * Used by Oracle native queries to avoid ORA-01722: Oracle JDBC binds Java {@link Boolean}
-   * as numeric 1/0, causing type mismatch in string comparisons.
+   * Returns {@link YesNoEnum#YES} value ('Y'), {@link YesNoEnum#NO} value ('N'), or null. Used by
+   * Oracle native queries to avoid ORA-01722: Oracle JDBC binds Java {@link Boolean} as numeric
+   * 1/0, causing type mismatch in string comparisons.
    */
   public String getDefaultStandardsIndStr() {
     if (defaultStandardsInd == null) return null;
