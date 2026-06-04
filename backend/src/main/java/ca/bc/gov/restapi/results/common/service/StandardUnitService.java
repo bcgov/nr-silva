@@ -6,6 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface StandardUnitService {
-  Page<StandardUnitSearchResponseDto> standardsUnitSearch(
+  Page<StandardUnitSearchResponseDto> searchStandardsUnit(
       StandardUnitSearchFilterDto filters, Pageable pagination);
 }

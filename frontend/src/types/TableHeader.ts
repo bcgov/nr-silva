@@ -31,6 +31,6 @@ export type StandardsUnitHeaderKeyType = keyof StandardUnitSearchResponseDto | '
 
 export type StandardsUnitHeaderType = TableHeaderType<StandardsUnitHeaderKeyType>;
 
-export type StockingStandardsHeaderKeyType = keyof StockingStandardsSearchResponseDto | 'bgc';
+export type StockingStandardsHeaderKeyType = keyof StockingStandardsSearchResponseDto;
 
 export type StockingStandardsHeaderType = TableHeaderType<StockingStandardsHeaderKeyType>;

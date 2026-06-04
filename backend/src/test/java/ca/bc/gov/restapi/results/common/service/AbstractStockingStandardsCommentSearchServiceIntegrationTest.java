@@ -46,7 +46,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getTotalElements() >= 0);
@@ -61,7 +61,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertEquals(0L, result.getTotalElements());
   }
@@ -80,7 +80,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result);
   }
@@ -99,7 +99,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result);
   }
@@ -113,7 +113,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result);
   }
@@ -126,7 +126,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 1);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result);
     Assertions.assertTrue(result.getContent().size() <= 1);
@@ -140,7 +140,7 @@ public abstract class AbstractStockingStandardsCommentSearchServiceIntegrationTe
     Pageable pageable = PageRequest.of(0, 10);
 
     Page<StockingStandardsCommentSearchResponseDto> result =
-        stockingStandardsService.stockingStandardsCommentSearch(filter, pageable);
+        stockingStandardsService.searchStockingStandardsComments(filter, pageable);
 
     Assertions.assertNotNull(result.getPageable());
     Assertions.assertEquals(0, result.getNumber());

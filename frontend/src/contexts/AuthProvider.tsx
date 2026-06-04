@@ -96,9 +96,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem(REDIRECT_KEY, currentPath);
     }
 
-    signInWithRedirect({
-      provider: { custom: envProvider.toUpperCase() }
-    });
+    try {
+      await signInWithRedirect({
+        provider: { custom: envProvider.toUpperCase() }
+      });
+    } catch (err: unknown) {
+      // If Amplify thinks a user is already signed in (stale/expired session),
+      // clear it and retry the redirect.
+      if (err instanceof Error && err.name === 'UserAlreadyAuthenticatedException') {
+        await signOut();
+        await signInWithRedirect({
+          provider: { custom: envProvider.toUpperCase() }
+        });
+        return;
+      } else {
+        throw err;
+      }
+    }
   };
 
   const logout = async () => {

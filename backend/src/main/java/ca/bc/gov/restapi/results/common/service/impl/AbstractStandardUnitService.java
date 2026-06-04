@@ -30,7 +30,7 @@ public abstract class AbstractStandardUnitService implements StandardUnitService
   protected ForestClientService forestClientService;
 
   @Override
-  public Page<StandardUnitSearchResponseDto> standardsUnitSearch(
+  public Page<StandardUnitSearchResponseDto> searchStandardsUnit(
       StandardUnitSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 

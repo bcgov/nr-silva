@@ -29,6 +29,22 @@
     }
   }
 
+  .bgc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+
+    &__item {
+      display: block;
+    }
+  }
+
+  .ssid-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
   .expand-button {
     padding-left: 0.25rem;
     padding-right: 0.25rem;

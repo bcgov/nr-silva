@@ -61,6 +61,7 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             null,
             null,
+            null,
             null);
     Assertions.assertEquals(List.of("CW", "FD"), dto.getPreferredSpecies());
   }
@@ -70,7 +71,8 @@ class StockingStandardsSearchFilterDtoTest {
   void nullList_defaultsToNoValue() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getPreferredSpecies());
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getOrgUnits());
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getClientNumbers());
@@ -82,7 +84,8 @@ class StockingStandardsSearchFilterDtoTest {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
             null, List.of(), List.of(), List.of(), null, null, null, null, null, null, null, null,
-            null, null);
+            null, null,
+            null);
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getPreferredSpecies());
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getOrgUnits());
     Assertions.assertEquals(List.of(SilvaConstants.NOVALUE), dto.getClientNumbers());
@@ -98,6 +101,7 @@ class StockingStandardsSearchFilterDtoTest {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
             null, null, null, null, null, "  cwh  ", null, null, null, null, null, null, null,
+            null,
             null);
     Assertions.assertEquals("CWH", dto.getBgcZone());
   }
@@ -107,7 +111,8 @@ class StockingStandardsSearchFilterDtoTest {
   void bgcZone_blank_storedAsNull() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, "   ", null, null, null, null, null, null, null, null);
+            null, null, null, null, null, "   ", null, null, null, null, null, null, null, null,
+            null);
     Assertions.assertNull(dto.getBgcZone());
   }
 
@@ -116,7 +121,8 @@ class StockingStandardsSearchFilterDtoTest {
   void bgcSubZone_trimmedAndUppercased() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, " wm ", null, null, null, null, null, null, null);
+            null, null, null, null, null, null, " wm ", null, null, null, null, null, null, null,
+            null);
     Assertions.assertEquals("WM", dto.getBgcSubZone());
   }
 
@@ -125,7 +131,8 @@ class StockingStandardsSearchFilterDtoTest {
   void becSeral_trimmedAndUppercased() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, null, " cl ", null, null);
+            null, null, null, null, null, null, null, null, null, null, null, " cl ", null, null,
+            null);
     Assertions.assertEquals("CL", dto.getBecSeral());
   }
 
@@ -147,6 +154,7 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             null,
             null,
+            null,
             null);
     Assertions.assertEquals("fsp123", dto.getFspId());
   }
@@ -156,7 +164,8 @@ class StockingStandardsSearchFilterDtoTest {
   void fspId_blank_storedAsNull() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, "   ", null, null, null, null, null, null, null, null, null);
+            null, null, null, null, "   ", null, null, null, null, null, null, null, null, null,
+            null);
     Assertions.assertNull(dto.getFspId());
   }
 
@@ -165,7 +174,8 @@ class StockingStandardsSearchFilterDtoTest {
   void becSiteSeries_trimmedOnly() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, " 01 ", null, null, null, null);
+            null, null, null, null, null, null, null, null, null, " 01 ", null, null, null, null,
+            null);
     Assertions.assertEquals("01", dto.getBecSiteSeries());
   }
 
@@ -187,12 +197,14 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             null,
             " 2024-01-01 ",
+            null,
             null);
     Assertions.assertEquals("2024-01-01", dtoNonBlank.getApprovedDateStart());
 
     StockingStandardsSearchFilterDto dtoBlank =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, null, null, null, null, null, null, null, "   ", null);
+            null, null, null, null, null, null, null, null, null, null, null, null, "   ", null,
+            null);
     Assertions.assertNull(dtoBlank.getApprovedDateStart());
   }
 
@@ -211,7 +223,8 @@ class StockingStandardsSearchFilterDtoTest {
   void hasAnyFilter_regimeId_returnsTrue() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            42L, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            42L, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null);
     Assertions.assertTrue(dto.hasAnyFilter());
   }
 
@@ -233,6 +246,7 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             null,
             null,
+            null,
             null);
     Assertions.assertTrue(dto.hasAnyFilter());
   }
@@ -242,7 +256,8 @@ class StockingStandardsSearchFilterDtoTest {
   void hasAnyFilter_bgcZone_returnsTrue() {
     StockingStandardsSearchFilterDto dto =
         new StockingStandardsSearchFilterDto(
-            null, null, null, null, null, "CWH", null, null, null, null, null, null, null, null);
+            null, null, null, null, null, "CWH", null, null, null, null, null, null, null, null,
+            null);
     Assertions.assertTrue(dto.hasAnyFilter());
   }
 
@@ -264,6 +279,7 @@ class StockingStandardsSearchFilterDtoTest {
             null,
             null,
             "2024-01-01",
+            null,
             null);
     Assertions.assertTrue(dto.hasAnyFilter());
   }

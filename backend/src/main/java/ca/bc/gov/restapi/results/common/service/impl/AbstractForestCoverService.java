@@ -22,7 +22,7 @@ public abstract class AbstractForestCoverService implements ForestCoverService {
   protected final ForestCoverRepository forestCoverRepository;
 
   @Override
-  public Page<ForestCoverSearchResponseDto> forestCoverSearch(
+  public Page<ForestCoverSearchResponseDto> searchForestCover(
       ForestCoverSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 

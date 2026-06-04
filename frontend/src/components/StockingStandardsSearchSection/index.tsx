@@ -32,7 +32,7 @@ const StockingStandardsSearchSection = () => {
 
   const stockingStandardsSearchQuery = useQuery({
     queryKey: ['search', 'stocking-standards', queryParams],
-    queryFn: () => API.SearchEndpointService.stockingStandardsSearch(
+    queryFn: () => API.SearchEndpointService.searchStockingStandards(
       queryParams?.standardsRegimeId,
       queryParams?.preferredSpecies,
       queryParams?.orgUnits,
@@ -47,6 +47,7 @@ const StockingStandardsSearchSection = () => {
       undefined, // becSeral — no input
       queryParams?.approvedDateStart,
       queryParams?.approvedDateEnd,
+      queryParams?.defaultStandardsInd,
       queryParams?.page,
       queryParams?.size ?? 20,
       queryParams?.sort,

@@ -69,6 +69,10 @@ export const readStockingStandardsSearchUrlParams = (): Partial<StockingStandard
   const approvedDateEnd = searchParams.get('approvedDateEnd');
   if (approvedDateEnd) params.approvedDateEnd = approvedDateEnd;
 
+  const defaultStandardsInd = searchParams.get('defaultStandardsInd');
+  if (defaultStandardsInd === 'true') params.defaultStandardsInd = true;
+  else if (defaultStandardsInd === 'false') params.defaultStandardsInd = false;
+
   const page = searchParams.get('page');
   if (page) {
     const pageNum = Number.parseInt(page, 10);
@@ -149,6 +153,10 @@ export const updateStockingStandardsSearchUrlParams = (params?: Partial<Stocking
 
   if (params.approvedDateEnd) {
     searchParams.append('approvedDateEnd', params.approvedDateEnd);
+  }
+
+  if (params.defaultStandardsInd !== undefined) {
+    searchParams.append('defaultStandardsInd', String(params.defaultStandardsInd));
   }
 
   if (params.page !== undefined) {

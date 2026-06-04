@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TableRow, TableCell, Stack, Tooltip, Button, DefinitionTooltip } from "@carbon/react";
+import { TableRow, TableCell, Tooltip, Button, DefinitionTooltip, Tag } from "@carbon/react";
 import { Warning } from "@carbon/icons-react";
 import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { StockingStandardsHeaderKeyType, StockingStandardsHeaderType } from "@/types/TableHeader";
@@ -16,6 +16,7 @@ type props = {
 }
 
 const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
+  const [isBgcExpanded, setIsBgcExpanded] = useState(false);
   const [isClientsExpanded, setIsClientsExpanded] = useState(false);
   const [isFspExpanded, setIsFspExpanded] = useState(false);
   const [isOrgUnitsExpanded, setIsOrgUnitsExpanded] = useState(false);
@@ -24,8 +25,17 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
     switch (header) {
       case "standardsRegimeId":
         return (
-          <Stack gap={1} orientation="horizontal">
+          <div className="ssid-cell">
             <span>{rowData.standardsRegimeId ?? PLACE_HOLDER}</span>
+            {
+              rowData.isDefaultStandard
+                ? (
+                  <Tag size="sm" type="blue" className="ministry-default-tag">
+                    Default
+                  </Tag>
+                )
+                : null
+            }
             {
               rowData.isExpired
                 ? (
@@ -35,21 +45,52 @@ const StockingStandardsSearchTableRow = ({ headers, rowData }: props) => {
                 )
                 : null
             }
-          </Stack>
+          </div>
         );
 
-      case "bgc":
-        return [
-          rowData.bgcZone,
-          rowData.bgcSubZone,
-          rowData.bgcVariant,
-          rowData.bgcPhase,
-          rowData.becSiteSeries,
-          rowData.becSiteType,
-          rowData.becSeral,
-        ]
-          .map(val => val ?? '-')
-          .join('.');
+      case "bgcList": {
+        if (!rowData.bgcList?.length) return PLACE_HOLDER;
+        if (rowData.bgcList.length === 1) return rowData.bgcList[0];
+
+        if (isBgcExpanded) {
+          return (
+            <div className="expandable-items--expanded">
+              <div className="bgc-list">
+                {rowData.bgcList.map((bgc, index) => (
+                  <span key={`${bgc}-${index}`} className="bgc-list__item">{bgc}</span>
+                ))}
+              </div>
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsBgcExpanded(false)}
+              >
+                show fewer
+              </Button>
+            </div>
+          );
+        }
+
+        return (
+          <span className="expandable-items--collapsed">
+            <span>{rowData.bgcList[0]}</span>
+            <span>and</span>
+            <Tooltip label="show more BGC entries">
+              <Button
+                type="button"
+                kind="ghost"
+                size="sm"
+                className="expand-button"
+                onClick={() => setIsBgcExpanded(true)}
+              >
+                {rowData.bgcList.length - 1} more
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      }
 
       case "clients": {
         if (!rowData.clients?.length) return PLACE_HOLDER;

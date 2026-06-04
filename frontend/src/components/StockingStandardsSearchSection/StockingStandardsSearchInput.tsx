@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 import { ChevronDown, ChevronUp } from '@carbon/icons-react';
-import { Button, Column, DatePicker, DatePickerInput, Grid, InlineNotification, TextInput } from '@carbon/react';
+import { Button, Column, DatePicker, DatePickerInput, Dropdown, Grid, InlineNotification, TextInput } from '@carbon/react';
 import API from '@/services/API';
 import { StockingStandardsSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
@@ -162,6 +162,31 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('preferredSpecies')}
           selectedItems={preferredSpeciesQuery.data?.filter(data => searchParams?.preferredSpecies?.includes(data.code ?? '')) ?? []}
+        />
+      </Column>
+
+      {/* Default indicator */}
+      <Column sm={4} md={4} lg={6} max={4}>
+        <Dropdown
+          id="default-standards-ind-dropdown"
+          titleText="Default standards indicator"
+          label="Select..."
+          items={[
+            { label: 'Any', value: undefined },
+            { label: 'Yes', value: true },
+            { label: 'No', value: false },
+          ]}
+          itemToString={(item) => item?.label ?? ''}
+          selectedItem={
+            searchParams?.defaultStandardsInd === true
+              ? { label: 'Yes', value: true }
+              : searchParams?.defaultStandardsInd === false
+                ? { label: 'No', value: false }
+                : { label: 'Any', value: undefined }
+          }
+          onChange={({ selectedItem }) =>
+            handleSearchFieldChange('defaultStandardsInd', selectedItem?.value ?? undefined)
+          }
         />
       </Column>
 

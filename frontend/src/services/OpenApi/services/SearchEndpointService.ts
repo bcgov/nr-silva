@@ -29,13 +29,14 @@ export class SearchEndpointService {
      * @param becSeral
      * @param approvedDateStart
      * @param approvedDateEnd
+     * @param defaultStandardsInd
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      * @returns PagedModelStockingStandardsSearchResponseDto OK
      * @throws ApiError
      */
-    public static stockingStandardsSearch(
+    public static searchStockingStandards(
         standardsRegimeId?: number,
         preferredSpecies?: Array<string>,
         orgUnits?: Array<string>,
@@ -50,6 +51,7 @@ export class SearchEndpointService {
         becSeral?: string,
         approvedDateStart?: string,
         approvedDateEnd?: string,
+        defaultStandardsInd?: boolean,
         page?: number,
         size: number = 20,
         sort?: Array<string>,
@@ -72,6 +74,7 @@ export class SearchEndpointService {
                 'becSeral': becSeral,
                 'approvedDateStart': approvedDateStart,
                 'approvedDateEnd': approvedDateEnd,
+                'defaultStandardsInd': defaultStandardsInd,
                 'page': page,
                 'size': size,
                 'sort': sort,
@@ -91,7 +94,7 @@ export class SearchEndpointService {
      * @returns PagedModelStockingStandardsCommentSearchResponseDto OK
      * @throws ApiError
      */
-    public static stockingStandardsCommentSearch(
+    public static searchStockingStandardsComments(
         searchTerm: string,
         commentLocations?: Array<'STANDARDS_NAME' | 'ADDITIONAL_STANDARDS' | 'STANDARDS_OBJECTIVE'>,
         clientNumbers?: Array<string>,
@@ -138,7 +141,7 @@ export class SearchEndpointService {
      * @returns PagedModelStandardUnitSearchResponseDto OK
      * @throws ApiError
      */
-    public static standardsUnitSearch(
+    public static searchStandardsUnit(
         standardsRegimeId?: number,
         preferredSpecies?: Array<string>,
         orgUnits?: Array<string>,
@@ -206,7 +209,7 @@ export class SearchEndpointService {
      * @returns PagedModelOpeningSearchResponseDto OK
      * @throws ApiError
      */
-    public static openingSearchExact(
+    public static searchOpeningExact(
         openingId?: number,
         categories?: Array<string>,
         openingStatuses?: Array<string>,
@@ -278,7 +281,7 @@ export class SearchEndpointService {
      * @returns PagedModelForestCoverSearchResponseDto OK
      * @throws ApiError
      */
-    public static forestCoverSearch(
+    public static searchForestCover(
         openingId?: number,
         stockingStatuses?: Array<string>,
         stockingTypes?: Array<string>,
@@ -331,7 +334,7 @@ export class SearchEndpointService {
      * @returns PagedModelDisturbanceSearchResponseDto OK
      * @throws ApiError
      */
-    public static disturbanceSearch(
+    public static searchDisturbance(
         disturbances?: Array<string>,
         silvSystems?: Array<string>,
         variants?: Array<string>,
@@ -381,7 +384,7 @@ export class SearchEndpointService {
      * @returns PagedModelCommentSearchResponseDto OK
      * @throws ApiError
      */
-    public static commentSearch(
+    public static searchComments(
         searchTerm: string,
         commentLocation?: Array<'STANDARDS_UNIT' | 'OPENING' | 'MILESTONE' | 'ACTIVITIES' | 'FOREST_COVER'>,
         clientNumbers?: Array<string>,
@@ -429,7 +432,7 @@ export class SearchEndpointService {
      * @returns PagedModelActivitySearchResponseDto OK
      * @throws ApiError
      */
-    public static activitySearch(
+    public static searchActivity(
         bases?: Array<string>,
         techniques?: Array<string>,
         methods?: Array<string>,

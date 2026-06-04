@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.dto;
 
 import ca.bc.gov.restapi.results.common.SilvaConstants;
+import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
 import ca.bc.gov.restapi.results.common.util.StringUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -55,8 +56,11 @@ public class StockingStandardsSearchFilterDto {
   @Schema(type = "string", format = "date", nullable = true)
   private final String approvedDateEnd;
 
+  @Schema(type = "boolean", nullable = true)
+  private final Boolean defaultStandardsInd;
+
   public StockingStandardsSearchFilterDto() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
   public StockingStandardsSearchFilterDto(
@@ -73,7 +77,8 @@ public class StockingStandardsSearchFilterDto {
       String becSiteType,
       String becSeral,
       String approvedDateStart,
-      String approvedDateEnd) {
+      String approvedDateEnd,
+      Boolean defaultStandardsInd) {
     this.standardsRegimeId = standardsRegimeId;
     this.preferredSpecies =
         !CollectionUtils.isEmpty(preferredSpecies)
@@ -102,6 +107,17 @@ public class StockingStandardsSearchFilterDto {
         StringUtil.nullIfBlank(approvedDateStart == null ? null : approvedDateStart.trim());
     this.approvedDateEnd =
         StringUtil.nullIfBlank(approvedDateEnd == null ? null : approvedDateEnd.trim());
+    this.defaultStandardsInd = defaultStandardsInd;
+  }
+
+  /**
+   * Returns {@link YesNoEnum#YES} value ('Y'), {@link YesNoEnum#NO} value ('N'), or null. Used by
+   * Oracle native queries to avoid ORA-01722: Oracle JDBC binds Java {@link Boolean} as numeric
+   * 1/0, causing type mismatch in string comparisons.
+   */
+  public String getDefaultStandardsIndStr() {
+    if (defaultStandardsInd == null) return null;
+    return (Boolean.TRUE.equals(defaultStandardsInd) ? YesNoEnum.YES : YesNoEnum.NO).value();
   }
 
   public boolean hasAnyFilter() {
@@ -118,6 +134,7 @@ public class StockingStandardsSearchFilterDto {
         || (becSiteType != null && !becSiteType.isBlank())
         || (becSeral != null && !becSeral.isBlank())
         || (approvedDateStart != null && !approvedDateStart.isBlank())
-        || (approvedDateEnd != null && !approvedDateEnd.isBlank());
+        || (approvedDateEnd != null && !approvedDateEnd.isBlank())
+        || defaultStandardsInd != null;
   }
 }

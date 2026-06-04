@@ -89,7 +89,7 @@ public class SearchEndpoint {
    * @return Page of opening search results with exact matching
    */
   @GetMapping("/openings")
-  public Page<OpeningSearchResponseDto> openingSearchExact(
+  public Page<OpeningSearchResponseDto> searchOpeningExact(
       @RequestParam(value = SilvaOracleConstants.OPENING_ID, required = false) Long openingId,
       @RequestParam(value = SilvaOracleConstants.CATEGORIES, required = false)
           List<String> categories,
@@ -155,11 +155,11 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return openingSearchService.openingSearchExact(filtersDto, paginationParameters);
+    return openingSearchService.searchOpeningExact(filtersDto, paginationParameters);
   }
 
   @GetMapping("/activities")
-  public Page<ActivitySearchResponseDto> activitySearch(
+  public Page<ActivitySearchResponseDto> searchActivity(
       @RequestParam(value = "bases", required = false) List<String> bases,
       @RequestParam(value = "techniques", required = false) List<String> techniques,
       @RequestParam(value = "methods", required = false) List<String> methods,
@@ -197,11 +197,11 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return activityService.activitySearch(filters, paginationParameters);
+    return activityService.searchActivity(filters, paginationParameters);
   }
 
   @GetMapping("/disturbances")
-  public Page<DisturbanceSearchResponseDto> disturbanceSearch(
+  public Page<DisturbanceSearchResponseDto> searchDisturbance(
       @RequestParam(value = "disturbances", required = false) List<String> disturbances,
       @RequestParam(value = "silvSystems", required = false) List<String> silvSystems,
       @RequestParam(value = "variants", required = false) List<String> variants,
@@ -233,11 +233,11 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return activityService.disturbanceSearch(filters, paginationParameters);
+    return activityService.searchDisturbance(filters, paginationParameters);
   }
 
   @GetMapping("/forest-cover")
-  public Page<ForestCoverSearchResponseDto> forestCoverSearch(
+  public Page<ForestCoverSearchResponseDto> searchForestCover(
       @RequestParam(value = "openingId", required = false) Long openingId,
       @RequestParam(value = "stockingStatuses", required = false) List<String> stockingStatuses,
       @RequestParam(value = "stockingTypes", required = false) List<String> stockingTypes,
@@ -267,11 +267,11 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return forestCoverService.forestCoverSearch(filters, paginationParameters);
+    return forestCoverService.searchForestCover(filters, paginationParameters);
   }
 
   @GetMapping("/standards-unit")
-  public Page<StandardUnitSearchResponseDto> standardsUnitSearch(
+  public Page<StandardUnitSearchResponseDto> searchStandardsUnit(
       @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
       @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
       @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
@@ -307,11 +307,11 @@ public class SearchEndpoint {
       throw new MissingSearchParameterException();
     }
 
-    return standardUnitService.standardsUnitSearch(filters, paginationParameters);
+    return standardUnitService.searchStandardsUnit(filters, paginationParameters);
   }
 
   @GetMapping("/comments")
-  public Page<CommentSearchResponseDto> commentSearch(
+  public Page<CommentSearchResponseDto> searchComments(
       @NotBlank
           @Size(
               min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
@@ -334,7 +334,7 @@ public class SearchEndpoint {
   }
 
   @GetMapping("/stocking-standards")
-  public Page<StockingStandardsSearchResponseDto> stockingStandardsSearch(
+  public Page<StockingStandardsSearchResponseDto> searchStockingStandards(
       @RequestParam(value = "standardsRegimeId", required = false) Long standardsRegimeId,
       @RequestParam(value = "preferredSpecies", required = false) List<String> preferredSpecies,
       @RequestParam(value = "orgUnits", required = false) List<String> orgUnits,
@@ -349,6 +349,7 @@ public class SearchEndpoint {
       @RequestParam(value = "becSeral", required = false) String becSeral,
       @RequestParam(value = "approvedDateStart", required = false) String approvedDateStart,
       @RequestParam(value = "approvedDateEnd", required = false) String approvedDateEnd,
+      @RequestParam(value = "defaultStandardsInd", required = false) Boolean defaultStandardsInd,
       @ParameterObject Pageable paginationParameters) {
 
     StockingStandardsSearchFilterDto filters =
@@ -366,17 +367,18 @@ public class SearchEndpoint {
             becSiteType,
             becSeral,
             approvedDateStart,
-            approvedDateEnd);
+            approvedDateEnd,
+            defaultStandardsInd);
 
     if (!filters.hasAnyFilter()) {
       throw new MissingSearchParameterException();
     }
 
-    return stockingStandardsService.stockingStandardsSearch(filters, paginationParameters);
+    return stockingStandardsService.searchStockingStandards(filters, paginationParameters);
   }
 
   @GetMapping("/stocking-standards/comments")
-  public Page<StockingStandardsCommentSearchResponseDto> stockingStandardsCommentSearch(
+  public Page<StockingStandardsCommentSearchResponseDto> searchStockingStandardsComments(
       @NotBlank
           @Size(
               min = SilvaConstants.MIN_SEARCH_TERM_LENGTH,
@@ -395,6 +397,6 @@ public class SearchEndpoint {
         new StockingStandardsCommentSearchFilterDto(
             searchTerm, commentLocations, clientNumbers, orgUnits, updateDateStart, updateDateEnd);
 
-    return stockingStandardsService.stockingStandardsCommentSearch(filter, paginationParameters);
+    return stockingStandardsService.searchStockingStandardsComments(filter, paginationParameters);
   }
 }

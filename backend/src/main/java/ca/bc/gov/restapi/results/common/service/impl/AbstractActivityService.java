@@ -31,7 +31,7 @@ public abstract class AbstractActivityService implements ActivityService {
   protected ForestClientService forestClientService;
 
   @Override
-  public Page<ActivitySearchResponseDto> activitySearch(
+  public Page<ActivitySearchResponseDto> searchActivity(
       ActivitySearchFiltersDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 
@@ -67,7 +67,7 @@ public abstract class AbstractActivityService implements ActivityService {
   }
 
   @Override
-  public Page<DisturbanceSearchResponseDto> disturbanceSearch(
+  public Page<DisturbanceSearchResponseDto> searchDisturbance(
       DisturbanceSearchFilterDto filters, Pageable pagination) {
     DateUtil.validateDateRange(filters.getUpdateDateStart(), filters.getUpdateDateEnd());
 

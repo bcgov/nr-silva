@@ -32,7 +32,7 @@ const mockSearchResult = {
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      standardsUnitSearch: vi.fn(),
+      searchStandardsUnit: vi.fn(),
     },
     CodesEndpointService: {
       getSilvTreeSpeciesCodes: vi.fn(),
@@ -98,7 +98,7 @@ describe('StandardsUnitSearchSection', () => {
     vi.clearAllMocks();
     queryClient.clear();
     // Re-establish resolved values after clearAllMocks resets them (vitest 3 behaviour)
-    vi.mocked(API.SearchEndpointService.standardsUnitSearch).mockResolvedValue(mockSearchResult as any);
+    vi.mocked(API.SearchEndpointService.searchStandardsUnit).mockResolvedValue(mockSearchResult as any);
     vi.mocked(API.CodesEndpointService.getSilvTreeSpeciesCodes).mockResolvedValue([
       { code: 'PLI', description: 'Lodgepole Pine (Interior)' },
     ] as any);
@@ -256,7 +256,7 @@ describe('StandardsUnitSearchSection', () => {
 
   it('displays empty state when search returns no results', async () => {
     const { wrapper } = renderWithProviders();
-    vi.mocked(API.SearchEndpointService.standardsUnitSearch).mockResolvedValueOnce({
+    vi.mocked(API.SearchEndpointService.searchStandardsUnit).mockResolvedValueOnce({
       content: [],
       page: { totalElements: 0, size: 20, page: 0, totalPages: 0 },
     });
@@ -275,7 +275,7 @@ describe('StandardsUnitSearchSection', () => {
   it('shows pagination when results exceed page size', async () => {
     const user = userEvent.setup();
     const { wrapper } = renderWithProviders();
-    vi.mocked(API.SearchEndpointService.standardsUnitSearch).mockResolvedValue({
+    vi.mocked(API.SearchEndpointService.searchStandardsUnit).mockResolvedValue({
       content: Array.from({ length: 20 }, (_, i) => ({
         stockingStandardUnitId: i + 1,
         openingId: 200 + i,
@@ -300,7 +300,7 @@ describe('StandardsUnitSearchSection', () => {
   it('closes map and clears selection when pagination changes', async () => {
     const user = userEvent.setup();
     const { wrapper } = renderWithProviders();
-    vi.mocked(API.SearchEndpointService.standardsUnitSearch).mockResolvedValue({
+    vi.mocked(API.SearchEndpointService.searchStandardsUnit).mockResolvedValue({
       content: [{ stockingStandardUnitId: 101, openingId: 200 }],
       page: { totalElements: 50, size: 20, page: 0, totalPages: 3 },
     } as any);
@@ -361,7 +361,7 @@ describe('StandardsUnitSearchSection', () => {
     await waitFor(() => {
       expect(screen.getByText('Search results')).toBeInTheDocument();
     });
-    expect(API.SearchEndpointService.standardsUnitSearch).toHaveBeenCalled();
+    expect(API.SearchEndpointService.searchStandardsUnit).toHaveBeenCalled();
   });
 
   it('updates URL params when search is triggered', async () => {
@@ -384,7 +384,7 @@ describe('StandardsUnitSearchSection', () => {
     const { wrapper } = renderWithProviders();
 
     // Use a never-resolving mock so loading state persists
-    vi.mocked(API.SearchEndpointService.standardsUnitSearch).mockImplementation(
+    vi.mocked(API.SearchEndpointService.searchStandardsUnit).mockImplementation(
       () => new Promise(() => { }),
     );
 

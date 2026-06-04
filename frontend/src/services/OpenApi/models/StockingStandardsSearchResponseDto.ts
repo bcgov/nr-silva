@@ -11,13 +11,8 @@ export type StockingStandardsSearchResponseDto = {
     standardsObjective?: string;
     preferredSpecies?: Array<CodeDescriptionDto>;
     fspIds?: Array<string>;
-    bgcZone?: string;
-    bgcSubZone?: string;
-    bgcVariant?: string;
-    bgcPhase?: string;
-    becSiteSeries?: string;
-    becSiteType?: string;
-    becSeral?: string;
+    bgcList?: Array<string>;
+    isDefaultStandard?: boolean;
     orgUnits?: Array<CodeDescriptionDto>;
     clients?: Array<ForestClientDto>;
     approvedDate?: string;

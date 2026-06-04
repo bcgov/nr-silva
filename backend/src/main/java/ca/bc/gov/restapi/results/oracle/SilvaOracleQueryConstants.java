@@ -2553,66 +2553,28 @@ public class SilvaOracleQueryConstants {
             )
             AND (
               NVL(:#{#filter.bgcZone},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.bgcSubZone},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.bgcVariant},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.bgcPhase},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.becSiteSeries},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.becSiteType},'NOVALUE') = 'NOVALUE'
+              AND NVL(:#{#filter.becSeral},'NOVALUE') = 'NOVALUE'
               OR EXISTS (
                 SELECT 1
                 FROM STANDARDS_REGIME_SITE_SERIES srss
                 WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND UPPER(srss.BGC_ZONE_CODE) = :#{#filter.bgcZone}
+                AND (NVL(:#{#filter.bgcZone},'NOVALUE') = 'NOVALUE' OR UPPER(srss.BGC_ZONE_CODE) = :#{#filter.bgcZone})
+                AND (NVL(:#{#filter.bgcSubZone},'NOVALUE') = 'NOVALUE' OR UPPER(srss.BGC_SUBZONE_CODE) = :#{#filter.bgcSubZone})
+                AND (NVL(:#{#filter.bgcVariant},'NOVALUE') = 'NOVALUE' OR UPPER(srss.BGC_VARIANT) = :#{#filter.bgcVariant})
+                AND (NVL(:#{#filter.bgcPhase},'NOVALUE') = 'NOVALUE' OR UPPER(srss.BGC_PHASE) = :#{#filter.bgcPhase})
+                AND (NVL(:#{#filter.becSiteSeries},'NOVALUE') = 'NOVALUE' OR srss.BEC_SITE_SERIES = :#{#filter.becSiteSeries})
+                AND (NVL(:#{#filter.becSiteType},'NOVALUE') = 'NOVALUE' OR srss.BEC_SITE_TYPE = :#{#filter.becSiteType})
+                AND (NVL(:#{#filter.becSeral},'NOVALUE') = 'NOVALUE' OR UPPER(srss.BEC_SERAL) = :#{#filter.becSeral})
               )
             )
             AND (
-              NVL(:#{#filter.bgcSubZone},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND UPPER(srss.BGC_SUBZONE_CODE) = :#{#filter.bgcSubZone}
-              )
-            )
-            AND (
-              NVL(:#{#filter.bgcVariant},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND UPPER(srss.BGC_VARIANT) = :#{#filter.bgcVariant}
-              )
-            )
-            AND (
-              NVL(:#{#filter.bgcPhase},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND UPPER(srss.BGC_PHASE) = :#{#filter.bgcPhase}
-              )
-            )
-            AND (
-              NVL(:#{#filter.becSiteSeries},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND srss.BEC_SITE_SERIES = :#{#filter.becSiteSeries}
-              )
-            )
-            AND (
-              NVL(:#{#filter.becSiteType},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND srss.BEC_SITE_TYPE = :#{#filter.becSiteType}
-              )
-            )
-            AND (
-              NVL(:#{#filter.becSeral},'NOVALUE') = 'NOVALUE'
-              OR EXISTS (
-                SELECT 1
-                FROM STANDARDS_REGIME_SITE_SERIES srss
-                WHERE srss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-                AND UPPER(srss.BEC_SERAL) = :#{#filter.becSeral}
-              )
+              NVL(:#{#filter.defaultStandardsIndStr},'NOVALUE') = 'NOVALUE'
+              OR sr.MOF_DEFAULT_STANDARD_IND = :#{#filter.defaultStandardsIndStr}
             )
             AND (
               (
@@ -2704,34 +2666,19 @@ public class SilvaOracleQueryConstants {
         ) client_dedup
         GROUP BY STANDARDS_REGIME_ID
       ),
-      first_site_series AS (
+      bgc_agg AS (
         SELECT
-          STANDARDS_REGIME_ID,
-          BGC_ZONE_CODE,
-          BGC_SUBZONE_CODE,
-          BGC_VARIANT,
-          BGC_PHASE,
-          BEC_SITE_SERIES,
-          BEC_SITE_TYPE,
-          BEC_SERAL
-        FROM (
-          SELECT
-            srss.STANDARDS_REGIME_ID,
-            srss.BGC_ZONE_CODE,
-            srss.BGC_SUBZONE_CODE,
-            srss.BGC_VARIANT,
-            srss.BGC_PHASE,
-            srss.BEC_SITE_SERIES,
-            srss.BEC_SITE_TYPE,
-            srss.BEC_SERAL,
-            ROW_NUMBER() OVER (
-              PARTITION BY srss.STANDARDS_REGIME_ID
-              ORDER BY srss.STANDARD_REGIME_SITE_SERIES_ID ASC
-            ) AS rn
-          FROM STANDARDS_REGIME_SITE_SERIES srss
-          JOIN paged_ids pi ON pi.STANDARDS_REGIME_ID = srss.STANDARDS_REGIME_ID
-        )
-        WHERE rn = 1
+          srss.STANDARDS_REGIME_ID,
+          LISTAGG(
+            NVL(srss.BGC_ZONE_CODE,'-')||'.'||NVL(srss.BGC_SUBZONE_CODE,'-')||'.'
+            ||NVL(srss.BGC_VARIANT,'-')||'.'||NVL(srss.BGC_PHASE,'-')||'.'
+            ||NVL(srss.BEC_SITE_SERIES,'-')||'.'||NVL(srss.BEC_SITE_TYPE,'-')||'.'
+            ||NVL(srss.BEC_SERAL,'-'),
+            '||'
+          ) WITHIN GROUP (ORDER BY srss.STANDARD_REGIME_SITE_SERIES_ID) AS bgc_list
+        FROM STANDARDS_REGIME_SITE_SERIES srss
+        JOIN paged_ids pi ON pi.STANDARDS_REGIME_ID = srss.STANDARDS_REGIME_ID
+        GROUP BY srss.STANDARDS_REGIME_ID
       )
       SELECT
         sr.STANDARDS_REGIME_ID      AS standardsRegimeId,
@@ -2741,13 +2688,8 @@ public class SilvaOracleQueryConstants {
         sa.species_codes            AS preferredSpeciesCodes,
         sa.species_names            AS preferredSpeciesNames,
         fa.fsp_ids                  AS fspIds,
-        fss.BGC_ZONE_CODE           AS bgcZone,
-        fss.BGC_SUBZONE_CODE        AS bgcSubZone,
-        fss.BGC_VARIANT             AS bgcVariant,
-        fss.BGC_PHASE               AS bgcPhase,
-        fss.BEC_SITE_SERIES         AS becSiteSeries,
-        fss.BEC_SITE_TYPE           AS becSiteType,
-        fss.BEC_SERAL               AS becSeral,
+        ba.bgc_list                 AS bgcList,
+        sr.MOF_DEFAULT_STANDARD_IND AS mofDefaultStandardInd,
         oa.org_unit_codes           AS orgUnitCodes,
         oa.org_unit_names           AS orgUnitNames,
         ca.client_numbers           AS clientNumbers,
@@ -2759,7 +2701,7 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN fsp_agg fa ON fa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN orgunit_agg oa ON oa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       LEFT JOIN client_agg ca ON ca.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
-      LEFT JOIN first_site_series fss ON fss.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
+      LEFT JOIN bgc_agg ba ON ba.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       ORDER BY sr.APPROVED_DATE DESC NULLS LAST
       """;
 

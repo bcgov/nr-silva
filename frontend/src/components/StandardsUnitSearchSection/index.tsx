@@ -39,7 +39,7 @@ const StandardsUnitSearchSection = () => {
 
   const standardsUnitSearchQuery = useQuery({
     queryKey: ['search', 'standards-unit', queryParams],
-    queryFn: () => API.SearchEndpointService.standardsUnitSearch(
+    queryFn: () => API.SearchEndpointService.searchStandardsUnit(
       queryParams?.standardsRegimeId,
       queryParams?.preferredSpecies,
       queryParams?.orgUnits,

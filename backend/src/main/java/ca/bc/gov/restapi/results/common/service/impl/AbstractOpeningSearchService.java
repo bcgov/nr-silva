@@ -49,7 +49,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
    */
   @Override
   @Transactional
-  public Page<OpeningSearchResponseDto> openingSearchExact(
+  public Page<OpeningSearchResponseDto> searchOpeningExact(
       OpeningSearchExactFiltersDto filtersDto, Pageable pagination) {
     log.info(
         "Exact search Openings with page index {} and page size {} with filters {}",

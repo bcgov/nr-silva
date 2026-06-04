@@ -8,7 +8,7 @@ import * as urlUtils from '@/components/StockingStandardsSearchSection/utils';
 vi.mock('@/components/StockingStandardsSearchSection/StockingStandardsSearchInput', () => ({
   default: ({ handleSearchFieldChange }: any) => (
     <div data-testid="search-input">
-      <input 
+      <input
         data-testid="mock-search-input"
         onChange={(e) => handleSearchFieldChange('standardsRegimeId', e.target.value)}
       />
@@ -83,7 +83,7 @@ describe('StockingStandardsSearchSection', () => {
     });
 
     vi.clearAllMocks();
-    
+
     // Mock URL param utilities
     vi.spyOn(urlUtils, 'readStockingStandardsSearchUrlParams').mockReturnValue({});
     vi.spyOn(urlUtils, 'updateStockingStandardsSearchUrlParams').mockImplementation(vi.fn());

@@ -36,7 +36,7 @@ vi.mock('@/utils/DateUtils', () => ({
 
 const defaultHeaders: StockingStandardsHeaderType[] = [
   { key: 'standardsRegimeId', header: 'Regime ID', selected: true },
-  { key: 'bgc', header: 'BGC', selected: true },
+  { key: 'bgcList', header: 'BGC', selected: true },
   { key: 'clients', header: 'Clients', selected: true },
   { key: 'fspIds', header: 'FSP IDs', selected: true },
   { key: 'orgUnits', header: 'Org Units', selected: true },
@@ -53,6 +53,7 @@ const createMockRowData = (overrides?: Partial<StockingStandardsSearchResponseDt
   becSiteSeries: 'SS1',
   becSiteType: 'ST1',
   becSeral: 'Seral1',
+  bgcList: ['IDF.c.w.a.SS1.ST1.Seral1'],
   clients: [],
   fspIds: [],
   orgUnits: [],

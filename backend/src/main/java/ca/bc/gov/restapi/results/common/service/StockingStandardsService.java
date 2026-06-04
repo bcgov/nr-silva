@@ -8,9 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface StockingStandardsService {
-  Page<StockingStandardsSearchResponseDto> stockingStandardsSearch(
+  Page<StockingStandardsSearchResponseDto> searchStockingStandards(
       StockingStandardsSearchFilterDto filters, Pageable pagination);
 
-  Page<StockingStandardsCommentSearchResponseDto> stockingStandardsCommentSearch(
+  Page<StockingStandardsCommentSearchResponseDto> searchStockingStandardsComments(
       StockingStandardsCommentSearchFilterDto filters, Pageable pagination);
 }

@@ -2531,66 +2531,28 @@ public class SilvaPostgresQueryConstants {
 						)
 						AND (
 							COALESCE(CAST(:#{#filter.bgcZone} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.bgcSubZone} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.bgcVariant} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.bgcPhase} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.becSiteType} AS text),'NOVALUE') = 'NOVALUE'
+							AND COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE'
 							OR EXISTS (
 								SELECT 1
 								FROM standards_regime_site_series srss
 								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND UPPER(srss.bgc_zone_code) = :#{#filter.bgcZone}
+								AND (COALESCE(CAST(:#{#filter.bgcZone} AS text),'NOVALUE') = 'NOVALUE' OR UPPER(srss.bgc_zone_code) = :#{#filter.bgcZone})
+								AND (COALESCE(CAST(:#{#filter.bgcSubZone} AS text),'NOVALUE') = 'NOVALUE' OR UPPER(srss.bgc_subzone_code) = :#{#filter.bgcSubZone})
+								AND (COALESCE(CAST(:#{#filter.bgcVariant} AS text),'NOVALUE') = 'NOVALUE' OR UPPER(srss.bgc_variant) = :#{#filter.bgcVariant})
+								AND (COALESCE(CAST(:#{#filter.bgcPhase} AS text),'NOVALUE') = 'NOVALUE' OR UPPER(srss.bgc_phase) = :#{#filter.bgcPhase})
+								AND (COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE' OR srss.bec_site_series = :#{#filter.becSiteSeries})
+								AND (COALESCE(CAST(:#{#filter.becSiteType} AS text),'NOVALUE') = 'NOVALUE' OR srss.bec_site_type = :#{#filter.becSiteType})
+								AND (COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE' OR UPPER(srss.bec_seral) = :#{#filter.becSeral})
 							)
 						)
 						AND (
-							COALESCE(CAST(:#{#filter.bgcSubZone} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND UPPER(srss.bgc_subzone_code) = :#{#filter.bgcSubZone}
-							)
-						)
-						AND (
-							COALESCE(CAST(:#{#filter.bgcVariant} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND UPPER(srss.bgc_variant) = :#{#filter.bgcVariant}
-							)
-						)
-						AND (
-							COALESCE(CAST(:#{#filter.bgcPhase} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND UPPER(srss.bgc_phase) = :#{#filter.bgcPhase}
-							)
-						)
-						AND (
-							COALESCE(CAST(:#{#filter.becSiteSeries} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND srss.bec_site_series = :#{#filter.becSiteSeries}
-							)
-						)
-						AND (
-							COALESCE(CAST(:#{#filter.becSiteType} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND srss.bec_site_type = :#{#filter.becSiteType}
-							)
-						)
-						AND (
-							COALESCE(CAST(:#{#filter.becSeral} AS text),'NOVALUE') = 'NOVALUE'
-							OR EXISTS (
-								SELECT 1
-								FROM standards_regime_site_series srss
-								WHERE srss.standards_regime_id = sr.standards_regime_id
-								AND UPPER(srss.bec_seral) = :#{#filter.becSeral}
-							)
+							COALESCE(CAST(:#{#filter.defaultStandardsInd} AS text),'NOVALUE') = 'NOVALUE'
+							OR sr.mof_default_standard_ind = CASE WHEN CAST(:#{#filter.defaultStandardsInd} AS text) = 'true' THEN 'Y' ELSE 'N' END
 						)
 						AND (
 							(
@@ -2679,34 +2641,19 @@ public class SilvaPostgresQueryConstants {
 				) client_dedup
 				GROUP BY standards_regime_id
 			),
-			first_site_series AS (
+			bgc_agg AS (
 				SELECT
-					standards_regime_id,
-					bgc_zone_code,
-					bgc_subzone_code,
-					bgc_variant,
-					bgc_phase,
-					bec_site_series,
-					bec_site_type,
-					bec_seral
-				FROM (
-					SELECT
-						srss.standards_regime_id,
-						srss.bgc_zone_code,
-						srss.bgc_subzone_code,
-						srss.bgc_variant,
-						srss.bgc_phase,
-						srss.bec_site_series,
-						srss.bec_site_type,
-						srss.bec_seral,
-						ROW_NUMBER() OVER (
-							PARTITION BY srss.standards_regime_id
-							ORDER BY srss.standard_regime_site_series_id ASC
-						) AS rn
-					FROM standards_regime_site_series srss
-					JOIN paged_ids pi ON pi.standards_regime_id = srss.standards_regime_id
-				) ranked
-				WHERE rn = 1
+					srss.standards_regime_id,
+					STRING_AGG(
+						COALESCE(srss.bgc_zone_code,'-')||'.'||COALESCE(srss.bgc_subzone_code,'-')||'.'
+						||COALESCE(srss.bgc_variant,'-')||'.'||COALESCE(srss.bgc_phase,'-')||'.'
+						||COALESCE(srss.bec_site_series,'-')||'.'||COALESCE(srss.bec_site_type,'-')||'.'
+						||COALESCE(srss.bec_seral,'-'),
+						'||' ORDER BY srss.standard_regime_site_series_id
+					) AS bgc_list
+				FROM standards_regime_site_series srss
+				JOIN paged_ids pi ON pi.standards_regime_id = srss.standards_regime_id
+				GROUP BY srss.standards_regime_id
 			)
 			SELECT
 				sr.standards_regime_id      AS standardsRegimeId,
@@ -2716,13 +2663,8 @@ public class SilvaPostgresQueryConstants {
 				sa.species_codes            AS preferredSpeciesCodes,
 				sa.species_names            AS preferredSpeciesNames,
 				fa.fsp_ids                  AS fspIds,
-				fss.bgc_zone_code           AS bgcZone,
-				fss.bgc_subzone_code        AS bgcSubZone,
-				fss.bgc_variant             AS bgcVariant,
-				fss.bgc_phase               AS bgcPhase,
-				fss.bec_site_series         AS becSiteSeries,
-				fss.bec_site_type           AS becSiteType,
-				fss.bec_seral               AS becSeral,
+				ba.bgc_list                 AS bgcList,
+				sr.mof_default_standard_ind AS mofDefaultStandardInd,
 				oa.org_unit_codes           AS orgUnitCodes,
 				oa.org_unit_names           AS orgUnitNames,
 				ca.client_numbers           AS clientNumbers,
@@ -2734,7 +2676,7 @@ public class SilvaPostgresQueryConstants {
 			LEFT JOIN fsp_agg fa ON fa.standards_regime_id = sr.standards_regime_id
 			LEFT JOIN orgunit_agg oa ON oa.standards_regime_id = sr.standards_regime_id
 			LEFT JOIN client_agg ca ON ca.standards_regime_id = sr.standards_regime_id
-			LEFT JOIN first_site_series fss ON fss.standards_regime_id = sr.standards_regime_id
+			LEFT JOIN bgc_agg ba ON ba.standards_regime_id = sr.standards_regime_id
 			ORDER BY sr.approved_date DESC NULLS LAST
 			""";
 
