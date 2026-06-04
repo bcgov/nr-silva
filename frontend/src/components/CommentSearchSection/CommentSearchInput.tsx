@@ -62,8 +62,8 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
           ref={searchTermInputRef}
           id="comment-search-term-input"
           name="searchTerm"
-          labelText="Keyword"
-          placeholder="Enter a full or partial keyword"
+          labelText="Keywords"
+          placeholder="Enter a full or partial keywords"
           invalid={!!searchTermError}
           invalidText={searchTermError ?? ''}
           onChange={(e) =>
