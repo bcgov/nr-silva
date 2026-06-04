@@ -6,3 +6,4 @@ export { default as OpeningStatusTag } from './OpeningStatusTag';
 export { default as StockingStatusTag } from './StockingStatusTag';
 export { default as StockingStandardMilestoneStatusTag } from './StockingStandardMilestoneStatusTag';
 export { default as CommentLocationTag } from './CommentLocationTag';
+export { default as StockingStandardsCommentLocationTag } from './StockingStandardsCommentLocationTag';

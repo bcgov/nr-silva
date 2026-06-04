@@ -36,7 +36,7 @@ const StockingStandardsCommentSearchSection = () => {
     params.searchTerm.length <= STOCKING_COMMENT_KEYWORD_MAX_LENGTH;
 
   const stockingCommentSearchQuery = useQuery({
-    queryKey: ['search', 'stocking-standards-comments', queryParams],
+    queryKey: ['search', 'stocking-standards', 'comments', queryParams],
     queryFn: () =>
       API.SearchEndpointService.searchStockingStandardsComments(
         queryParams!.searchTerm!,
@@ -199,6 +199,7 @@ const StockingStandardsCommentSearchSection = () => {
                     key={`${comment.standardsRegimeId}-${idx}`}
                     commentDto={comment}
                     index={idx}
+                    keyword={queryParams?.searchTerm ?? ''}
                   />
                 ))}
                 <Pagination
