@@ -102,7 +102,7 @@
     "typescript": "^5.2.2",
     "v8-to-istanbul": "^9.3.0",
     "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^3.0.5",
+    "vitest": "^4.0.0",
     "wiremock": "^3.13.1"
   },
   "overrides": {
