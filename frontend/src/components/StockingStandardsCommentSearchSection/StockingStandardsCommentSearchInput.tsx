@@ -136,7 +136,7 @@ const StockingStandardsCommentSearchInput = ({ searchParams, handleSearchFieldCh
               value={getDatePickerValue(searchParams?.updateDateStart)}
             >
               <DatePickerInput
-                id="stocking-comment-start-date-picker-input-id"
+                id="start-date-picker-input-id"
                 size="md"
                 labelText="Start Date"
                 placeholder="yyyy/mm/dd"
@@ -155,7 +155,7 @@ const StockingStandardsCommentSearchInput = ({ searchParams, handleSearchFieldCh
               value={getDatePickerValue(searchParams?.updateDateEnd)}
             >
               <DatePickerInput
-                id="stocking-comment-end-date-picker-input-id"
+                id="end-date-picker-input-id"
                 size="md"
                 labelText="End Date"
                 placeholder="yyyy/mm/dd"
