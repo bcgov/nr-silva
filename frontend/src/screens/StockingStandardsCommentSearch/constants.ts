@@ -7,7 +7,7 @@ export const SS_COMMENT_SEARCH_BREADCRUMB: BreadCrumbType[] = [
     path: STOCKING_STANDARDS_SEARCH_PATH
   },
   {
-    name: 'Stocking standards keyword search',
+    name: 'Stocking standards keywords search',
     path: STOCKING_STANDARDS_COMMENT_SEARCH_PATH
   }
 ]
