@@ -122,7 +122,7 @@ const StockingStandardsCommentSearchInput = ({ searchParams, handleSearchFieldCh
 
       <Column sm={4} md={8} lg={16} className="default-search-date-col">
         <label className="date-label" htmlFor="stocking-comment-last-updated-date-range">
-          Last update date range
+          Last updated date range
         </label>
         <Grid className="date-sub-grid">
           <Column sm={4} md={4} lg={6} max={4}>
