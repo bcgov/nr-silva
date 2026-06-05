@@ -17,12 +17,12 @@ const StockingStandardsCommentSearchCard = ({ commentDto, index, keyword }: Prop
   return (
     <div
       className={`default-search-card-container${index % 2 !== 0 ? ' default-search-card-container--shaded' : ''}`}
-      id={`stocking-comment-card-${commentDto.standardsRegimeId}-${index}`}
+      id={`stocking-comment-card-${commentDto.standardsRegimeId ?? index}`}
     >
       <Stack gap={2}>
         <div className="stocking-comment-title-row">
           <div className="stocking-comment-title-and-tag">
-            <span className="stocking-comment-title">{`SSID ${commentDto.standardsRegimeId}`}</span>
+            <span className="stocking-comment-title">{commentDto.standardsRegimeId != null ? `SSID ${commentDto.standardsRegimeId}` : '—'}</span>
             <StockingStandardsCommentLocationTag location={commentDto.commentLocation} size="sm" />
           </div>
           <div className="stocking-comment-date">
