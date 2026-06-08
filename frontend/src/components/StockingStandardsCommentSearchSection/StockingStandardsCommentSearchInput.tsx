@@ -61,8 +61,8 @@ const StockingStandardsCommentSearchInput = ({ searchParams, handleSearchFieldCh
           ref={searchTermInputRef}
           id="stocking-comment-search-term-input"
           name="searchTerm"
-          labelText="Keywords"
-          placeholder="Enter a full or partial keywords"
+          labelText="Keyword"
+          placeholder="Enter a full or partial keyword"
           invalid={!!searchTermError}
           invalidText={searchTermError ?? ''}
           onChange={(e) =>
