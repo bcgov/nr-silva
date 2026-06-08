@@ -168,24 +168,27 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
       {/* Default indicator */}
       <Column sm={4} md={4} lg={6} max={4}>
         <Dropdown
+          key={String(searchParams?.defaultStandardsInd)}
           id="default-standards-ind-dropdown"
           titleText="Default standards indicator"
-          label="Select..."
+          label="Choose an option"
           items={[
-            { label: 'Any', value: undefined },
-            { label: 'Yes', value: true },
-            { label: 'No', value: false },
+            ...(searchParams?.defaultStandardsInd !== undefined ? [{ id: '', label: '' }] : []),
+            { id: 'yes', label: 'Yes' },
+            { id: 'no', label: 'No' },
           ]}
           itemToString={(item) => item?.label ?? ''}
+          itemToElement={(item) => item.id === '' ? <span className="empty-dropdown-option">Clear selected</span> : <span>{item.label}</span>}
+          renderSelectedItem={(item) => item.id === '' ? <span className="empty-dropdown-option">Choose an option</span> : <span>{item.label}</span>}
           selectedItem={
             searchParams?.defaultStandardsInd === true
-              ? { label: 'Yes', value: true }
+              ? { id: 'yes', label: 'Yes' }
               : searchParams?.defaultStandardsInd === false
-                ? { label: 'No', value: false }
-                : { label: 'Any', value: undefined }
+                ? { id: 'no', label: 'No' }
+                : { id: '', label: '' }
           }
           onChange={({ selectedItem }) =>
-            handleSearchFieldChange('defaultStandardsInd', selectedItem?.value ?? undefined)
+            handleSearchFieldChange('defaultStandardsInd', !selectedItem || selectedItem.id === '' ? undefined : selectedItem.id === 'yes')
           }
         />
       </Column>

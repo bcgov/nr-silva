@@ -108,12 +108,12 @@ describe('CommentSearchCard', () => {
 
   it('applies shaded and focused classes without changing the rendered result identity', () => {
     const { container } = renderCard({}, { index: 1 });
-    const card = container.querySelector('.comment-search-card-container');
+    const card = container.querySelector('.default-search-card-container');
     const link = screen.getByRole('link', {
       name: 'Open comment search result for Opening ID 12345, OPENING'
     });
 
-    expect(card).toHaveClass('comment-search-card-container--shaded');
+    expect(card).toHaveClass('default-search-card-container--shaded');
     expect(card).not.toHaveClass('comment-search-card-container--focused');
 
     fireEvent.focus(link);

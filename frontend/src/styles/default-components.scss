@@ -453,6 +453,23 @@ ul.default-tab-accordion {
   }
 }
 
+.default-search-card-container {
+  padding: 1.25rem 1rem;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-hover-01);
+  }
+
+  &--shaded {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-01);
+
+    &:hover {
+      background-color: var(--#{vars.$bcgov-prefix}-layer-hover-01);
+    }
+  }
+}
+
 .default-confirm-switch-modal {
   .#{vars.$bcgov-prefix}--modal-footer {
     .#{vars.$bcgov-prefix}--btn {

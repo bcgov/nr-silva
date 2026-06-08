@@ -1,0 +1,35 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@carbon/type';
+
+.stocking-standards-comment-search-section {
+  padding-top: 0;
+}
+
+.stocking-comment-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stocking-comment-title-and-tag {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  .stocking-comment-title {
+    @include type.type-style('body-02');
+  }
+}
+
+.stocking-comment-date {
+  @include type.type-style('body-01');
+}
+
+.stocking-comment-text {
+  @include type.type-style('body-01');
+  color: var(--#{vars.$bcgov-prefix}-text-secondary);
+
+  strong {
+    font-weight: 700;
+  }
+}

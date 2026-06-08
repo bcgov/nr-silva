@@ -4,6 +4,7 @@ import { Stack } from '@carbon/react';
 import OpeningBookmarkBtn from '../OpeningBookmarkBtn';
 import { CommentLocationTag } from '@/components/Tags';
 import { formatLocalDate } from '@/utils/DateUtils';
+import { highlightKeyword } from '@/utils/HighlightUtils';
 
 import './styles.scss';
 
@@ -15,37 +16,6 @@ type Props = {
 
 const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
   const [isFocused, setIsFocused] = React.useState(false);
-
-  const highlightKeyword = (text: string | null, searchTerm: string): (string | React.ReactNode)[] => {
-    if (!text || !searchTerm.trim()) return [text ?? ''];
-
-    const result: (string | React.ReactNode)[] = [];
-    const lowerText = text.toLowerCase();
-    const lowerKeyword = searchTerm.toLowerCase();
-    let lastIndex = 0;
-    let currentIndex = 0;
-
-    while ((currentIndex = lowerText.indexOf(lowerKeyword, lastIndex)) !== -1) {
-      // Add text before match
-      if (currentIndex > lastIndex) {
-        result.push(text.substring(lastIndex, currentIndex));
-      }
-      // Add bolded match
-      result.push(
-        <strong key={`${currentIndex}-${searchTerm}`}>
-          {text.substring(currentIndex, currentIndex + searchTerm.length)}
-        </strong>
-      );
-      lastIndex = currentIndex + searchTerm.length;
-    }
-
-    // Add remaining text
-    if (lastIndex < text.length) {
-      result.push(text.substring(lastIndex));
-    }
-
-    return result.length > 0 ? result : [text];
-  };
 
   const getSuffixText = (): string | undefined => {
     if (commentDto.commentLocation === CommentSearchResponseDto.commentLocation.STANDARDS_UNIT && commentDto.standardsUnitName) {
@@ -91,7 +61,7 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
 
 
   return (
-    <div className={`comment-search-card-container ${index % 2 !== 0 ? 'comment-search-card-container--shaded' : ''} ${isFocused ? 'comment-search-card-container--focused' : ''}`} id={`comment-search-card-${commentDto.openingId}-${commentDto.commentLocation.toLowerCase()}`}>
+    <div className={`default-search-card-container ${index % 2 !== 0 ? 'default-search-card-container--shaded' : ''} ${isFocused ? 'comment-search-card-container--focused' : ''}`} id={`comment-search-card-${commentDto.openingId}-${commentDto.commentLocation.toLowerCase()}`}>
       <Stack gap={2}>
         <div
           className='comment-search-title-row'
