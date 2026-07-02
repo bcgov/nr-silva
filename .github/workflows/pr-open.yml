@@ -36,7 +36,7 @@ jobs:
             triggers: ('frontend/')
     steps:
       - uses: actions/checkout@v6
-      - uses: bcgov/action-builder-ghcr@2b24ac7f95e6a019064151498660437cca3202c5 # v4.2.1
+      - uses: bcgov/action-builder-ghcr@cb2629351c87dd1c2130073e4ebb7233a9653a63 # v4.4.1
         with:
           package: ${{ matrix.package }}
           build_context: ${{ matrix.build_context }}
@@ -102,7 +102,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Remove route reservations from ConfigMap
-        uses: bcgov/action-oc-runner@v1.4.1
+        uses: bcgov/action-oc-runner@v1.6.0
         env:
           PR_NUMBER: ${{ github.event.number }}
           HYBRID_ROUTE: ${{ needs.fam_routes.outputs.hybrid_route_number }}

@@ -105,7 +105,7 @@ jobs:
 
       - name: OpenShift Init
         id: deploy
-        uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
+        uses: bcgov/action-deployer-openshift@fc51e6a5849eb0fdb9395ceed9c1059aa25b3815 # v4.1.1
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
@@ -162,7 +162,7 @@ jobs:
               -p FAM_ROUTE=${{ needs.init.outputs.route }}
               -p DEPLOYMENT_MODEL=${{ inputs.deployment_model }}
     steps:
-      - uses: bcgov/action-deployer-openshift@565e315dfddb8aee08fcfd885a27407dde9a2775 # v4.0.1
+      - uses: bcgov/action-deployer-openshift@fc51e6a5849eb0fdb9395ceed9c1059aa25b3815 # v4.1.1
         id: deploys
         with:
           file: ${{ matrix.file }}
