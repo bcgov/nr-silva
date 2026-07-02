@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Remove FAM route allocations for PR
-        uses: bcgov/action-oc-runner@09b5eeae15bdbc7f7a21b406ee2c66a1d5819f8c # v1.6.0
+        uses: bcgov/action-oc-runner@v1.7.0
         env:
           PR_NUMBER: ${{ github.event.number }}
         with:
