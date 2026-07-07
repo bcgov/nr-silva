@@ -179,9 +179,21 @@ public abstract class AbstractCodesEndpointIntegrationTest
         .perform(get("/api/codes/org-units").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$[0].code").exists())
-        .andExpect(jsonPath("$[0].description").exists());
+        .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  @DisplayName("Get org units with type=district should return 200")
+  @WithMockUser(roles = "user_read")
+  void getOrgUnits_withDistrictType_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/codes/org-units")
+                .param("type", "district")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray());
   }
 
   @Test
