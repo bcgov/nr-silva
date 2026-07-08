@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
+import ca.bc.gov.restapi.results.common.enums.OrgUnitTypeParam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -51,5 +53,10 @@ public class CorsConfiguration implements WebMvcConfigurer {
         .allowCredentials(false);
 
     WebMvcConfigurer.super.addCorsMappings(registry);
+  }
+
+  @Override
+  public void addFormatters(@NonNull FormatterRegistry registry) {
+    registry.addConverter(String.class, OrgUnitTypeParam.class, OrgUnitTypeParam::fromValue);
   }
 }

@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.enums.OrgUnitTypeParam;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +45,8 @@ public class CodesEndpoint {
    */
   @GetMapping("/org-units")
   public List<CodeDescriptionDto> getOpeningOrgUnits(
-      @RequestParam(value = "type", required = false, defaultValue = "all") String type) {
-    return codeService.findAllOrgUnits("district".equalsIgnoreCase(type));
+      @RequestParam(value = "type", required = false, defaultValue = "ALL") OrgUnitTypeParam type) {
+    return codeService.findAllOrgUnits(OrgUnitTypeParam.DISTRICT == type);
   }
 
   /**
