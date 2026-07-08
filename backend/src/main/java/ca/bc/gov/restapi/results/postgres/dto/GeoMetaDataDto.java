@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
+@Schema(type = "object")
 public record GeoMetaDataDto(
     String orgUnit,
     String openingCategory,

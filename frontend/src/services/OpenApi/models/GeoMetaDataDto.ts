@@ -2,4 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type GeoMetaDataDto = null;
+export type GeoMetaDataDto = {
+    orgUnit?: string;
+    openingCategory?: string;
+    /**
+     * Opening gross area (NUMBER(11,4))
+     */
+    openingGrossArea?: number;
+    /**
+     * Maximum allowable permanent access percentage (NUMBER(3,1))
+     */
+    maxAllowablePermAccessPerc?: number;
+};
+
