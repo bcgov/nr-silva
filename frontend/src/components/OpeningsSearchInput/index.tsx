@@ -55,7 +55,7 @@ const OpeningsSearchInput = ({ searchParams, onSearchParamsChange }: props) => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
   });
 
   // Update text inputs with search params

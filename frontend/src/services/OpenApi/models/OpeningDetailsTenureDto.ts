@@ -6,12 +6,12 @@ import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningDetailsTenureDto = {
     id: number;
     primaryTenure: boolean;
-    fileId: string | null;
-    cutBlock: string | null;
-    cuttingPermit: string | null;
-    timberMark: string | null;
+    fileId: null;
+    cutBlock: null;
+    cuttingPermit: null;
+    timberMark: null;
     status: CodeDescriptionDto;
-    plannedGrossArea: number | null;
-    plannedNetArea: number | null;
+    plannedGrossArea: null;
+    plannedNetArea: null;
 };
 

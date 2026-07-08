@@ -4,10 +4,10 @@
 /* eslint-disable */
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningStockingHistoryOverviewDto = {
-    stockingEventHistoryId: number | number;
-    amendmentNumber: number | number | null;
+    stockingEventHistoryId: number;
+    amendmentNumber: number | null;
     eventTimestamp: string | null;
-    suCount: number | number | null;
+    suCount: number | null;
     totalNar: number | null;
     auditAction: CodeDescriptionDto;
     esfSubmissionId: string | null;

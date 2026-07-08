@@ -8,9 +8,9 @@ export type OpeningForestCoverHistoryPolygonDto = {
     reserve: CodeDescriptionDto;
     objective: CodeDescriptionDto;
     siteClass: CodeDescriptionDto;
-    siteIndex: number | number | null;
+    siteIndex: number | null;
     siteIndexSource: CodeDescriptionDto;
     treeCoverPattern: CodeDescriptionDto;
-    reentryYear: number | number | null;
+    reentryYear: number | null;
 };
 
