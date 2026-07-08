@@ -45,7 +45,7 @@ public class CodesEndpoint {
    */
   @GetMapping("/org-units")
   public List<CodeDescriptionDto> getOpeningOrgUnits(
-      @RequestParam(value = "type", required = false, defaultValue = "ALL") OrgUnitTypeParam type) {
+      @RequestParam(value = "type", required = false, defaultValue = "all") OrgUnitTypeParam type) {
     return codeService.findAllOrgUnits(OrgUnitTypeParam.DISTRICT == type);
   }
 

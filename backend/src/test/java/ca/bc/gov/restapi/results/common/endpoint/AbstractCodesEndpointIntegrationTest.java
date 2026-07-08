@@ -179,7 +179,9 @@ public abstract class AbstractCodesEndpointIntegrationTest
         .perform(get("/api/codes/org-units").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$").isArray());
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
   }
 
   @Test
@@ -193,7 +195,9 @@ public abstract class AbstractCodesEndpointIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$").isArray());
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").exists())
+        .andExpect(jsonPath("$[0].description").exists());
   }
 
   @Test
