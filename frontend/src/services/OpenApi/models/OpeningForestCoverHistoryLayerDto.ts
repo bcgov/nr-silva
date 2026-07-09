@@ -8,12 +8,12 @@ import type { OpeningForestCoverHistoryDetailedSpeciesDto } from './OpeningFores
 export type OpeningForestCoverHistoryLayerDto = {
     layerId: number;
     layer: CodeDescriptionDto;
-    crownClosure: number | number | null;
-    basalAreaSt: number | number | null;
-    totalStems: number | number | null;
-    totalWellSpaced: number | number | null;
-    wellSpaced: number | number | null;
-    freeGrowing: number | number | null;
+    crownClosure: number | null;
+    basalAreaSt: number | null;
+    totalStems: number | null;
+    totalWellSpaced: number | null;
+    wellSpaced: number | null;
+    freeGrowing: number | null;
     species: Array<OpeningForestCoverHistoryDetailedSpeciesDto>;
     damage: Array<OpeningForestCoverHistoryDamageDto>;
 };

@@ -41,7 +41,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits,
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
   });
 
   const handlePrimaryChange = (displayId: string) => {

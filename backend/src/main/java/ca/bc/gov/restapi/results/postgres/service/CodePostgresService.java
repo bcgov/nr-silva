@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.postgres.repository.DisturbanceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
@@ -41,8 +40,7 @@ public class CodePostgresService extends AbstractCodeService {
       StockingStatusCodePostgresRepository stockingStatusCodeRepository,
       StockingTypeCodePostgresRepository stockingTypeCodeRepository,
       SilvTreeSpeciesCodePostgresRepository silvTreeSpeciesCodeRepository,
-      OrgUnitPostgresRepository orgUnitRepository,
-      SilvaConfiguration silvaConfiguration) {
+      OrgUnitPostgresRepository orgUnitRepository) {
     super(
         silvBaseCodeRepository,
         silvTechniqueCodeRepository,
@@ -59,7 +57,6 @@ public class CodePostgresService extends AbstractCodeService {
         stockingStatusCodeRepository,
         stockingTypeCodeRepository,
         silvTreeSpeciesCodeRepository,
-        orgUnitRepository,
-        silvaConfiguration);
+        orgUnitRepository);
   }
 }

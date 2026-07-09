@@ -55,8 +55,8 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
   });
 
   const orgUnitQuery = useQuery({
-    queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits
+    queryKey: ["codes", "org-units", { type: 'district' }],
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits('district'),
   });
 
   const handleMultiSelectChange = (field: keyof StandardsUnitSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {

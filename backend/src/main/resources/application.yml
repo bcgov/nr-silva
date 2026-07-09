@@ -109,7 +109,6 @@ ca:
     gov:
       nrs:
         self-uri: ${SELF_URI:http://localhost:8080}
-        org-units: ${OPENING_SEARCH_ORG_UNITS:DCK,DSQ,DVA,DKM,DSC,DFN,DSI,DCR,DMK,DQC,DKA,DCS,DOS,DSE,DCC,DMH,DQU,DNI,DND,DRM,DPG,DSS,DPC}
         forest-client-api:
           address: ${FORESTCLIENTAPI_ADDRESS:https://nr-forest-client-api-prod.api.gov.bc.ca/api}
           key: ${FORESTCLIENTAPI_KEY:placeholder-api-key}
@@ -164,6 +163,7 @@ logging:
     ca.bc.gov.restapi.results: ${LOGGING_LEVEL:INFO}
   pattern:
     correlation: "[${spring.application.name:},%X{${X-TRACE-ID:traceId}:-},%X{spanId:-},%X{X-USER:-}] "
+
 
 # Profile Specific Properties
 ---

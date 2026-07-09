@@ -5,7 +5,7 @@
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningForestCoverDamageDto = {
     damageAgent: CodeDescriptionDto;
-    healthIncidencePercentage: number | number | null;
+    healthIncidencePercentage: number | null;
     incidenceArea: number | null;
 };
 

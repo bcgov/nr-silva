@@ -12,9 +12,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-/**
- * This class contains configurations for all external APIs like address and keys.
- */
+/** This class contains configurations for all external APIs like address and keys. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,16 +23,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("ca.bc.gov.nrs")
 public class SilvaConfiguration {
 
-  private List<String> orgUnits;
-
-  @NestedConfigurationProperty
-  private ExternalApiAddress forestClientApi;
-  @NestedConfigurationProperty
-  private ExternalApiAddress openMaps;
-  @NestedConfigurationProperty
-  private SilvaDataLimits limits;
-  @NestedConfigurationProperty
-  private FrontEndConfiguration frontend;
+  @NestedConfigurationProperty private ExternalApiAddress forestClientApi;
+  @NestedConfigurationProperty private ExternalApiAddress openMaps;
+  @NestedConfigurationProperty private SilvaDataLimits limits;
+  @NestedConfigurationProperty private FrontEndConfiguration frontend;
 
   @Data
   @Builder
@@ -53,9 +45,7 @@ public class SilvaConfiguration {
     private Integer maxActionsResults;
   }
 
-  /**
-   * The Front end configuration.
-   */
+  /** The Front end configuration. */
   @Data
   @Builder
   @NoArgsConstructor
@@ -63,14 +53,10 @@ public class SilvaConfiguration {
   public static class FrontEndConfiguration {
 
     private String url;
-    @NestedConfigurationProperty
-    private FrontEndCorsConfiguration cors;
-
+    @NestedConfigurationProperty private FrontEndCorsConfiguration cors;
   }
 
-  /**
-   * The Front end cors configuration.
-   */
+  /** The Front end cors configuration. */
   @Data
   @Builder
   @NoArgsConstructor
@@ -81,5 +67,4 @@ public class SilvaConfiguration {
     private List<String> methods;
     private Duration age;
   }
-
 }
