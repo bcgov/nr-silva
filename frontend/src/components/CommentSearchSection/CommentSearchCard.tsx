@@ -45,9 +45,9 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
         return `${base}?tab=standards-units${commentDto.standardsUnitId ? `&${DEEP_LINK_PARAMS.ssuId}=${commentDto.standardsUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.ssuComment}`;
       case CommentSearchResponseDto.commentLocation.ACTIVITIES:
         if (commentDto.activityKind === CommentSearchResponseDto.activityKind.DISTURBANCE) {
-          return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.disturbanceId}=${commentDto.activityTreatmentUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.disturbanceComment}`;
+          return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.disturbanceId}=${commentDto.activityTreatmentUnitId}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.disturbanceComment}` : ''}`;
         }
-        return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.activityId}=${commentDto.activityTreatmentUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.activityComment}`;
+        return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.activityId}=${commentDto.activityTreatmentUnitId}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.activityComment}` : ''}`;
       case CommentSearchResponseDto.commentLocation.FOREST_COVER:
         return `${base}?tab=forest-cover&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.fcComment}`;
       default:
