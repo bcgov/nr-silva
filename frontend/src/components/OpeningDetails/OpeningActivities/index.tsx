@@ -1,9 +1,11 @@
 import React from "react";
 import qs from 'qs';
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 
 import EmptySection from "../../EmptySection";
 import DisturbanceAccordion from "./DisturbanceAccordion";
@@ -27,6 +29,9 @@ const OpeningActivities = ({
   selectedDisturbanceIds,
   setSelectedDisturbanceIds
 }: OpeningActivitiesProps) => {
+  const [searchParams] = useSearchParams();
+  const targetDisturbanceId = searchParams.get(DEEP_LINK_PARAMS.disturbanceId);
+  const targetActivityId = searchParams.get(DEEP_LINK_PARAMS.activityId);
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
@@ -90,6 +95,7 @@ const OpeningActivities = ({
                 data={disturbanceQuery.data!.content!}
                 selectedDisturbanceIds={selectedDisturbanceIds}
                 setSelectedDisturbanceIds={setSelectedDisturbanceIds}
+                targetDisturbanceId={targetDisturbanceId}
               />
             </Column>
           )
@@ -105,6 +111,7 @@ const OpeningActivities = ({
                 totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
                 selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                 setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                targetActivityId={targetActivityId}
               />
             </Column>
           )

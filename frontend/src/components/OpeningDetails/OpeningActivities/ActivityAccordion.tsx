@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Accordion,
   AccordionItem,
@@ -33,6 +34,8 @@ import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_ELEMENT_ID, DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS } from "@/constants/deepLinkConstants";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 
@@ -51,6 +54,7 @@ type ActivityAccordionProps = {
   totalUnfiltered: number;
   selectedSilvicultureActivityIds: string[];
   setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
+  targetActivityId?: string | null;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -77,6 +81,8 @@ type ActivityRowProps = {
     columnKey: string,
     isLastElement: boolean
   ) => React.ReactNode;
+  initialExpanded?: boolean;
+  targetComment?: boolean;
 };
 
 const ActivityRow = ({
@@ -87,8 +93,10 @@ const ActivityRow = ({
   selectedSilvicultureActivityIds,
   setSelectedSilvicultureActivityIds,
   renderCellContent,
+  initialExpanded,
+  targetComment,
 }: ActivityRowProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(initialExpanded ?? false);
   const compoundId = `${row.atuId}-${row.base.code}`;
   const { isAvailable, isLoading } = usePolygonAvailability(
     openingId,
@@ -101,6 +109,7 @@ const ActivityRow = ({
   return (
     <React.Fragment key={row.atuId}>
       <TableExpandRow
+        id={DEEP_LINK_ELEMENT_ID.activityRow(row.atuId)}
         aria-label={`Expand row for Activity ID ${row.atuId}`}
         isExpanded={isExpanded}
         onExpand={() => setIsExpanded(prev => !prev)}
@@ -153,6 +162,7 @@ const ActivityRow = ({
           <ActivityDetail
             activity={row}
             openingId={openingId}
+            targetComment={targetComment}
           />
         ) : null}
       </TableExpandedRow>
@@ -164,12 +174,17 @@ const ActivityAccordion = ({
   openingId,
   totalUnfiltered,
   selectedSilvicultureActivityIds,
-  setSelectedSilvicultureActivityIds
+  setSelectedSilvicultureActivityIds,
+  targetActivityId
 }: ActivityAccordionProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(OddPageSizesConfig[0]!);
   const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
+
+  const [searchParams] = useSearchParams();
+  const section = searchParams.get(DEEP_LINK_PARAMS.section);
+  const isCommentDeepLink = section === DEEP_LINK_SECTIONS.activityComment;
 
   const activityQuery = useQuery({
     queryKey: ['opening', openingId, 'activities', activityFilter],
@@ -196,6 +211,11 @@ const ActivityAccordion = ({
   );
   const allOnPage = (activityQuery.data?.content ?? []).map(row => `${row.atuId}-${row.base.code}`);
   const allSelected = allOnPage.length > 0 && allOnPage.every(id => selectedSilvicultureActivityIds.includes(id));
+
+  useDeepLinkScroll(
+    isCommentDeepLink ? null : (targetActivityId ? DEEP_LINK_ELEMENT_ID.activityRow(targetActivityId) : null),
+    activityQuery.isSuccess && (activityQuery.data?.content?.length ?? 0) > 0
+  );
 
   const handleSort = (field: keyof OpeningDetailsActivitiesActivitiesDto) => {
     let newDirection: SortDirectionType = 'NONE';
@@ -363,6 +383,7 @@ const ActivityAccordion = ({
       <AccordionItem
         className="default-tab-accordion-item"
         title={<AccordionTitle total={totalUnfiltered} />}
+        open={!!targetActivityId}
       >
 
         <TableContainer className="default-table-container activity-table-container">
@@ -458,6 +479,8 @@ const ActivityAccordion = ({
                         selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                         setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
                         renderCellContent={renderCellContent}
+                        initialExpanded={isCommentDeepLink && row.atuId.toString() === targetActivityId}
+                        targetComment={isCommentDeepLink && row.atuId.toString() === targetActivityId}
                       />
                     ))}
                   </TableBody>

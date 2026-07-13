@@ -5,6 +5,7 @@ import OpeningBookmarkBtn from '../OpeningBookmarkBtn';
 import { CommentLocationTag } from '@/components/Tags';
 import { formatLocalDate } from '@/utils/DateUtils';
 import { highlightKeyword } from '@/utils/HighlightUtils';
+import { DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS } from '@/constants/deepLinkConstants';
 
 import './styles.scss';
 
@@ -37,15 +38,18 @@ const CommentSearchCard = ({ keyword, commentDto, index }: Props) => {
     const base = `/openings/${commentDto.openingId}`;
     switch (commentDto.commentLocation) {
       case CommentSearchResponseDto.commentLocation.OPENING:
-        return base;
+        return `${base}?tab=overview&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.openingComment}`;
       case CommentSearchResponseDto.commentLocation.MILESTONE:
-        return `${base}?tab=standards-units`;
+        return `${base}?tab=standards-units${commentDto.standardsUnitId ? `&${DEEP_LINK_PARAMS.ssuId}=${commentDto.standardsUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.milestoneComment}`;
       case CommentSearchResponseDto.commentLocation.STANDARDS_UNIT:
-        return `${base}?tab=standards-units`;
+        return `${base}?tab=standards-units${commentDto.standardsUnitId ? `&${DEEP_LINK_PARAMS.ssuId}=${commentDto.standardsUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.ssuComment}`;
       case CommentSearchResponseDto.commentLocation.ACTIVITIES:
-        return `${base}?tab=activities`;
+        if (commentDto.activityKind === CommentSearchResponseDto.activityKind.DISTURBANCE) {
+          return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.disturbanceId}=${commentDto.activityTreatmentUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.disturbanceComment}`;
+        }
+        return `${base}?tab=activities${commentDto.activityTreatmentUnitId ? `&${DEEP_LINK_PARAMS.activityId}=${commentDto.activityTreatmentUnitId}` : ''}&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.activityComment}`;
       case CommentSearchResponseDto.commentLocation.FOREST_COVER:
-        return `${base}?tab=forest-cover`;
+        return `${base}?tab=forest-cover&${DEEP_LINK_PARAMS.section}=${DEEP_LINK_SECTIONS.fcComment}`;
       default:
         return base;
     }

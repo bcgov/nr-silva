@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS, DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -71,6 +74,7 @@ const ForestCoverRow = ({
   return (
     <React.Fragment key={`${row.coverId}-${row.polygonId}-${idx}`}>
       <TableExpandRow
+        id={DEEP_LINK_ELEMENT_ID.fcRow(row.coverId, row.polygonId)}
         className="opening-forest-cover-table-row"
         aria-label={`Expand row for Polygon ID ${row.coverId}`}
         isExpanded={isExpanded}
@@ -133,6 +137,10 @@ const OpeningForestCover = ({
   setSelectedForestCoverIds,
   overviewObj
 }: OpeningForestCoverProps) => {
+  const [urlSearchParams] = useSearchParams();
+  const forestCoverIdParam = urlSearchParams.get(DEEP_LINK_PARAMS.forestCoverId);
+  const sectionParam = urlSearchParams.get(DEEP_LINK_PARAMS.section);
+
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
 
@@ -176,6 +184,15 @@ const OpeningForestCover = ({
     ...item,
     disabled: !item.hasDetails // disable if hasDetails is not true
   }));
+
+  // Deep-link scroll target
+  const deepLinkTargetId = useMemo(() => {
+    if (sectionParam === DEEP_LINK_SECTIONS.fcComment) return DEEP_LINK_ELEMENT_ID.fcComment;
+    if (forestCoverIdParam) return `fc-row-${forestCoverIdParam}`;
+    return null;
+  }, [forestCoverIdParam, sectionParam]);
+
+  useDeepLinkScroll(deepLinkTargetId, forestCoverQueryToUse.isSuccess);
 
   useEffect(() => {
     if (
@@ -576,7 +593,7 @@ const OpeningForestCover = ({
           </TableContainer>
         </Column>
 
-        <Column sm={4} md={8} lg={16}>
+        <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.fcComment}>
           <CardContainer>
             <Column sm={4} md={8} lg={16}>
               <CardItem label="Comments">

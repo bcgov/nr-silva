@@ -4,6 +4,7 @@ import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
+import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 import { DisturbanceHeaderKeyType, DisturbanceHeaderType } from "@/types/TableHeader";
 import { DisturbanceSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
@@ -36,7 +37,7 @@ const DisturbanceSearchTableRow = ({
   );
   const openingUrl = OpeningDetailsRoute.path!.replace(
     ":openingId",
-    `${rowData.openingId!.toString()}?tab=activities`
+    `${rowData.openingId!.toString()}?tab=activities&${DEEP_LINK_PARAMS.disturbanceId}=${rowData.activityId}`
   );
 
   const openInNewTab = () => {
