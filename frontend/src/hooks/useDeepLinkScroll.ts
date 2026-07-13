@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
-import { scrollToTarget } from "@/utils/ScrollUtils";
-
-const SCROLL_OFFSET_PX = 48; // must match ScrollUtils.ts
+import { scrollToTarget, SCROLL_OFFSET_PX } from "@/utils/ScrollUtils";
 const LAYOUT_WATCH_MS = 5000;
 const LAYOUT_POLL_MS = 150;
 const DRIFT_PX = 30;
@@ -46,7 +44,7 @@ const useDeepLinkScroll = (
         if (Math.abs(elTop - SCROLL_OFFSET_PX) > DRIFT_PX) {
           window.scrollTo({
             top: elTop + window.scrollY - SCROLL_OFFSET_PX,
-            behavior: 'instant' as ScrollBehavior,
+            behavior: 'auto',
           });
         }
       }, LAYOUT_POLL_MS);

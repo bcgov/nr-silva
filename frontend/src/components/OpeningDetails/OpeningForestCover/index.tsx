@@ -188,7 +188,10 @@ const OpeningForestCover = ({
   // Deep-link scroll target
   const deepLinkTargetId = useMemo(() => {
     if (sectionParam === DEEP_LINK_SECTIONS.fcComment) return DEEP_LINK_ELEMENT_ID.fcComment;
-    if (forestCoverIdParam) return `fc-row-${forestCoverIdParam}`;
+    if (forestCoverIdParam) {
+      const [coverId, polygonId] = forestCoverIdParam.split("-");
+      if (coverId && polygonId) return DEEP_LINK_ELEMENT_ID.fcRow(coverId, polygonId);
+    }
     return null;
   }, [forestCoverIdParam, sectionParam]);
 

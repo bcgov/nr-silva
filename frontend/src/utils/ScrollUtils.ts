@@ -1,4 +1,4 @@
-const SCROLL_OFFSET_PX = 48;
+export const SCROLL_OFFSET_PX = 48;
 const HIGHLIGHT_CLASS = "default-deep-link-highlight";
 
 export type ScrollToTargetOptions = {
