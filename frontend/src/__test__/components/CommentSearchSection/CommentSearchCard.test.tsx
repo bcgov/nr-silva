@@ -133,14 +133,14 @@ describe('CommentSearchCard', () => {
     });
 
     await user.click(link);
-    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345', '_blank', 'noopener,noreferrer');
+    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345?tab=overview&section=opening-comment', '_blank', 'noopener,noreferrer');
 
     link.focus();
     fireEvent.keyDown(link, { key: 'Enter' });
-    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345', '_blank', 'noopener,noreferrer');
+    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345?tab=overview&section=opening-comment', '_blank', 'noopener,noreferrer');
 
     fireEvent.keyDown(link, { key: ' ' });
-    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345', '_blank', 'noopener,noreferrer');
+    expect(openSpy).toHaveBeenLastCalledWith('/openings/12345?tab=overview&section=opening-comment', '_blank', 'noopener,noreferrer');
     expect(openSpy).toHaveBeenCalledTimes(3);
   });
 
@@ -155,11 +155,11 @@ describe('CommentSearchCard', () => {
   });
 
   it.each([
-    [location.OPENING, '/openings/12345'],
-    [location.MILESTONE, '/openings/12345?tab=standards-units'],
-    [location.STANDARDS_UNIT, '/openings/12345?tab=standards-units'],
+    [location.OPENING, '/openings/12345?tab=overview&section=opening-comment'],
+    [location.MILESTONE, '/openings/12345?tab=standards-units&section=milestone-comment'],
+    [location.STANDARDS_UNIT, '/openings/12345?tab=standards-units&section=ssu-comment'],
     [location.ACTIVITIES, '/openings/12345?tab=activities'],
-    [location.FOREST_COVER, '/openings/12345?tab=forest-cover'],
+    [location.FOREST_COVER, '/openings/12345?tab=forest-cover&section=fc-comment'],
     ['UNKNOWN_LOCATION' as CommentSearchResponseDto.commentLocation, '/openings/12345']
   ])('opens the expected route for %s comments', async (commentLocation, expectedPath) => {
     const user = userEvent.setup();
