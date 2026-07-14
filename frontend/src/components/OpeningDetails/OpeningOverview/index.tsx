@@ -1,8 +1,11 @@
 import React from "react";
 import { Column, Grid } from "@carbon/react";
+import { useSearchParams } from "react-router-dom";
 
 import { CardContainer, CardItem, CardTitle } from "@/components/Card";
 import { OpeningDetailsOverviewDto } from "@/services/OpenApi";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS, DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 
 import { formatLocalDate } from "@/utils/DateUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
@@ -17,6 +20,13 @@ type OpeningOverviewProps = {
 }
 
 const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
+  const [searchParams] = useSearchParams();
+  const section = searchParams.get(DEEP_LINK_PARAMS.section);
+
+  useDeepLinkScroll(
+    section === DEEP_LINK_SECTIONS.openingComment ? DEEP_LINK_ELEMENT_ID.openingComment : null,
+    !isLoading
+  );
 
   return (
     <CardContainer className="opening-overview-card-container">
@@ -51,7 +61,7 @@ const OpeningOverview = ({ overviewObj, isLoading }: OpeningOverviewProps) => {
               {codeDescriptionToDisplayText(overviewObj?.opening.timberSaleOffice)}
             </CardItem>
           </Column>
-          <Column sm={4} md={8} lg={16}>
+          <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.openingComment}>
             <CardItem label="Comment" showSkeleton={isLoading}>
               <Comments comments={overviewObj?.opening.comments.filter((comment) => comment.commentType.code !== "FORCOVER") ?? []} />
             </CardItem>

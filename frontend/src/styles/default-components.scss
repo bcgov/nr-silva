@@ -505,6 +505,20 @@ ul.default-tab-accordion {
   fill: var(--#{vars.$bcgov-prefix}-support-error);
 }
 
+@keyframes default-deep-link-pulse {
+  0% {
+    background-color: var(--#{vars.$bcgov-prefix}-highlight);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.default-deep-link-highlight {
+  animation: default-deep-link-pulse 3s step-end;
+}
+
 
 .default-search-action-menu-option {
   min-width: 16rem;

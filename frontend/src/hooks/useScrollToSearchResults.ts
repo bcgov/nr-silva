@@ -1,6 +1,5 @@
 import { RefObject, useEffect } from "react";
-
-const SCROLL_OFFSET_PX = 48;
+import { scrollToTarget } from "@/utils/ScrollUtils";
 
 const useScrollToSearchResults = (
   resultsRef: RefObject<HTMLDivElement | null>,
@@ -14,12 +13,7 @@ const useScrollToSearchResults = (
     if (!isLoading && data && shouldScrollRef.current) {
       shouldScrollRef.current = false;
       const target = (totalElements ?? 0) > 0 ? resultsRef.current : emptyRef.current;
-      if (target) {
-        window.scrollTo({
-          top: target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX,
-          behavior: 'smooth',
-        });
-      }
+      scrollToTarget(target);
     }
   }, [isLoading, data]);
 };

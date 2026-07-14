@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_ELEMENT_ID, DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS } from "@/constants/deepLinkConstants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
 
 import {
@@ -38,6 +41,7 @@ type DisturbanceAccordionProps = {
   data: OpeningDetailsActivitiesDisturbanceDto[],
   selectedDisturbanceIds: string[];
   setSelectedDisturbanceIds: React.Dispatch<React.SetStateAction<string[]>>;
+  targetDisturbanceId?: string | null;
 }
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -66,6 +70,8 @@ type DisturbanceRowProps = {
     columnKey: string,
     isLastElement?: boolean
   ) => React.ReactNode;
+  initialExpanded?: boolean;
+  targetComment?: boolean;
 };
 
 const DisturbanceRow = ({
@@ -76,8 +82,10 @@ const DisturbanceRow = ({
   selectedDisturbanceIds,
   setSelectedDisturbanceIds,
   renderCellContent,
+  initialExpanded,
+  targetComment,
 }: DisturbanceRowProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(initialExpanded ?? false);
   const compoundId = `${row.atuId}-DN`;
   const { isAvailable, isLoading } = usePolygonAvailability(
     openingId,
@@ -90,6 +98,7 @@ const DisturbanceRow = ({
   return (
     <React.Fragment key={row.atuId}>
       <TableExpandRow
+        id={DEEP_LINK_ELEMENT_ID.disturbanceRow(row.atuId)}
         aria-label={`Expand row for Activity ID ${row.atuId}`}
         isExpanded={isExpanded}
         onExpand={() => setIsExpanded(prev => !prev)}
@@ -142,7 +151,7 @@ const DisturbanceRow = ({
         }
       </TableExpandRow>
       <TableExpandedRow colSpan={DisturbanceTableHeaders.length + 2}>
-        <DisturbanceDetail detail={row} />
+        {isExpanded ? <DisturbanceDetail detail={row} targetComment={targetComment} /> : null}
       </TableExpandedRow>
     </React.Fragment>
   );
@@ -152,9 +161,19 @@ const DisturbanceAccordion = ({
   openingId,
   data,
   selectedDisturbanceIds,
-  setSelectedDisturbanceIds
+  setSelectedDisturbanceIds,
+  targetDisturbanceId
 }: DisturbanceAccordionProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const [searchParams] = useSearchParams();
+  const section = searchParams.get(DEEP_LINK_PARAMS.section);
+  const isCommentDeepLink = section === DEEP_LINK_SECTIONS.disturbanceComment;
+
+  useDeepLinkScroll(
+    isCommentDeepLink ? null : (targetDisturbanceId ? DEEP_LINK_ELEMENT_ID.disturbanceRow(targetDisturbanceId) : null),
+    data.length > 0
+  );
 
   const isCodeDescription = (value: string): boolean => {
     const codeDescriptionColumns = ["disturbance", "system", "variant", "cutPhase"];
@@ -227,6 +246,7 @@ const DisturbanceAccordion = ({
       <AccordionItem
         className="default-tab-accordion-item"
         title={<AccordionTitle total={data.length} />}
+        open={!!targetDisturbanceId}
       >
         <div>
           <Search
@@ -301,6 +321,8 @@ const DisturbanceAccordion = ({
                       selectedDisturbanceIds={selectedDisturbanceIds}
                       setSelectedDisturbanceIds={setSelectedDisturbanceIds}
                       renderCellContent={renderCellContent}
+                      initialExpanded={isCommentDeepLink && row.atuId.toString() === targetDisturbanceId}
+                      targetComment={isCommentDeepLink && row.atuId.toString() === targetDisturbanceId}
                     />
                   ))
                 ) : (

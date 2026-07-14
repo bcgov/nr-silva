@@ -4,6 +4,7 @@ import { Launch } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
+import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 import { ForestCoverHeaderKeyType, ForestCoverHeaderType } from "@/types/TableHeader";
 import { ForestCoverSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
@@ -39,7 +40,7 @@ const ForestCoverSearchTableRow = ({
   );
   const openingUrl = OpeningDetailsRoute.path!.replace(
     ":openingId",
-    `${rowData.openingId!.toString()}?tab=forest-cover`
+    `${rowData.openingId!.toString()}?tab=forest-cover&${DEEP_LINK_PARAMS.forestCoverId}=${rowData.forestCoverId}-${rowData.polygonId}`
   );
 
   const openInNewTab = () => {
