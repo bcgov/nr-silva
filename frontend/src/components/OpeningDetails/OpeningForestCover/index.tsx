@@ -596,9 +596,9 @@ const OpeningForestCover = ({
           </TableContainer>
         </Column>
 
-        <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.fcComment}>
+        <Column sm={4} md={8} lg={16}>
           <CardContainer>
-            <Column sm={4} md={8} lg={16}>
+            <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.fcComment}>
               <CardItem label="Comments">
                 {
                   (() => {
