@@ -100,6 +100,16 @@ vi.mock('../../../components/ForestCoverSearchSection/ForestCoverSearchTableRow'
 describe('ForestCoverSearchSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset mock implementations to their defaults
+    vi.mocked(forestCoverUtils.hasForestCoverSearchFilters).mockImplementation((params) => {
+      if (!params) return false;
+      const excludeKeys = new Set(['page', 'size', 'sort']);
+      return Object.entries(params).some(([key, value]) => {
+        if (excludeKeys.has(key)) return false;
+        if (Array.isArray(value)) return value.length > 0;
+        return value !== undefined && value !== null && value !== '';
+      });
+    });
   });
 
   afterEach(() => {
