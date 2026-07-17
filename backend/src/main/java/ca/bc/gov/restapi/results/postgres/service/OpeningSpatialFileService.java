@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,8 +35,16 @@ import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
-import org.geotools.xsd.Parser;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.operation.valid.IsValidOp;
 import org.locationtech.jts.operation.valid.TopologyValidationError;
 import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
@@ -319,33 +328,181 @@ public class OpeningSpatialFileService {
     }
   }
 
+  private static final String GML_NS = "http://www.opengis.net/gml";
+
   /**
-   * Parses a GML string into a JTS Geometry using GeoTools GML2 or GML3 parser. Auto-detects GML2
-   * vs GML3 based on XML content.
+   * Parses a GML string into a JTS Geometry using DOM parsing. Supports GML2 and GML3 for Polygon,
+   * MultiPolygon, LineString, MultiLineString, Point, and MultiPoint geometries.
    *
    * @param gml the GML geometry string
    * @return parsed JTS Geometry
    * @throws Exception if parsing fails or geometry is invalid
    */
   private Geometry parseGmlToGeometry(String gml) throws Exception {
-    try (InputStream is = new ByteArrayInputStream(gml.getBytes())) {
-      // Auto-detect GML2 vs GML3
-      boolean isGml2 = gml.contains("<gml:coordinates") || gml.contains("<coordinates");
-      boolean isGml3 = gml.contains("<gml:posList") || gml.contains("<posList");
-      Parser parser;
-      if (isGml2 && !isGml3) {
-        parser = new Parser(new org.geotools.gml2.GMLConfiguration());
-      } else {
-        parser = new Parser(new org.geotools.gml3.GMLConfiguration());
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    Document doc = db.parse(new ByteArrayInputStream(gml.getBytes(StandardCharsets.UTF_8)));
+    Element root = doc.getDocumentElement();
+    GeometryFactory gf = new GeometryFactory();
+    Geometry geom = parseGmlElement(root, gf);
+    if (geom == null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "GML does not contain a valid geometry.");
+    }
+    return geom;
+  }
+
+  private Geometry parseGmlElement(Element el, GeometryFactory gf) throws Exception {
+    String localName = el.getLocalName();
+    if (localName == null) return null;
+    return switch (localName) {
+      case "Polygon" -> parseGmlPolygon(el, gf);
+      case "MultiPolygon" -> parseGmlMultiPolygon(el, gf);
+      case "LineString" -> parseGmlLineString(el, gf);
+      case "MultiLineString" -> parseGmlMultiLineString(el, gf);
+      case "Point" -> parseGmlPoint(el, gf);
+      case "MultiPoint" -> parseGmlMultiPoint(el, gf);
+      default -> null;
+    };
+  }
+
+  private Coordinate[] parseGmlCoordinates(Element el) {
+    // GML2: <gml:coordinates>x,y x,y ...</gml:coordinates>
+    NodeList coords2 = el.getElementsByTagNameNS(GML_NS, "coordinates");
+    if (coords2.getLength() > 0) {
+      String text = coords2.item(0).getTextContent().trim();
+      String[] tuples = text.split("\\s+");
+      List<Coordinate> list = new ArrayList<>();
+      for (String tuple : tuples) {
+        String[] parts = tuple.split(",");
+        if (parts.length >= 2) {
+          list.add(
+              new Coordinate(
+                  Double.parseDouble(parts[0].trim()), Double.parseDouble(parts[1].trim())));
+        }
       }
-      Object parsed = parser.parse(is);
-      if (parsed instanceof Geometry geometry) {
-        return geometry;
-      } else {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "GML does not contain a valid geometry.");
+      return list.toArray(new Coordinate[0]);
+    }
+    // GML3: <gml:posList>x1 y1 x2 y2 ...</gml:posList>
+    NodeList coords3 = el.getElementsByTagNameNS(GML_NS, "posList");
+    if (coords3.getLength() > 0) {
+      String text = coords3.item(0).getTextContent().trim();
+      String[] vals = text.split("\\s+");
+      List<Coordinate> list = new ArrayList<>();
+      for (int i = 0; i + 1 < vals.length; i += 2) {
+        list.add(new Coordinate(Double.parseDouble(vals[i]), Double.parseDouble(vals[i + 1])));
+      }
+      return list.toArray(new Coordinate[0]);
+    }
+    // GML3 Point: <gml:pos>x y</gml:pos>
+    NodeList pos = el.getElementsByTagNameNS(GML_NS, "pos");
+    if (pos.getLength() > 0) {
+      String text = pos.item(0).getTextContent().trim();
+      String[] vals = text.split("\\s+");
+      if (vals.length >= 2) {
+        return new Coordinate[] {
+          new Coordinate(Double.parseDouble(vals[0]), Double.parseDouble(vals[1]))
+        };
       }
     }
+    return new Coordinate[0];
+  }
+
+  private LinearRing parseGmlLinearRing(Element el, GeometryFactory gf) {
+    Coordinate[] coords = parseGmlCoordinates(el);
+    if (coords.length < 4) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "GML LinearRing must have at least 4 coordinates");
+    }
+    return gf.createLinearRing(coords);
+  }
+
+  private Polygon parseGmlPolygon(Element el, GeometryFactory gf) throws Exception {
+    // GML2: outerBoundaryIs/LinearRing, GML3: exterior/LinearRing
+    NodeList outer2 = el.getElementsByTagNameNS(GML_NS, "outerBoundaryIs");
+    NodeList outer3 = el.getElementsByTagNameNS(GML_NS, "exterior");
+    Element exteriorEl =
+        outer2.getLength() > 0
+            ? (Element) outer2.item(0)
+            : outer3.getLength() > 0 ? (Element) outer3.item(0) : null;
+    if (exteriorEl == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GML Polygon has no exterior ring");
+    }
+    NodeList ringNodes = exteriorEl.getElementsByTagNameNS(GML_NS, "LinearRing");
+    if (ringNodes.getLength() == 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "GML Polygon exterior ring not found");
+    }
+    LinearRing shell = parseGmlLinearRing((Element) ringNodes.item(0), gf);
+    // GML2: innerBoundaryIs, GML3: interior
+    NodeList inner2 = el.getElementsByTagNameNS(GML_NS, "innerBoundaryIs");
+    NodeList inner3 = el.getElementsByTagNameNS(GML_NS, "interior");
+    NodeList holesSource = inner2.getLength() > 0 ? inner2 : inner3;
+    List<LinearRing> holes = new ArrayList<>();
+    for (int i = 0; i < holesSource.getLength(); i++) {
+      NodeList holeRings =
+          ((Element) holesSource.item(i)).getElementsByTagNameNS(GML_NS, "LinearRing");
+      if (holeRings.getLength() > 0) {
+        holes.add(parseGmlLinearRing((Element) holeRings.item(0), gf));
+      }
+    }
+    return gf.createPolygon(shell, holes.toArray(new LinearRing[0]));
+  }
+
+  private MultiPolygon parseGmlMultiPolygon(Element el, GeometryFactory gf) throws Exception {
+    // GML2: polygonMember, GML3: surfaceMember
+    NodeList members2 = el.getElementsByTagNameNS(GML_NS, "polygonMember");
+    NodeList members3 = el.getElementsByTagNameNS(GML_NS, "surfaceMember");
+    NodeList members = members2.getLength() > 0 ? members2 : members3;
+    List<Polygon> polys = new ArrayList<>();
+    for (int i = 0; i < members.getLength(); i++) {
+      NodeList polyEls = ((Element) members.item(i)).getElementsByTagNameNS(GML_NS, "Polygon");
+      if (polyEls.getLength() > 0) {
+        polys.add(parseGmlPolygon((Element) polyEls.item(0), gf));
+      }
+    }
+    return gf.createMultiPolygon(polys.toArray(new Polygon[0]));
+  }
+
+  private LineString parseGmlLineString(Element el, GeometryFactory gf) {
+    return gf.createLineString(parseGmlCoordinates(el));
+  }
+
+  private MultiLineString parseGmlMultiLineString(Element el, GeometryFactory gf) {
+    NodeList members = el.getElementsByTagNameNS(GML_NS, "lineStringMember");
+    List<LineString> lines = new ArrayList<>();
+    for (int i = 0; i < members.getLength(); i++) {
+      NodeList lineEls = ((Element) members.item(i)).getElementsByTagNameNS(GML_NS, "LineString");
+      if (lineEls.getLength() > 0) {
+        lines.add(parseGmlLineString((Element) lineEls.item(0), gf));
+      }
+    }
+    return gf.createMultiLineString(lines.toArray(new LineString[0]));
+  }
+
+  private Point parseGmlPoint(Element el, GeometryFactory gf) {
+    Coordinate[] coords = parseGmlCoordinates(el);
+    if (coords.length == 0) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GML Point has no coordinates");
+    }
+    return gf.createPoint(coords[0]);
+  }
+
+  private MultiPoint parseGmlMultiPoint(Element el, GeometryFactory gf) {
+    NodeList members = el.getElementsByTagNameNS(GML_NS, "pointMember");
+    List<Point> points = new ArrayList<>();
+    for (int i = 0; i < members.getLength(); i++) {
+      NodeList pointEls = ((Element) members.item(i)).getElementsByTagNameNS(GML_NS, "Point");
+      if (pointEls.getLength() > 0) {
+        points.add(parseGmlPoint((Element) pointEls.item(0), gf));
+      }
+    }
+    return gf.createMultiPoint(points.toArray(new Point[0]));
   }
 
   /**
