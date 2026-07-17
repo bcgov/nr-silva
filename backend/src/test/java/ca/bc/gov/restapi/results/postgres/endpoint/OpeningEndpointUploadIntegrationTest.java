@@ -1,11 +1,14 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
+import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
@@ -34,11 +37,14 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @Autowired private OpeningSpatialFileService openingSpatialFileService;
 
+  @Autowired private VirusScanService virusScanService;
+
   @Autowired private ObjectMapper mapper;
 
   @BeforeEach
   void resetMocks() {
     Mockito.reset(openingSpatialFileService);
+    Mockito.reset(virusScanService);
   }
 
   @Test
@@ -92,8 +98,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   void shouldReturnBadRequestWhenServiceThrows() throws Exception {
     when(openingSpatialFileService.processOpeningSpatialFile(any()))
         .thenThrow(
-            new ResponseStatusException(
-                org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
+            new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
 
     MockMultipartFile file =
         new MockMultipartFile(
@@ -111,6 +116,51 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  @DisplayName("Should return 422 when a virus is detected")
+  void shouldReturn422WhenVirusDetected() throws Exception {
+    doThrow(new VirusDetectedException("Virus detected: Eicar-Test-Signature"))
+        .when(virusScanService)
+        .scanOrThrow(any(), any());
+
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file", "evil.bin", MediaType.APPLICATION_OCTET_STREAM_VALUE, new byte[] {1, 2, 3});
+
+    mockMvc
+        .perform(
+            multipart("/api/openings/create/upload")
+                .file(file)
+                .with(csrf().asHeader())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  @DisplayName("Should return 422 when the virus scanner is unavailable (fail-closed)")
+  void shouldReturn422WhenScannerUnavailable() throws Exception {
+    doThrow(new VirusDetectedException("Virus scan unavailable: connection refused"))
+        .when(virusScanService)
+        .scanOrThrow(any(), any());
+
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file",
+            "file.geojson",
+            MediaType.APPLICATION_JSON_VALUE,
+            "{\"type\":\"FeatureCollection\",\"features\":[]}".getBytes(StandardCharsets.UTF_8));
+
+    mockMvc
+        .perform(
+            multipart("/api/openings/create/upload")
+                .file(file)
+                .with(csrf().asHeader())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity());
+  }
 }
 
 @TestConfiguration
@@ -119,5 +169,10 @@ class OpeningEndpointUploadIntegrationTestConfig {
   @Bean
   public OpeningSpatialFileService openingSpatialFileService() {
     return Mockito.mock(OpeningSpatialFileService.class);
+  }
+
+  @Bean
+  public VirusScanService virusScanService() {
+    return Mockito.mock(VirusScanService.class);
   }
 }

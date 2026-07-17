@@ -1,8 +1,10 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
+import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ public class OpeningEndpoint {
 
   private final UserOpeningService userOpeningService;
   private final OpeningSpatialFileService openingSpatialFileService;
+  private final VirusScanService virusScanService;
 
   /**
    * Get user's favorite openings.
@@ -77,7 +80,9 @@ public class OpeningEndpoint {
    */
   @PostMapping(value = "/create/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public ExtractedGeoDataDto uploadOpeningSpatialFile(@RequestPart("file") MultipartFile file) {
+  public ExtractedGeoDataDto uploadOpeningSpatialFile(@RequestPart("file") MultipartFile file)
+      throws IOException {
+    virusScanService.scanOrThrow(file.getBytes(), file.getOriginalFilename());
     return openingSpatialFileService.processOpeningSpatialFile(file);
   }
 }
