@@ -203,13 +203,41 @@ public class OpeningSpatialFileService {
       String crsCode = detectGmlCrs(file);
       log.info("Detected CRS for ESF: EPSG:{}", crsCode);
 
-      String xmlText = new String(file.getBytes());
+      String xmlText = new String(file.getBytes(), StandardCharsets.UTF_8);
 
       GeoMetaDataDto metaData = extractEsfMetaData(xmlText);
       List<TenureDto> tenureList = extractEsfTenureList(xmlText);
 
-      String gmlFragment = extractGeneralAreaGmlFragment(xmlText);
-      Geometry gmlGeometry = parseGmlToGeometry(gmlFragment);
+      // Parse document and extract geometry element directly (avoids TransformerFactory round-trip)
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      dbf.setXIncludeAware(false);
+      dbf.setExpandEntityReferences(false);
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document esfDoc =
+          db.parse(new ByteArrayInputStream(xmlText.getBytes(StandardCharsets.UTF_8)));
+
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      xpath.setNamespaceContext(buildEsfNamespaceContext());
+      String geomExpr =
+          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission"
+              + "/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:extentOf/*";
+      Node geomXmlNode = (Node) xpath.evaluate(geomExpr, esfDoc, XPathConstants.NODE);
+      if (geomXmlNode == null || !(geomXmlNode instanceof Element)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
+      }
+      GeometryFactory gf = new GeometryFactory();
+      Geometry gmlGeometry = parseGmlElement((Element) geomXmlNode, gf);
+      if (gmlGeometry == null) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Unsupported GML geometry type in ESF/XML file");
+      }
       log.info("Parsed general area GML geometry from ESF: {}", gmlGeometry.getGeometryType());
 
       int numGeoms = gmlGeometry.getNumGeometries();
@@ -231,10 +259,10 @@ public class OpeningSpatialFileService {
         // Reproject to EPSG:4326 if needed
         Geometry finalGeom = reprojectTo4326(thinned, crsCode);
         String geojson = gjson.toString(finalGeom);
-        JsonNode geomNode = mapper.readTree(geojson);
+        JsonNode geojsonNode = mapper.readTree(geojson);
         ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
-        feature.set("geometry", geomNode);
+        feature.set("geometry", geojsonNode);
         feature.set("properties", mapper.createObjectNode());
         features.add(feature);
       }
@@ -247,8 +275,10 @@ public class OpeningSpatialFileService {
           .geoJson(fc)
           .tenureList(tenureList)
           .build();
+    } catch (ResponseStatusException e) {
+      throw e;
     } catch (Exception e) {
-      log.error("Failed to process ESF/XML file", e);
+      log.error("Failed to process ESF/XML file: {}", e.getMessage(), e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid ESF/XML file: " + e.getMessage());
     }
@@ -265,28 +295,45 @@ public class OpeningSpatialFileService {
     log.info("Processing GML file: {}", file.getOriginalFilename());
     try {
       // Step 1: Detect CRS
-      String gmlText = new String(file.getBytes());
+      String gmlText = new String(file.getBytes(), StandardCharsets.UTF_8);
       String crsCode = detectGmlCrs(file);
       log.info("Detected CRS for GML: EPSG:{}", crsCode);
 
-      // Step 2, 3: Parse GML to JTS Geometry (extract all geometry elements)
-      List<String> geomXmls = extractGmlGeometriesXml(gmlText);
+      // Parse document once and extract geometry elements directly.
+      // This avoids the TransformerFactory (XSLT) serialize→re-parse round-trip that
+      // breaks in GraalVM native image due to ServiceLoader resolution.
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      dbf.setXIncludeAware(false);
+      dbf.setExpandEntityReferences(false);
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes(StandardCharsets.UTF_8)));
+
+      GeometryFactory gf = new GeometryFactory();
       List<Geometry> geometries = new ArrayList<>();
-      for (String geomXml : geomXmls) {
-        Geometry geom = parseGmlToGeometry(geomXml);
-        geometries.add(geom);
+      String[] geomTags = {
+        "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
+      };
+      for (String tag : geomTags) {
+        NodeList nodes = doc.getElementsByTagNameNS(GML_NS, tag);
+        for (int i = 0; i < nodes.getLength(); i++) {
+          Geometry geom = parseGmlElement((Element) nodes.item(i), gf);
+          if (geom != null) geometries.add(geom);
+        }
       }
 
-      // If no geometry elements found, try parsing the whole file as a naked geometry
+      // Fallback: try parsing the root element directly
       if (geometries.isEmpty()) {
-        try {
-          Geometry geom = parseGmlToGeometry(gmlText);
-          geometries.add(geom);
-        } catch (Exception e) {
-          // If still fails, throw error
+        Geometry geom = parseGmlElement(doc.getDocumentElement(), gf);
+        if (geom == null) {
           throw new ResponseStatusException(
               HttpStatus.BAD_REQUEST, "No valid GML geometry found in file");
         }
+        geometries.add(geom);
       }
 
       // Step 4, 5: Validate, thin, and convert all geometries to GeoJSON features
@@ -322,9 +369,12 @@ public class OpeningSpatialFileService {
       fc.put("type", "FeatureCollection");
       fc.set("features", features);
       return ExtractedGeoDataDto.builder().metaData(null).geoJson(fc).build();
+    } catch (ResponseStatusException e) {
+      throw e;
     } catch (Exception e) {
-      log.error("Failed to process GML file", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process GML file.");
+      log.error("Failed to process GML file: {}", e.getMessage(), e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Failed to process GML file: " + e.getMessage());
     }
   }
 
@@ -928,75 +978,6 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Extracts all GML geometry elements (Polygon, MultiPolygon, etc.) from a GML/XML string using
-   * XML parsing. Preserves namespaces and returns a list of geometry XML strings for further
-   * parsing.
-   *
-   * @param gmlText the GML/XML string
-   * @return list of geometry XML strings
-   * @throws Exception if XML parsing fails
-   */
-  private List<String> extractGmlGeometriesXml(String gmlText) throws Exception {
-    List<String> geometries = new ArrayList<>();
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    dbf.setNamespaceAware(true);
-    // Secure XML parser configuration: disable DTD, XXE
-    dbf.setNamespaceAware(true);
-    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-    dbf.setXIncludeAware(false);
-    dbf.setExpandEntityReferences(false);
-
-    DocumentBuilder db = dbf.newDocumentBuilder();
-    Document doc = db.parse(new ByteArrayInputStream(gmlText.getBytes()));
-    String[] geomTags = {
-      "MultiPolygon", "Polygon", "LineString", "MultiLineString", "Point", "MultiPoint"
-    };
-    for (String tag : geomTags) {
-      NodeList nodes = doc.getElementsByTagNameNS("http://www.opengis.net/gml", tag);
-      for (int i = 0; i < nodes.getLength(); i++) {
-        Node node = nodes.item(i);
-        // Serialize node back to string, including namespace context
-        TransformerFactory tf = TransformerFactory.newInstance();
-        // Harden TransformerFactory against XXE / external resource access
-        try {
-          tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        } catch (Exception e) {
-          // Some TransformerFactory implementations (or older JDKs) may not support
-          // setting this feature. This is non-fatal; rely on parser-level protections.
-          log.debug("Could not set TransformerFactory FEATURE_SECURE_PROCESSING", e);
-        }
-        try {
-          tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        } catch (Exception e) {
-          // Best-effort hardening; if unsupported we proceed. Log at debug level
-          // so issues can be diagnosed in environments with incompatible factories.
-          log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_DTD", e);
-        }
-        try {
-          tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-        } catch (Exception e) {
-          // Best-effort hardening; if unsupported we proceed. Log at debug level
-          // so issues can be diagnosed in environments with incompatible factories.
-          log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_STYLESHEET", e);
-        }
-        Transformer transformer = tf.newTransformer();
-        StringWriter writer = new StringWriter();
-        transformer.transform(new DOMSource(node), new StreamResult(writer));
-        String geomXml = writer.toString();
-        // Add xmlns:gml if not present (for fragments)
-        if (!geomXml.contains("xmlns:gml")) {
-          geomXml = geomXml.replaceFirst(">", " xmlns:gml=\"http://www.opengis.net/gml\">");
-        }
-        geometries.add(geomXml);
-      }
-    }
-    return geometries;
-  }
-
-  /**
    * Extracts the GML fragment for the general area definition geometry (OpeningDefinition/extentOf)
    * from ESF/XML. Uses XPath to locate the geometry node and serializes it to a string. Throws
    * ResponseStatusException if not found.
@@ -1005,6 +986,33 @@ public class OpeningSpatialFileService {
    * @return GML fragment as a string
    * @throws ResponseStatusException if geometry is not found or extraction fails
    */
+
+  /** NamespaceContext for ESF/XML XPath queries. */
+  private NamespaceContext buildEsfNamespaceContext() {
+    return new NamespaceContext() {
+      public String getNamespaceURI(String prefix) {
+        switch (prefix) {
+          case "rst":
+            return "http://www.for.gov.bc.ca/schema/results";
+          case "gml":
+            return "http://www.opengis.net/gml";
+          case "esf":
+            return "http://www.for.gov.bc.ca/schema/esf";
+          default:
+            return javax.xml.XMLConstants.NULL_NS_URI;
+        }
+      }
+
+      public String getPrefix(String uri) {
+        return null;
+      }
+
+      public java.util.Iterator<String> getPrefixes(String uri) {
+        return null;
+      }
+    };
+  }
+
   private String extractGeneralAreaGmlFragment(String xmlText) {
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

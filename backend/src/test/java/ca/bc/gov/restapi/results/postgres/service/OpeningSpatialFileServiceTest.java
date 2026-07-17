@@ -183,22 +183,6 @@ class OpeningSpatialFileServiceTest {
   }
 
   @Test
-  void extractGmlGeometriesXml_shouldFindGeoms() throws Exception {
-    String doc =
-        "<root"
-            + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49"
-            + " -123,49.1 -122.9,49.1"
-            + " -123,49</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"
-            + "</root>";
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("extractGmlGeometriesXml", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    List<String> list = (List<String>) m.invoke(service, doc);
-    assertThat(list).isNotEmpty();
-  }
-
-  @Test
   void esfMetaDataAndTenureExtraction_and_generalAreaFragment() throws Exception {
     String esf =
         "<esf:ESFSubmission xmlns:esf=\"http://www.for.gov.bc.ca/schema/esf\""
