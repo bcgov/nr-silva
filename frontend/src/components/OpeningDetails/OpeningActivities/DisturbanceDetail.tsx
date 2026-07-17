@@ -5,8 +5,19 @@ import { Column, Grid } from "@carbon/react";
 import { OpeningDetailsActivitiesDisturbanceDto } from "@/services/OpenApi";
 import Comments from "@/components/Comments";
 import { CardItem } from "@/components/Card";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 
-const DisturbanceDetail = ({ detail }: { detail: OpeningDetailsActivitiesDisturbanceDto }) => {
+type DisturbanceDetailProps = {
+  detail: OpeningDetailsActivitiesDisturbanceDto;
+  targetComment?: boolean;
+};
+
+const DisturbanceDetail = ({ detail, targetComment }: DisturbanceDetailProps) => {
+  useDeepLinkScroll(
+    targetComment ? DEEP_LINK_ELEMENT_ID.disturbanceComment(detail.atuId) : null,
+    true
+  );
 
   return (
     <Grid className="expanded-row-content-grid">
@@ -48,7 +59,7 @@ const DisturbanceDetail = ({ detail }: { detail: OpeningDetailsActivitiesDisturb
         </CardItem>
       </Column>
 
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.disturbanceComment(detail.atuId)}>
         <CardItem label="Comment">
           <Comments comments={detail.comments ?? []} />
         </CardItem>

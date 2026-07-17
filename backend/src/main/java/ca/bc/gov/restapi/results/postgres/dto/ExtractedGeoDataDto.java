@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import lombok.Builder;
 import lombok.With;
-import org.springframework.lang.Nullable;
 
 /**
  * DTO representing extracted geographical data, including metadata, geoJson, and tenure
@@ -13,4 +12,4 @@ import org.springframework.lang.Nullable;
 @Builder
 @With
 public record ExtractedGeoDataDto(
-    @Nullable GeoMetaDataDto metaData, JsonNode geoJson, List<TenureDto> tenureList) {}
+    GeoMetaDataDto metaData, JsonNode geoJson, List<TenureDto> tenureList) {}

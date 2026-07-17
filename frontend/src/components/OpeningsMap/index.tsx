@@ -101,7 +101,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const selectedSet = new Set(selectedForestCoverIds);
       return openings.map(fc => ({
         ...fc,
-        features: fc.features.filter(
+        features: (fc.features ?? []).filter(
           feature =>
             feature.properties?.FOREST_COVER_ID != null &&
             feature.properties?.SILV_POLYGON_NUMBER != null &&
@@ -117,7 +117,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const disturbanceSet = new Set(selectedDisturbanceIds ?? []);
       return openings.map(fc => ({
         ...fc,
-        features: fc.features.filter(feature => {
+        features: (fc.features ?? []).filter(feature => {
           const atuId = feature.properties?.ACTIVITY_TREATMENT_UNIT_ID;
           const baseCode = feature.properties?.SILV_BASE_CODE;
           if (atuId == null || !baseCode) return false;
@@ -135,7 +135,7 @@ const OpeningsMap: React.FC<MapProps> = ({
       const selectedSet = new Set(selectedStandardsUnitIds ?? []);
       return openings.map(fc => ({
         ...fc,
-        features: fc.features.filter(
+        features: (fc.features ?? []).filter(
           feature =>
             feature.properties?.STOCKING_STANDARD_UNIT_ID != null &&
             selectedSet.has(`${feature.properties.STOCKING_STANDARD_UNIT_ID}`)

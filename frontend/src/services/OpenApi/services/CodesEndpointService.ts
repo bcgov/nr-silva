@@ -128,13 +128,19 @@ export class CodesEndpointService {
         });
     }
     /**
+     * @param type
      * @returns CodeDescriptionDto OK
      * @throws ApiError
      */
-    public static getOpeningOrgUnits(): CancelablePromise<Array<CodeDescriptionDto>> {
+    public static getOpeningOrgUnits(
+        type: 'all' | 'district' = 'all',
+    ): CancelablePromise<Array<CodeDescriptionDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/codes/org-units',
+            query: {
+                'type': type,
+            },
         });
     }
     /**

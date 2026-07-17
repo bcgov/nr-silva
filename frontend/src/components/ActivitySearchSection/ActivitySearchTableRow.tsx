@@ -7,6 +7,7 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
 import { ActivitySearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
+import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 import { getClientLabel, getClientSimpleLabel } from "@/utils/ForestClientUtils";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import SpatialCheckbox from "../SpatialCheckbox";
@@ -38,7 +39,7 @@ const ActivitySearchTableRow = ({
   );
   const openingUrl = OpeningDetailsRoute.path!.replace(
     ":openingId",
-    `${rowData.openingId!.toString()}?tab=activities`
+    `${rowData.openingId!.toString()}?tab=activities${rowData.activityId ? `&${DEEP_LINK_PARAMS.activityId}=${rowData.activityId}` : ''}`
   );
 
   const openInNewTab = () => {

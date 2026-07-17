@@ -5,8 +5,8 @@
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningForestCoverDetailedSpeciesDto = {
     species: CodeDescriptionDto;
-    percentage: number | number | null;
-    averageAge: number | number | null;
+    percentage: number | null;
+    averageAge: number | null;
     averageHeight: number | null;
 };
 

@@ -75,8 +75,8 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
   });
 
   const orgUnitQuery = useQuery({
-    queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits
+    queryKey: ["codes", "org-units", { type: 'district' }],
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits('district')
   });
 
   const categoryQuery = useQuery({

@@ -44,7 +44,7 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
   });
 
   const categoryQuery = useQuery({

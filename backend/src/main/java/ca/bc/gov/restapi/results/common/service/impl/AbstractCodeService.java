@@ -1,15 +1,15 @@
 package ca.bc.gov.restapi.results.common.service.impl;
 
-import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
+import ca.bc.gov.restapi.results.common.projection.OrgUnitProjection;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import ca.bc.gov.restapi.results.common.util.CodeConverterUtil;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ public abstract class AbstractCodeService implements CodeService {
   protected GenericCodeRepository<?> stockingTypeCodeRepository;
   protected GenericCodeRepository<?> silvTreeSpeciesCodeRepository;
   protected OrgUnitRepository orgUnitRepository;
-  protected SilvaConfiguration silvaConfiguration;
 
   @Override
   public List<CodeDescriptionDto> getAllSilvBaseCode() {
@@ -142,29 +141,32 @@ public abstract class AbstractCodeService implements CodeService {
   }
 
   @Override
-  public List<CodeDescriptionDto> findAllOrgUnits() {
-    log.info("Getting all org units for the search openings");
-
-    if (Objects.isNull(silvaConfiguration.getOrgUnits())
-        || silvaConfiguration.getOrgUnits().isEmpty()) {
-      log.warn("No Org Units from the properties file.");
-      return List.of();
+  public List<CodeDescriptionDto> findAllOrgUnits(boolean districtsOnly) {
+    log.info("Getting all org units. Districts only: {}", districtsOnly);
+    LocalDate today = LocalDate.now();
+    if (districtsOnly) {
+      List<CodeDescriptionDto> result =
+          orgUnitRepository.findActiveDistricts(today).stream()
+              .map(o -> new CodeDescriptionDto(o.getOrgUnitCode(), o.getOrgUnitName()))
+              .toList();
+      log.info("Found {} district org units", result.size());
+      return result;
     }
-
-    LocalDate now = LocalDate.now();
-    List<CodeDescriptionDto> orgUnits =
-        orgUnitRepository.findAllByOrgUnitCodeIn(silvaConfiguration.getOrgUnits()).stream()
-            .map(
-                orgUnit -> {
-                  boolean expired =
-                      orgUnit.getExpiryDate() != null && orgUnit.getExpiryDate().isBefore(now);
-                  return new CodeDescriptionDto(
-                      orgUnit.getOrgUnitCode(),
-                      expired ? orgUnit.getOrgUnitName() + " (Expired)" : orgUnit.getOrgUnitName());
-                })
+    List<CodeDescriptionDto> result =
+        orgUnitRepository.findAllActive(today).stream()
+            .sorted(
+                Comparator.<OrgUnitProjection, Integer>comparing(
+                        o ->
+                            switch (o.getOrgUnitCode().charAt(0)) {
+                              case 'D' -> 0;
+                              case 'R' -> 1;
+                              case 'H' -> 2;
+                              default -> 3;
+                            })
+                    .thenComparing(OrgUnitProjection::getOrgUnitCode))
+            .map(o -> new CodeDescriptionDto(o.getOrgUnitCode(), o.getOrgUnitName()))
             .toList();
-
-    log.info("Found {} org units by codes", orgUnits.size());
-    return orgUnits;
+    log.info("Found {} org units", result.size());
+    return result;
   }
 }

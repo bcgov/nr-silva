@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import OpeningOverview from "../../../components/OpeningDetails/OpeningOverview";
 import {
   OpeningDetailsOverviewDto,
@@ -36,7 +37,11 @@ describe("OpeningOverview", () => {
   };
 
   test("renders all opening information correctly", () => {
-    render(<OpeningOverview overviewObj={mockOverview} />);
+    render(
+      <MemoryRouter>
+        <OpeningOverview overviewObj={mockOverview} />
+      </MemoryRouter>
+    );
 
     // Check Opening section title
     expect(screen.getByText("Opening")).toBeInTheDocument();
@@ -63,7 +68,11 @@ describe("OpeningOverview", () => {
   });
 
   test("renders all milestone information correctly", () => {
-    render(<OpeningOverview overviewObj={mockOverview} />);
+    render(
+      <MemoryRouter>
+        <OpeningOverview overviewObj={mockOverview} />
+      </MemoryRouter>
+    );
 
     // Check Milestone section title
     expect(screen.getByText("Milestone")).toBeInTheDocument();
@@ -113,7 +122,11 @@ describe("OpeningOverview", () => {
   });
 
   test("renders skeleton when isLoading is true", () => {
-    const { container } = render(<OpeningOverview isLoading={true} />);
+    const { container } = render(
+      <MemoryRouter>
+        <OpeningOverview isLoading={true} />
+      </MemoryRouter>
+    );
 
     // Check for skeleton classes in the component
     const skeletons = container.querySelectorAll(".cds--skeleton");
@@ -142,7 +155,11 @@ describe("OpeningOverview", () => {
       },
     };
 
-    render(<OpeningOverview overviewObj={emptyOverview} />);
+    render(
+      <MemoryRouter>
+        <OpeningOverview overviewObj={emptyOverview} />
+      </MemoryRouter>
+    );
 
     // Verify that the component renders without errors when given null values
     expect(screen.getByText("Opening")).toBeInTheDocument();

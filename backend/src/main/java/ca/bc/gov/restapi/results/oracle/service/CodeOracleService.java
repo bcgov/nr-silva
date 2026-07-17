@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.oracle.service;
 
-import ca.bc.gov.restapi.results.common.configuration.SilvaConfiguration;
 import ca.bc.gov.restapi.results.common.service.impl.AbstractCodeService;
 import ca.bc.gov.restapi.results.oracle.repository.DisturbanceCodeOracleRepository;
 import ca.bc.gov.restapi.results.oracle.repository.OpenCategoryCodeOracleRepository;
@@ -41,8 +40,7 @@ public class CodeOracleService extends AbstractCodeService {
       StockingStatusCodeOracleRepository stockingStatusCodeRepository,
       StockingTypeCodeOracleRepository stockingTypeCodeRepository,
       SilvTreeSpeciesCodeOracleRepository silvTreeSpeciesCodeRepository,
-      OrgUnitOracleRepository orgUnitRepository,
-      SilvaConfiguration silvaConfiguration) {
+      OrgUnitOracleRepository orgUnitRepository) {
     super(
         silvBaseCodeRepository,
         silvTechniqueCodeRepository,
@@ -59,7 +57,6 @@ public class CodeOracleService extends AbstractCodeService {
         stockingStatusCodeRepository,
         stockingTypeCodeRepository,
         silvTreeSpeciesCodeRepository,
-        orgUnitRepository,
-        silvaConfiguration);
+        orgUnitRepository);
   }
 }

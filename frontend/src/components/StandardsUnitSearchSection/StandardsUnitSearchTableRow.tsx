@@ -4,6 +4,7 @@ import { Launch, Warning } from "@carbon/icons-react";
 import { formatLocalDate } from "@/utils/DateUtils";
 import { PLACE_HOLDER, PREFERRED_SPECIES_LIMIT } from "@/constants";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
+import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 import { StandardsUnitHeaderKeyType, StandardsUnitHeaderType } from "@/types/TableHeader";
 import { StandardUnitSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
@@ -40,7 +41,7 @@ const StandardsUnitSearchTableRow = ({
   );
   const openingUrl = OpeningDetailsRoute.path!.replace(
     ":openingId",
-    `${rowData.openingId!.toString()}?tab=standards-units`
+    `${rowData.openingId!.toString()}?tab=standards-units&${DEEP_LINK_PARAMS.ssuId}=${rowData.stockingStandardUnitId}`
   );
 
   const openInNewTab = () => {

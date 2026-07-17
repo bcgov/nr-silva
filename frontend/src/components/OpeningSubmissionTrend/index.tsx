@@ -61,7 +61,7 @@ const OpeningSubmissionTrend = () => {
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits,
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
   });
 
   const submissionTrendQuery = useQuery({

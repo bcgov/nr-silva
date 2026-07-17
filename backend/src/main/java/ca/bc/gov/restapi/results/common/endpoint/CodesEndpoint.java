@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.enums.OrgUnitTypeParam;
 import ca.bc.gov.restapi.results.common.service.CodeService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +33,20 @@ public class CodesEndpoint {
   }
 
   /**
-   * Get the Org units list for the openings search API.
+   * Get the org units list for the openings search API.
    *
-   * @return List of OrgUnitEntity with found org units.
+   * <p>Without a {@code type} parameter (or {@code type=all}), returns all active non-expired org
+   * units: districts ({@code D*}), regions, and headquarters ({@code H*}) units, ordered D → R → H.
+   * Pass {@code type=district} to return only district-level org units ({@code D*}, length 3).
+   *
+   * @param type Optional filter — {@code district} for districts only; omit or {@code all} for the
+   *     full list.
+   * @return List of {@link CodeDescriptionDto} with matching org units.
    */
   @GetMapping("/org-units")
-  public List<CodeDescriptionDto> getOpeningOrgUnits() {
-    return codeService.findAllOrgUnits();
+  public List<CodeDescriptionDto> getOpeningOrgUnits(
+      @RequestParam(value = "type", required = false, defaultValue = "all") OrgUnitTypeParam type) {
+    return codeService.findAllOrgUnits(OrgUnitTypeParam.DISTRICT == type);
   }
 
   /**

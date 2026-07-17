@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 
 import DirectSeedingActivityDetail from "./DirectSeedingActivityDetail";
 import JuvenileSpacingActivityDetail from "./JuvenileSpacingActivityDetail";
@@ -22,14 +24,20 @@ import "./styles.scss";
 type ActivityDetailOutlineProps = {
   activity: OpeningDetailsActivitiesActivitiesDto;
   openingId: number;
+  targetComment?: boolean;
 };
 
-const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) => {
+const ActivityDetail = ({ activity, openingId, targetComment }: ActivityDetailOutlineProps) => {
   const activityDetailQuery = useQuery({
     queryKey: ["opening", openingId, "activities", activity.atuId],
     queryFn: () => API.OpeningEndpointService.getOpeningActivity(openingId, activity.atuId),
     enabled: !!activity && !!openingId,
   });
+
+  useDeepLinkScroll(
+    targetComment ? DEEP_LINK_ELEMENT_ID.activityComment(activity.atuId) : null,
+    activityDetailQuery.isSuccess
+  );
 
   const isComplexActivity = () => {
     const code = activity.base?.code;
@@ -73,7 +81,7 @@ const ActivityDetail = ({ activity, openingId, }: ActivityDetailOutlineProps) =>
         </Column>
       ) : null}
 
-      <Column sm={4} md={4} lg={16}>
+      <Column sm={4} md={4} lg={16} id={DEEP_LINK_ELEMENT_ID.activityComment(activity.atuId)}>
         <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading || isAuthRefreshInProgress()}>
           <Comments comments={activityDetailQuery.data?.comments ?? []} />
         </CardItem>

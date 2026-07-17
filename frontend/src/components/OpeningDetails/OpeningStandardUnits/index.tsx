@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -26,8 +26,10 @@ import {
   Launch as LaunchIcon,
   Popup,
 } from "@carbon/icons-react";
-
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
+import { DEEP_LINK_PARAMS, DEEP_LINK_SECTIONS, DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 import { pluralize, renderLabelValueWithUnit } from "@/utils/StringUtils";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { PLACE_HOLDER } from "@/constants";
@@ -54,6 +56,10 @@ type OpeningStandardUnitsProps = {
 };
 
 const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
+  const [searchParams] = useSearchParams();
+  const ssuId = searchParams.get(DEEP_LINK_PARAMS.ssuId);
+  const section = searchParams.get(DEEP_LINK_PARAMS.section);
+
   const [selectedHistory, setSelectedHistory] = useState<OpeningStockingHistoryOverviewDto | null>(null);
   const [isLatestHistory, setIsLatestHistory] = useState<boolean>(true);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
@@ -80,6 +86,16 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
   });
 
   const stockingUnitsQuery = isLatestHistory ? openingDetailSsuQuery : openingSsuHistoryDetailsQuery;
+
+  // Deep-link: determine which accordion to open and which element to scroll to
+  const deepLinkTargetId = useMemo(() => {
+    if (!ssuId) return null;
+    if (section === DEEP_LINK_SECTIONS.ssuComment) return DEEP_LINK_ELEMENT_ID.ssuComment(ssuId);
+    if (section === DEEP_LINK_SECTIONS.milestoneComment) return DEEP_LINK_ELEMENT_ID.milestoneComment(ssuId);
+    return DEEP_LINK_ELEMENT_ID.ssuAccordion(ssuId);
+  }, [ssuId, section]);
+
+  useDeepLinkScroll(deepLinkTargetId, stockingUnitsQuery.isSuccess);
 
   useEffect(() => {
     if (
@@ -314,11 +330,13 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                 lg={16}
                 className="accordion-col"
                 key={`standard-unit-col-${index}`}
+                id={DEEP_LINK_ELEMENT_ID.ssuAccordion(standardUnit.stocking.ssuId ?? index)}
               >
                 <Accordion className="default-tab-accordion" align="end" size="lg">
                   <AccordionItem
                     className="default-tab-accordion-item"
                     title={<AcoordionTitle standardUnit={standardUnit} />}
+                    open={ssuId === String(standardUnit.stocking.ssuId)}
                   >
                     <Grid className="standard-unit-content-grid">
                       <Column sm={4} md={8} lg={16}>
@@ -398,7 +416,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                             </Grid>
                           </Column>
 
-                          <Column sm={4} md={8} lg={16}>
+                          <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.ssuComment(standardUnit.stocking.ssuId ?? index)}>
                             <CardItem label="Comment">
                               <Comments comments={standardUnit.comments} />
                             </CardItem>
@@ -533,7 +551,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                                   </Column>
                                 </>
                               )}
-                              <Column sm={4} md={8} lg={16}>
+                              <Column sm={4} md={8} lg={16} id={DEEP_LINK_ELEMENT_ID.milestoneComment(standardUnit.stocking.ssuId ?? index)}>
                                 <CardItem label="Comments">
                                   <Comments
                                     comments={standardUnit.stocking.milestones.comments}

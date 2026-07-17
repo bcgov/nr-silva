@@ -133,7 +133,18 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-    List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
+    List<CodeDescriptionDto> result = codeService.findAllOrgUnits(false);
+    Assertions.assertNotNull(result);
+    Assertions.assertInstanceOf(List.class, result);
+  }
+
+  @Test
+  @DisplayName("Find all district org units should return list of DTOs")
+  void findAllOrgUnits_districtsOnly_shouldReturnList() {
+    if (codeService == null) {
+      return;
+    }
+    List<CodeDescriptionDto> result = codeService.findAllOrgUnits(true);
     Assertions.assertNotNull(result);
     Assertions.assertInstanceOf(List.class, result);
   }
@@ -144,7 +155,7 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
     if (codeService == null) {
       return;
     }
-    List<CodeDescriptionDto> result = codeService.findAllOrgUnits();
+    List<CodeDescriptionDto> result = codeService.findAllOrgUnits(false);
     Assertions.assertNotNull(result);
     result.forEach(
         dto -> {

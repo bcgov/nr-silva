@@ -75,7 +75,7 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
 
   const orgUnitQuery = useQuery({
     queryKey: ["codes", "org-units"],
-    queryFn: API.CodesEndpointService.getOpeningOrgUnits,
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
   });
 
   const handleMultiSelectChange = (field: keyof StockingStandardsSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
