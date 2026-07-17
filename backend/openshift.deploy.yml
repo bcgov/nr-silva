@@ -87,6 +87,15 @@ parameters:
   - name: BACKEND_PACKAGE_IMAGE
     description: Backend package to pull from registry
     value: backend
+  - name: CLAMAV_HOST
+    description: ClamAV clamd host for virus scanning (e.g. clamav.<tools-ns>.svc.cluster.local)
+    value: localhost
+  - name: CLAMAV_PORT
+    description: ClamAV clamd port
+    value: "3310"
+  - name: CLAMAV_FAIL_OPEN
+    description: Whether to allow uploads through when clamd is unreachable (fail-open policy)
+    value: "false"
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
@@ -246,6 +255,12 @@ objects:
                       key: database-user
                 - name: SELF_URI
                   value: https://${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
+                - name: CLAMAV_HOST
+                  value: ${CLAMAV_HOST}
+                - name: CLAMAV_PORT
+                  value: ${CLAMAV_PORT}
+                - name: CLAMAV_FAIL_OPEN
+                  value: ${CLAMAV_FAIL_OPEN}
                 - name: RANDOM_EXPRESSION
                   value: ${RANDOM_EXPRESSION}
               resources:
