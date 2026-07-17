@@ -6,16 +6,20 @@ import OpeningsMapDownloader from "../../components/OpeningsMapDownloader";
 // Mock ol/format/GeoJSON and ol/format/KML
 vi.mock("ol/format/GeoJSON", () => ({
   __esModule: true,
-  default: vi.fn(() => ({
-    readFeatures: vi.fn(() => []),
-  })),
+  default: vi.fn(function () {
+    return {
+      readFeatures: vi.fn(() => []),
+    };
+  }),
 }));
 
 vi.mock("ol/format/KML", () => ({
   __esModule: true,
-  default: vi.fn(() => ({
-    writeFeatures: vi.fn(() => "<kml>mock</kml>"),
-  })),
+  default: vi.fn(function () {
+    return {
+      writeFeatures: vi.fn(() => "<kml>mock</kml>"),
+    };
+  }),
 }));
 
 const mockCreateObjectURL = vi.fn(() => "blob:mock-url");

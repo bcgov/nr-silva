@@ -15,11 +15,13 @@ vi.mock('aws-amplify');
 vi.mock('aws-amplify/utils');
 vi.mock('aws-amplify/auth/cognito');
 vi.mock('@tanstack/react-query', () => ({
-  QueryClient: vi.fn(() => ({
-    defaultOptions: {
-      queries: {},
-    },
-  })),
+  QueryClient: vi.fn(function () {
+    return {
+      defaultOptions: {
+        queries: {},
+      },
+    };
+  }),
   QueryClientProvider: ({ children }) => <div>{children}</div>,
   QueryCache: class QueryCache { constructor(_opts?: any) { /* noop */ } },
   MutationCache: class MutationCache { constructor(_opts?: any) { /* noop */ } },
