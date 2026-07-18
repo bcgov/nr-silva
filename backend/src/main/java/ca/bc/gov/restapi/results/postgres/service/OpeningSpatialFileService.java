@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
@@ -45,6 +43,8 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.geojson.GeoJsonReader;
+import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.locationtech.jts.operation.valid.IsValidOp;
 import org.locationtech.jts.operation.valid.TopologyValidationError;
 import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
@@ -83,7 +83,6 @@ import org.w3c.dom.NodeList;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("deprecation")
 public class OpeningSpatialFileService {
 
   private final ObjectMapper mapper = new ObjectMapper();
@@ -162,7 +161,8 @@ public class OpeningSpatialFileService {
 
       // Step 6: Reproject to EPSG:4326 if needed
       if (!crsCode.equals("4326")) {
-        GeometryJSON gjson = new GeometryJSON();
+        GeoJsonReader gjsonReader = new GeoJsonReader();
+        GeoJsonWriter gjsonWriter = new GeoJsonWriter();
         ArrayNode features = (ArrayNode) thinnedNode.get("features");
         for (int i = 0; i < features.size(); i++) {
           ObjectNode feature = (ObjectNode) features.get(i);
@@ -170,9 +170,9 @@ public class OpeningSpatialFileService {
           String type = geometryNode.get("type").asText();
           if ("Polygon".equals(type) || "MultiPolygon".equals(type)) {
             try {
-              Geometry geom = gjson.read(new StringReader(geometryNode.toString()));
+              Geometry geom = gjsonReader.read(geometryNode.toString());
               Geometry transformed = reprojectTo4326(geom, crsCode);
-              feature.set("geometry", mapper.readTree(gjson.toString(transformed)));
+              feature.set("geometry", mapper.readTree(gjsonWriter.write(transformed)));
             } catch (Exception e) {
               log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
             }
@@ -241,7 +241,7 @@ public class OpeningSpatialFileService {
       log.info("Parsed general area GML geometry from ESF: {}", gmlGeometry.getGeometryType());
 
       int numGeoms = gmlGeometry.getNumGeometries();
-      GeometryJSON gjson = new GeometryJSON();
+      GeoJsonWriter gjsonWriter = new GeoJsonWriter();
       ArrayNode features = mapper.createArrayNode();
       for (int i = 0; i < numGeoms; i++) {
         Geometry subGeom = gmlGeometry.getGeometryN(i);
@@ -258,7 +258,7 @@ public class OpeningSpatialFileService {
             thinnedCoords);
         // Reproject to EPSG:4326 if needed
         Geometry finalGeom = reprojectTo4326(thinned, crsCode);
-        String geojson = gjson.toString(finalGeom);
+        String geojson = gjsonWriter.write(finalGeom);
         JsonNode geojsonNode = mapper.readTree(geojson);
         ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
@@ -337,7 +337,7 @@ public class OpeningSpatialFileService {
       }
 
       // Step 4, 5: Validate, thin, and convert all geometries to GeoJSON features
-      GeometryJSON gjson = new GeometryJSON();
+      GeoJsonWriter gjsonWriter = new GeoJsonWriter();
       ArrayNode features = mapper.createArrayNode();
       for (Geometry geom : geometries) {
         // 4: Validate geometry (no curves) and within BC boundary
@@ -355,7 +355,7 @@ public class OpeningSpatialFileService {
         // Reproject to EPSG:4326 if needed
         Geometry finalGeom = reprojectTo4326(thinned, crsCode);
         // Convert thinned/reprojected geometry to GeoJSON
-        String geojson = gjson.toString(finalGeom);
+        String geojson = gjsonWriter.write(finalGeom);
         JsonNode geomNode = mapper.readTree(geojson);
         ObjectNode feature = mapper.createObjectNode();
         feature.put("type", "Feature");
@@ -598,8 +598,7 @@ public class OpeningSpatialFileService {
       }
       // Assume first feature is the BC boundary polygon
       JsonNode bcGeomNode = bcFeatures.get(0).get("geometry");
-      GeometryJSON gjson = new GeometryJSON();
-      Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
+      Geometry bcBoundary = new GeoJsonReader().read(bcGeomNode.toString());
 
       if (!bcBoundary.contains(geometry)) {
         throw new ResponseStatusException(
@@ -677,7 +676,8 @@ public class OpeningSpatialFileService {
    */
   private String geoJsonThinning(String geojson, String crsCode) {
     try {
-      GeometryJSON gjson = new GeometryJSON();
+      GeoJsonReader gjsonReader = new GeoJsonReader();
+      GeoJsonWriter gjsonWriter = new GeoJsonWriter();
       JsonNode root = mapper.readTree(geojson);
       double tolerance;
       if ("3005".equals(crsCode)) {
@@ -696,7 +696,7 @@ public class OpeningSpatialFileService {
         featureIdx++;
         JsonNode geomNode = feature.get("geometry");
         if (geomNode == null || geomNode.isNull()) continue;
-        Geometry geom = gjson.read(new StringReader(geomNode.toString()));
+        Geometry geom = gjsonReader.read(geomNode.toString());
 
         // Count original coordinates (only for Polygon/MultiPolygon)
         int originalCoords = countCoordinates(geom);
@@ -714,7 +714,7 @@ public class OpeningSpatialFileService {
             thinnedCoords);
 
         // Replace geometry in feature
-        ((ObjectNode) feature).set("geometry", mapper.readTree(gjson.toString(simplified)));
+        ((ObjectNode) feature).set("geometry", mapper.readTree(gjsonWriter.write(simplified)));
       }
       // Return the updated GeoJSON as a string
       log.info("GeoJSON thinning complete");
@@ -777,8 +777,8 @@ public class OpeningSpatialFileService {
       }
       // Assume first feature is the BC boundary polygon
       JsonNode bcGeomNode = bcFeatures.get(0).get("geometry");
-      GeometryJSON gjson = new GeometryJSON();
-      Geometry bcBoundary = gjson.read(new StringReader(bcGeomNode.toString()));
+      GeoJsonReader gjsonReader = new GeoJsonReader();
+      Geometry bcBoundary = gjsonReader.read(bcGeomNode.toString());
 
       // Parse uploaded geojson
       JsonNode root = mapper.readTree(geojson);
@@ -795,7 +795,7 @@ public class OpeningSpatialFileService {
           throw new ResponseStatusException(
               HttpStatus.BAD_REQUEST, "Feature " + i + " missing geometry");
         }
-        Geometry featureGeom = gjson.read(new StringReader(geomNode.toString()));
+        Geometry featureGeom = gjsonReader.read(geomNode.toString());
         if (!bcBoundary.contains(featureGeom)) {
           throw new ResponseStatusException(
               HttpStatus.BAD_REQUEST,
@@ -827,7 +827,6 @@ public class OpeningSpatialFileService {
       }
 
       String type = root.get("type").asText();
-      GeometryJSON gjson = new GeometryJSON();
 
       switch (type) {
         case "FeatureCollection":
@@ -840,15 +839,15 @@ public class OpeningSpatialFileService {
           for (JsonNode f : features) {
             i++;
             JsonNode geomNode = f.get("geometry");
-            validateGeoJsonGeometryNode(gjson, geomNode, i);
+            validateGeoJsonGeometryNode(geomNode, i);
           }
           break;
         case "Feature":
-          validateGeoJsonGeometryNode(gjson, root.get("geometry"), 1);
+          validateGeoJsonGeometryNode(root.get("geometry"), 1);
           break;
         default:
           // Assume it's a raw Geometry object
-          validateGeoJsonGeometryNode(gjson, root, 1);
+          validateGeoJsonGeometryNode(root, 1);
           break;
       }
       log.info("All geometries in the GeoJSON file have been validated and are valid.");
@@ -864,12 +863,11 @@ public class OpeningSpatialFileService {
    * Validates a single GeoJSON geometry node for type and topology. Throws ResponseStatusException
    * if invalid or not a simple feature.
    *
-   * @param gjson GeometryJSON instance
    * @param geomNode the geometry node to validate
    * @param index feature index (for error reporting)
    * @throws ResponseStatusException if geometry is invalid or not a simple feature
    */
-  private void validateGeoJsonGeometryNode(GeometryJSON gjson, JsonNode geomNode, int index) {
+  private void validateGeoJsonGeometryNode(JsonNode geomNode, int index) {
     if (geomNode == null || geomNode.isNull()) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Feature " + index + " missing geometry");
@@ -888,7 +886,7 @@ public class OpeningSpatialFileService {
               index, geomType));
     }
     try {
-      Geometry geometry = gjson.read(new StringReader(geomNode.toString()));
+      Geometry geometry = new GeoJsonReader().read(geomNode.toString());
       IsValidOp validator = new IsValidOp(geometry);
       TopologyValidationError err = validator.getValidationError();
       if (err != null) {

@@ -130,19 +130,13 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("validateGeoJsonGeometryNode throws when geometry missing type")
   void validateGeoJsonGeometryNodeMissingType() throws Exception {
     ObjectNode geomNode = mapper.createObjectNode();
-    Object gjson =
-        Class.forName("org.geotools.geojson.geom.GeometryJSON")
-            .getDeclaredConstructor()
-            .newInstance();
-
-    Class<?> gjsonClass = Class.forName("org.geotools.geojson.geom.GeometryJSON");
     Method m =
         OpeningSpatialFileService.class.getDeclaredMethod(
-            "validateGeoJsonGeometryNode", gjsonClass, JsonNode.class, int.class);
+            "validateGeoJsonGeometryNode", JsonNode.class, int.class);
     m.setAccessible(true);
 
     try {
-      m.invoke(service, gjson, geomNode, 1);
+      m.invoke(service, geomNode, 1);
       Assertions.fail("Expected ResponseStatusException");
     } catch (java.lang.reflect.InvocationTargetException ite) {
       assertThat(ite.getCause()).isInstanceOf(ResponseStatusException.class);
