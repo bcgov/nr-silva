@@ -129,8 +129,8 @@ public class ClamAvClient {
     }
     if (reply.endsWith(" FOUND")) {
       int colonIdx = reply.indexOf(':');
-      String body = colonIdx >= 0 ? reply.substring(colonIdx + 2) : reply;
-      String sig = body.substring(0, body.lastIndexOf(" FOUND"));
+      String body = (colonIdx >= 0 ? reply.substring(colonIdx + 1) : reply).trim();
+      String sig = body.substring(0, body.lastIndexOf(" FOUND")).trim();
       return ClamAvVerdict.infected(sig, reply);
     }
     return ClamAvVerdict.error(reply.isEmpty() ? "unexpected empty reply from clamd" : reply);
