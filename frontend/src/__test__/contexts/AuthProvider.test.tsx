@@ -240,4 +240,133 @@ describe("AuthProvider", () => {
       });
     });
   });
+
+  describe("Silent Sign-On (idp_hint)", () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+      localStorage.clear();
+      window.history.replaceState({}, "", "/");
+    });
+
+    it("should trigger silent login for IDIR when idp_hint=idir is present and not yet attempted", async () => {
+      setAuthCookies(null);
+      window.history.replaceState({}, "", "/openings?idp_hint=idir");
+
+      const TestComponent = () => {
+        const { isLoading, isLoggedIn } = useAuth();
+        return (
+          <div>
+            <span>{isLoading ? "Loading" : "Loaded"}</span>
+            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
+          </div>
+        );
+      };
+
+      await act(async () => {
+        render(
+          <AuthProvider>
+            <TestComponent />
+          </AuthProvider>
+        );
+      });
+
+      const authModule = await import("aws-amplify/auth");
+      expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
+        provider: { custom: "TEST-IDIR" },
+      });
+      expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
+      expect(localStorage.getItem("postLoginRedirect")).toBe("/openings");
+    });
+
+    it("should trigger silent login for BCeID when idp_hint=bceid is present and not yet attempted", async () => {
+      setAuthCookies(null);
+      window.history.replaceState({}, "", "/dashboard?idp_hint=bceid");
+
+      const TestComponent = () => {
+        const { isLoading } = useAuth();
+        return <span>{isLoading ? "Loading" : "Loaded"}</span>;
+      };
+
+      await act(async () => {
+        render(
+          <AuthProvider>
+            <TestComponent />
+          </AuthProvider>
+        );
+      });
+
+      const authModule = await import("aws-amplify/auth");
+      expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
+        provider: { custom: "TEST-BCEIDBUSINESS" },
+      });
+      expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
+      expect(localStorage.getItem("postLoginRedirect")).toBe("/dashboard");
+    });
+
+    it("should NOT trigger silent login if already attempted, but should clean the URL", async () => {
+      setAuthCookies(null);
+      sessionStorage.setItem("silent_login_attempted", "true");
+      window.history.replaceState({}, "", "/openings?idp_hint=idir");
+
+      const TestComponent = () => {
+        const { isLoading, isLoggedIn } = useAuth();
+        return (
+          <div>
+            <span>{isLoading ? "Loading" : "Loaded"}</span>
+            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
+          </div>
+        );
+      };
+
+      let getByText: any;
+      await act(async () => {
+        ({ getByText } = render(
+          <AuthProvider>
+            <TestComponent />
+          </AuthProvider>
+        ));
+      });
+
+      await waitFor(() => expect(getByText("Loaded")).toBeDefined());
+      expect(getByText("Logged Out")).toBeDefined();
+
+      const authModule = await import("aws-amplify/auth");
+      expect(authModule.signInWithRedirect).not.toHaveBeenCalled();
+      expect(window.location.search).toBe("");
+      expect(window.location.pathname).toBe("/openings");
+      expect(localStorage.getItem("postLoginRedirect")).toBeNull();
+    });
+
+    it("should NOT trigger silent login if user is already logged in, and should clean the URL", async () => {
+      setAuthCookies(sampleAuthToken);
+      window.history.replaceState({}, "", "/openings?idp_hint=idir");
+
+      const TestComponent = () => {
+        const { isLoading, isLoggedIn } = useAuth();
+        return (
+          <div>
+            <span>{isLoading ? "Loading" : "Loaded"}</span>
+            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
+          </div>
+        );
+      };
+
+      let getByText: any;
+      await act(async () => {
+        ({ getByText } = render(
+          <AuthProvider>
+            <TestComponent />
+          </AuthProvider>
+        ));
+      });
+
+      await waitFor(() => expect(getByText("Loaded")).toBeDefined());
+      expect(getByText("Logged In")).toBeDefined();
+
+      const authModule = await import("aws-amplify/auth");
+      expect(authModule.signInWithRedirect).not.toHaveBeenCalled();
+      expect(window.location.search).toBe("");
+      expect(window.location.pathname).toBe("/openings");
+    });
+  });
 });
