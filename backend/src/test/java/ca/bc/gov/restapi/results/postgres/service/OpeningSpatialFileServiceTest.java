@@ -33,9 +33,7 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should throw when file is null or empty")
   void shouldThrowOnNullOrEmpty() {
-    MockMultipartFile empty = new MockMultipartFile("file", "", "application/json", new byte[0]);
-
-    assertThatThrownBy(() -> service.processOpeningSpatialFile(empty))
+    assertThatThrownBy(() -> service.processOpeningSpatialFile("test.json", new byte[0]))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -43,21 +41,18 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw when file exceeds size limit")
   void shouldThrowOnOversize() {
     byte[] big = new byte[SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES + 1];
-    MockMultipartFile bigFile =
-        new MockMultipartFile("file", "big.geojson", "application/json", big);
 
-    assertThatThrownBy(() -> service.processOpeningSpatialFile(bigFile))
+    assertThatThrownBy(() -> service.processOpeningSpatialFile("big.geojson", big))
         .isInstanceOf(ResponseStatusException.class);
   }
 
   @Test
   @DisplayName("Should throw on unsupported extension")
   void shouldThrowOnUnsupportedExtension() {
-    MockMultipartFile file =
-        new MockMultipartFile(
-            "file", "data.txt", "text/plain", "hello".getBytes(StandardCharsets.UTF_8));
-
-    assertThatThrownBy(() -> service.processOpeningSpatialFile(file))
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "data.txt", "hello".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -67,11 +62,11 @@ class OpeningSpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
             + " -123.0,49.0 ],[ -123.0,49.1 ],[ -122.9,49.1 ],[ -123.0,49.0 ]]]}}]}";
-    MockMultipartFile file =
-        new MockMultipartFile(
-            "file", "simple.geojson", "application/json", geojson.getBytes(StandardCharsets.UTF_8));
 
-    assertThatThrownBy(() -> service.processOpeningSpatialFile(file))
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "simple.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -95,20 +90,18 @@ class OpeningSpatialFileServiceTest {
   }
 
   @Test
-  @DisplayName("Detect GML CRS from MultipartFile via reflection")
-  void detectGmlCrsFromMultipart() throws Exception {
+  @DisplayName("Detect GML CRS from bytes via reflection")
+  void detectGmlCrsFromBytes() throws Exception {
     String gml =
         "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
             + " srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 1,0"
             + " 1,1 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
-    MockMultipartFile mf =
-        new MockMultipartFile(
-            "file", "geom.gml", "application/gml+xml", gml.getBytes(StandardCharsets.UTF_8));
+    byte[] gmlBytes = gml.getBytes(StandardCharsets.UTF_8);
 
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("detectGmlCrs", MultipartFile.class);
+        OpeningSpatialFileService.class.getDeclaredMethod("detectGmlCrs", byte[].class);
     m.setAccessible(true);
-    String code = (String) m.invoke(service, mf);
+    String code = (String) m.invoke(service, new Object[] {gmlBytes});
     assertThat(code).isEqualTo("4326");
   }
 
@@ -146,10 +139,10 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should throw invalid geojson when file content is not JSON")
   void shouldThrowOnInvalidJsonContent() {
-    MockMultipartFile bad =
-        new MockMultipartFile(
-            "file", "bad.json", "application/json", "not-json".getBytes(StandardCharsets.UTF_8));
-    assertThatThrownBy(() -> service.processOpeningSpatialFile(bad))
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "bad.json", "not-json".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
 

@@ -95,30 +95,28 @@ public class OpeningSpatialFileService {
    * @return ExtractedGeoDataDto containing parsed geometry, metadata, and tenure information
    * @throws ResponseStatusException if the file is invalid, unsupported, or exceeds size limits
    */
-  public ExtractedGeoDataDto processOpeningSpatialFile(MultipartFile file) {
-    if (file == null || file.isEmpty()) {
+  public ExtractedGeoDataDto processOpeningSpatialFile(String fileName, byte[] fileBytes) {
+    if (fileName == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file has no name");
+    }
+    if (fileBytes == null || fileBytes.length == 0) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
 
     // This is enforced at the spring boot level, but we double-check here
-    if (file.getSize() > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+    if (fileBytes.length > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
-    }
-
-    String fileName = file.getOriginalFilename();
-    if (fileName == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file has no name");
     }
 
     String lowerName = fileName.toLowerCase();
 
     ExtractedGeoDataDto result;
     if (lowerName.endsWith(".xml")) {
-      result = processEsf(file);
+      result = processEsf(fileName, fileBytes);
     } else if (lowerName.endsWith(".gml")) {
-      result = processGml(file);
+      result = processGml(fileName, fileBytes);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
-      result = processGeojson(file);
+      result = processGeojson(fileName, fileBytes);
     } else {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
@@ -131,14 +129,15 @@ public class OpeningSpatialFileService {
   /**
    * Processes a GeoJSON file
    *
-   * @param file the uploaded GeoJSON file
+   * @param fileName the original file name
+   * @param fileBytes the file content bytes (pre-read to avoid double allocation)
    * @return ExtractedGeoDataDto with geometry and metadata (null)
    * @throws ResponseStatusException if the file is invalid or fails validation
    */
-  private ExtractedGeoDataDto processGeojson(MultipartFile file) {
-    log.info("Processing GeoJSON file: {}", file.getOriginalFilename());
+  private ExtractedGeoDataDto processGeojson(String fileName, byte[] fileBytes) {
+    log.info("Processing GeoJSON file: {}", fileName);
     try {
-      String geojson = new String(file.getBytes());
+      String geojson = new String(fileBytes);
       JsonNode root = mapper.readTree(geojson);
 
       // Step 1: CRS Validation
@@ -192,18 +191,19 @@ public class OpeningSpatialFileService {
   /**
    * Processes an ESF/XML file
    *
-   * @param file the uploaded ESF/XML file
+   * @param fileName the original file name
+   * @param fileBytes the file content bytes (pre-read to avoid double allocation)
    * @return ExtractedGeoDataDto with geometry, metadata, and tenure list
    * @throws ResponseStatusException if the file is invalid or fails validation
    */
-  private ExtractedGeoDataDto processEsf(MultipartFile file) {
-    log.info("Processing ESF/XML file: {}", file.getOriginalFilename());
+  private ExtractedGeoDataDto processEsf(String fileName, byte[] fileBytes) {
+    log.info("Processing ESF/XML file: {}", fileName);
     try {
       // Step 1: Detect CRS from embedded GML using detectGmlCrs
-      String crsCode = detectGmlCrs(file);
+      String crsCode = detectGmlCrs(fileBytes);
       log.info("Detected CRS for ESF: EPSG:{}", crsCode);
 
-      String xmlText = new String(file.getBytes(), StandardCharsets.UTF_8);
+      String xmlText = new String(fileBytes, StandardCharsets.UTF_8);
 
       GeoMetaDataDto metaData = extractEsfMetaData(xmlText);
       List<TenureDto> tenureList = extractEsfTenureList(xmlText);
@@ -287,16 +287,17 @@ public class OpeningSpatialFileService {
   /**
    * Processes a GML file
    *
-   * @param file the uploaded GML file
+   * @param fileName the original file name
+   * @param fileBytes the file content bytes (pre-read to avoid double allocation)
    * @return ExtractedGeoDataDto with geometry and metadata (null)
    * @throws ResponseStatusException if the file is invalid or contains no valid geometry
    */
-  private ExtractedGeoDataDto processGml(MultipartFile file) {
-    log.info("Processing GML file: {}", file.getOriginalFilename());
+  private ExtractedGeoDataDto processGml(String fileName, byte[] fileBytes) {
+    log.info("Processing GML file: {}", fileName);
     try {
       // Step 1: Detect CRS
-      String gmlText = new String(file.getBytes(), StandardCharsets.UTF_8);
-      String crsCode = detectGmlCrs(file);
+      String gmlText = new String(fileBytes, StandardCharsets.UTF_8);
+      String crsCode = detectGmlCrs(fileBytes);
       log.info("Detected CRS for GML: EPSG:{}", crsCode);
 
       // Parse document once and extract geometry elements directly.
@@ -622,8 +623,8 @@ public class OpeningSpatialFileService {
    * @return the EPSG code as a string ("3005" or "4326")
    * @throws ResponseStatusException if an unsupported CRS is found
    */
-  private String detectGmlCrs(MultipartFile file) throws Exception {
-    String gmlText = new String(file.getBytes());
+  private String detectGmlCrs(byte[] fileBytes) throws Exception {
+    String gmlText = new String(fileBytes);
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
     // Secure XML parsing configuration to prevent XXE

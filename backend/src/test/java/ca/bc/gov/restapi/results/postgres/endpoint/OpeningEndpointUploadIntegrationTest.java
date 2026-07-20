@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -56,7 +57,8 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
             .geoJson(mapper.createObjectNode())
             .tenureList(null)
             .build();
-    when(openingSpatialFileService.processOpeningSpatialFile(any())).thenReturn(dto);
+    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
+        .thenReturn(dto);
 
     MockMultipartFile file =
         new MockMultipartFile(
@@ -96,7 +98,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Should return bad request when service throws")
   void shouldReturnBadRequestWhenServiceThrows() throws Exception {
-    when(openingSpatialFileService.processOpeningSpatialFile(any()))
+    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
         .thenThrow(
             new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
 

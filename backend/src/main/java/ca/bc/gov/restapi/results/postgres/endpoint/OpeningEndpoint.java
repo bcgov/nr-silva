@@ -103,7 +103,7 @@ public class OpeningEndpoint {
     // Virus scan
     virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
 
-    // Process
-    return openingSpatialFileService.processOpeningSpatialFile(file);
+    // Process with pre-read bytes to avoid double-reading file content
+    return openingSpatialFileService.processOpeningSpatialFile(file.getOriginalFilename(), fileBytes);
   }
 }
