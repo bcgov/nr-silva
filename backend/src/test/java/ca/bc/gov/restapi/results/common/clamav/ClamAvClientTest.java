@@ -65,41 +65,62 @@ class ClamAvClientTest {
     assertEquals(ClamAvVerdict.Status.CLEAN, v.status());
   }
 
-  @Test
-  @DisplayName("Should return ERROR verdict when clamd is unreachable — never throws")
-  void scan_returnsErrorWhenUnreachable() {
-    ClamAvProperties props =
-        ClamAvProperties.builder()
-            .host("localhost")
-            .port(1) // no service listening on port 1
-            .connectTimeout(Duration.ofMillis(200))
-            .readTimeout(Duration.ofMillis(200))
-            .failOpen(false)
-            .build();
-    ClamAvClient client = new ClamAvClient(props);
-
-    ClamAvVerdict verdict = client.scan(new byte[] {1, 2, 3}, "test.bin");
-
-    assertEquals(ClamAvVerdict.Status.ERROR, verdict.status());
-    assertNotNull(verdict.detail());
+  @DisplayName("scan() returns ERROR when server closes without a clamd reply — never throws")
+  void scan_returnsErrorWhenNoReply() throws Exception {
+    try (java.net.ServerSocket server = new java.net.ServerSocket(0)) {
+      int port = server.getLocalPort();
+      Thread t =
+          new Thread(
+              () -> {
+                try (java.net.Socket s = server.accept()) {
+                  // Close immediately without replying
+                } catch (java.io.IOException ignored) {
+                }
+              });
+      t.setDaemon(true);
+      t.start();
+      ClamAvProperties props =
+          ClamAvProperties.builder()
+              .host("localhost")
+              .port(port)
+              .connectTimeout(Duration.ofMillis(200))
+              .readTimeout(Duration.ofMillis(200))
+              .failOpen(false)
+              .build();
+      ClamAvClient client = new ClamAvClient(props);
+      ClamAvVerdict verdict = client.scan(new byte[] {1, 2, 3}, "test.bin");
+      assertEquals(ClamAvVerdict.Status.ERROR, verdict.status());
+      assertNotNull(verdict.detail());
+    }
   }
 
-  @Test
-  @DisplayName("ping() returns false when clamd is unreachable — never throws")
-  void ping_returnsFalseWhenUnreachable() {
-    ClamAvProperties props =
-        ClamAvProperties.builder()
-            .host("localhost")
-            .port(1)
-            .connectTimeout(Duration.ofMillis(200))
-            .readTimeout(Duration.ofMillis(200))
-            .failOpen(false)
-            .build();
-    ClamAvClient client = new ClamAvClient(props);
-
-    // Must not throw
-    boolean result = client.ping();
-    assertEquals(false, result);
+  @DisplayName("ping() returns false when server closes without replying PONG — never throws")
+  void ping_returnsFalseWhenNoPong() throws Exception {
+    try (java.net.ServerSocket server = new java.net.ServerSocket(0)) {
+      int port = server.getLocalPort();
+      Thread t =
+          new Thread(
+              () -> {
+                try (java.net.Socket s = server.accept()) {
+                  // Close immediately without replying
+                } catch (java.io.IOException ignored) {
+                }
+              });
+      t.setDaemon(true);
+      t.start();
+      ClamAvProperties props =
+          ClamAvProperties.builder()
+              .host("localhost")
+              .port(port)
+              .connectTimeout(Duration.ofMillis(200))
+              .readTimeout(Duration.ofMillis(200))
+              .failOpen(false)
+              .build();
+      ClamAvClient client = new ClamAvClient(props);
+      // Must not throw
+      boolean result = client.ping();
+      assertEquals(false, result);
+    }
   }
 
   @Test
