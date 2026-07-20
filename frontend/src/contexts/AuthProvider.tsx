@@ -11,7 +11,7 @@ interface AuthContextType {
   user: FamLoginUser | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (provider: IdpProviderType) => void;
+  login: (provider: IdpProviderType, redirectPath?: string) => Promise<void>;
   logout: () => void;
   setSelectedClient: React.Dispatch<React.SetStateAction<string | undefined>>
   selectedClient?: string;
@@ -37,9 +37,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
    */
   const appEnv = isNaN(Number(env.VITE_ZONE)) ? env.VITE_ZONE ?? "TEST" : "TEST";
 
+  const login = async (provider: IdpProviderType, redirectPath?: string) => {
+    const envProvider =
+      provider === 'IDIR'
+        ? `${appEnv.toLocaleUpperCase()}-IDIR`
+        : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
+
+    // Store current path to redirect after login
+    const targetPath = redirectPath ?? (window.location.pathname + window.location.search);
+    if (targetPath && targetPath !== "/") {
+      localStorage.setItem(REDIRECT_KEY, targetPath);
+    }
+
+    try {
+      await signInWithRedirect({
+        provider: { custom: envProvider.toUpperCase() }
+      });
+    } catch (err: unknown) {
+      // If Amplify thinks a user is already signed in (stale/expired session),
+      // clear it and retry the redirect.
+      if (err instanceof Error && err.name === 'UserAlreadyAuthenticatedException') {
+        await signOut();
+        await signInWithRedirect({
+          provider: { custom: envProvider.toUpperCase() }
+        });
+        return;
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const logout = async () => {
+    await signOut();
+    sessionStorage.removeItem("silent_login_attempted");
+    setUser(undefined);
+  };
+
   // On mount, load current user session once. Token refresh is handled by tanstackConfig when needed.
   useEffect(() => {
     let mounted = true;
+    let redirected = false;
     (async () => {
       try {
         // Prefer to fetch full session to read accessToken if present
@@ -70,55 +108,65 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setSelectedClient(singleClientId);
           }
           setUser(parsedUser);
+          sessionStorage.removeItem("silent_login_attempted");
+
+          // Clean up idp_hint if present (already logged in)
+          const searchParams = new URLSearchParams(window.location.search);
+          if (searchParams.has("idp_hint")) {
+            searchParams.delete("idp_hint");
+            const searchStr = searchParams.toString();
+            const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
+            window.history.replaceState({}, "", cleanPath);
+          }
         } else {
           setUser(undefined);
+
+          // Handle silent sign-on
+          const searchParams = new URLSearchParams(window.location.search);
+          const idpHint = searchParams.get("idp_hint")?.toLowerCase();
+          if (idpHint && (idpHint === "idir" || idpHint === "bceid" || idpHint === "bceidbusiness")) {
+            const alreadyAttempted = sessionStorage.getItem("silent_login_attempted") === "true";
+            if (!alreadyAttempted) {
+              sessionStorage.setItem("silent_login_attempted", "true");
+
+              let provider: IdpProviderType | null = null;
+              if (idpHint === "idir") {
+                provider = "IDIR";
+              } else if (idpHint === "bceid" || idpHint === "bceidbusiness") {
+                provider = "BCEIDBUSINESS";
+              }
+
+              if (provider) {
+                redirected = true;
+                const cleanSearchParams = new URLSearchParams(window.location.search);
+                cleanSearchParams.delete("idp_hint");
+                const searchStr = cleanSearchParams.toString();
+                const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
+
+                login(provider, cleanPath);
+              }
+            } else {
+              // Already attempted once. Clean the query parameter and render the landing page.
+              const cleanSearchParams = new URLSearchParams(window.location.search);
+              cleanSearchParams.delete("idp_hint");
+              const searchStr = cleanSearchParams.toString();
+              const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
+              window.history.replaceState({}, "", cleanPath);
+            }
+          }
         }
       } catch {
         setUser(undefined);
       } finally {
-        if (mounted) setIsLoading(false);
+        if (mounted && !redirected) {
+          setIsLoading(false);
+        }
       }
     })();
     return () => {
       mounted = false;
     };
   }, []);
-
-  const login = async (provider: IdpProviderType) => {
-    const envProvider =
-      provider === 'IDIR'
-        ? `${appEnv.toLocaleUpperCase()}-IDIR`
-        : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
-
-    // Store current path to redirect after login
-    const currentPath = window.location.pathname + window.location.search;
-    if (currentPath && currentPath !== "/") {
-      localStorage.setItem(REDIRECT_KEY, currentPath);
-    }
-
-    try {
-      await signInWithRedirect({
-        provider: { custom: envProvider.toUpperCase() }
-      });
-    } catch (err: unknown) {
-      // If Amplify thinks a user is already signed in (stale/expired session),
-      // clear it and retry the redirect.
-      if (err instanceof Error && err.name === 'UserAlreadyAuthenticatedException') {
-        await signOut();
-        await signInWithRedirect({
-          provider: { custom: envProvider.toUpperCase() }
-        });
-        return;
-      } else {
-        throw err;
-      }
-    }
-  };
-
-  const logout = async () => {
-    await signOut();
-    setUser(undefined);
-  };
 
   const contextValue: AuthContextType = useMemo(
     () => ({
