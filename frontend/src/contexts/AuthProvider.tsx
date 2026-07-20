@@ -11,7 +11,7 @@ interface AuthContextType {
   user: FamLoginUser | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (provider: IdpProviderType, redirectPath?: string) => void;
+  login: (provider: IdpProviderType, redirectPath?: string) => Promise<void>;
   logout: () => void;
   setSelectedClient: React.Dispatch<React.SetStateAction<string | undefined>>
   selectedClient?: string;
