@@ -70,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await signOut();
+    sessionStorage.removeItem("silent_login_attempted");
     setUser(undefined);
   };
 
@@ -107,6 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setSelectedClient(singleClientId);
           }
           setUser(parsedUser);
+          sessionStorage.removeItem("silent_login_attempted");
 
           // Clean up idp_hint if present (already logged in)
           const searchParams = new URLSearchParams(window.location.search);

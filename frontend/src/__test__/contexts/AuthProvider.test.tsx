@@ -271,9 +271,12 @@ describe("AuthProvider", () => {
       });
 
       const authModule = await import("aws-amplify/auth");
-      expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
-        provider: { custom: "TEST-IDIR" },
-      });
+      const appEnv = isNaN(Number(env.VITE_ZONE)) ? (env.VITE_ZONE ?? "TEST") : "TEST";
+      await waitFor(() =>
+        expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
+          provider: { custom: `${appEnv.toLocaleUpperCase()}-IDIR` },
+        })
+      );
       expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
       expect(localStorage.getItem("postLoginRedirect")).toBe("/openings");
     });
@@ -296,9 +299,12 @@ describe("AuthProvider", () => {
       });
 
       const authModule = await import("aws-amplify/auth");
-      expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
-        provider: { custom: "TEST-BCEIDBUSINESS" },
-      });
+      const appEnv = isNaN(Number(env.VITE_ZONE)) ? (env.VITE_ZONE ?? "TEST") : "TEST";
+      await waitFor(() =>
+        expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
+          provider: { custom: `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS` },
+        })
+      );
       expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
       expect(localStorage.getItem("postLoginRedirect")).toBe("/dashboard");
     });
