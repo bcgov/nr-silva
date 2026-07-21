@@ -1,7 +1,6 @@
 import { chromium, firefox, webkit, expect } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { SELECTED_CLIENT_KEY } from '../../constants';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,11 +24,6 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   console.log(`Global setup - Browser: ${browserTypeName}, url: ${baseURL}`)
 
   await page.goto(baseURL);
-
-  // By passing the district selection screen by pre selecting a client.
-  await page.evaluate(({ key, value }) => {
-    localStorage.setItem(key, value);
-  }, { key: SELECTED_CLIENT_KEY, value: '00012797' });
 
   await page.click('[data-testid="landing-button__bceid"]');
   await page.waitForSelector('#user');

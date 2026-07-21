@@ -29,8 +29,6 @@ export const TestAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isLoading: false,
     login: async () => { },
     logout: () => { },
-    selectedClient: undefined,
-    setSelectedClient: () => { },
   };
 
   return (

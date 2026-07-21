@@ -11,8 +11,6 @@ import { THREE_HOURS } from "@/constants/TimeUnits";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { JWT } from "@/types/amplify";
-import { SELECTED_CLIENT_KEY } from "@/constants";
-import { parseToken } from "@/services/AuthService";
 
 // === Refresh Token Management ===
 
@@ -35,45 +33,6 @@ async function refreshAccessToken(): Promise<string | null> {
 
     if (newAccess) {
       setCookie(ACCESS_TOKEN_KEY, newAccess);
-      // Attempt to restore selected client using parseToken (same logic as AuthProvider)
-      try {
-        // Prefer idToken for parsing, else derive JWT-like object from access token
-        let idTokenObj: JWT | undefined;
-        if (tokens.idToken) {
-          idTokenObj = tokens.idToken as unknown as JWT;
-        } else if (newAccess) {
-          try {
-            const payloadBase64 = newAccess.split('.')[1];
-            if (payloadBase64) {
-              const payloadJson = atob(payloadBase64);
-              idTokenObj = { payload: JSON.parse(payloadJson) } as unknown as JWT;
-            } else {
-              idTokenObj = undefined;
-            }
-          } catch (parseErr) {
-            console.warn("Failed to manually parse JWT payload from access token", parseErr);
-            idTokenObj = undefined;
-          }
-        } else {
-          idTokenObj = undefined;
-        }
-        const parsed = parseToken(idTokenObj as JWT | undefined);
-        const associatedClients: string[] = parsed?.associatedClients ?? [];
-        const storedClientId = localStorage.getItem(SELECTED_CLIENT_KEY);
-
-        if (storedClientId) {
-          if (!associatedClients.includes(storedClientId)) {
-            localStorage.removeItem(SELECTED_CLIENT_KEY);
-          }
-        } else if (associatedClients.length === 1) {
-          const singleClientId = associatedClients[0]!;
-          localStorage.setItem(SELECTED_CLIENT_KEY, singleClientId);
-        }
-      } catch (err) {
-        // non-fatal if parsing fails
-        console.warn("Failed to parse refreshed token for client selection", err);
-      }
-
       return newAccess;
     }
 

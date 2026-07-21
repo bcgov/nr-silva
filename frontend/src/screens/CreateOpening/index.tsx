@@ -20,21 +20,13 @@ import './styles.scss';
 
 
 const CreateOpening = () => {
-  const { selectedClient } = useAuth();
   const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const type = searchParams.get('type');
   const [form, setForm] = useState<CreateOpeningFormType>(() => {
-    const defaultForm = structuredClone(DefaultOpeningForm);
-    return {
-      ...defaultForm,
-      client: {
-        ...defaultForm.client,
-        value: selectedClient,
-      }
-    }
+    return structuredClone(DefaultOpeningForm);
   });
   const [warnText, setWarnText] = useState<string | undefined>();
 
@@ -46,16 +38,7 @@ const CreateOpening = () => {
       navigate("/", { replace: true });
       return;
     }
-
-    if (!selectedClient) {
-      console.warn("No selected client");
-      navigate("/", { replace: true });
-    }
-
-    if (form.client?.value && form.client.value !== selectedClient) {
-      setWarnText("District office changed. The form will continue using the originally selected district.")
-    };
-  }, [type, selectedClient, navigate]);
+  }, [type, navigate]);
 
   const openingType = type! as OpeningTypes;
 
