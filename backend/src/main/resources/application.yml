@@ -122,6 +122,16 @@ ca:
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts-path}
           secret: ${ORACLEDB_SECRET:changeit}
           host: ${DATABASE_HOST:localhost}
+        clamav:
+          host: ${CLAMAV_HOST:localhost}
+          port: ${CLAMAV_PORT:3310}
+          connect-timeout: ${CLAMAV_CONNECT_TIMEOUT:5s}
+          read-timeout: ${CLAMAV_READ_TIMEOUT:30s}
+          # fail-open controls what happens when clamd is unreachable or errors.
+          # false (default): reject the upload with HTTP 422 — no file is stored unscanned.
+          # true: allow the upload through with a WARN log — use in local dev / PR previews
+          #        where no clamd is available. An infected verdict always rejects regardless.
+          fail-open: ${CLAMAV_FAIL_OPEN:false}
         limits:
           max-actions-results: ${MAX_ACTIONS_RESULTS:5}
         frontend:

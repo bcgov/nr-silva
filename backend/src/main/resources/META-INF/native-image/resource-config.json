@@ -6,6 +6,12 @@
       },
       {
         "pattern": "db/migration-dev/.*\\.sql$"
+      },
+      {
+        "pattern": "static/BC_BOUNDARY_EPSG4326\\.geojson"
+      },
+      {
+        "pattern": "static/BC_BOUNDARY_EPSG3005\\.geojson"
       }
     ]
   }
