@@ -1,8 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
+import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
+import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Opening endpoint. */
 @RestController("postgresOpeningEndpoint")
@@ -26,6 +30,7 @@ public class OpeningEndpoint {
 
   private final UserOpeningService userOpeningService;
   private final OpeningSpatialFileService openingSpatialFileService;
+  private final VirusScanService virusScanService;
 
   /**
    * Get user's favorite openings.
@@ -78,6 +83,27 @@ public class OpeningEndpoint {
   @PostMapping(value = "/create/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.ACCEPTED)
   public ExtractedGeoDataDto uploadOpeningSpatialFile(@RequestPart("file") MultipartFile file) {
-    return openingSpatialFileService.processOpeningSpatialFile(file);
+    // Early validation before loading file into memory
+    if (file == null || file.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
+    }
+    if (file.getSize() > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
+    }
+
+    // Get bytes with proper exception handling
+    byte[] fileBytes;
+    try {
+      fileBytes = file.getBytes();
+    } catch (IOException e) {
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read file: " + e.getMessage(), e);
+    }
+
+    // Virus scan
+    virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
+
+    // Process with pre-read bytes to avoid double-reading file content
+    return openingSpatialFileService.processOpeningSpatialFile(file.getOriginalFilename(), fileBytes);
   }
 }
