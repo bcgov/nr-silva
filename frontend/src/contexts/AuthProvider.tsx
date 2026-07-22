@@ -3,7 +3,7 @@ import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth"
 import { parseToken } from "@/services/AuthService";
 import { env } from "@/env";
 import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
-import { REDIRECT_KEY, SELECTED_CLIENT_KEY, ACCESS_TOKEN_KEY } from "@/constants";
+import { REDIRECT_KEY, ACCESS_TOKEN_KEY } from "@/constants";
 import { setCookie } from "@/utils/CookieUtils";
 
 // 1. Define an interface for the context value
@@ -13,8 +13,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: (provider: IdpProviderType, redirectPath?: string) => Promise<void>;
   logout: () => void;
-  setSelectedClient: React.Dispatch<React.SetStateAction<string | undefined>>
-  selectedClient?: string;
 }
 
 // 2. Define an interface for the provider's props
@@ -29,7 +27,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClient, setSelectedClient] = useState<string | undefined>();
 
   /**
    * Resolves the application environment.
@@ -94,19 +91,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (!mounted) return;
         if (idToken) {
           const parsedUser = parseToken(idToken);
-          // restore/select client similar to previous logic
-          const storedClientId = localStorage.getItem(SELECTED_CLIENT_KEY);
-          if (storedClientId) {
-            if (parsedUser?.associatedClients.includes(storedClientId)) {
-              setSelectedClient(storedClientId);
-            } else {
-              localStorage.removeItem(SELECTED_CLIENT_KEY);
-            }
-          } else if (parsedUser?.associatedClients.length === 1) {
-            const singleClientId = parsedUser.associatedClients[0]!;
-            localStorage.setItem(SELECTED_CLIENT_KEY, singleClientId);
-            setSelectedClient(singleClientId);
-          }
           setUser(parsedUser);
           sessionStorage.removeItem("silent_login_attempted");
 
@@ -174,11 +158,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoggedIn: !!user,
       isLoading,
       login,
-      logout,
-      selectedClient,
-      setSelectedClient
+      logout
     }),
-    [user, isLoading, selectedClient]
+    [user, isLoading]
   );
 
   return (

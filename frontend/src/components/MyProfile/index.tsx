@@ -3,7 +3,6 @@ import { SideNavLink } from '@carbon/react';
 import { Asleep, Light, UserFollow } from '@carbon/icons-react';
 import { useThemePreference } from '@/utils/ThemePreference';
 import PanelSectionName from '@/components/PanelSectionName';
-import DistrictSelection from '@/components/DistrictSelection';
 import Avatar from '@/components/Avatar';
 import DeploymentModelIndicator from '@/components/DeploymentModelIndicator';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -51,18 +50,6 @@ const MyProfile = () => {
       </div>
       <nav className="account-nav">
         <ul>
-          {
-            user?.associatedClients.length
-              ? (
-                <li>
-                  <PanelSectionName title="Select district office" light />
-                  <div className="district-selection-container">
-                    <DistrictSelection simpleView />
-                  </div>
-                </li>
-              )
-              : null
-          }
           <li>
             <hr className="divisory" />
             <PanelSectionName title="Options" light />

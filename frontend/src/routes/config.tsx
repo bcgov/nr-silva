@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { type RouteObject, Outlet, Navigate } from "react-router-dom";
 import { Loading } from "@carbon/react";
 import SideLayout from '@/layouts/SideLayout';
-import LoginClientSelection from "@/screens/LoginClientSelection";
 import {
   DASHBOARD_PATH,
   OPENINGS_PATH,
@@ -52,11 +51,6 @@ export const CreateOpeningRoute: RouteObject = {
 export const OpeningDetailsRoute: RouteObject = {
   path: "/openings/:openingId",
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><OpeningDetails /></Suspense>} />,
-}
-
-export const ClientSelectionRoute: RouteObject = {
-  path: "*",
-  element: <LoginClientSelection />
 }
 
 export const ActivitySearchRoute: RouteObject = {
