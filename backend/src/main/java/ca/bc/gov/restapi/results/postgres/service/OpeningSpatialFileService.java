@@ -47,25 +47,27 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This service handles processing of uploaded spatial files (GeoJSON, GML, ESF/XML).
+ * This service handles processing of uploaded spatial files (GeoJSON and GML).
  *
  * <p>Validation and processing steps:
  *
  * <ol>
  *   <li><b>CRS Validation:</b> Ensure the file is in EPSG:3005 or EPSG:4326.<br>
  *       <i>Reason:</i> All further checks depend on knowing the coordinate system.
- *   <li><b>Geometry Validity (OGC/ESRI):</b> Validate that the geometry is valid according to OGC
- *       and ESRI specs.<br>
- *       <i>Reason:</i> Invalid geometries can break downstream processing and thinning.
- *   <li><b>Simple Features (No Curves):</b> Ensure all geometries are simple features (no curves).
- *       <br>
- *       <i>Reason:</i> Thinning and extent checks require simple, linear geometries.
- *   <li><b>Province of BC Extents:</b> Check that all features and vertices are within BC extents.
- *       <br>
- *       <i>Reason:</i> You only want data within your area of interest.
+ *   <li><b>Geometry Type:</b> Only Polygon and MultiPolygon geometries are accepted.<br>
+ *       <i>Reason:</i> Downstream processing requires closed-area geometries.
+ *   <li><b>Geometry Validity (OGC):</b> Validate topology — rings must be closed and have at least
+ *       4 coordinates; area must be non-zero.<br>
+ *       <i>Reason:</i> Invalid geometries break downstream processing and thinning.
+ *   <li><b>Province of BC Extents:</b> Check that all features are within BC extents.<br>
+ *       <i>Reason:</i> Only data within the area of interest is accepted.
  *   <li><b>Vertex Thinning (Douglas-Peucker, 2.5m tolerance):</b> Thin the vertices to the required
  *       accuracy/precision.<br>
- *       <i>Reason:</i> This is a data optimization step, best done after validation.
+ *       <i>Reason:</i> Data optimisation step, best done after validation.
+ *   <li><b>Area Calculation:</b> Compute total geometry area in hectares (EPSG:3005).<br>
+ *       <i>Reason:</i> Provides a consistent equal-area measurement regardless of source CRS.
+ *   <li><b>Reprojection:</b> Output geometry is always in EPSG:4326.<br>
+ *       <i>Reason:</i> Standardises the returned GeoJSON for downstream consumers.
  * </ol>
  */
 @Slf4j
