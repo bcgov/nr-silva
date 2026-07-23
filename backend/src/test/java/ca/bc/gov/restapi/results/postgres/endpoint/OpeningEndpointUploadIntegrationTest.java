@@ -52,11 +52,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Should accept upload and return accepted")
   void shouldAcceptUpload() throws Exception {
     ExtractedGeoDataDto dto =
-        ExtractedGeoDataDto.builder()
-            .metaData(null)
-            .geoJson(mapper.createObjectNode())
-            .tenureList(null)
-            .build();
+        ExtractedGeoDataDto.builder().geometryArea(null).geoJson(mapper.createObjectNode()).build();
     when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
         .thenReturn(dto);
 

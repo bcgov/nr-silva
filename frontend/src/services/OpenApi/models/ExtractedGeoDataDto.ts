@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { GeoMetaDataDto } from './GeoMetaDataDto';
 import type { JsonNode } from './JsonNode';
-import type { TenureDto } from './TenureDto';
 export type ExtractedGeoDataDto = {
-    metaData?: GeoMetaDataDto;
+    /**
+     * Geometry area in hectares (NUMBER(11,4))
+     */
+    geometryArea?: number;
     geoJson?: JsonNode;
-    tenureList?: Array<TenureDto>;
 };
 

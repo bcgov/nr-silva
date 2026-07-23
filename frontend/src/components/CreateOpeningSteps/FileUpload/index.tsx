@@ -27,9 +27,9 @@ const FileUpload = ({
   const validate = (f: File) => {
     if (f.size > MAX_FILE_SIZE) return `"${f.name}" exceeds ${MAX_FILE_MB} MB.`;
     const lc = f.name.toLowerCase();
-    const byExt = [".geojson", ".gml", ".xml", ".json"].some((ext) => lc.endsWith(ext));
+    const byExt = [".geojson", ".gml", ".json"].some((ext) => lc.endsWith(ext));
     if (!byExt)
-      return "File not supported. Please upload a valid file type: GeoJSON, GML, XML(ESF).";
+      return "File not supported. Please upload a valid file type: GeoJSON, GML.";
     return null;
   };
 

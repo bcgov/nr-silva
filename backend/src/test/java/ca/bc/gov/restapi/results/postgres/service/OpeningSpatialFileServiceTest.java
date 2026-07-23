@@ -7,11 +7,13 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +21,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 @DisplayName("Unit Test | OpeningSpatialFileService")
 class OpeningSpatialFileServiceTest {
@@ -98,8 +100,7 @@ class OpeningSpatialFileServiceTest {
             + " 1,1 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
     byte[] gmlBytes = gml.getBytes(StandardCharsets.UTF_8);
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("detectGmlCrs", byte[].class);
+    Method m = OpeningSpatialFileService.class.getDeclaredMethod("detectGmlCrs", byte[].class);
     m.setAccessible(true);
     String code = (String) m.invoke(service, new Object[] {gmlBytes});
     assertThat(code).isEqualTo("4326");
@@ -154,10 +155,7 @@ class OpeningSpatialFileServiceTest {
             + " -123,49.1 -122.9,49.1"
             + " -123,49</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    Method parse =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    parse.setAccessible(true);
-    Geometry geom2 = (Geometry) parse.invoke(service, gml2);
+    Geometry geom2 = parseGml(gml2);
     assertThat((Object) geom2).isNotNull();
 
     String gml3 =
@@ -165,59 +163,8 @@ class OpeningSpatialFileServiceTest {
             + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:exterior><gml:LinearRing><gml:posList>-123"
             + " 49 -123 49.1 -122.9 49.1 -123"
             + " 49</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>";
-    Geometry geom3 = (Geometry) parse.invoke(service, gml3);
+    Geometry geom3 = parseGml(gml3);
     assertThat((Object) geom3).isNotNull();
-  }
-
-  @Test
-  void esfMetaDataAndTenureExtraction_and_generalAreaFragment() throws Exception {
-    String esf =
-        "<esf:ESFSubmission xmlns:esf=\"http://www.for.gov.bc.ca/schema/esf\""
-            + " xmlns:rst=\"http://www.for.gov.bc.ca/schema/results\"><esf:submissionContent>"
-            + "<rst:ResultsSubmission>"
-            + "<rst:submissionMetadataProperty><rst:SubmissionMetadata><rst:districtCode>MYDIST</rst:districtCode></rst:SubmissionMetadata></rst:submissionMetadataProperty>"
-            + "<rst:submissionItem><rst:Opening><rst:definedBy><rst:OpeningDefinition>"
-            + "<rst:openingGrossArea>123.45</rst:openingGrossArea>"
-            + "<rst:maximumAllowableSoilDisturbancePercentage>9.9</rst:maximumAllowableSoilDisturbancePercentage>"
-            + "<rst:extentOf><gml:Polygon"
-            + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49"
-            + " -123,49.1 -122.9,49.1"
-            + " -123,49</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>"
-            + "</rst:extentOf><rst:tenureProperty><rst:Tenure>"
-            + "<rst:licenceNumber>FF123</rst:licenceNumber><rst:cutblock>CB1</rst:cutblock>"
-            + "<rst:cuttingPermitID>CP1</rst:cuttingPermitID>"
-            + "<rst:primeLicenceIndicator>true</rst:primeLicenceIndicator></rst:Tenure>"
-            + "</rst:tenureProperty></rst:OpeningDefinition></rst:definedBy></rst:Opening>"
-            + "</rst:submissionItem></rst:ResultsSubmission></esf:submissionContent>"
-            + "</esf:ESFSubmission>";
-
-    Method frag =
-        OpeningSpatialFileService.class.getDeclaredMethod(
-            "extractGeneralAreaGmlFragment", String.class);
-    frag.setAccessible(true);
-    String fragOut = (String) frag.invoke(service, esf);
-    assertThat(fragOut).contains("gml:Polygon");
-
-    Method meta =
-        OpeningSpatialFileService.class.getDeclaredMethod("extractEsfMetaData", String.class);
-    meta.setAccessible(true);
-    Object metaObj = meta.invoke(service, esf);
-    assertThat(metaObj).isNotNull();
-    // Validate fields via record accessors
-    Method orgUnit = metaObj.getClass().getDeclaredMethod("orgUnit");
-    assertThat(orgUnit.invoke(metaObj)).isEqualTo("MYDIST");
-    Method openingGrossArea = metaObj.getClass().getDeclaredMethod("openingGrossArea");
-    BigDecimal area = (BigDecimal) openingGrossArea.invoke(metaObj);
-    assertThat(area).isEqualByComparingTo(new BigDecimal("123.45"));
-
-    Method tenure =
-        OpeningSpatialFileService.class.getDeclaredMethod("extractEsfTenureList", String.class);
-    tenure.setAccessible(true);
-    List<?> tlist = (List<?>) tenure.invoke(service, esf);
-    assertThat(tlist).hasSize(1);
-    Object first = tlist.get(0);
-    Method isPrimary = first.getClass().getDeclaredMethod("isPrimary");
-    assertThat(isPrimary.invoke(first)).isEqualTo(true);
   }
 
   @Test
@@ -310,11 +257,7 @@ class OpeningSpatialFileServiceTest {
         "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:pos>-123.5"
             + " 49.2</gml:pos></gml:Point>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlPoint);
+    Geometry geom = parseGml(gmlPoint);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("Point");
@@ -328,11 +271,7 @@ class OpeningSpatialFileServiceTest {
         "<gml:LineString xmlns:gml=\"http://www.opengis.net/gml\"><gml:posList>-123 49 -122.9 49.1"
             + " -122.8 49.2</gml:posList></gml:LineString>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlLine);
+    Geometry geom = parseGml(gmlLine);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("LineString");
@@ -350,11 +289,7 @@ class OpeningSpatialFileServiceTest {
             + " 8,2 8,8 2,8 2,2</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs>"
             + "</gml:Polygon>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlPolygon);
+    Geometry geom = parseGml(gmlPolygon);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("Polygon");
@@ -371,11 +306,7 @@ class OpeningSpatialFileServiceTest {
             + " 49 -123 49.1 -122.9 49.1 -123 49</gml:posList></gml:LinearRing></gml:exterior>"
             + "</gml:Polygon>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlPolygon);
+    Geometry geom = parseGml(gmlPolygon);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("Polygon");
@@ -392,11 +323,7 @@ class OpeningSpatialFileServiceTest {
             + " 49</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>-122.5"
             + " 49.5</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlMultiPoint);
+    Geometry geom = parseGml(gmlMultiPoint);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("MultiPoint");
@@ -414,11 +341,7 @@ class OpeningSpatialFileServiceTest {
             + " 49.5 -122.4 49.6</gml:posList></gml:LineString></gml:lineStringMember>"
             + "</gml:MultiLineString>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlMultiLine);
+    Geometry geom = parseGml(gmlMultiLine);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("MultiLineString");
@@ -437,11 +360,7 @@ class OpeningSpatialFileServiceTest {
             + " 20</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember>"
             + "</gml:MultiPolygon>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-    @SuppressWarnings("unchecked")
-    Geometry geom = (Geometry) m.invoke(service, gmlMultiPoly);
+    Geometry geom = parseGml(gmlMultiPoly);
 
     assertThat((Object) geom).isNotNull();
     assertThat(geom.getGeometryType()).isEqualTo("MultiPolygon");
@@ -454,18 +373,7 @@ class OpeningSpatialFileServiceTest {
     String invalidGml =
         "<gml:NoSuchGeometry xmlns:gml=\"http://www.opengis.net/gml\"></gml:NoSuchGeometry>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, invalidGml);
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> parseGml(invalidGml))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("does not contain a valid geometry");
   }
@@ -475,19 +383,7 @@ class OpeningSpatialFileServiceTest {
   void parseGmlToGeometryThrowsMalformedXml() throws Exception {
     String malformed = "<gml:Polygon><unclosed>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, malformed);
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
-        .isInstanceOf(Exception.class);
+    assertThatThrownBy(() -> parseGml(malformed)).isInstanceOf(Exception.class);
   }
 
   @Test
@@ -495,18 +391,7 @@ class OpeningSpatialFileServiceTest {
   void parseGmlPolygonThrowsMissingExterior() throws Exception {
     String noExterior = "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\"></gml:Polygon>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, noExterior);
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> parseGml(noExterior))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("exterior ring");
   }
@@ -517,18 +402,7 @@ class OpeningSpatialFileServiceTest {
     String noCoords =
         "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:pos></gml:pos></gml:Point>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
-
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, noCoords);
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> parseGml(noCoords))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("no coordinates");
   }
@@ -541,19 +415,125 @@ class OpeningSpatialFileServiceTest {
             + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:exterior><gml:LinearRing><gml:posList>0"
             + " 0 1 1</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>";
 
-    Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod("parseGmlToGeometry", String.class);
-    m.setAccessible(true);
+    assertThatThrownBy(() -> parseGml(tooFewCoords))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("Polygon ring has fewer than 4 coordinates");
+  }
 
+  @Test
+  void shouldThrowOnXmlExtension() {
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "data.xml", "<root/>".getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("Unsupported file type");
+  }
+
+  @Test
+  void shouldRejectNonPolygonGeoJson() {
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\","
+            + "\"geometry\":{\"type\":\"Point\",\"coordinates\":[-120.5,49.2]}}]}";
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "point.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("Only Polygon and MultiPolygon");
+  }
+
+  @Test
+  void calculateGeometryAreaHectaresIn3005() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Coordinate[] coords = {
+      new Coordinate(500000, 600000),
+      new Coordinate(510000, 600000),
+      new Coordinate(510000, 610000),
+      new Coordinate(500000, 610000),
+      new Coordinate(500000, 600000)
+    };
+    Polygon poly = gf.createPolygon(coords);
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "calculateGeometryAreaHectares", Geometry.class, String.class);
+    m.setAccessible(true);
+    BigDecimal result = (BigDecimal) m.invoke(service, poly, "3005");
+    assertThat(result).isEqualByComparingTo(new BigDecimal("10000.0000"));
+  }
+
+  @Test
+  void validateNonZeroAreaThrowsForCollapsedPolygon() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Coordinate[] coords = {
+      new Coordinate(500000, 600000),
+      new Coordinate(500001, 600000),
+      new Coordinate(500001, 600001),
+      new Coordinate(500000, 600000)
+    };
+    Polygon poly = gf.createPolygon(coords);
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "validateNonZeroArea", Geometry.class, String.class, int.class);
+    m.setAccessible(true);
     assertThatThrownBy(
             () -> {
               try {
-                m.invoke(service, tooFewCoords);
+                m.invoke(service, poly, "3005", 1);
               } catch (InvocationTargetException ite) {
                 throw ite.getCause();
               }
             })
         .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining("must have at least 4 coordinates");
+        .hasMessageContaining("zero or collapsed surface area");
+  }
+
+  @Test
+  void validateNonZeroAreaPassesForValidPolygon() throws Exception {
+    GeometryFactory gf = new GeometryFactory();
+    Coordinate[] coords = {
+      new Coordinate(500000, 600000),
+      new Coordinate(510000, 600000),
+      new Coordinate(510000, 610000),
+      new Coordinate(500000, 600000)
+    };
+    Polygon poly = gf.createPolygon(coords);
+    Method m =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "validateNonZeroArea", Geometry.class, String.class, int.class);
+    m.setAccessible(true);
+    m.invoke(service, poly, "3005", 1); // should not throw
+  }
+
+  private Geometry parseGml(String gml) throws Exception {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    dbf.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    Document doc =
+        db.parse(new ByteArrayInputStream(gml.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+    Element root = doc.getDocumentElement();
+    Method parseGmlElement =
+        OpeningSpatialFileService.class.getDeclaredMethod(
+            "parseGmlElement", Element.class, GeometryFactory.class);
+    parseGmlElement.setAccessible(true);
+    GeometryFactory gf = new GeometryFactory();
+    try {
+      Geometry geom = (Geometry) parseGmlElement.invoke(service, root, gf);
+      if (geom == null) {
+        throw new ResponseStatusException(
+            org.springframework.http.HttpStatus.BAD_REQUEST,
+            "GML does not contain a valid geometry.");
+      }
+      return geom;
+    } catch (java.lang.reflect.InvocationTargetException ite) {
+      Throwable cause = ite.getCause();
+      if (cause instanceof RuntimeException re) throw re;
+      if (cause instanceof Exception ex) throw ex;
+      throw ite;
+    }
   }
 }
