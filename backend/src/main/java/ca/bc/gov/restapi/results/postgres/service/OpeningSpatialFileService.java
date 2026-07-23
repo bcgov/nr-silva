@@ -911,7 +911,7 @@ public class OpeningSpatialFileService {
     }
   }
 
-  private void checkRing(LinearRing ring, int featureIndex) {
+  private void checkRing(LineString ring, int featureIndex) {
     if (ring.getNumPoints() < 4) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
