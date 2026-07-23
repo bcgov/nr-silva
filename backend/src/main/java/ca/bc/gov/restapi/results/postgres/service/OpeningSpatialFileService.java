@@ -2,31 +2,20 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
-import ca.bc.gov.restapi.results.postgres.dto.GeoMetaDataDto;
-import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -50,7 +39,6 @@ import org.locationtech.jts.operation.valid.TopologyValidationError;
 import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -111,9 +99,7 @@ public class OpeningSpatialFileService {
     String lowerName = fileName.toLowerCase();
 
     ExtractedGeoDataDto result;
-    if (lowerName.endsWith(".xml")) {
-      result = processEsf(fileName, fileBytes);
-    } else if (lowerName.endsWith(".gml")) {
+    if (lowerName.endsWith(".gml")) {
       result = processGml(fileName, fileBytes);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
       result = processGeojson(fileName, fileBytes);
@@ -158,129 +144,31 @@ public class OpeningSpatialFileService {
       String thinnedGeojson = geoJsonThinning(geojson, crsCode);
       JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
 
-      // Step 6: Reproject to EPSG:4326 if needed
-      if (!crsCode.equals("4326")) {
-        GeoJsonReader gjsonReader = new GeoJsonReader();
-        GeoJsonWriter gjsonWriter = new GeoJsonWriter();
-        ArrayNode features = (ArrayNode) thinnedNode.get("features");
-        for (int i = 0; i < features.size(); i++) {
-          ObjectNode feature = (ObjectNode) features.get(i);
-          ObjectNode geometryNode = (ObjectNode) feature.get("geometry");
-          String type = geometryNode.get("type").asText();
-          if ("Polygon".equals(type) || "MultiPolygon".equals(type)) {
-            try {
-              Geometry geom = gjsonReader.read(geometryNode.toString());
-              Geometry transformed = reprojectTo4326(geom, crsCode);
-              feature.set("geometry", mapper.readTree(gjsonWriter.write(transformed)));
-            } catch (Exception e) {
-              log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
-            }
-          }
+      // Step 6: Validate area, accumulate hectares, reproject to EPSG:4326 if needed
+      GeoJsonReader gjsonReader = new GeoJsonReader();
+      GeoJsonWriter gjsonWriter = new GeoJsonWriter();
+      ArrayNode features = (ArrayNode) thinnedNode.get("features");
+      BigDecimal totalArea = BigDecimal.ZERO;
+      for (int i = 0; i < features.size(); i++) {
+        ObjectNode feature = (ObjectNode) features.get(i);
+        ObjectNode geometryNode = (ObjectNode) feature.get("geometry");
+        Geometry geom = gjsonReader.read(geometryNode.toString());
+        // Validate non-zero area in native CRS before reprojection
+        validateNonZeroArea(geom, crsCode, i + 1);
+        // Accumulate area in hectares (native CRS)
+        totalArea = totalArea.add(calculateGeometryAreaHectares(geom, crsCode));
+        // Reproject to EPSG:4326 if needed
+        if (!crsCode.equals("4326")) {
+          Geometry transformed = reprojectTo4326(geom, crsCode);
+          feature.set("geometry", mapper.readTree(gjsonWriter.write(transformed)));
         }
       }
 
-      // Return ExtractedGeoDataDto with metaData as null
-      return ExtractedGeoDataDto.builder().metaData(null).geoJson(thinnedNode).build();
+      return ExtractedGeoDataDto.builder().geometryArea(totalArea).geoJson(thinnedNode).build();
     } catch (Exception e) {
       log.error("Failed to process GeoJSON file", e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid GeoJSON file: " + e.getMessage());
-    }
-  }
-
-  /**
-   * Processes an ESF/XML file
-   *
-   * @param fileName the original file name
-   * @param fileBytes the file content bytes (pre-read to avoid double allocation)
-   * @return ExtractedGeoDataDto with geometry, metadata, and tenure list
-   * @throws ResponseStatusException if the file is invalid or fails validation
-   */
-  private ExtractedGeoDataDto processEsf(String fileName, byte[] fileBytes) {
-    log.info("Processing ESF/XML file: {}", fileName);
-    try {
-      // Step 1: Detect CRS from embedded GML using detectGmlCrs
-      String crsCode = detectGmlCrs(fileBytes);
-      log.info("Detected CRS for ESF: EPSG:{}", crsCode);
-
-      String xmlText = new String(fileBytes, StandardCharsets.UTF_8);
-
-      GeoMetaDataDto metaData = extractEsfMetaData(xmlText);
-      List<TenureDto> tenureList = extractEsfTenureList(xmlText);
-
-      // Parse document and extract geometry element directly (avoids TransformerFactory round-trip)
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setNamespaceAware(true);
-      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      dbf.setXIncludeAware(false);
-      dbf.setExpandEntityReferences(false);
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document esfDoc =
-          db.parse(new ByteArrayInputStream(xmlText.getBytes(StandardCharsets.UTF_8)));
-
-      XPathFactory xpf = XPathFactory.newInstance();
-      XPath xpath = xpf.newXPath();
-      xpath.setNamespaceContext(buildEsfNamespaceContext());
-      String geomExpr =
-          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission"
-              + "/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:extentOf/*";
-      Node geomXmlNode = (Node) xpath.evaluate(geomExpr, esfDoc, XPathConstants.NODE);
-      if (geomXmlNode == null || !(geomXmlNode instanceof Element)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
-      }
-      GeometryFactory gf = new GeometryFactory();
-      Geometry gmlGeometry = parseGmlElement((Element) geomXmlNode, gf);
-      if (gmlGeometry == null) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Unsupported GML geometry type in ESF/XML file");
-      }
-      log.info("Parsed general area GML geometry from ESF: {}", gmlGeometry.getGeometryType());
-
-      int numGeoms = gmlGeometry.getNumGeometries();
-      GeoJsonWriter gjsonWriter = new GeoJsonWriter();
-      ArrayNode features = mapper.createArrayNode();
-      for (int i = 0; i < numGeoms; i++) {
-        Geometry subGeom = gmlGeometry.getGeometryN(i);
-        validateGmlGeometryAndBoundary(subGeom, crsCode);
-        int originalCoords = countCoordinates(subGeom);
-        Geometry thinned = thinGeometry(subGeom, crsCode);
-        int thinnedCoords = countCoordinates(thinned);
-        int removed = originalCoords - thinnedCoords;
-        log.info(
-            "ESF sub-geometry {}: Thinning removed {} of {} coordinates ({} remain)",
-            i + 1,
-            removed,
-            originalCoords,
-            thinnedCoords);
-        // Reproject to EPSG:4326 if needed
-        Geometry finalGeom = reprojectTo4326(thinned, crsCode);
-        String geojson = gjsonWriter.write(finalGeom);
-        JsonNode geojsonNode = mapper.readTree(geojson);
-        ObjectNode feature = mapper.createObjectNode();
-        feature.put("type", "Feature");
-        feature.set("geometry", geojsonNode);
-        feature.set("properties", mapper.createObjectNode());
-        features.add(feature);
-      }
-      ObjectNode fc = mapper.createObjectNode();
-      fc.put("type", "FeatureCollection");
-      fc.set("features", features);
-
-      return ExtractedGeoDataDto.builder()
-          .metaData(metaData)
-          .geoJson(fc)
-          .tenureList(tenureList)
-          .build();
-    } catch (ResponseStatusException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("Failed to process ESF/XML file: {}", e.getMessage(), e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Invalid ESF/XML file: " + e.getMessage());
     }
   }
 
@@ -337,12 +225,17 @@ public class OpeningSpatialFileService {
         geometries.add(geom);
       }
 
-      // Step 4, 5: Validate, thin, and convert all geometries to GeoJSON features
+      // Step 4, 5: Validate, thin, compute area, and convert all geometries to GeoJSON features
       GeoJsonWriter gjsonWriter = new GeoJsonWriter();
       ArrayNode features = mapper.createArrayNode();
+      BigDecimal totalArea = BigDecimal.ZERO;
+      int geomIndex = 0;
       for (Geometry geom : geometries) {
-        // 4: Validate geometry (no curves) and within BC boundary
+        geomIndex++;
+        // 4: Validate geometry type (polygon-only) and within BC boundary
         validateGmlGeometryAndBoundary(geom, crsCode);
+        // Ring validity
+        validatePolygonRings(geom, geomIndex);
         // 5: Vertex Thinning (Douglas-Peucker)
         int originalCoords = countCoordinates(geom);
         Geometry thinned = thinGeometry(geom, crsCode);
@@ -353,6 +246,10 @@ public class OpeningSpatialFileService {
             removed,
             originalCoords,
             thinnedCoords);
+        // Validate non-zero area (native CRS, before reprojection)
+        validateNonZeroArea(thinned, crsCode, geomIndex);
+        // Accumulate area in hectares
+        totalArea = totalArea.add(calculateGeometryAreaHectares(thinned, crsCode));
         // Reproject to EPSG:4326 if needed
         Geometry finalGeom = reprojectTo4326(thinned, crsCode);
         // Convert thinned/reprojected geometry to GeoJSON
@@ -365,11 +262,11 @@ public class OpeningSpatialFileService {
         features.add(feature);
       }
 
-      // Step 5: Return ExtractedGeoDataDto with metaData as null
+      // Build and return result
       ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
       fc.set("features", features);
-      return ExtractedGeoDataDto.builder().metaData(null).geoJson(fc).build();
+      return ExtractedGeoDataDto.builder().geometryArea(totalArea).geoJson(fc).build();
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
@@ -380,33 +277,6 @@ public class OpeningSpatialFileService {
   }
 
   private static final String GML_NS = "http://www.opengis.net/gml";
-
-  /**
-   * Parses a GML string into a JTS Geometry using DOM parsing. Supports GML2 and GML3 for Polygon,
-   * MultiPolygon, LineString, MultiLineString, Point, and MultiPoint geometries.
-   *
-   * @param gml the GML geometry string
-   * @return parsed JTS Geometry
-   * @throws Exception if parsing fails or geometry is invalid
-   */
-  private Geometry parseGmlToGeometry(String gml) throws Exception {
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    dbf.setNamespaceAware(true);
-    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-    DocumentBuilder db = dbf.newDocumentBuilder();
-    Document doc = db.parse(new ByteArrayInputStream(gml.getBytes(StandardCharsets.UTF_8)));
-    Element root = doc.getDocumentElement();
-    GeometryFactory gf = new GeometryFactory();
-    Geometry geom = parseGmlElement(root, gf);
-    if (geom == null) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "GML does not contain a valid geometry.");
-    }
-    return geom;
-  }
 
   private Geometry parseGmlElement(Element el, GeometryFactory gf) throws Exception {
     String localName = el.getLocalName();
@@ -468,9 +338,13 @@ public class OpeningSpatialFileService {
     Coordinate[] coords = parseGmlCoordinates(el);
     if (coords.length < 4) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "GML LinearRing must have at least 4 coordinates");
+          HttpStatus.BAD_REQUEST, "Polygon ring has fewer than 4 coordinates");
     }
-    return gf.createLinearRing(coords);
+    try {
+      return gf.createLinearRing(coords);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Polygon boundary is not closed");
+    }
   }
 
   private Polygon parseGmlPolygon(Element el, GeometryFactory gf) throws Exception {
@@ -557,21 +431,21 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Validates that the GML geometry is a simple feature (no curves) and is fully within the
-   * Province of BC boundary. Throws ResponseStatusException if validation fails.
+   * Validates that the GML geometry is a supported polygon type and is fully within the Province of
+   * BC boundary. Throws ResponseStatusException if validation fails.
    *
    * @param geometry the JTS Geometry to validate
    * @param crsCode the EPSG code as a string ("3005" or "4326")
-   * @throws ResponseStatusException if geometry is not simple or not within BC boundary
+   * @throws ResponseStatusException if geometry is not a supported type or not within BC boundary
    */
   private void validateGmlGeometryAndBoundary(Geometry geometry, String crsCode) {
-    // Check for simple feature type (no curves)
+    // Only Polygon and MultiPolygon are supported
     String geomType = geometry.getGeometryType();
-    if (!isSimpleFeatureType(geomType)) {
+    if (!isSupportedGeometryType(geomType)) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           String.format(
-              "GML geometry type '%s' is not a simple feature (no curves allowed)", geomType));
+              "Only Polygon and MultiPolygon geometries are supported (got '%s')", geomType));
     }
 
     // Validate geometry is within BC boundary
@@ -873,17 +747,17 @@ public class OpeningSpatialFileService {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Feature " + index + " missing geometry");
     }
-    // Check for simple feature geometry type (no curves)
+    // Check for supported geometry type (Polygon/MultiPolygon only)
     if (!geomNode.has("type")) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Feature " + index + " geometry missing 'type'");
     }
     String geomType = geomNode.get("type").asText();
-    if (!isSimpleFeatureType(geomType)) {
+    if (!isSupportedGeometryType(geomType)) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           String.format(
-              "Feature %d geometry type '%s' is not a simple feature (no curves allowed)",
+              "Feature %d: Only Polygon and MultiPolygon geometries are supported (got '%s')",
               index, geomType));
     }
     try {
@@ -892,11 +766,19 @@ public class OpeningSpatialFileService {
       TopologyValidationError err = validator.getValidationError();
       if (err != null) {
         String message =
-            String.format(
-                "Invalid geometry at feature %d: %s (coord=%s)",
-                index, err.getMessage(), err.getCoordinate());
+            switch (err.getErrorType()) {
+              case TopologyValidationError.TOO_FEW_POINTS -> String.format(
+                  "Feature %d: Polygon ring has fewer than 4 coordinates", index);
+              case TopologyValidationError.RING_NOT_CLOSED -> String.format(
+                  "Feature %d: Polygon boundary is not closed", index);
+              default -> String.format(
+                  "Invalid geometry at feature %d: %s (coord=%s)",
+                  index, err.getMessage(), err.getCoordinate());
+            };
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
       }
+      // Explicit ring validation for clear error messages
+      validatePolygonRings(geometry, index);
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
@@ -940,24 +822,13 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Returns true if the geometry type is a simple feature (no curves). Accepts Point, MultiPoint,
-   * LineString, MultiLineString, Polygon, MultiPolygon.
+   * Returns true if the geometry type is a supported upload type (Polygon or MultiPolygon).
    *
    * @param geomType the geometry type string
-   * @return true if simple feature, false otherwise
+   * @return true if Polygon or MultiPolygon, false otherwise
    */
-  private static boolean isSimpleFeatureType(String geomType) {
-    switch (geomType) {
-      case "Point":
-      case "MultiPoint":
-      case "LineString":
-      case "MultiLineString":
-      case "Polygon":
-      case "MultiPolygon":
-        return true;
-      default:
-        return false;
-    }
+  private static boolean isSupportedGeometryType(String geomType) {
+    return "Polygon".equals(geomType) || "MultiPolygon".equals(geomType);
   }
 
   /**
@@ -974,332 +845,6 @@ public class OpeningSpatialFileService {
             ? SilvaPostgresConstants.THINNING_TOLERANCE_METERS
             : SilvaPostgresConstants.THINNING_TOLERANCE_DEGREES;
     return DouglasPeuckerSimplifier.simplify(geometry, tolerance);
-  }
-
-  /**
-   * Extracts the GML fragment for the general area definition geometry (OpeningDefinition/extentOf)
-   * from ESF/XML. Uses XPath to locate the geometry node and serializes it to a string. Throws
-   * ResponseStatusException if not found.
-   *
-   * @param xmlText the ESF/XML string
-   * @return GML fragment as a string
-   * @throws ResponseStatusException if geometry is not found or extraction fails
-   */
-
-  /** NamespaceContext for ESF/XML XPath queries. */
-  private NamespaceContext buildEsfNamespaceContext() {
-    return new NamespaceContext() {
-      public String getNamespaceURI(String prefix) {
-        switch (prefix) {
-          case "rst":
-            return "http://www.for.gov.bc.ca/schema/results";
-          case "gml":
-            return "http://www.opengis.net/gml";
-          case "esf":
-            return "http://www.for.gov.bc.ca/schema/esf";
-          default:
-            return javax.xml.XMLConstants.NULL_NS_URI;
-        }
-      }
-
-      public String getPrefix(String uri) {
-        return null;
-      }
-
-      public java.util.Iterator<String> getPrefixes(String uri) {
-        return null;
-      }
-    };
-  }
-
-  private String extractGeneralAreaGmlFragment(String xmlText) {
-    try {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setNamespaceAware(true);
-      // Prevent XXE by disabling DTDs and external entities
-      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      dbf.setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "");
-      dbf.setAttribute("http://javax.xml.XMLConstants/property/accessExternalSchema", "");
-
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
-      XPathFactory xpf = XPathFactory.newInstance();
-      XPath xpath = xpf.newXPath();
-      NamespaceContext nsContext =
-          new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-              switch (prefix) {
-                case "rst":
-                  return "http://www.for.gov.bc.ca/schema/results";
-                case "gml":
-                  return "http://www.opengis.net/gml";
-                case "esf":
-                  return "http://www.for.gov.bc.ca/schema/esf";
-                default:
-                  return javax.xml.XMLConstants.NULL_NS_URI;
-              }
-            }
-
-            public String getPrefix(String uri) {
-              return null;
-            }
-
-            public java.util.Iterator<String> getPrefixes(String uri) {
-              return null;
-            }
-          };
-      xpath.setNamespaceContext(nsContext);
-      String expr =
-          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:extentOf/*";
-      Node geomNode = (Node) xpath.evaluate(expr, doc, XPathConstants.NODE);
-      if (geomNode == null) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "No general area GML geometry found in ESF/XML file");
-      }
-      TransformerFactory tf = TransformerFactory.newInstance();
-      // Harden TransformerFactory against XXE / external resource access
-      try {
-        tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      } catch (Exception e) {
-        // Some TransformerFactory implementations (or older JDKs) may not support
-        // setting this feature. This is non-fatal; rely on parser-level protections.
-        log.debug("Could not set TransformerFactory FEATURE_SECURE_PROCESSING", e);
-      }
-      try {
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      } catch (Exception e) {
-        // Best-effort hardening; if unsupported we proceed. Log at debug level
-        // so issues can be diagnosed in environments with incompatible factories.
-        log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_DTD", e);
-      }
-      try {
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-      } catch (Exception e) {
-        // Best-effort hardening; if unsupported we proceed. Log at debug level
-        // so issues can be diagnosed in environments with incompatible factories.
-        log.debug("Could not set TransformerFactory ACCESS_EXTERNAL_STYLESHEET", e);
-      }
-      Transformer transformer = tf.newTransformer();
-      StringWriter writer = new StringWriter();
-      transformer.transform(new DOMSource(geomNode), new StreamResult(writer));
-      return writer.toString();
-    } catch (Exception e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Failed to extract general area GML: " + e.getMessage());
-    }
-  }
-
-  /**
-   * Extracts orgUnit, openingGrossArea, maxAllowablePermAccessPerc, and openingCategory from ESF
-   * XML text. Uses XPath to locate and parse metadata fields.
-   *
-   * @param xmlText the ESF/XML string
-   * @return GeoMetaDataDto with extracted metadata fields
-   */
-  private GeoMetaDataDto extractEsfMetaData(String xmlText) {
-    try {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setNamespaceAware(true);
-      // Prevent XXE and DTD attacks
-      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-      dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
-      XPathFactory xpf = XPathFactory.newInstance();
-      XPath xpath = xpf.newXPath();
-      NamespaceContext nsContext =
-          new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-              switch (prefix) {
-                case "rst":
-                  return "http://www.for.gov.bc.ca/schema/results";
-                case "gml":
-                  return "http://www.opengis.net/gml";
-                case "esf":
-                  return "http://www.for.gov.bc.ca/schema/esf";
-                case "mof":
-                  return "http://www.for.gov.bc.ca/schema/base";
-                default:
-                  return XMLConstants.NULL_NS_URI;
-              }
-            }
-
-            public String getPrefix(String uri) {
-              return null;
-            }
-
-            public Iterator<String> getPrefixes(String uri) {
-              return null;
-            }
-          };
-      xpath.setNamespaceContext(nsContext);
-
-      String orgUnit =
-          (String)
-              xpath.evaluate(
-                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionMetadataProperty/rst:SubmissionMetadata/rst:districtCode",
-                  doc,
-                  XPathConstants.STRING);
-      String openingGrossAreaStr =
-          (String)
-              xpath.evaluate(
-                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:openingGrossArea",
-                  doc,
-                  XPathConstants.STRING);
-      String maxAllowablePermAccessPerc =
-          (String)
-              xpath.evaluate(
-                  "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:maximumAllowableSoilDisturbancePercentage",
-                  doc,
-                  XPathConstants.STRING);
-
-      BigDecimal openingGrossAreaVal = null;
-      try {
-        if (openingGrossAreaStr != null && !openingGrossAreaStr.isBlank()) {
-          openingGrossAreaVal = new BigDecimal(openingGrossAreaStr);
-        }
-      } catch (Exception e) {
-        log.info("Failed to parse openingGrossArea as BigDecimal: {}", e.getMessage());
-      }
-
-      BigDecimal maxPermAccessPercVal = null;
-      try {
-        if (maxAllowablePermAccessPerc != null && !maxAllowablePermAccessPerc.isBlank()) {
-          maxPermAccessPercVal = new BigDecimal(maxAllowablePermAccessPerc);
-        }
-      } catch (Exception e) {
-        log.info("Failed to parse maxAllowablePermAccessPerc as BigDecimal: {}", e.getMessage());
-      }
-
-      return new GeoMetaDataDto(
-          orgUnit,
-          null, // openingCategory
-          openingGrossAreaVal,
-          maxPermAccessPercVal);
-    } catch (Exception e) {
-      log.info("Failed to extract ESF metadata: {}", e.getMessage());
-      return new GeoMetaDataDto(null, null, null, null);
-    }
-  }
-
-  /**
-   * Extracts tenure information from ESF XML and returns a list of TenureDto objects. Uses XPath to
-   * locate Tenure nodes and parses relevant fields.
-   *
-   * @param xmlText the ESF/XML string
-   * @return list of TenureDto objects
-   */
-  private List<TenureDto> extractEsfTenureList(String xmlText) {
-    List<TenureDto> result = new ArrayList<>();
-    try {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setNamespaceAware(true);
-      dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-      dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new ByteArrayInputStream(xmlText.getBytes()));
-      XPathFactory xpf = XPathFactory.newInstance();
-      XPath xpath = xpf.newXPath();
-      NamespaceContext nsContext =
-          new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-              switch (prefix) {
-                case "rst":
-                  return "http://www.for.gov.bc.ca/schema/results";
-                case "gml":
-                  return "http://www.opengis.net/gml";
-                case "esf":
-                  return "http://www.for.gov.bc.ca/schema/esf";
-                case "mof":
-                  return "http://www.for.gov.bc.ca/schema/base";
-                default:
-                  return javax.xml.XMLConstants.NULL_NS_URI;
-              }
-            }
-
-            public String getPrefix(String uri) {
-              return null;
-            }
-
-            public Iterator<String> getPrefixes(String uri) {
-              return null;
-            }
-          };
-      xpath.setNamespaceContext(nsContext);
-
-      // Find all rst:Tenure nodes under rst:tenureProperty
-      String tenureExpr =
-          "/esf:ESFSubmission/esf:submissionContent/rst:ResultsSubmission/rst:submissionItem/rst:Opening/rst:definedBy/rst:OpeningDefinition/rst:tenureProperty/rst:Tenure";
-      NodeList tenureNodes = (NodeList) xpath.evaluate(tenureExpr, doc, XPathConstants.NODESET);
-      boolean foundPrimary = false;
-      for (int i = 0; i < tenureNodes.getLength(); i++) {
-        Node tenureNode = tenureNodes.item(i);
-        // Extract fields
-        String forestFileId = null;
-        String cutBlock = null;
-        String cuttingPermit = null;
-        boolean isPrimary = false;
-
-        // licenceNumber
-        NodeList licenceNodes =
-            ((Element) tenureNode)
-                .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "licenceNumber");
-        if (licenceNodes.getLength() > 0) {
-          forestFileId = licenceNodes.item(0).getTextContent();
-        }
-        // cutblock
-        NodeList cutBlockNodes =
-            ((Element) tenureNode)
-                .getElementsByTagNameNS("http://www.for.gov.bc.ca/schema/results", "cutblock");
-        if (cutBlockNodes.getLength() > 0) {
-          cutBlock = cutBlockNodes.item(0).getTextContent();
-        }
-        // cuttingPermitID
-        NodeList cuttingPermitNodes =
-            ((Element) tenureNode)
-                .getElementsByTagNameNS(
-                    "http://www.for.gov.bc.ca/schema/results", "cuttingPermitID");
-        if (cuttingPermitNodes.getLength() > 0) {
-          cuttingPermit = cuttingPermitNodes.item(0).getTextContent();
-        }
-        // primeLicenceIndicator
-        NodeList primeNodes =
-            ((Element) tenureNode)
-                .getElementsByTagNameNS(
-                    "http://www.for.gov.bc.ca/schema/results", "primeLicenceIndicator");
-        if (primeNodes.getLength() > 0) {
-          String primeText = primeNodes.item(0).getTextContent();
-          isPrimary = "true".equalsIgnoreCase(primeText.trim());
-          if (isPrimary) foundPrimary = true;
-        }
-
-        result.add(
-            new TenureDto(
-                isPrimary, forestFileId, cutBlock, cuttingPermit, null // timberMark ignored for now
-                ));
-      }
-      // If no primary found, set first as primary if exists
-      if (!foundPrimary && !result.isEmpty()) {
-        TenureDto first = result.get(0);
-        result.set(
-            0,
-            new TenureDto(
-                true, first.forestFileId(), first.cutBlock(), first.cuttingPermit(), null));
-      }
-    } catch (Exception e) {
-      log.info("Failed to extract tenure list from ESF: {}", e.getMessage());
-    }
-    return result;
   }
 
   /**
@@ -1322,6 +867,58 @@ public class OpeningSpatialFileService {
     } catch (Exception e) {
       log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
       return geometry;
+    }
+  }
+
+  private Geometry reprojectTo3005(Geometry geometry) {
+    try {
+      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
+      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3005");
+      MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+      return JTS.transform(geometry, transform);
+    } catch (Exception e) {
+      log.warn("Failed to reproject geometry to EPSG:3005: {}", e.getMessage());
+      return geometry;
+    }
+  }
+
+  private BigDecimal calculateGeometryAreaHectares(Geometry geom, String crsCode) {
+    Geometry geomIn3005 = "3005".equals(crsCode) ? geom : reprojectTo3005(geom);
+    double areaM2 = geomIn3005.getArea();
+    return BigDecimal.valueOf(areaM2 / 10_000.0).setScale(4, RoundingMode.HALF_UP);
+  }
+
+  private void validateNonZeroArea(Geometry geom, String crsCode, int index) {
+    Geometry geomIn3005 = "3005".equals(crsCode) ? geom : reprojectTo3005(geom);
+    if (geomIn3005.getArea() < 1.0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          String.format("Feature %d: Polygon has zero or collapsed surface area", index));
+    }
+  }
+
+  private void validatePolygonRings(Geometry geom, int featureIndex) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
+      Geometry sub = geom.getGeometryN(i);
+      if (sub instanceof Polygon poly) {
+        checkRing(poly.getExteriorRing(), featureIndex);
+        for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+          checkRing(poly.getInteriorRingN(j), featureIndex);
+        }
+      }
+    }
+  }
+
+  private void checkRing(LinearRing ring, int featureIndex) {
+    if (ring.getNumPoints() < 4) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          String.format("Feature %d: Polygon ring has fewer than 4 coordinates", featureIndex));
+    }
+    if (!ring.isClosed()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          String.format("Feature %d: Polygon boundary is not closed", featureIndex));
     }
   }
 }
