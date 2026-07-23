@@ -52,7 +52,7 @@ spring:
       maxLifetime: 180000 # 3 minutes
       keepaliveTime: 60000 # 1 minute
       poolName: SilvaPostgresConnPool
-      minimumIdle: 1
+      minimumIdle: 0
       maximumPoolSize: 3
       leakDetectionThreshold: 60000
       connection-test-query: SELECT 1

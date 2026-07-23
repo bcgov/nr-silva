@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -19,15 +20,13 @@ import org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypesScanne
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * This class holds JPA configurations for the Oracle database.
- */
+/** This class holds JPA configurations for the Oracle database. */
 @Configuration
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @EnableJpaRepositories(
     basePackages = {"ca.bc.gov.restapi.results.oracle"},
     entityManagerFactoryRef = "oracleEntityManagerFactory",
-    transactionManagerRef = "oracleTransactionManager"
-)
+    transactionManagerRef = "oracleTransactionManager")
 @EnableTransactionManagement
 public class OracleJpaConfiguration {
 
@@ -38,19 +37,23 @@ public class OracleJpaConfiguration {
   public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
       @Qualifier("oracleDataSource") HikariDataSource dataSource,
       @Qualifier("oracleManagedTypes") PersistenceManagedTypes persistenceManagedTypes,
-      EntityManagerFactoryBuilder builder
-  ) {
+      EntityManagerFactoryBuilder builder) {
     return builder
         .dataSource(dataSource)
-        .properties(Map.of(
-            "hibernate.dialect", "org.hibernate.dialect.OracleDialect",
-            "hibernate.boot.allow_jdbc_metadata_access", "false",
-            "hibernate.hikari.connection.provider_class",
-            "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
-            "hibernate.connection.datasource", dataSource,
-            "hibernate.connection.oracle.net.ssl_server_dn_match","false",
-            "hibernate.connection.oracle.net.ssl_key_alias", oracleHost
-        ))
+        .properties(
+            Map.of(
+                "hibernate.dialect",
+                "org.hibernate.dialect.OracleDialect",
+                "hibernate.boot.allow_jdbc_metadata_access",
+                "false",
+                "hibernate.hikari.connection.provider_class",
+                "org.hibernate.hikaricp.internal.HikariCPConnectionProvider",
+                "hibernate.connection.datasource",
+                dataSource,
+                "hibernate.connection.oracle.net.ssl_server_dn_match",
+                "false",
+                "hibernate.connection.oracle.net.ssl_key_alias",
+                oracleHost))
         .packages("ca.bc.gov.restapi.results.oracle")
         .managedTypes(persistenceManagedTypes)
         .persistenceUnit("oracle")
@@ -71,8 +74,7 @@ public class OracleJpaConfiguration {
 
   @Bean(name = "oracleTransactionManager")
   public PlatformTransactionManager oracleTransactionManager(
-      @Qualifier("oracleEntityManagerFactory") final EntityManagerFactory entityManagerFactory
-  ) {
+      @Qualifier("oracleEntityManagerFactory") final EntityManagerFactory entityManagerFactory) {
     return new JpaTransactionManager(entityManagerFactory);
   }
 }
