@@ -512,7 +512,8 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw when file name is null")
   void shouldThrowWhenFileNameIsNull() {
     assertThatThrownBy(
-            () -> service.processOpeningSpatialFile(null, "content".getBytes(StandardCharsets.UTF_8)))
+            () ->
+                service.processOpeningSpatialFile(null, "content".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -520,8 +521,9 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw for invalid GML CRS")
   void shouldThrowForInvalidGmlCrs() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:9999\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49 -123,49.1 -122.9,49.1 -123,49"
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:9999\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49"
+            + " -123,49.1 -122.9,49.1 -123,49"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     assertThatThrownBy(
@@ -535,8 +537,9 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw when GML has invalid geometry")
   void shouldThrowForInvalidGmlGeometry() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49 -123,49 -123,49 -123,49"
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123,49"
+            + " -123,49 -123,49 -123,49"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     assertThatThrownBy(
@@ -630,8 +633,9 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should process valid GML with valid BC geometry in 4326")
   void shouldProcessValidGmlWith4326() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2 -120.4,49.2 -120.4,49.3 -120.5,49.3 -120.5,49.2"
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2"
+            + " -120.4,49.2 -120.4,49.3 -120.5,49.3 -120.5,49.2"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
@@ -646,8 +650,9 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should process valid GML with valid BC geometry in 3005")
   void shouldProcessValidGmlWith3005() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:3005\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>850000,1500000 850100,1500000 850100,1500100 850000,1500100 850000,1500000"
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:3005\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>850000,1500000"
+            + " 850100,1500000 850100,1500100 850000,1500100 850000,1500000"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
@@ -692,9 +697,12 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should handle GML MultiPolygon")
   void shouldProcessGmlMultiPolygon() {
     String gml =
-        "<gml:MultiPolygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
-            + "<gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2 -120.4,49.2 -120.4,49.3 -120.5,49.3 -120.5,49.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember>"
-            + "<gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-119.5,50.2 -119.4,50.2 -119.4,50.3 -119.5,50.3 -119.5,50.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember>"
+        "<gml:MultiPolygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:4326\"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2"
+            + " -120.4,49.2 -120.4,49.3 -120.5,49.3"
+            + " -120.5,49.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-119.5,50.2"
+            + " -119.4,50.2 -119.4,50.3 -119.5,50.3"
+            + " -119.5,50.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember>"
             + "</gml:MultiPolygon>";
 
     ExtractedGeoDataDto result =
@@ -709,10 +717,12 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should handle GML polygon with interior rings")
   void shouldProcessGmlPolygonWithHoles() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2 -120.2,49.2 -120.2,49.5 -120.5,49.5 -120.5,49.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs>"
-            + "<gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>-120.4,49.3 -120.3,49.3 -120.3,49.4 -120.4,49.4 -120.4,49.3</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs>"
-            + "</gml:Polygon>";
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-120.5,49.2"
+            + " -120.2,49.2 -120.2,49.5 -120.5,49.5"
+            + " -120.5,49.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>-120.4,49.3"
+            + " -120.3,49.3 -120.3,49.4 -120.4,49.4"
+            + " -120.4,49.3</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
         service.processOpeningSpatialFile(
@@ -727,8 +737,9 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw for GML with zero area (collapsed polygon)")
   void shouldThrowForZeroAreaGml() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123.0,49.0 -123.0,49.0 -123.0,49.0 -123.0,49.0"
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\""
+            + " srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123.0,49.0"
+            + " -123.0,49.0 -123.0,49.0 -123.0,49.0"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     assertThatThrownBy(
@@ -741,7 +752,8 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should throw for GeoJSON with missing features array")
   void shouldThrowForGeoJsonMissingFeatures() {
-    String geojson = "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}}}";
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}}}";
 
     assertThatThrownBy(
             () ->
@@ -780,9 +792,10 @@ class OpeningSpatialFileServiceTest {
   @DisplayName("Should throw for GML with missing SRS")
   void shouldThrowForGmlMissingSrs() {
     String gml =
-        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\">"
-            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123.0,49.0 -123.1,49.0 -123.1,49.1 -123.0,49.1 -123.0,49.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs>"
-            + "</gml:Polygon>";
+        "<gml:Polygon"
+            + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123.0,49.0"
+            + " -123.1,49.0 -123.1,49.1 -123.0,49.1"
+            + " -123.0,49.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     assertThatThrownBy(
             () ->
