@@ -738,6 +738,86 @@ class OpeningSpatialFileServiceTest {
         .isInstanceOf(ResponseStatusException.class);
   }
 
+  @Test
+  @DisplayName("Should throw for GeoJSON with missing features array")
+  void shouldThrowForGeoJsonMissingFeatures() {
+    String geojson = "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}}}";
+
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "no-features.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should throw for GeoJSON with invalid JSON syntax")
+  void shouldThrowForInvalidGeoJsonSyntax() {
+    String invalidJson = "{\"type\":\"FeatureCollection\", \"features\": [invalid]}";
+
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "bad-json.geojson", invalidJson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should throw for GML with invalid geometry element")
+  void shouldThrowForInvalidGmlElement() {
+    String gml =
+        "<gml:Invalid xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
+            + "</gml:Invalid>";
+
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "invalid-gml.gml", gml.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should throw for GML with missing SRS")
+  void shouldThrowForGmlMissingSrs() {
+    String gml =
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\">"
+            + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-123.0,49.0 -123.1,49.0 -123.1,49.1 -123.0,49.1 -123.0,49.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs>"
+            + "</gml:Polygon>";
+
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "no-srs.gml", gml.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should throw for geometry with fewer than 4 coordinates")
+  void shouldThrowForInsufficientCoordinates() {
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-120.5,49.2],[-120.4,49.2],[-120.5,49.2]]]}}]}";
+
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "short-coords.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Should process valid GeoJSON with specific area calculation")
+  void shouldCalculateAreaAccuratelyFor3005() {
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::3005\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[850000,1500000],[850100,1500000],[850100,1500100],[850000,1500100],[850000,1500000]]]}}]}";
+
+    ExtractedGeoDataDto result =
+        service.processOpeningSpatialFile(
+            "area-test.geojson", geojson.getBytes(StandardCharsets.UTF_8));
+
+    assertThat(result).isNotNull();
+    assertThat(result.geometryArea()).isNotNull().isGreaterThan(BigDecimal.ZERO);
+  }
+
   private Geometry parseGml(String gml) throws Exception {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setNamespaceAware(true);
