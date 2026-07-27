@@ -21,7 +21,6 @@ export type { ForestClientDto } from './models/ForestClientDto';
 export { ForestClientLocationDto } from './models/ForestClientLocationDto';
 export type { ForestCoverSearchResponseDto } from './models/ForestCoverSearchResponseDto';
 export type { GeoJsonObject } from './models/GeoJsonObject';
-export type { GeoMetaDataDto } from './models/GeoMetaDataDto';
 export type { GeometryCollection } from './models/GeometryCollection';
 export type { JsonNode } from './models/JsonNode';
 export type { LineString } from './models/LineString';
@@ -89,7 +88,6 @@ export type { SimplePageDto } from './models/SimplePageDto';
 export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchResponseDto';
 export { StockingStandardsCommentSearchResponseDto } from './models/StockingStandardsCommentSearchResponseDto';
 export type { StockingStandardsSearchResponseDto } from './models/StockingStandardsSearchResponseDto';
-export type { TenureDto } from './models/TenureDto';
 
 export { CodesEndpointService } from './services/CodesEndpointService';
 export { ForestClientEndpointService } from './services/ForestClientEndpointService';
