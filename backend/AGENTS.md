@@ -357,3 +357,71 @@ cd backend && ./mvnw clean install \
   --no-transfer-progress \
   -P all-tests
 ```
+
+### Dual-Database Test Organization — Shared vs. DB-Specific
+
+The backend runs both Oracle and Postgres simultaneously with a single property (`server.primary-db`) selecting which is "primary" at runtime. Tests must reflect this dual-DB reality.
+
+#### Rule 1: Shared endpoints → tests in common
+
+If an endpoint is available for **both Oracle and Postgres** (i.e., the business logic is DB-agnostic and the service layer routes via a common interface), add all tests to:
+
+```
+src/test/java/.../common/endpoint/<Feature>EndpointIntegrationTest.java
+```
+
+**Do NOT** add `@EnabledIfSystemProperty` conditions or database-specific test methods. The tests run identically against both databases through the service layer's `@ConditionalOnProperty` routing.
+
+**Example**: `OpeningEndpoint.getUserCreatedOpenings()` is a shared endpoint tested once in `common/endpoint/OpeningEndpointIntegrationTest.java` with 6 test methods covering pagination, sorting, validation, and boundary cases. Both Oracle and Postgres implementations execute the same test suite via `OpeningSearchService`.
+
+#### Rule 2: DB-specific endpoints → tests only in that DB's folder
+
+If an endpoint exists **only for one database** (e.g., Postgres-only features like user favorites or spatial file uploads), add tests to:
+
+```
+src/test/java/.../postgres/endpoint/<Feature>EndpointIntegrationTest.java
+```
+
+Mark it with `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")` so it only runs when that DB is primary.
+
+**Example**: `postgres/endpoint/OpeningEndpoint.getUserFavouriteOpenings()` is Postgres-only and tested in `postgres/endpoint/OpeningEndpointIntegrationTest.java`.
+
+#### Rule 3: If content differs by DB, use abstract + concrete pattern
+
+For rare cases where the **same endpoint behavior requires different test data or assertions per database** (e.g., different SQL dialects tested separately), use:
+
+```
+src/test/java/.../common/endpoint/Abstract<Feature>IntegrationTest.java        ← abstract base, no DB conditions
+src/test/java/.../postgres/endpoint/<Feature>PostgresIntegrationTest.java      ← concrete, inherits + adds Postgres-specific tests
+src/test/java/.../oracle/endpoint/<Feature>OracleIntegrationTest.java          ← concrete, inherits + adds Oracle-specific tests
+```
+
+Use `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres|oracle")` on concrete classes only. This pattern is **not** the default; use only when necessary.
+
+#### Test Coverage Targets
+
+All endpoint and service tests must achieve:
+- **>85% branch coverage** (minimum required for merge)
+- **>90% branch coverage** (desired; target for all new features)
+
+Coverage is measured on:
+- Happy path: default pagination, sorting, expected results
+- Edge cases: zero-size pages, max page size, empty result sets
+- Validation: required filters missing, invalid input, boundary values
+- Error paths: not found (404), bad request (400), unauthorized (401)
+
+Use `mvn clean install -P all-tests` to run the full test suite and generate coverage reports in `target/site/jacoco/`.
+
+### File Organization Checklist
+
+When adding a new shared endpoint:
+- [ ] Endpoint method in `common/endpoint/<Feature>Endpoint.java`
+- [ ] Shared service interface in `common/service/<Feature>Service.java`
+- [ ] Abstract service impl in `common/service/impl/Abstract<Feature>Service.java`
+- [ ] Postgres service impl in `postgres/service/<Feature>PostgresService.java`
+- [ ] Oracle service impl in `oracle/service/<Feature>OracleService.java`
+- [ ] Repository interface in `common/repository/<Feature>Repository.java` (with `@NoRepositoryBean`)
+- [ ] Postgres repository impl in `postgres/repository/<Feature>PostgresRepository.java`
+- [ ] Oracle repository impl in `oracle/repository/<Feature>OracleRepository.java`
+- [ ] Integration tests in `common/endpoint/<Feature>EndpointIntegrationTest.java` (>85% coverage minimum)
+- [ ] Verify both DB configs work: `mvn clean install -Dserver.primary-db=oracle` and `...=postgres`

@@ -11,7 +11,10 @@ import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHisto
 import ca.bc.gov.restapi.results.common.dto.opening.history.OpeningStockingHistoryOverviewDto;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningNotFoundException;
+import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OpeningEndpoint {
   private final OpeningDetailsService openingDetailsService;
+  private final OpeningSearchService openingSearchService;
 
   /**
    * Get the Opening Tombstone/Summary information.
@@ -189,5 +193,46 @@ public class OpeningEndpoint {
 
     String presignedUrl = openingDetailsService.generateAttachmentDownloadUrl(guid);
     return ResponseEntity.ok(presignedUrl);
+  }
+
+  /**
+   * Get paginated list of openings created by the authenticated user.
+   *
+   * @param pageable pagination parameters (page, size, sort)
+   * @return paginated list of {@link OpeningSearchResponseDto} for openings created by the current
+   *     user
+   */
+  @GetMapping("/user-created")
+  @Operation(
+      summary = "Get openings created by current user",
+      description =
+          "Retrieve a paginated list of openings created by the authenticated user. "
+              + "Results are sorted by default by updateTimestamp in descending order.")
+  public Page<OpeningSearchResponseDto> getUserCreatedOpenings(
+      @ParameterObject @Parameter(description = "Pagination parameters (page, size, sort)")
+          Pageable pageable) {
+    OpeningSearchExactFiltersDto filtersDto =
+        new OpeningSearchExactFiltersDto(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            Boolean.TRUE,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+    return openingSearchService.searchOpeningExact(filtersDto, pageable);
   }
 }
