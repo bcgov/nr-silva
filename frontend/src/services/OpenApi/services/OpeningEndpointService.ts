@@ -17,6 +17,7 @@ import type { OpeningStockingHistoryDto } from '../models/OpeningStockingHistory
 import type { OpeningStockingHistoryOverviewDto } from '../models/OpeningStockingHistoryOverviewDto';
 import type { PagedModelOpeningDetailsActivitiesActivitiesDto } from '../models/PagedModelOpeningDetailsActivitiesActivitiesDto';
 import type { PagedModelOpeningDetailsActivitiesDisturbanceDto } from '../models/PagedModelOpeningDetailsActivitiesDisturbanceDto';
+import type { PagedModelOpeningSearchResponseDto } from '../models/PagedModelOpeningSearchResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -395,6 +396,30 @@ export class OpeningEndpointService {
             path: {
                 'openingId': openingId,
                 'atuId': atuId,
+            },
+        });
+    }
+    /**
+     * Get openings created by current user
+     * Retrieve a paginated list of openings created by the authenticated user. Results are sorted by default by updateTimestamp in descending order.
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelOpeningSearchResponseDto OK
+     * @throws ApiError
+     */
+    public static getUserCreatedOpenings(
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelOpeningSearchResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/user-created',
+            query: {
+                'page': page,
+                'size': size,
+                'sort': sort,
             },
         });
     }
