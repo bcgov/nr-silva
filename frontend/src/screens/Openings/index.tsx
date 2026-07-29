@@ -11,7 +11,6 @@ import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
 
 import { OpeningsTabs } from "./constants";
 import './styles.scss';
-import API from "../../services/API";
 
 const RecentOpenings = lazy(() => import("@/components/RecentOpenings"));
 const MyOpenings = lazy(() => import("@/components/MyOpenings"));
@@ -32,7 +31,7 @@ const Openings = () => {
   const [activeTab, setActiveTab] = useState<number>(() => {
     const tabName = (searchParams.get("tab") ?? "recent") as typeof OpeningsTabs[number];
     const index = OpeningsTabs.indexOf(tabName);
-    return index >= 0 ? index : 0;
+    return Math.max(0, index);
   });
 
   const isActive = (index: number) => activeTab === index;

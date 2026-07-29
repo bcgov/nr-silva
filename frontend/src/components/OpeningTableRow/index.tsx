@@ -10,7 +10,7 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
-import { getClientLabel, getClientNameAcronym } from "@/utils/ForestClientUtils";
+import { getClientNameAcronym } from "@/utils/ForestClientUtils";
 
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import { OpeningStatusTag } from "../Tags";
