@@ -34,6 +34,13 @@ const Openings = () => {
     return Math.max(0, index);
   });
 
+  // Re-sync activeTab when URL changes (e.g., browser back/forward)
+  useEffect(() => {
+    const tabName = (searchParams.get("tab") ?? "recent") as typeof OpeningsTabs[number];
+    const index = OpeningsTabs.indexOf(tabName);
+    setActiveTab(Math.max(0, index));
+  }, [searchParams]);
+
   const isActive = (index: number) => activeTab === index;
 
   const handleTabChange = (selectedTabIndex: number) => {
