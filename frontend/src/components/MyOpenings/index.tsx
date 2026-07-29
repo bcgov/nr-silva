@@ -11,9 +11,9 @@ import OpeningsMap from '../OpeningsMap';
 import SectionTitle from '../SectionTitle';
 import useBreakpoint from '@/hooks/UseBreakpoint';
 import TableSkeleton from '../TableSkeleton';
-import { recentOpeningsHeaders } from '../RecentOpenings/constants';
 import EmptySection from '../EmptySection';
 import OpeningTableRow from '../OpeningTableRow';
+import { myOpeningsHeaders } from './constants';
 
 import './styles.scss';
 
@@ -123,7 +123,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
       {
         (myOpeningsQuery.isLoading || isAuthRefreshInProgress()) ? (
           <TableSkeleton
-            headers={recentOpeningsHeaders}
+            headers={myOpeningsHeaders}
             showToolbar={false}
             showHeader={false}
           />
@@ -156,7 +156,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
               <TableHead>
                 <TableRow>
                   {
-                    recentOpeningsHeaders.map((header) => (
+                    myOpeningsHeaders.map((header) => (
                       <TableHeader key={header.key}>{header.header}</TableHeader>
                     ))
                   }
@@ -166,7 +166,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
                 {
                   myOpeningsQuery.data?.content.map((row) => (
                     <OpeningTableRow
-                      headers={recentOpeningsHeaders}
+                      headers={myOpeningsHeaders}
                       key={row.openingId}
                       rowData={row}
                       showMap={showMap}
