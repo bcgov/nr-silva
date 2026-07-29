@@ -102,11 +102,12 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
           return PLACE_HOLDER;
         }
 
+        const acronym = rowData.clientAcronym ?? getClientNameAcronym(rowData.clientName);
+        const displayValue = acronym || rowData.clientName || PLACE_HOLDER;
+
         return (
           <DefinitionTooltip definition={rowData.clientName || PLACE_HOLDER} openOnHover>
-            {
-              rowData.clientAcronym ?? getClientNameAcronym(rowData.clientName)
-            }
+            {displayValue}
           </DefinitionTooltip>
         )
 
