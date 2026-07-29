@@ -35,7 +35,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
   const breakpoint = useBreakpoint();
 
   const myOpeningsQuery = useQuery({
-    queryKey: ["opening", "user-created", currPageNumber, currPageSize],
+    queryKey: ["openings", "user-created", currPageNumber, currPageSize],
     queryFn: () => API.OpeningEndpointService.getUserCreatedOpenings(currPageNumber, currPageSize),
     refetchOnMount: "always",
   });
