@@ -247,8 +247,7 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
     int pageSize = pagination.getPageSize();
     if (pageSize <= 0) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST,
-          "Page size must be greater than 0, but was: " + pageSize);
+          HttpStatus.BAD_REQUEST, "Page size must be greater than 0, but was: " + pageSize);
     }
     if (pageSize > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
