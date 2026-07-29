@@ -129,11 +129,23 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
           />
         ) : null
       }
+      {/* Error state */}
+      {
+        myOpeningsQuery.isError && !isAuthRefreshInProgress() ?
+          (
+            <EmptySection
+              icon="BreakingChange"
+              title="Error loading openings"
+              description={myOpeningsQuery.error?.message || "Failed to load your openings. Please try again."}
+            />
+          ) : null
+      }
       {/* Empty Table */}
       {
         (
           !myOpeningsQuery.isLoading &&
           !isAuthRefreshInProgress() &&
+          !myOpeningsQuery.isError &&
           !myOpeningsQuery.data?.content?.length
         )
           ? (
