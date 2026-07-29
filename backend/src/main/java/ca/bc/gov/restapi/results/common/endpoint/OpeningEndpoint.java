@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.SilvaConstants;
 import ca.bc.gov.restapi.results.common.dto.activity.OpeningActivityBaseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDetailsDto;
 import ca.bc.gov.restapi.results.common.dto.cover.OpeningForestCoverDto;
@@ -15,21 +16,26 @@ import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController("commonOpeningEndpoint")
 @RequestMapping(
     path = "/api/openings",
     produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 @RequiredArgsConstructor
+@Validated
 public class OpeningEndpoint {
   private final OpeningDetailsService openingDetailsService;
   private final OpeningSearchService openingSearchService;
@@ -210,7 +216,28 @@ public class OpeningEndpoint {
               + "Results are sorted by default by updateTimestamp in descending order.")
   public Page<OpeningSearchResponseDto> getUserCreatedOpenings(
       @ParameterObject @Parameter(description = "Pagination parameters (page, size, sort)")
-          Pageable pageable) {
+          Pageable pageable,
+      HttpServletRequest request) {
+    // Validate page size is between 1 and MAX_PAGE_SIZE_OPENING_SEARCH by checking the raw request
+    // parameter
+    String sizeParam = request.getParameter("size");
+    if (sizeParam != null && !sizeParam.isEmpty()) {
+      try {
+        int requestedSize = Integer.parseInt(sizeParam);
+        if (requestedSize <= 0 || requestedSize > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "Page size must be between 1 and "
+                  + SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH
+                  + ", but was: "
+                  + requestedSize);
+        }
+      } catch (NumberFormatException e) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Invalid page size parameter: " + sizeParam);
+      }
+    }
+
     OpeningSearchExactFiltersDto filtersDto =
         new OpeningSearchExactFiltersDto(
             null,

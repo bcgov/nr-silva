@@ -350,13 +350,94 @@ Flyway dev migrations live in `src/test/resources/migration/postgres/dev/`. Key 
 
 ### Build and run tests
 
+#### Database Selection
+Tests run against both Oracle and Postgres configurations. Use the Maven property `-Dserver.primary-db` to specify which database is primary:
+
 ```bash
-cd backend && ./mvnw clean install \
-  -Dflyway-environment=dev \
-  -Dserver.primary-db=postgres \
-  --no-transfer-progress \
-  -P all-tests
+# Run with Postgres as primary database
+-Dserver.primary-db=postgres
+
+# Run with Oracle as primary database
+-Dserver.primary-db=oracle
 ```
+
+**IMPORTANT:** Do NOT use incorrect parameters like `-DdbType=postgres` or `-Ddatabase=postgres`. The correct parameter is derived from `application.yml`:
+```yaml
+server:
+  primary-db: postgres  # ← This is the source; use -Dserver.primary-db in Maven
+```
+
+#### Common test commands
+
+```bash
+# Full build with integration tests (Postgres primary)
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test
+
+# Full build with integration tests (Oracle primary)
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=oracle \
+  -Pintegration-test
+
+# Unit tests only
+cd backend && ./mvnw clean test \
+  -Dserver.primary-db=postgres
+
+# Integration tests only
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test \
+  -DskipTests  # Skips unit tests, runs only integration tests via failsafe plugin
+
+# Single test class (integration)
+cd backend && ./mvnw -Pintegration-test verify \
+  -Dserver.primary-db=postgres \
+  -Dtest=OpeningEndpointIntegrationTest
+
+# Single test method (integration)
+cd backend && ./mvnw -Pintegration-test verify \
+  -Dserver.primary-db=postgres \
+  -Dtest=OpeningEndpointIntegrationTest#getUserCreatedOpenings_withZeroPageSize_shouldReturnBadRequest
+
+# Run both database configs (Postgres then Oracle)
+cd backend && ./mvnw clean verify -Pintegration-test -Dserver.primary-db=postgres && \
+  ./mvnw verify -Pintegration-test -Dserver.primary-db=oracle
+
+# Generate coverage report
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test
+# View at: target/site/jacoco/index.html
+```
+
+#### Integration test profile
+
+Use `-Pintegration-test` profile to run integration tests via the Maven Failsafe plugin. This profile enables:
+- Flyway migrations for test database schema
+- TestContainers for Oracle/Postgres container startup
+- Spring Boot test auto-configuration
+- WireMock stubs for external API calls (e.g., ForestClient API on port 10000)
+
+Tests are marked with `@Tag("integration")` or placed in `*IntegrationTest.java` files.
+
+#### Page size validation
+
+When testing pagination endpoints like `getUserCreatedOpenings()`, remember that Spring Data has configurable page size limits set in `application.yml`:
+```yaml
+spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 2000
+```
+
+Validation is performed by checking the **raw request parameter** before Spring Data processes it:
+- Request with `?size=0` → HTTP 400 (must be ≥ 1)
+- Request with `?size=2001` → HTTP 400 (must be ≤ 2000, set by `SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH`)
+- Request with no `size` param → defaults to 20 (from config)
+- Request with `?size=2000` → HTTP 200 (valid maximum)
 
 ### Dual-Database Test Organization — Shared vs. DB-Specific
 
