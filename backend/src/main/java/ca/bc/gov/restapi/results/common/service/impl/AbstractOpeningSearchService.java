@@ -244,8 +244,13 @@ public abstract class AbstractOpeningSearchService implements OpeningSearchServi
   }
 
   private void validatePageSize(Pageable pagination) {
-    if (pagination.getPageSize() <= 0
-        || pagination.getPageSize() > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
+    int pageSize = pagination.getPageSize();
+    if (pageSize <= 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Page size must be greater than 0, but was: " + pageSize);
+    }
+    if (pageSize > SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH) {
       throw new MaxPageSizeException(SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH);
     }
   }
