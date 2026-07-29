@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { ArrowRight } from "@carbon/icons-react";
-import { Button, Column, Grid, TextInput } from "@carbon/react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import { env } from "@/env";
+import { Add, ArrowRight } from "@carbon/icons-react";
+import { Button, Column, Grid, TextInput, Tabs, TabList, Tab, TabPanel, TabPanels } from "@carbon/react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageTitle from "@/components/PageTitle";
-import RecentOpenings from "@/components/RecentOpenings";
-import FavouriteCard from "@/components/FavouriteCard";
 import { sanitizeDigits } from "@/utils/InputUtils";
-import { FavouriteCardsConfig } from "./constants";
+import { useModal } from "@/contexts/ModalContext";
+import TableSkeleton from "@/components/TableSkeleton";
+import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
 
+import { OpeningsTabs } from "./constants";
 import './styles.scss';
+import API from "../../services/API";
+
+const RecentOpenings = lazy(() => import("@/components/RecentOpenings"));
+const MyOpenings = lazy(() => import("@/components/MyOpenings"));
 
 const Openings = () => {
   const navigate = useNavigate();
+  const { openModal } = useModal();
   const [openingId, setOpeningId] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     document.title = `Openings - Silva`;
@@ -21,7 +29,25 @@ const Openings = () => {
     };
   }, []);
 
-  const cards = FavouriteCardsConfig.filter((card) => !card.hidden);
+  const [activeTab, setActiveTab] = useState<number>(() => {
+    const tabName = (searchParams.get("tab") ?? "recent") as typeof OpeningsTabs[number];
+    const index = OpeningsTabs.indexOf(tabName);
+    return index >= 0 ? index : 0;
+  });
+
+  const isActive = (index: number) => activeTab === index;
+
+  const handleTabChange = (selectedTabIndex: number) => {
+    setActiveTab(selectedTabIndex);
+    const tabName = OpeningsTabs[selectedTabIndex];
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("tab", String(tabName));
+    setSearchParams(newSearchParams, { replace: true });
+  };
+
+  const handleAddNewOpening = () => {
+    openModal('CREATE_OPENING');
+  };
 
   const handleNavById = () => {
     if (openingId.length > 0) {
@@ -48,25 +74,15 @@ const Openings = () => {
         <PageTitle title="Openings" />
       </Column>
 
+      {/* Button subgrid */}
       {
-        cards.filter((card) => !card.hidden).length > 0
+        env.VITE_ZONE !== 'prod' && env.VITE_DEPLOYMENT_MODEL === 'postgres'
           ? (
             <Column sm={4} md={8} lg={16}>
-              {/* Fav cards sub-grid */}
-              <Grid className="fav-cards-subgrid">
-                {
-                  cards.map((card) => (
-                    <Column className="fav-card-column" key={card.index} sm={4} md={4} lg={4}>
-                      <FavouriteCard
-                        index={card.index}
-                        title={card.title}
-                        link={card.link}
-                        icon={card.icon}
-                        opensModal={card.opensModal}
-                      />
-                    </Column>
-                  ))
-                }
+              <Grid>
+                <Column sm={4} md={8} lg={6} max={4}>
+                  <Button renderIcon={Add} onClick={handleAddNewOpening}>Create new</Button>
+                </Column>
               </Grid>
             </Column>
           )
@@ -102,7 +118,31 @@ const Openings = () => {
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <RecentOpenings defaultMapOpen />
+        <Tabs
+          selectedIndex={activeTab}
+          onChange={(state) => handleTabChange(state.selectedIndex)}
+        >
+          <TabList aria-label="List of opening tabs">
+            <Tab>Recent openings</Tab>
+            <Tab>My openings</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel className="openings-tabs">
+              {isActive(0) ? (
+                <Suspense fallback={<TableSkeleton headers={recentOpeningsHeaders} showToolbar={false} showHeader={false} />}>
+                  <RecentOpenings defaultMapOpen />
+                </Suspense>
+              ) : null}
+            </TabPanel>
+            <TabPanel className="openings-tabs">
+              {isActive(1) ? (
+                <Suspense fallback={<TableSkeleton headers={recentOpeningsHeaders} showToolbar={false} showHeader={false} />}>
+                  <MyOpenings defaultMapOpen={false} />
+                </Suspense>
+              ) : null}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Column>
     </Grid>
   )

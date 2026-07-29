@@ -1,6 +1,11 @@
 import { FavouriteCardProps } from "@/components/FavouriteCard/definitions";
 import { env } from "@/env";
 
+export const OpeningsTabs = [
+  'recent',
+  'my-openings'
+] as const;
+
 export const FavouriteCardsConfig: FavouriteCardProps[] = [
   {
     index: 0,
