@@ -75,7 +75,7 @@ const OpeningDetails = () => {
   const [activeTab, setActiveTab] = useState<number>(() => {
     const tabName = searchParams.get("tab");
     const index = tabName ? OpeningDetailsTabs.indexOf(tabName as any) : 0;
-    return index >= 0 ? index : 0;
+    return Math.max(0, index);
   });
 
   const isActive = (index: number) => activeTab === index;

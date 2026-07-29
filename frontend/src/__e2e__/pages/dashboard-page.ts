@@ -78,13 +78,16 @@ export class DashboardPage extends BasePage {
 
   async getOpeningRowDataByOpeningId(openingId: string) {
     await this.recentOpeningsTable.waitFor({ state: 'visible' });
-    const row = await this.recentOpeningsTable.getByTestId(`opening-table-row-${openingId}`);
+    // Wait for the specific row to be present
+    const row = this.recentOpeningsTable.getByTestId(`opening-table-row-${openingId}`);
+    await row.waitFor({ state: 'visible', timeout: 10000 });
+
     const values: string[] = [];
     for (const header of recentOpeningsHeaders) {
       if (header.key === 'actions') {
         continue;
       }
-      const cell = await row.getByTestId(`opening-table-cell-${header.key}-${openingId}`);
+      const cell = row.getByTestId(`opening-table-cell-${header.key}-${openingId}`);
       const cellText = await cell.textContent();
       values.push(cellText ?? "");
     }

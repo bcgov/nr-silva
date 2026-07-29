@@ -10,6 +10,7 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { OpendingHeaderKeyType, TableHeaderType } from "@/types/TableHeader";
 import { OpeningSearchResponseDto } from "@/services/OpenApi";
 import { OpeningDetailsRoute } from "@/routes/config";
+import { getClientNameAcronym } from "@/utils/ForestClientUtils";
 
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
 import { OpeningStatusTag } from "../Tags";
@@ -95,6 +96,20 @@ const OpeningTableRow: React.FC<TableRowComponentProps> = ({
           );
         }
         return PLACE_HOLDER;
+
+      case "clientNumber":
+        if (!rowData.clientNumber) {
+          return PLACE_HOLDER;
+        }
+
+        const acronym = rowData.clientAcronym ?? getClientNameAcronym(rowData.clientName);
+        const displayValue = acronym || rowData.clientName || PLACE_HOLDER;
+
+        return (
+          <DefinitionTooltip definition={rowData.clientName || PLACE_HOLDER} openOnHover>
+            {displayValue}
+          </DefinitionTooltip>
+        )
 
       case "regenDelayDate":
         return formatLocalDate(rowData.regenDelayDate, true);

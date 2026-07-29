@@ -350,10 +350,159 @@ Flyway dev migrations live in `src/test/resources/migration/postgres/dev/`. Key 
 
 ### Build and run tests
 
+#### Database Selection
+Tests run against both Oracle and Postgres configurations. Use the Maven property `-Dserver.primary-db` to specify which database is primary:
+
 ```bash
-cd backend && ./mvnw clean install \
-  -Dflyway-environment=dev \
-  -Dserver.primary-db=postgres \
-  --no-transfer-progress \
-  -P all-tests
+# Run with Postgres as primary database
+-Dserver.primary-db=postgres
+
+# Run with Oracle as primary database
+-Dserver.primary-db=oracle
 ```
+
+**IMPORTANT:** Do NOT use incorrect parameters like `-DdbType=postgres` or `-Ddatabase=postgres`. The correct parameter is derived from `application.yml`:
+```yaml
+server:
+  primary-db: postgres  # ← This is the source; use -Dserver.primary-db in Maven
+```
+
+#### Common test commands
+
+```bash
+# Full build with integration tests (Postgres primary)
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test
+
+# Full build with integration tests (Oracle primary)
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=oracle \
+  -Pintegration-test
+
+# Unit tests only
+cd backend && ./mvnw clean test \
+  -Dserver.primary-db=postgres
+
+# Integration tests only
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test \
+  -DskipTests  # Skips unit tests, runs only integration tests via failsafe plugin
+
+# Single test class (integration)
+cd backend && ./mvnw -Pintegration-test verify \
+  -Dserver.primary-db=postgres \
+  -Dtest=OpeningEndpointIntegrationTest
+
+# Single test method (integration)
+cd backend && ./mvnw -Pintegration-test verify \
+  -Dserver.primary-db=postgres \
+  -Dtest=OpeningEndpointIntegrationTest#getUserCreatedOpenings_withZeroPageSize_shouldReturnBadRequest
+
+# Run both database configs (Postgres then Oracle)
+cd backend && ./mvnw clean verify -Pintegration-test -Dserver.primary-db=postgres && \
+  ./mvnw verify -Pintegration-test -Dserver.primary-db=oracle
+
+# Generate coverage report
+cd backend && ./mvnw clean verify \
+  -Dserver.primary-db=postgres \
+  -Pintegration-test
+# View at: target/site/jacoco/index.html
+```
+
+#### Integration test profile
+
+Use `-Pintegration-test` profile to run integration tests via the Maven Failsafe plugin. This profile enables:
+- Flyway migrations for test database schema
+- TestContainers for Oracle/Postgres container startup
+- Spring Boot test auto-configuration
+- WireMock stubs for external API calls (e.g., ForestClient API on port 10000)
+
+Tests are marked with `@Tag("integration")` or placed in `*IntegrationTest.java` files.
+
+#### Page size validation
+
+When testing pagination endpoints like `getUserCreatedOpenings()`, remember that Spring Data has configurable page size limits set in `application.yml`:
+```yaml
+spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 2000
+```
+
+Validation is performed by checking the **raw request parameter** before Spring Data processes it:
+- Request with `?size=0` → HTTP 400 (must be ≥ 1)
+- Request with `?size=2001` → HTTP 400 (must be ≤ 2000, set by `SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH`)
+- Request with no `size` param → defaults to 20 (from config)
+- Request with `?size=2000` → HTTP 200 (valid maximum)
+
+### Dual-Database Test Organization — Shared vs. DB-Specific
+
+The backend runs both Oracle and Postgres simultaneously with a single property (`server.primary-db`) selecting which is "primary" at runtime. Tests must reflect this dual-DB reality.
+
+#### Rule 1: Shared endpoints → tests in common
+
+If an endpoint is available for **both Oracle and Postgres** (i.e., the business logic is DB-agnostic and the service layer routes via a common interface), add all tests to:
+
+```
+src/test/java/.../common/endpoint/<Feature>EndpointIntegrationTest.java
+```
+
+**Do NOT** add `@EnabledIfSystemProperty` conditions or database-specific test methods. The tests run identically against both databases through the service layer's `@ConditionalOnProperty` routing.
+
+**Example**: `OpeningEndpoint.getUserCreatedOpenings()` is a shared endpoint tested once in `common/endpoint/OpeningEndpointIntegrationTest.java` with 6 test methods covering pagination, sorting, validation, and boundary cases. Both Oracle and Postgres implementations execute the same test suite via `OpeningSearchService`.
+
+#### Rule 2: DB-specific endpoints → tests only in that DB's folder
+
+If an endpoint exists **only for one database** (e.g., Postgres-only features like user favorites or spatial file uploads), add tests to:
+
+```
+src/test/java/.../postgres/endpoint/<Feature>EndpointIntegrationTest.java
+```
+
+Mark it with `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")` so it only runs when that DB is primary.
+
+**Example**: `postgres/endpoint/OpeningEndpoint.getUserFavouriteOpenings()` is Postgres-only and tested in `postgres/endpoint/OpeningEndpointIntegrationTest.java`.
+
+#### Rule 3: If content differs by DB, use abstract + concrete pattern
+
+For rare cases where the **same endpoint behavior requires different test data or assertions per database** (e.g., different SQL dialects tested separately), use:
+
+```
+src/test/java/.../common/endpoint/Abstract<Feature>IntegrationTest.java        ← abstract base, no DB conditions
+src/test/java/.../postgres/endpoint/<Feature>PostgresIntegrationTest.java      ← concrete, inherits + adds Postgres-specific tests
+src/test/java/.../oracle/endpoint/<Feature>OracleIntegrationTest.java          ← concrete, inherits + adds Oracle-specific tests
+```
+
+Use `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres|oracle")` on concrete classes only. This pattern is **not** the default; use only when necessary.
+
+#### Test Coverage Targets
+
+All endpoint and service tests must achieve:
+- **>85% branch coverage** (minimum required for merge)
+- **>90% branch coverage** (desired; target for all new features)
+
+Coverage is measured on:
+- Happy path: default pagination, sorting, expected results
+- Edge cases: zero-size pages, max page size, empty result sets
+- Validation: required filters missing, invalid input, boundary values
+- Error paths: not found (404), bad request (400), unauthorized (401)
+
+Use `mvn clean install -P all-tests` to run the full test suite and generate coverage reports in `target/site/jacoco/`.
+
+### File Organization Checklist
+
+When adding a new shared endpoint:
+- [ ] Endpoint method in `common/endpoint/<Feature>Endpoint.java`
+- [ ] Shared service interface in `common/service/<Feature>Service.java`
+- [ ] Abstract service impl in `common/service/impl/Abstract<Feature>Service.java`
+- [ ] Postgres service impl in `postgres/service/<Feature>PostgresService.java`
+- [ ] Oracle service impl in `oracle/service/<Feature>OracleService.java`
+- [ ] Repository interface in `common/repository/<Feature>Repository.java` (with `@NoRepositoryBean`)
+- [ ] Postgres repository impl in `postgres/repository/<Feature>PostgresRepository.java`
+- [ ] Oracle repository impl in `oracle/repository/<Feature>OracleRepository.java`
+- [ ] Integration tests in `common/endpoint/<Feature>EndpointIntegrationTest.java` (>85% coverage minimum)
+- [ ] Verify both DB configs work: `mvn clean install -Dserver.primary-db=oracle` and `...=postgres`

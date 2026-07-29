@@ -85,7 +85,8 @@ test.describe('Dashboard', () => {
 
   test('recent opening should have correct data', async () => {
     const openingData = await dashboardPage.getOpeningRowDataByOpeningId('1004185');
-    const expectedData = ['1004185', 'TFL47', 'FTMLForest Tenure - Major Licensee', 'Free Growing', '12U', '47/12U', '12-44', '79.4', 'Sep 08, 2004'];
+    // Order: openingId, forestFileId, cutBlockId, cuttingPermitId, timberMark, openingGrossAreaHa, disturbanceStartDate, category, status
+    const expectedData = ['1004185', 'TFL47', '12-44', '12U', '47/12U', '79.4', 'Sep 08, 2004', 'FTMLForest Tenure - Major Licensee', 'Free Growing'];
     expect(openingData).toEqual(expectedData);
   });
 
