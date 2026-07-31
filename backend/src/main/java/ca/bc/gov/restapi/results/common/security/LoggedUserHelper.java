@@ -122,6 +122,26 @@ public class LoggedUserHelper {
         .anyMatch(matcher);
   }
 
+  /**
+   * Get the audit user ID in the format used for entry_userid / update_userid columns.
+   *
+   * @return a String in the form "{IDP}\{username}" (e.g. "IDIR\RHOWELL")
+   * @throws UserNotFoundException when not logged in or IDP is unsupported
+   */
+  public String getAuditUserId() {
+    return getIdpPrefix() + "\\" + JwtPrincipalUtil.getIdpUsername(getPrincipal());
+  }
+
+  private String getIdpPrefix() {
+    IdentityProvider provider = JwtPrincipalUtil.getIdentityProvider(getPrincipal());
+    if (provider == IdentityProvider.IDIR) {
+      return "IDIR";
+    } else if (provider == IdentityProvider.BUSINESS_BCEID) {
+      return "BCEID";
+    }
+    throw new UserNotFoundException();
+  }
+
   private Jwt getPrincipal() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

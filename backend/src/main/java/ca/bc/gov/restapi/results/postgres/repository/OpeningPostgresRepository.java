@@ -142,4 +142,35 @@ public interface OpeningPostgresRepository extends OpeningRepository<OpeningEnti
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.GET_OPENING_SS_FSP_IDS_BY_REGIMES)
   List<OpeningFspIdByRegimeProjection> getOpeningStockingFspIdsByStandardsRegimeIds(
       @Param("standardsRegimeIds") List<Long> standardsRegimeIds);
+
+  /**
+   * Returns the next available opening number within the given BCGS mapsheet tile.
+   *
+   * <p>The result is {@code MAX(existing_number) + 1}, capped at 9999. Only numeric
+   * opening_number values are considered. Returns {@code 1} when no openings exist in the tile.
+   *
+   * @param grid the NTS 1:250K sheet number (mapsheet_grid)
+   * @param letter the NTS 1:50K block letter (mapsheet_letter)
+   * @param square the BCGS 1:20K block number (mapsheet_square)
+   * @param quad the quadrant (mapsheet_quad)
+   * @param subQuad the sub-quadrant (mapsheet_sub_quad)
+   * @return the next available opening number, capped at 9999
+   */
+  @Query(
+      nativeQuery = true,
+      value =
+          "SELECT LEAST(COALESCE(MAX(CAST(TRIM(opening_number) AS INT)), 0) + 1, 9999)"
+              + " FROM silva.opening"
+              + " WHERE mapsheet_grid = :grid"
+              + " AND mapsheet_letter = :letter"
+              + " AND mapsheet_square = :square"
+              + " AND mapsheet_quad = :quad"
+              + " AND mapsheet_sub_quad = :subQuad"
+              + " AND opening_number ~ '^[0-9]+$'")
+  Integer findNextOpeningNumber(
+      @Param("grid") String grid,
+      @Param("letter") String letter,
+      @Param("square") String square,
+      @Param("quad") String quad,
+      @Param("subQuad") String subQuad);
 }

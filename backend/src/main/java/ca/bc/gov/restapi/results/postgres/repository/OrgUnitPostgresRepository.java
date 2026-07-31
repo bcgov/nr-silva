@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.repository.OrgUnitRepository;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,4 +39,12 @@ public interface OrgUnitPostgresRepository
           + " AND o.expiryDate > :today"
           + " ORDER BY o.orgUnitCode")
   List<OrgUnitProjection> findAllActive(@Param("today") LocalDate today);
+
+  /**
+   * Find an org unit by its code.
+   *
+   * @param code the org unit code to search for
+   * @return an Optional containing the matching OrgUnitEntity, or empty if not found
+   */
+  Optional<OrgUnitEntity> findByOrgUnitCode(String code);
 }

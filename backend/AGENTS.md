@@ -90,6 +90,7 @@ GenericCodeEntity          (common/entity – fields: code, description, effecti
 - Postgres classes: `XxxPostgresEntity`, `XxxPostgresRepository`, `XxxPostgresService`
 - Common interfaces/abstracts: `XxxService` (interface), `AbstractXxxService` (abstract impl)
 - Lombok: `@SuperBuilder` + `@With` + `@NoArgsConstructor` on all entities; `@AllArgsConstructor(access = PROTECTED)` on abstract services
+- Always use top-level imports — never inline fully-qualified type names (e.g. `@Parameter`, not `@io.swagger.v3.oas.annotations.Parameter`)
 
 ---
 
