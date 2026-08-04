@@ -5,6 +5,7 @@ import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class OpenMapsService {
 
   private final RestClient restClient;
+
+  // null in oracle mode; present in postgres mode to read geometry from the local DB
+  @Autowired(required = false)
+  private OpeningGeometryService openingGeometryService;
 
   /**
    * Instantiates a new Open maps service.
@@ -34,6 +39,9 @@ public class OpenMapsService {
    * @return An object with the response from WFS
    */
   public FeatureCollection getOpeningPolygonAndProperties(Long openingId, String kind) {
+    if (openingGeometryService != null && isOpeningSvwKind(kind)) {
+      return openingGeometryService.getOpeningGeometry(openingId);
+    }
     try {
       return restClient
           .get()
@@ -122,6 +130,12 @@ public class OpenMapsService {
       throw new ResponseStatusException(
           HttpStatus.UNPROCESSABLE_ENTITY, "Unable to derive mapsheet for the provided geometry");
     }
+  }
+
+  private boolean isOpeningSvwKind(String kind) {
+    return kind == null
+        || kind.isEmpty()
+        || "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW".equals(kind);
   }
 
   private String getPropertyName(String kind) {
