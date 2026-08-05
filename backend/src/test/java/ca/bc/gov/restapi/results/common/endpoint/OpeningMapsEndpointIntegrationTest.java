@@ -1,8 +1,5 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -11,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,56 +39,13 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
           .build();
 
   @Test
+  @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() throws Exception {
-    String openingId = "58993";
-
-    clientApiStub.stubFor(
-        WireMock.get(urlPathEqualTo("/"))
-            .withQueryParam("service", equalTo("WFS"))
-            .withQueryParam("version", equalTo("2.0.0"))
-            .withQueryParam("request", equalTo("GetFeature"))
-            .withQueryParam("typeName", equalTo("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"))
-            .withQueryParam("outputFormat", equalTo("application/json"))
-            .withQueryParam("SrsName", equalTo("EPSG:4326"))
-            .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY"))
-            .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
-            .willReturn(
-                okJson(
-                    """
-                {
-                  "type": "FeatureCollection",
-                  "features": [
-                    {
-                      "type": "Feature",
-                      "id": "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW.fid-6f119ee7_19129391292_7c7b",
-                      "geometry_name": "GEOMETRY",
-                      "properties": {
-                        "OPENING_ID": 58993,
-                        "OPENING_CATEGORY_CODE": "FTML",
-                        "OPENING_STATUS_CODE": "FG",
-                        "REGION_CODE": "ROM",
-                        "REGION_NAME": "Omineca Natural Resource Region",
-                        "DISTRICT_CODE": "DMK",
-                        "DISTRICT_NAME": "Mackenzie Natural Resource District",
-                        "CLIENT_NAME": "CONIFEX MACKENZIE FOREST PRODUCTS INC.",
-                        "CLIENT_NUMBER": "00161229",
-                        "OPENING_WHO_CREATED": "MLSIS",
-                        "OPENING_WHEN_CREATED": "1999-08-26Z",
-                        "OPENING_WHO_UPDATED": "IDIR\\\\\\\\SCAKERLE",
-                        "OPENING_WHEN_UPDATED": "2023-11-14Z",
-                        "OBJECTID": 3869732,
-                        "bbox": [
-                          -125.6056,
-                          56.06894,
-                          -125.59267,
-                          56.07429
-                        ]
-                      }
-                    }
-                  ]
-                }
-                """)));
+    // Opening 101017 is seeded via V999.1.0__test_data_101017.sql with admin_district_no=1
+    // (org_unit: code='DAS', name='Development Unit', rollup_region_no=111).
+    // No org_unit with no=111 exists in seed data, so region resolves to null.
+    long openingId = 101017L;
 
     mockMvc
         .perform(
@@ -102,22 +56,18 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features[0].type").value("Feature"))
-        .andExpect(jsonPath("$.features[0].id").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].id").value(String.valueOf(openingId)))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").isEmpty())
-        .andExpect(jsonPath("$.features[0].properties.REGION_CODE").isEmpty())
-        .andExpect(
-            jsonPath("$.features[0].properties.REGION_NAME")
-                .value("Omineca Natural Resource Region"))
-        .andExpect(jsonPath("$.features[0].properties.DISTRICT_CODE").isEmpty())
-        .andExpect(
-            jsonPath("$.features[0].properties.DISTRICT_NAME")
-                .value("Mackenzie Natural Resource District"))
+        .andExpect(jsonPath("$.features[0].properties.REGION_CODE").value("1Code"))
+        .andExpect(jsonPath("$.features[0].properties.REGION_NAME").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.DISTRICT_CODE").value("DAS"))
+        .andExpect(jsonPath("$.features[0].properties.DISTRICT_NAME").value("Development Unit"))
         .andExpect(jsonPath("$.features[0].properties.CLIENT_NAME").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.CLIENT_NUMBER").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OPENING_WHO_CREATED").isEmpty())
-        .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_CREATED").value("1999-08-26Z"))
+        .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_CREATED").value("2001-06-07Z"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_WHO_UPDATED").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_UPDATED").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OBJECTID").isEmpty())
