@@ -959,7 +959,7 @@ public class OpeningSpatialFileService {
   private BigDecimal calculateGeometryAreaHectares(Geometry geom, String crsCode) {
     Geometry geomIn3005 = "3005".equals(crsCode) ? geom : reprojectTo3005(geom);
     double areaM2 = geomIn3005.getArea();
-    return BigDecimal.valueOf(areaM2 / 10_000.0).setScale(4, RoundingMode.HALF_UP);
+    return BigDecimal.valueOf(areaM2 / 10_000.0).setScale(1, RoundingMode.DOWN);
   }
 
   private void validateNonZeroArea(Geometry geom, String crsCode, int index) {
