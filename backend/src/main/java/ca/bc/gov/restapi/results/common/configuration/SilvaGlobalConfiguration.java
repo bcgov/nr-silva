@@ -58,7 +58,11 @@ import ca.bc.gov.restapi.results.oracle.entity.code.OpenCategoryCodeOracleEntity
 import ca.bc.gov.restapi.results.oracle.entity.code.OpeningStatusCodeOracleEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
+import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
+import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
+import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
@@ -183,7 +187,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   StockingStandardsSearchFilterDto.class,
   StockingStandardsSearchResponseDto.class,
   StockingStandardsCommentSearchFilterDto.class,
-  StockingStandardsCommentSearchResponseDto.class
+  StockingStandardsCommentSearchResponseDto.class,
+  CreateOpeningRequestDto.class,
+  CreateOpeningResponseDto.class,
+  ExtractedGeoDataDto.class,
+  MapsheetDto.class
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
