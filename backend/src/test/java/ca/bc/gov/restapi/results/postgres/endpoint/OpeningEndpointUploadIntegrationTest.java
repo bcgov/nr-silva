@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 @DisplayName("Integration Test | Opening Upload Endpoint")
 @AutoConfigureMockMvc
 @WithMockJwt
+@Import(OpeningEndpointTestConfig.class)
 class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
@@ -158,19 +159,5 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnprocessableEntity());
-  }
-}
-
-@TestConfiguration
-class OpeningEndpointUploadIntegrationTestConfig {
-
-  @Bean
-  public OpeningSpatialFileService openingSpatialFileService() {
-    return Mockito.mock(OpeningSpatialFileService.class);
-  }
-
-  @Bean
-  public VirusScanService virusScanService() {
-    return Mockito.mock(VirusScanService.class);
   }
 }

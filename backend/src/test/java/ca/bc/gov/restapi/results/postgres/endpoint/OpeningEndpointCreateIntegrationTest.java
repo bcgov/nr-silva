@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
 import java.nio.charset.StandardCharsets;
@@ -23,8 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +33,7 @@ import org.springframework.web.server.ResponseStatusException;
 @DisplayName("Integration Test | Opening Create Endpoint")
 @AutoConfigureMockMvc
 @WithMockJwt
+@Import(OpeningEndpointTestConfig.class)
 class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
@@ -62,8 +63,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Should create opening successfully with valid data and file")
   void createOpening_withValidDataAndFile_shouldReturn201() throws Exception {
     CreateOpeningResponseDto response = new CreateOpeningResponseDto(123L);
-    when(createOpeningService.createOpening(
-            any(), anyString(), any(byte[].class)))
+    when(createOpeningService.createOpening(any(), anyString(), any(byte[].class)))
         .thenReturn(response);
 
     MockMultipartFile dataFile =
@@ -248,7 +248,8 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
             VALID_DATA_JSON.getBytes(StandardCharsets.UTF_8));
 
     MockMultipartFile oversizedFile =
-        new MockMultipartFile("file", "large.geojson", MediaType.APPLICATION_JSON_VALUE, largeContent);
+        new MockMultipartFile(
+            "file", "large.geojson", MediaType.APPLICATION_JSON_VALUE, largeContent);
 
     mockMvc
         .perform(
@@ -359,8 +360,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
     when(createOpeningService.createOpening(any(), anyString(), any(byte[].class)))
         .thenThrow(
             new ResponseStatusException(
-                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,
-                "Database error"));
+                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, "Database error"));
 
     MockMultipartFile dataFile =
         new MockMultipartFile(
@@ -384,18 +384,5 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isInternalServerError());
-  }
-
-  @TestConfiguration
-  static class TestConfig {
-    @Bean
-    CreateOpeningService createOpeningService() {
-      return Mockito.mock(CreateOpeningService.class);
-    }
-
-    @Bean
-    VirusScanService virusScanService() {
-      return Mockito.mock(VirusScanService.class);
-    }
   }
 }
