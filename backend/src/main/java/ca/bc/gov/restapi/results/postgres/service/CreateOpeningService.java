@@ -82,8 +82,8 @@ public class CreateOpeningService {
     ExtractedGeoDataDto geoData =
         openingSpatialFileService.processOpeningSpatialFile(fileName, fileBytes);
 
-    // Step 2: parse GeoJSON → JTS Geometry in EPSG:4326; get centroid
-    Geometry geometry4326 = parseFirstGeometry(geoData.geoJson());
+    // Step 2: parse GeoJSON → JTS Geometry in EPSG:4326 (union of all features); get centroid
+    Geometry geometry4326 = parseAllGeometries(geoData.geoJson());
     Point centroid4326 = geometry4326.getCentroid();
     double lon = centroid4326.getX();
     double lat = centroid4326.getY();
@@ -246,7 +246,7 @@ public class CreateOpeningService {
     return new CreateOpeningResponseDto(openingId);
   }
 
-  private Geometry parseFirstGeometry(JsonNode geoJson) {
+  private Geometry parseAllGeometries(JsonNode geoJson) {
     try {
       GeoJsonReader reader = new GeoJsonReader();
       JsonNode features = geoJson.get("features");
@@ -254,8 +254,13 @@ public class CreateOpeningService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Spatial file contains no features");
       }
-      JsonNode geometryNode = features.get(0).get("geometry");
-      return reader.read(objectMapper.writeValueAsString(geometryNode));
+      Geometry combined = null;
+      for (int i = 0; i < features.size(); i++) {
+        JsonNode geometryNode = features.get(i).get("geometry");
+        Geometry geom = reader.read(objectMapper.writeValueAsString(geometryNode));
+        combined = (combined == null) ? geom : combined.union(geom);
+      }
+      return combined;
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
