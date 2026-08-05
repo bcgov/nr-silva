@@ -179,12 +179,15 @@ class OpeningGeometryPostgresServiceIntegrationTest
     Feature feature = result.getFeatures().get(0);
     Object districtCode = feature.getProperties().get("DISTRICT_CODE");
     Object regionCode = feature.getProperties().get("REGION_CODE");
+    Object districtName = feature.getProperties().get("DISTRICT_NAME");
+    Object regionName = feature.getProperties().get("REGION_NAME");
 
-    // At least one should be populated if test data includes districts/regions
-    boolean hasDistrictOrRegion = districtCode != null || regionCode != null;
-    assertTrue(
-        hasDistrictOrRegion || districtCode == null,
-        "Should handle hierarchy correctly regardless of test data");
+    // If test data includes hierarchy (districtCode is populated), all related fields should be populated
+    if (districtCode != null) {
+      assertNotNull(districtName, "DISTRICT_NAME should be populated when DISTRICT_CODE is present");
+      assertNotNull(regionCode, "REGION_CODE should be populated when DISTRICT_CODE is present");
+      assertNotNull(regionName, "REGION_NAME should be populated when DISTRICT_CODE is present");
+    }
   }
 
   @Test
