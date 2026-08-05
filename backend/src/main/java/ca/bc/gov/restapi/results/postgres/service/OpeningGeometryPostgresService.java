@@ -123,8 +123,9 @@ public class OpeningGeometryPostgresService implements OpeningGeometryService {
       reprojected.setSRID(4326);
       return reprojected;
     } catch (Exception e) {
-      log.error("Failed to reproject geometry from EPSG:3005 to EPSG:4326: {}", e.getMessage());
-      return geometry3005;
+      log.error("Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
+       throw new IllegalStateException(
+           "Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
     }
   }
 
