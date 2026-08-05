@@ -16,7 +16,6 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,8 +41,6 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
   @Autowired private VirusScanService virusScanService;
 
-  @Autowired private ObjectMapper mapper;
-
   private static final String VALID_GEOJSON =
       "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0,0],[1,0],[1,1],[0,1],[0,0]]]},\"properties\":{}}";
 
@@ -64,7 +61,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Should create opening successfully with valid data and file")
   void createOpening_withValidDataAndFile_shouldReturn201() throws Exception {
-    CreateOpeningResponseDto response = new CreateOpeningResponseDto(123L, "SUB");
+    CreateOpeningResponseDto response = new CreateOpeningResponseDto(123L);
     when(createOpeningService.createOpening(
             any(), anyString(), any(byte[].class)))
         .thenReturn(response);
