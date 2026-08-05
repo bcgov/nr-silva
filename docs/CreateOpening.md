@@ -26,7 +26,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 | Field | Type | Required | Constraints | Description |
 |-------|------|----------|-------------|-------------|
 | `openingGrossArea` | BigDecimal | Yes | ≤7 integer + 4 decimal digits | Total opening gross area in hectares |
-| `maxAllowablePermAccessPerc` | BigDecimal | No | ≤2 integer + 1 decimal digit | Max % of total area that may be permanent access structures |
+| `maxAllowablePermAccessPerc` | BigDecimal | Yes | ≤2 integer + 1 decimal digit | Max % of total area that may be permanent access structures |
 | `clientNumber` | String | Yes | Max 8 chars | Ministry client number |
 | `clientLocationCode` | String | Yes | Max 2 chars | Client location code |
 | `orgUnitCode` | String | Yes | Max 6 chars | Org unit code of the managing district (e.g. `"DCC"`) |
