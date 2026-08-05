@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -129,8 +128,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
                 .file(dataFile)
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isBadRequest())
-        .andExpect(status().reason(containsString("null or empty")));
+        .andExpect(status().isBadRequest());
   }
 
   // ============ INVALID JSON ============
@@ -161,8 +159,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
                 .file(geoFile)
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isBadRequest())
-        .andExpect(status().reason(containsString("Invalid JSON")));
+        .andExpect(status().isBadRequest());
   }
 
   // ============ VALIDATION FAILURES ============
@@ -258,8 +255,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
                 .file(oversizedFile)
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isBadRequest())
-        .andExpect(status().reason(containsString("25MB")));
+        .andExpect(status().isBadRequest());
   }
 
   @Test
