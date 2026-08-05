@@ -460,7 +460,7 @@ class OpeningSpatialFileServiceTest {
             "calculateGeometryAreaHectares", Geometry.class, String.class);
     m.setAccessible(true);
     BigDecimal result = (BigDecimal) m.invoke(service, poly, "3005");
-    assertThat(result).isEqualByComparingTo(new BigDecimal("10000.0000"));
+    assertThat(result).isEqualByComparingTo(new BigDecimal("10000.0"));
   }
 
   @Test

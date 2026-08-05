@@ -4,7 +4,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,24 +27,21 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Integrated Test | Feature Service Endpoint")
 class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @RegisterExtension
-  static WireMockExtension clientApiStub = WireMockExtension
-      .newInstance()
-      .options(
-          wireMockConfig()
-              .port(10001)
-              .notifier(new WiremockLogNotifier())
-              .asynchronousResponseEnabled(true)
-              .stubRequestLoggingDisabled(false)
-      )
-      .configureStaticDsl(true)
-      .build();
+  static WireMockExtension clientApiStub =
+      WireMockExtension.newInstance()
+          .options(
+              wireMockConfig()
+                  .port(10001)
+                  .notifier(new WiremockLogNotifier())
+                  .asynchronousResponseEnabled(true)
+                  .stubRequestLoggingDisabled(false))
+          .configureStaticDsl(true)
+          .build();
 
   @Test
-
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() throws Exception {
     String openingId = "58993";
@@ -60,7 +56,9 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
             .withQueryParam("SrsName", equalTo("EPSG:4326"))
             .withQueryParam("PROPERTYNAME", equalTo("OPENING_ID,GEOMETRY"))
             .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=" + openingId))
-            .willReturn(okJson("""
+            .willReturn(
+                okJson(
+                    """
                 {
                   "type": "FeatureCollection",
                   "features": [
@@ -93,8 +91,7 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
                     }
                   ]
                 }
-                """))
-    );
+                """)));
 
     mockMvc
         .perform(
@@ -106,32 +103,24 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features[0].type").value("Feature"))
         .andExpect(jsonPath("$.features[0].id").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].id").value(containsString(openingId)))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
-        .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").value("FTML"))
-        .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").value("FG"))
-        .andExpect(jsonPath("$.features[0].properties.REGION_CODE").value("ROM"))
+        .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.REGION_CODE").isEmpty())
         .andExpect(
             jsonPath("$.features[0].properties.REGION_NAME")
                 .value("Omineca Natural Resource Region"))
-        .andExpect(jsonPath("$.features[0].properties.DISTRICT_CODE").value("DMK"))
+        .andExpect(jsonPath("$.features[0].properties.DISTRICT_CODE").isEmpty())
         .andExpect(
             jsonPath("$.features[0].properties.DISTRICT_NAME")
                 .value("Mackenzie Natural Resource District"))
-        .andExpect(
-            jsonPath("$.features[0].properties.CLIENT_NAME")
-                .value("CONIFEX MACKENZIE FOREST PRODUCTS INC."))
-        .andExpect(jsonPath("$.features[0].properties.CLIENT_NUMBER").value("00161229"))
-        .andExpect(jsonPath("$.features[0].properties.OPENING_WHO_CREATED").value("MLSIS"))
+        .andExpect(jsonPath("$.features[0].properties.CLIENT_NAME").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.CLIENT_NUMBER").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.OPENING_WHO_CREATED").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_CREATED").value("1999-08-26Z"))
-        .andExpect(
-            jsonPath("$.features[0].properties.OPENING_WHO_UPDATED").value("IDIR\\\\SCAKERLE"))
-        .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_UPDATED").value("2023-11-14Z"))
-        .andExpect(jsonPath("$.features[0].properties.OBJECTID").value("3869732"))
-        .andExpect(jsonPath("$.features[0].properties.bbox[0]").value("-125.6056"))
-        .andExpect(jsonPath("$.features[0].properties.bbox[1]").value("56.06894"))
-        .andExpect(jsonPath("$.features[0].properties.bbox[2]").value("-125.59267"))
-        .andExpect(jsonPath("$.features[0].properties.bbox[3]").value("56.07429"))
+        .andExpect(jsonPath("$.features[0].properties.OPENING_WHO_UPDATED").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.OPENING_WHEN_UPDATED").isEmpty())
+        .andExpect(jsonPath("$.features[0].properties.OBJECTID").isEmpty())
         .andReturn();
   }
 

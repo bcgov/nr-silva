@@ -121,9 +121,8 @@ public class OpeningSpatialFileService {
    * Unions all features in a GeoJSON FeatureCollection into a single geometry and removes
    * floating-point sliver holes created by imprecise shared edges during the union operation.
    *
-   * <p>Returns a new FeatureCollection containing exactly one Feature whose geometry is the
-   * cleaned union. If the union fails for any reason, the original FeatureCollection is returned
-   * unchanged.
+   * <p>Returns a new FeatureCollection containing exactly one Feature whose geometry is the cleaned
+   * union. If the union fails for any reason, the original FeatureCollection is returned unchanged.
    *
    * @param featureCollection the GeoJSON FeatureCollection node to process
    * @return a FeatureCollection with one unified, cleaned Feature
@@ -182,8 +181,9 @@ public class OpeningSpatialFileService {
         kept.add(ring);
       }
     }
-    return polygon.getFactory().createPolygon(
-        (LinearRing) polygon.getExteriorRing(), kept.toArray(new LinearRing[0]));
+    return polygon
+        .getFactory()
+        .createPolygon((LinearRing) polygon.getExteriorRing(), kept.toArray(new LinearRing[0]));
   }
 
   /**

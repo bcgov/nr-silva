@@ -15,10 +15,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.Crs;
-import org.geojson.jackson.CrsType;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.GeoJsonObject;
+import org.geojson.jackson.CrsType;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.JTS;
@@ -93,6 +93,8 @@ public class OpeningGeometryPostgresService implements OpeningGeometryService {
     props.put("REGION_NAME", region != null ? region.getOrgUnitName() : null);
     props.put("DISTRICT_CODE", district != null ? district.getOrgUnitCode() : null);
     props.put("DISTRICT_NAME", district != null ? district.getOrgUnitName() : null);
+    props.put("CLIENT_NAME", null);
+    props.put("CLIENT_NUMBER", null);
     props.put("OPENING_WHO_CREATED", null);
     props.put(
         "OPENING_WHEN_CREATED",
@@ -124,8 +126,8 @@ public class OpeningGeometryPostgresService implements OpeningGeometryService {
       return reprojected;
     } catch (Exception e) {
       log.error("Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
-       throw new IllegalStateException(
-           "Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
+      throw new IllegalStateException(
+          "Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
     }
   }
 
