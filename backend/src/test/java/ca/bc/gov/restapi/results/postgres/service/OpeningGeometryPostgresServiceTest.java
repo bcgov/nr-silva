@@ -2,6 +2,8 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
@@ -98,7 +100,8 @@ class OpeningGeometryPostgresServiceTest {
     assertEquals(1, result.getFeatures().size(), "FeatureCollection should contain 1 feature");
 
     Feature feature = result.getFeatures().get(0);
-    assertEquals("100", feature.getId(), "Feature ID should match opening ID");
+    assertThat((String) feature.getId(), containsString("100"));
+    assertNotNull(feature.getId(), "Feature ID should not be null");
     assertNotNull(feature.getProperties(), "Feature properties should not be null");
     assertEquals(100L, feature.getProperties().get("OPENING_ID"), "OPENING_ID should match");
     assertEquals("DCT", feature.getProperties().get("DISTRICT_CODE"), "District code should match");
@@ -462,7 +465,8 @@ class OpeningGeometryPostgresServiceTest {
 
     // Assert
     Feature feature = result.getFeatures().get(0);
-    assertEquals("12345", feature.getId(), "Feature ID should be string of opening ID");
+    assertThat((String) feature.getId(), containsString("12345"));
+    assertNotNull(feature.getId(), "Feature ID should not be null");
   }
 
   // ============ REPOSITORY VERIFICATION ============

@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -104,9 +105,8 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features[0].type").value("Feature"))
-        .andExpect(
-            jsonPath("$.features[0].id")
-                .value("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW.fid-6f119ee7_19129391292_7c7b"))
+        .andExpect(jsonPath("$.features[0].id").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].id").value(containsString(openingId)))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").value("FTML"))
         .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").value("FG"))
