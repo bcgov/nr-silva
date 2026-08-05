@@ -56,8 +56,8 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 ## Processing Steps
 
 1. **Virus scan** — the uploaded file is scanned. Infected files → HTTP 422.
-2. **Spatial file processing** — validates CRS (EPSG:4326 or EPSG:3005), geometry type (Polygon / MultiPolygon), topology, BC extents, and vertex count; reprojects to EPSG:4326 if needed.
-3. **Geometry reprojection** — the processed geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
+2. **Spatial file processing** — validates CRS (EPSG:4326 or EPSG:3005), geometry type (Polygon / MultiPolygon), topology, BC extents, and vertex count; reprojects to EPSG:4326 if needed. All features in the file are then **unioned into a single geometry**; floating-point sliver holes introduced by the union are removed automatically.
+3. **Geometry reprojection** — the unified geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
 4. **Mapsheet derivation** — the geometry centroid (EPSG:4326) is passed to the BC OpenMaps WFS to derive the BCGS 1:20K mapsheet key (see §Mapsheet Key below). WFS failure → HTTP 422.
 5. **Opening number** — the next sequential `opening_number` within the mapsheet tile is computed (`MAX + 1`, capped at 9999).
 6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; each tenure's cut block must exist in `silva.cut_block` joined to `silva.cut_block_client` for the supplied `clientNumber` / `clientLocationCode`.

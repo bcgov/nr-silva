@@ -266,6 +266,10 @@ To update frontend API types/clients, change the backend's OpenAPI spec (control
 
 Every new search feature requires three tiers of tests. Target **>85% branch coverage** on new code.
 
+## Running Tests
+- For backend with Oracle as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=oracle --no-transfer-progress -P all-tests`
+- For backend with Postgres as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=postgres --no-transfer-progress -P all-tests`
+
 ### Tier 1 — DTO unit test
 
 For any filter DTO with constructor logic (NOVALUE sentinel, uppercase normalization, helper methods), write a plain JUnit 5 class:

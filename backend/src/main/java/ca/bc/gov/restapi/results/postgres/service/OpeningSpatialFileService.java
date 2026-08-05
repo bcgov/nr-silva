@@ -110,8 +110,80 @@ public class OpeningSpatialFileService {
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
 
-    // Just return the result from the handler; reprojection is handled in each process* method
-    return result;
+    // Union all features into one geometry and remove floating-point sliver holes
+    return result.withGeoJson(unionAndCleanFeatures(result.geoJson()));
+  }
+
+  // ~800 sq m in EPSG:4326 at 50°N; interior rings below this are union floating-point artifacts
+  private static final double MIN_HOLE_AREA_SQ_DEG = 1e-7;
+
+  /**
+   * Unions all features in a GeoJSON FeatureCollection into a single geometry and removes
+   * floating-point sliver holes created by imprecise shared edges during the union operation.
+   *
+   * <p>Returns a new FeatureCollection containing exactly one Feature whose geometry is the
+   * cleaned union. If the union fails for any reason, the original FeatureCollection is returned
+   * unchanged.
+   *
+   * @param featureCollection the GeoJSON FeatureCollection node to process
+   * @return a FeatureCollection with one unified, cleaned Feature
+   */
+  private JsonNode unionAndCleanFeatures(JsonNode featureCollection) {
+    try {
+      GeoJsonReader reader = new GeoJsonReader();
+      GeoJsonWriter writer = new GeoJsonWriter();
+      JsonNode features = featureCollection.get("features");
+      if (features == null || features.isEmpty()) {
+        return featureCollection;
+      }
+      Geometry combined = null;
+      for (int i = 0; i < features.size(); i++) {
+        JsonNode geometryNode = features.get(i).get("geometry");
+        Geometry geom = reader.read(mapper.writeValueAsString(geometryNode));
+        combined = (combined == null) ? geom : combined.union(geom);
+      }
+      combined = removeArtifactHoles(combined);
+      JsonNode unifiedGeomNode = mapper.readTree(writer.write(combined));
+      ObjectNode feature = mapper.createObjectNode();
+      feature.put("type", "Feature");
+      feature.set("geometry", unifiedGeomNode);
+      feature.set("properties", mapper.createObjectNode());
+      ArrayNode unified = mapper.createArrayNode();
+      unified.add(feature);
+      ObjectNode fc = mapper.createObjectNode();
+      fc.put("type", "FeatureCollection");
+      fc.set("features", unified);
+      return fc;
+    } catch (Exception e) {
+      log.warn("Could not union features, returning original: {}", e.getMessage());
+      return featureCollection;
+    }
+  }
+
+  private Geometry removeArtifactHoles(Geometry geom) {
+    if (geom instanceof Polygon p) {
+      return cleanPolygonHoles(p);
+    }
+    if (geom instanceof MultiPolygon mp) {
+      Polygon[] cleaned = new Polygon[mp.getNumGeometries()];
+      for (int i = 0; i < mp.getNumGeometries(); i++) {
+        cleaned[i] = cleanPolygonHoles((Polygon) mp.getGeometryN(i));
+      }
+      return mp.getFactory().createMultiPolygon(cleaned);
+    }
+    return geom;
+  }
+
+  private Polygon cleanPolygonHoles(Polygon polygon) {
+    List<LinearRing> kept = new ArrayList<>();
+    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+      LinearRing ring = (LinearRing) polygon.getInteriorRingN(i);
+      if (polygon.getFactory().createPolygon(ring).getArea() > MIN_HOLE_AREA_SQ_DEG) {
+        kept.add(ring);
+      }
+    }
+    return polygon.getFactory().createPolygon(
+        (LinearRing) polygon.getExteriorRing(), kept.toArray(new LinearRing[0]));
   }
 
   /**

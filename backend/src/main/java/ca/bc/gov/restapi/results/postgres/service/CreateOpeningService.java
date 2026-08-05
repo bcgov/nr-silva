@@ -254,13 +254,8 @@ public class CreateOpeningService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Spatial file contains no features");
       }
-      Geometry combined = null;
-      for (int i = 0; i < features.size(); i++) {
-        JsonNode geometryNode = features.get(i).get("geometry");
-        Geometry geom = reader.read(objectMapper.writeValueAsString(geometryNode));
-        combined = (combined == null) ? geom : combined.union(geom);
-      }
-      return combined;
+      // OpeningSpatialFileService has already unioned and cleaned all features into one
+      return reader.read(objectMapper.writeValueAsString(features.get(0).get("geometry")));
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
