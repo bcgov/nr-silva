@@ -94,7 +94,7 @@ public class OpenMapsService {
                       .queryParam("outputFormat", "application/json")
                       .queryParam("SrsName", "EPSG:4326")
                       .queryParam("PROPERTYNAME", "MAP_TILE")
-                      .queryParam("CQL_FILTER", "INTERSECTS(GEOMETRY, POINT(" + lon + " " + lat + "))")
+                      .queryParam("CQL_FILTER", "INTERSECTS(GEOMETRY, SRID=4326;POINT(" + lon + " " + lat + "))")
                       .build(Map.of()))
           .retrieve()
           .body(FeatureCollection.class);

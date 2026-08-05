@@ -8,11 +8,16 @@ import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import ca.bc.gov.restapi.results.postgres.service.UserOpeningService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +43,8 @@ public class OpeningEndpoint {
   private final OpeningSpatialFileService openingSpatialFileService;
   private final VirusScanService virusScanService;
   private final CreateOpeningService createOpeningService;
+  private final ObjectMapper objectMapper;
+  private final Validator validator;
 
   /**
    * Get user's favorite openings.
@@ -124,16 +131,29 @@ public class OpeningEndpoint {
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   public CreateOpeningResponseDto createOpening(
-      @RequestPart("data") @Valid
+      @RequestPart("data")
           @Parameter(
-              description = "Opening creation request",
+              description = "Opening creation request (JSON)",
               schema = @Schema(implementation = CreateOpeningRequestDto.class))
-          CreateOpeningRequestDto dto,
+          String rawData,
       @RequestPart("file")
           @Parameter(
               description = "Spatial file (GeoJSON or GML)",
               schema = @Schema(type = "string", format = "binary"))
           MultipartFile file) {
+    CreateOpeningRequestDto dto;
+    try {
+      dto = objectMapper.readValue(rawData, CreateOpeningRequestDto.class);
+    } catch (JsonProcessingException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getMessage());
+    }
+    Set<ConstraintViolation<CreateOpeningRequestDto>> violations = validator.validate(dto);
+    if (!violations.isEmpty()) {
+      String msg = violations.stream()
+          .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+          .collect(Collectors.joining(", "));
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
+    }
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
