@@ -9,12 +9,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private Environment env;
 
   @RegisterExtension
   static WireMockExtension clientApiStub =
@@ -39,9 +41,12 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
           .build();
 
   @Test
-  @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
   @DisplayName("Get opening polygon and properties happy path should succeed")
   void getOpeningPolygonAndProperties_happyPath_shouldSucceed() throws Exception {
+    // Postgres-only: OpeningGeometryPostgresService reads from DB instead of WFS
+    Assumptions.assumeTrue(
+        "postgres".equals(env.getProperty("server.primary-db")),
+        "Skipped: requires server.primary-db=postgres");
     // Opening 101017 is seeded via V999.1.0__test_data_101017.sql with admin_district_no=1
     // (org_unit: code='DAS', name='Development Unit', rollup_region_no=111).
     // No org_unit with no=111 exists in seed data, so region resolves to null.
