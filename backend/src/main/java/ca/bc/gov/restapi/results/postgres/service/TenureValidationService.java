@@ -65,7 +65,9 @@ public class TenureValidationService {
       if (indices.size() > 1) {
         TenureRequestDto firstTenure = tenures.get(indices.get(0));
         String reason =
-            String.format("fileId=%s, cutBlock=%s", firstTenure.fileId(), firstTenure.cutBlock());
+            String.format(
+                "fileId=%s, cuttingPermit=%s, cutBlock=%s",
+                firstTenure.fileId(), firstTenure.cuttingPermit(), firstTenure.cutBlock());
         conflicts.add(new DuplicateConflictDto(indices, reason));
       }
     }
@@ -111,6 +113,7 @@ public class TenureValidationService {
    * @return the composite key
    */
   private String buildTenureKey(TenureRequestDto tenure) {
-    return String.format("%s|%s", tenure.fileId().trim(), tenure.cutBlock().trim());
+    String permit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : "";
+    return String.format("%s|%s|%s", tenure.fileId().trim(), permit, tenure.cutBlock().trim());
   }
 }

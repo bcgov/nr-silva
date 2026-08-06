@@ -124,7 +124,7 @@ class CreateOpeningServiceTest {
     return new TenureRequestDto("TFL002", null, "CB002", false);
   }
 
-  /** Set up mocks so that steps 1–11 of createOpening succeed, stopping at step 12+. */
+  /** Set up mocks for steps 1–5 (spatial file + mapsheet). */
   private void mockGeometryAndMapsheetSteps() throws Exception {
     ExtractedGeoDataDto geoData = buildGeoData(); // build before entering when() context
     when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any()))
@@ -133,6 +133,10 @@ class CreateOpeningServiceTest {
         .thenReturn(FAKE_MAPSHEET);
     when(openingRepository.findNextOpeningNumber(eq("092"), eq("L"), eq("057"), eq("0"), eq("0")))
         .thenReturn(1);
+  }
+
+  /** Additionally stub detectDuplicates for tests that reach step 11. */
+  private void mockNoDuplicates() {
     when(tenureValidationService.detectDuplicates(any()))
         .thenReturn(java.util.Collections.emptyList());
   }
@@ -141,6 +145,7 @@ class CreateOpeningServiceTest {
   @DisplayName("Happy path should create opening and return response with new opening ID")
   void createOpening_happyPath_shouldSucceed() throws Exception {
     mockGeometryAndMapsheetSteps();
+    mockNoDuplicates();
 
     // Category + org unit
     when(openCategoryCodeRepository.findById("FTML"))
@@ -272,6 +277,7 @@ class CreateOpeningServiceTest {
   @DisplayName("Cut block not found for a tenure should throw 400 BAD_REQUEST")
   void createOpening_cutBlockNotFound_shouldThrow400() throws Exception {
     mockGeometryAndMapsheetSteps();
+    mockNoDuplicates();
     when(openCategoryCodeRepository.findById("FTML"))
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
@@ -295,6 +301,7 @@ class CreateOpeningServiceTest {
   @DisplayName("Happy path with non-null licenseeOpeningId should set it on the opening entity")
   void createOpening_withLicenseeOpeningId_shouldSucceed() throws Exception {
     mockGeometryAndMapsheetSteps();
+    mockNoDuplicates();
     when(openCategoryCodeRepository.findById("FTML"))
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
