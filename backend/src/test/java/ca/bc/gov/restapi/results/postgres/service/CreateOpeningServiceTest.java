@@ -53,6 +53,7 @@ class CreateOpeningServiceTest {
   @Mock private CutBlockValidationRepository cutBlockValidationRepository;
   @Mock private OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   @Mock private OrgUnitPostgresRepository orgUnitRepository;
+  @Mock private TenureValidationService tenureValidationService;
   @Mock private LoggedUserHelper loggedUserHelper;
   @Mock private JdbcTemplate jdbcTemplate;
   @Spy private ObjectMapper objectMapper = new ObjectMapper();
@@ -92,6 +93,7 @@ class CreateOpeningServiceTest {
             cutBlockValidationRepository,
             openCategoryCodeRepository,
             orgUnitRepository,
+            tenureValidationService,
             loggedUserHelper,
             jdbcTemplate,
             objectMapper);
@@ -131,6 +133,8 @@ class CreateOpeningServiceTest {
         .thenReturn(FAKE_MAPSHEET);
     when(openingRepository.findNextOpeningNumber(eq("092"), eq("L"), eq("057"), eq("0"), eq("0")))
         .thenReturn(1);
+    when(tenureValidationService.detectDuplicates(any()))
+        .thenReturn(java.util.Collections.emptyList());
   }
 
   @Test

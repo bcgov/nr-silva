@@ -17,6 +17,7 @@ import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
 import java.nio.charset.StandardCharsets;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -228,6 +229,43 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Should return bad request when tenures contain duplicate fileId + cutBlock")
+  void createOpening_withDuplicateTenures_shouldReturn400() throws Exception {
+    String duplicateTenuresData =
+        "{\"openingGrossArea\": 100.5, \"maxAllowablePermAccessPerc\": 25.5, "
+            + "\"clientNumber\": \"00001012\", \"clientLocationCode\": \"AB\", "
+            + "\"orgUnitCode\": \"DCC\", \"openingCategoryCode\": \"FTML\", "
+            + "\"tenures\": ["
+            + "{\"fileId\": \"F001\", \"cutBlock\": \"A1\", \"isPrimary\": true},"
+            + "{\"fileId\": \"F001\", \"cutBlock\": \"A1\", \"isPrimary\": false}"
+            + "]}";
+
+    MockMultipartFile dataFile =
+        new MockMultipartFile(
+            "data",
+            "data.json",
+            MediaType.APPLICATION_JSON_VALUE,
+            duplicateTenuresData.getBytes(StandardCharsets.UTF_8));
+
+    MockMultipartFile geoFile =
+        new MockMultipartFile(
+            "file",
+            "opening.geojson",
+            MediaType.APPLICATION_JSON_VALUE,
+            VALID_GEOJSON.getBytes(StandardCharsets.UTF_8));
+
+    mockMvc
+        .perform(
+            multipart("/api/openings/create")
+                .file(dataFile)
+                .file(geoFile)
+                .with(csrf().asHeader())
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.detail").value(Matchers.containsString("Duplicate tenure")));
   }
 
   // ============ FILE VALIDATION ============

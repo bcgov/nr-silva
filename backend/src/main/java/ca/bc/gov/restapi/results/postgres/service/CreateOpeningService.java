@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
@@ -58,6 +59,7 @@ public class CreateOpeningService {
   private final CutBlockValidationRepository cutBlockValidationRepository;
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
+  private final TenureValidationService tenureValidationService;
   private final LoggedUserHelper loggedUserHelper;
   private final JdbcTemplate jdbcTemplate;
   private final ObjectMapper objectMapper;
@@ -140,7 +142,18 @@ public class CreateOpeningService {
           "Exactly one primary tenure is required; " + primaryCount + " supplied");
     }
 
-    // Step 11: validate each tenure against cut_block + cut_block_client
+    // Step 11: check for duplicate tenures (same fileId + cutBlock combination)
+    List<DuplicateConflictDto> duplicates = tenureValidationService.detectDuplicates(dto.tenures());
+    if (!duplicates.isEmpty()) {
+      String msg =
+          duplicates.stream()
+              .map(d -> "Duplicate tenure at indices " + d.duplicateIndices() + ": " + d.reason())
+              .reduce((a, b) -> a + "; " + b)
+              .orElse("Duplicate tenure found");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
+    }
+
+    // Step 12: validate each tenure against cut_block + cut_block_client
     String clientLocnCode = dto.clientLocationCode().trim();
     List<CutBlockValidationProjection> validatedBlocks = new ArrayList<>();
     for (TenureRequestDto tenure : dto.tenures()) {
@@ -163,15 +176,15 @@ public class CreateOpeningService {
       validatedBlocks.add(block);
     }
 
-    // Step 12: build audit fields
+    // Step 13: build audit fields
     String auditUserId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = LocalDateTime.now();
 
-    // Step 13: allocate opening ID from sequence (committed immediately regardless of TX outcome)
+    // Step 14: allocate opening ID from sequence (committed immediately regardless of TX outcome)
     Long openingId =
         jdbcTemplate.queryForObject("SELECT nextval('silva.opening_id_seq')", Long.class);
 
-    // Step 14: persist opening
+    // Step 15: persist opening
     OpeningEntity opening =
         OpeningEntity.builder()
             .id(openingId)
@@ -199,7 +212,7 @@ public class CreateOpeningService {
             .build();
     openingRepository.save(opening);
 
-    // Step 15: persist opening geometry
+    // Step 16: persist opening geometry
     OpeningGeometryEntity geometry =
         OpeningGeometryEntity.builder()
             .openingId(openingId)
@@ -216,7 +229,7 @@ public class CreateOpeningService {
             .build();
     openingGeometryRepository.save(geometry);
 
-    // Step 16: persist one cut_block_open_admin row per tenure
+    // Step 17: persist one cut_block_open_admin row per tenure
     List<TenureRequestDto> tenures = dto.tenures();
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
@@ -242,7 +255,7 @@ public class CreateOpeningService {
       cutBlockValidationRepository.save(cboa);
     }
 
-    // Step 17: return the new opening ID
+    // Step 18: return the new opening ID
     return new CreateOpeningResponseDto(openingId);
   }
 

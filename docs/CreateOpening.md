@@ -32,7 +32,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 | `orgUnitCode` | String | Yes | Max 6 chars | Org unit code of the managing district (e.g. `"DCC"`) |
 | `openingCategoryCode` | String | Yes | Max 7 chars | Opening category (e.g. `"FTML"`, `"PRIVATE"`) |
 | `licenseeOpeningId` | String | No | Max 30 chars | Licensee-provided identifier for the opening |
-| `tenures` | List | Yes | Non-empty; exactly one must be primary | Cut-block tenures to associate with this opening |
+| `tenures` | List | Yes | Non-empty; exactly one must be primary; no duplicate fileId + cutBlock combinations | Cut-block tenures to associate with this opening |
 
 ### `TenureRequestDto` fields
 
@@ -60,7 +60,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 3. **Geometry reprojection** — the opening geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
 4. **Mapsheet derivation** — the geometry centroid (EPSG:4326) is passed to the BC OpenMaps WFS to derive the BCGS 1:20K mapsheet key (see §Mapsheet Key below). WFS failure → HTTP 422.
 5. **Opening number** — the next sequential `opening_number` within the mapsheet tile is computed (`MAX + 1`, capped at 9999).
-6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; each tenure's cut block must exist in `silva.cut_block` joined to `silva.cut_block_client` for the supplied `clientNumber` / `clientLocationCode`.
+6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; no duplicate tenure combinations (same fileId + cutBlock); each tenure's cut block must exist in `silva.cut_block` joined to `silva.cut_block_client` for the supplied `clientNumber` / `clientLocationCode`.
 7. **Insertion** — three rows are inserted atomically in a single transaction:
    - `silva.opening` — opening header
    - `silva.opening_geometry` — reprojected geometry (PostGIS; EPSG:3005)
@@ -103,6 +103,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 | 400 | `Failed to parse spatial geometry` | Geometry JSON cannot be read into a JTS object after processing |
 | 400 | `Exactly one primary tenure is required; none supplied` | No tenure has `isPrimary: true` |
 | 400 | `Exactly one primary tenure is required; N supplied` | More than one tenure has `isPrimary: true` |
+| 400 | `Duplicate tenure at indices [i, j, …]: fileId=<id>, cutBlock=<id>` | Two or more tenures have the same fileId + cutBlock combination |
 | 400 | `Cut block not found for fileId=<id>, cutBlock=<id>` | Tenure references a cut block / client combination that does not exist |
 | 403 | `Not authorised for client number <number>` | Caller's JWT roles do not include `*_<clientNumber>` |
 | 404 | `OpeningCategoryNotFoundException` | `openingCategoryCode` does not exist |
