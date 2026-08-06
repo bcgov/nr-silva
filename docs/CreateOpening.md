@@ -57,7 +57,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 
 1. **Virus scan** — the uploaded file is scanned. Infected files → HTTP 422.
 2. **Spatial file processing** — validates CRS (EPSG:4326 or EPSG:3005), geometry type (Polygon / MultiPolygon), topology, BC extents, and vertex count; reprojects to EPSG:4326 if needed. The file must contain **exactly one feature** (per RISS-ls §5.4.4 — an opening has a single boundary); files with multiple features are rejected with HTTP 400.
-3. **Geometry reprojection** — the unified geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
+3. **Geometry reprojection** — the opening geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
 4. **Mapsheet derivation** — the geometry centroid (EPSG:4326) is passed to the BC OpenMaps WFS to derive the BCGS 1:20K mapsheet key (see §Mapsheet Key below). WFS failure → HTTP 422.
 5. **Opening number** — the next sequential `opening_number` within the mapsheet tile is computed (`MAX + 1`, capped at 9999).
 6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; each tenure's cut block must exist in `silva.cut_block` joined to `silva.cut_block_client` for the supplied `clientNumber` / `clientLocationCode`.
@@ -65,6 +65,51 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
    - `silva.opening` — opening header
    - `silva.opening_geometry` — reprojected geometry (PostGIS; EPSG:3005)
    - `silva.cut_block_open_admin` — one row per tenure
+
+---
+
+## Error Reference
+
+### Spatial File Errors (both `POST /create/upload` and `POST /create`)
+
+| HTTP | Message | Cause |
+|------|---------|-------|
+| 400 | `Uploaded file has no name` | File part has no filename |
+| 400 | `Uploaded file is null or empty` | File part is empty |
+| 400 | `File exceeds 25MB size limit` | File larger than 25 MB |
+| 400 | `Unsupported file type: <name>` | Extension is not `.geojson`, `.json`, or `.gml` |
+| 400 | `Spatial file must contain exactly one feature (found N)` | File contains more than one feature; RISS-ls §5.4.4 requires a single opening boundary |
+| 400 | `GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)` | CRS declared in the GeoJSON `crs` property is not supported |
+| 400 | `Feature N missing geometry` | A feature node has no `geometry` field |
+| 400 | `Feature N geometry missing 'type'` | Geometry node has no `type` field |
+| 400 | `Feature N: Only Polygon and MultiPolygon geometries are supported (got '<type>')` | Geometry is a Point, LineString, etc. |
+| 400 | `Feature N: Too few points in ring at feature N (coord=…)` | Polygon ring has fewer than 4 coordinates |
+| 400 | `Feature N: Ring is not closed at feature N (coord=…)` | Polygon ring first and last coordinate do not match |
+| 400 | `Feature N: Polygon has zero or collapsed surface area` | Geometry area rounds to zero after topology validation |
+| 400 | `Invalid geometry at feature N: <detail>` | OGC topology check failed for another reason |
+| 400 | `Feature N is not fully within the Province of BC boundary.` | Geometry extends outside the BC provincial boundary |
+| 400 | `Invalid GeoJSON file: <detail>` | File content cannot be parsed as JSON |
+| 400 | `No valid GML geometry found in file` | GML file contains no recognisable geometry element |
+| 400 | `Failed to process GML file: <detail>` | GML parse error |
+| 422 | *(virus scan rejection message)* | ClamAV detected malware in the uploaded file |
+
+### Form Data Errors (`POST /create` only)
+
+| HTTP | Message | Cause |
+|------|---------|-------|
+| 400 | `Invalid JSON in 'data': <detail>` | The `data` part cannot be parsed as JSON |
+| 400 | `<field>: <constraint message>[, …]` | Bean Validation failure on `CreateOpeningRequestDto` fields |
+| 400 | `Spatial file contains no features` | Processed GeoJSON has an empty `features` array |
+| 400 | `Failed to parse spatial geometry` | Geometry JSON cannot be read into a JTS object after processing |
+| 400 | `Exactly one primary tenure is required; none supplied` | No tenure has `isPrimary: true` |
+| 400 | `Exactly one primary tenure is required; N supplied` | More than one tenure has `isPrimary: true` |
+| 400 | `Cut block not found for fileId=<id>, cutBlock=<id>` | Tenure references a cut block / client combination that does not exist |
+| 403 | `Not authorised for client number <number>` | Caller's JWT roles do not include `*_<clientNumber>` |
+| 404 | `OpeningCategoryNotFoundException` | `openingCategoryCode` does not exist |
+| 404 | `OrgUnit not found` | `orgUnitCode` does not exist |
+| 422 | *(mapsheet WFS failure)* | BC OpenMaps WFS did not return a mapsheet for the geometry centroid |
+| 500 | `Failed to read file: <detail>` | I/O error reading multipart bytes |
+| 500 | `Failed to reproject geometry` | GeoTools reprojection from EPSG:4326 → EPSG:3005 failed |
 
 ---
 
