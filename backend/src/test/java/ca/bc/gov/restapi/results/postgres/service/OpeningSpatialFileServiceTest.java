@@ -422,6 +422,24 @@ class OpeningSpatialFileServiceTest {
   }
 
   @Test
+  @DisplayName("Should reject GeoJSON with more than one feature")
+  void shouldRejectMultiFeatureGeojson() {
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":["
+            + "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
+            + "-120.5,49.2],[-120.4,49.2],[-120.4,49.3],[-120.5,49.3],[-120.5,49.2]]]}},"
+            + "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
+            + "-121.5,50.2],[-121.4,50.2],[-121.4,50.3],[-121.5,50.3],[-121.5,50.2]]]}}"
+            + "]}";
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "multi.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("exactly one feature");
+  }
+
+  @Test
   void shouldThrowOnXmlExtension() {
     assertThatThrownBy(
             () ->

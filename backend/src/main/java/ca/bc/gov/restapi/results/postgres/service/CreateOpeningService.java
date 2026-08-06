@@ -70,8 +70,8 @@ public class CreateOpeningService {
    * @param fileName the original name of the uploaded spatial file
    * @param fileBytes the raw content of the uploaded spatial file
    * @return a {@link CreateOpeningResponseDto} containing the new opening's ID
-   * @throws ResponseStatusException with HTTP 422 if the file is infected or the mapsheet cannot
-   *     be derived; HTTP 400 for business rule violations; HTTP 403 if the caller is not authorized
+   * @throws ResponseStatusException with HTTP 422 if the file is infected or the mapsheet cannot be
+   *     derived; HTTP 400 for business rule violations; HTTP 403 if the caller is not authorized
    *     for the supplied client number; HTTP 404 if the category or org unit is not found
    */
   @Transactional
@@ -82,7 +82,7 @@ public class CreateOpeningService {
     ExtractedGeoDataDto geoData =
         openingSpatialFileService.processOpeningSpatialFile(fileName, fileBytes);
 
-    // Step 2: parse GeoJSON → JTS Geometry in EPSG:4326 (union of all features); get centroid
+    // Step 2: parse GeoJSON → JTS Geometry in EPSG:4326; get centroid
     Geometry geometry4326 = parseAllGeometries(geoData.geoJson());
     Point centroid4326 = geometry4326.getCentroid();
     double lon = centroid4326.getX();
@@ -254,7 +254,6 @@ public class CreateOpeningService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Spatial file contains no features");
       }
-      // OpeningSpatialFileService has already unioned and cleaned all features into one
       return reader.read(objectMapper.writeValueAsString(features.get(0).get("geometry")));
     } catch (ResponseStatusException e) {
       throw e;
