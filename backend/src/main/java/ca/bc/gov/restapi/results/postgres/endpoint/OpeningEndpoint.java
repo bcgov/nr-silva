@@ -118,7 +118,8 @@ public class OpeningEndpoint {
     virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
 
     // Process with pre-read bytes to avoid double-reading file content
-    return openingSpatialFileService.processOpeningSpatialFile(file.getOriginalFilename(), fileBytes);
+    return openingSpatialFileService.processOpeningSpatialFile(
+        file.getOriginalFilename(), fileBytes);
   }
 
   /**
@@ -128,7 +129,7 @@ public class OpeningEndpoint {
    * @param file the spatial file (GeoJSON or GML) describing the opening geometry
    * @return the ID of the newly created opening
    */
-  @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   public CreateOpeningResponseDto createOpening(
       @RequestPart("data")
@@ -145,13 +146,15 @@ public class OpeningEndpoint {
     try {
       dto = objectMapper.readValue(rawData, CreateOpeningRequestDto.class);
     } catch (JsonProcessingException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getMessage());
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getMessage());
     }
     Set<ConstraintViolation<CreateOpeningRequestDto>> violations = validator.validate(dto);
     if (!violations.isEmpty()) {
-      String msg = violations.stream()
-          .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-          .collect(Collectors.joining(", "));
+      String msg =
+          violations.stream()
+              .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+              .collect(Collectors.joining(", "));
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
     }
     if (file == null || file.isEmpty()) {
