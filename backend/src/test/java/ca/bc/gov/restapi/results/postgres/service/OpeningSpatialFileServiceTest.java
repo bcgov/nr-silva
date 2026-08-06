@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -26,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @DisplayName("Unit Test | OpeningSpatialFileService")
 class OpeningSpatialFileServiceTest {
 

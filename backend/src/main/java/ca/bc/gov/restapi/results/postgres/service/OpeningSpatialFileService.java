@@ -221,6 +221,7 @@ public class OpeningSpatialFileService {
           Geometry geom = parseGmlElement((Element) nodes.item(i), gf);
           if (geom != null) geometries.add(geom);
         }
+        if (!geometries.isEmpty()) break; // stop scanning sub-tags once top-level type is found
       }
 
       // Fallback: try parsing the root element directly
