@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Request body for creating a new opening via {@code POST /api/openings/create}.
+ * Request body for creating a new opening via {@code POST /api/openings}.
  *
  * @param openingGrossArea total opening gross area in hectares
  * @param maxAllowablePermAccessPerc maximum allowable permanent access percentage

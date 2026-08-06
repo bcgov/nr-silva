@@ -82,7 +82,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -106,7 +106,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(geoFile)
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -125,7 +125,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -155,7 +155,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -190,7 +190,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -223,7 +223,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -259,7 +259,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -288,7 +288,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(oversizedFile)
                 .with(csrf().asHeader())
@@ -319,7 +319,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(maliciousFile)
                 .with(csrf().asHeader())
@@ -350,7 +350,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())
@@ -379,7 +379,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -412,7 +412,7 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
 
     mockMvc
         .perform(
-            multipart("/api/openings/create")
+            multipart("/api/openings")
                 .file(dataFile)
                 .file(geoFile)
                 .with(csrf().asHeader())

@@ -1,4 +1,4 @@
-# Create Opening — POST /api/openings/create
+# Create Opening — POST /api/openings
 
 ## Business Context
 
@@ -14,7 +14,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 
 ## Request
 
-`POST /api/openings/create` accepts `multipart/form-data` with two parts:
+`POST /api/openings` accepts `multipart/form-data` with two parts (same endpoint as file upload; `data` part distinguishes the operation):
 
 | Part | Content-Type | Description |
 |------|-------------|-------------|
@@ -70,7 +70,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 
 ## Error Reference
 
-### Spatial File Errors (both `POST /create/upload` and `POST /create`)
+### Spatial File Errors (both `POST /api/openings/create/upload` and `POST /api/openings`)
 
 | HTTP | Message | Cause |
 |------|---------|-------|
@@ -93,7 +93,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 | 400 | `Failed to process GML file: <detail>` | GML parse error |
 | 422 | *(virus scan rejection message)* | ClamAV detected malware in the uploaded file |
 
-### Form Data Errors (`POST /create` only)
+### Form Data Errors (`POST /api/openings` only)
 
 | HTTP | Message | Cause |
 |------|---------|-------|
