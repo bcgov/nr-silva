@@ -309,6 +309,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
+      <version>6.6.3.Final</version>
     </dependency>
   </dependencies>
 
