@@ -44,7 +44,7 @@ public class OracleJpaConfiguration {
             Map.of(
                 "hibernate.dialect",
                 "org.hibernate.dialect.OracleDialect",
-                "hibernate.spatial.enabled",
+                "hibernate.integration.spatial.enabled",
                 "false",
                 "hibernate.boot.allow_jdbc_metadata_access",
                 "false",
