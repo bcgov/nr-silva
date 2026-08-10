@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,10 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/** Opening endpoint. */
+/** Opening endpoint — postgres-only (favourites, spatial file upload, create opening). */
 @RestController("postgresOpeningEndpoint")
 @RequestMapping(path = "/api/openings", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class OpeningEndpoint {
 
   private final UserOpeningService userOpeningService;
