@@ -29,7 +29,7 @@ public class TenureEndpoint {
    *
    * <p>This endpoint is invoked when a user clicks the next step on a form containing tenure data.
    * It validates each tenure individually and detects duplicate tenure combinations (same fileId +
-   * cutBlock).
+   * cuttingPermit + cutBlock).
    *
    * @param tenures the list of tenures to validate
    * @return a {@link TenureValidationResponseDto} containing per-tenure validation results and any
