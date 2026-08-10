@@ -142,7 +142,7 @@ public class CreateOpeningService {
           "Exactly one primary tenure is required; " + primaryCount + " supplied");
     }
 
-    // Step 11: check for duplicate tenures (same fileId + cutBlock combination)
+    // Step 11: check for duplicate tenures (same fileId + cuttingPermit + cutBlock combination)
     List<DuplicateConflictDto> duplicates = tenureValidationService.detectDuplicates(dto.tenures());
     if (!duplicates.isEmpty()) {
       String msg =

@@ -46,7 +46,7 @@ public class TenureValidationService {
   }
 
   /**
-   * Detects duplicate tenures based on fileId and cutBlock combination.
+   * Detects duplicate tenures based on fileId, cuttingPermit, and cutBlock combination.
    *
    * @param tenures the list of tenures to check
    * @return a list of duplicate conflicts; empty if no duplicates found
@@ -107,7 +107,7 @@ public class TenureValidationService {
   }
 
   /**
-   * Builds a composite key for duplicate detection: fileId + cutBlock.
+   * Builds a composite key for duplicate detection: fileId + cuttingPermit + cutBlock.
    *
    * @param tenure the tenure to key
    * @return the composite key
