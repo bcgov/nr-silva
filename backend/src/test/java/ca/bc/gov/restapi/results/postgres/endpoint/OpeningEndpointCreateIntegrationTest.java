@@ -26,6 +26,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -234,15 +235,15 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
   }
 
   @Test
-  @DisplayName("Should return bad request when tenures contain duplicate fileId + cutBlock")
+  @DisplayName(
+      "Should return bad request when tenures contain duplicate fileId + cuttingPermit + cutBlock")
   void createOpening_withDuplicateTenures_shouldReturn400() throws Exception {
     String duplicateTenuresData =
-        "{\"openingGrossArea\": 100.5, \"maxAllowablePermAccessPerc\": 25.5, "
-            + "\"clientNumber\": \"00001012\", \"clientLocationCode\": \"AB\", "
-            + "\"orgUnitCode\": \"DCC\", \"openingCategoryCode\": \"FTML\", "
-            + "\"tenures\": ["
-            + "{\"fileId\": \"F001\", \"cutBlock\": \"A1\", \"isPrimary\": true},"
-            + "{\"fileId\": \"F001\", \"cutBlock\": \"A1\", \"isPrimary\": false}"
+        "{\"openingGrossArea\": 100.5, \"maxAllowablePermAccessPerc\": 25.5, \"clientNumber\":"
+            + " \"00001012\", \"clientLocationCode\": \"AB\", \"orgUnitCode\": \"DCC\","
+            + " \"openingCategoryCode\": \"FTML\", \"tenures\": [{\"fileId\": \"F001\","
+            + " \"cuttingPermit\": \"CP1\", \"cutBlock\": \"A1\", \"isPrimary\": true},{\"fileId\":"
+            + " \"F001\", \"cuttingPermit\": \"CP1\", \"cutBlock\": \"A1\", \"isPrimary\": false}"
             + "]}";
 
     MockMultipartFile dataFile =
@@ -258,6 +259,13 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
             "opening.geojson",
             MediaType.APPLICATION_JSON_VALUE,
             VALID_GEOJSON.getBytes(StandardCharsets.UTF_8));
+
+    // Mock the service to throw a duplicate tenure exception
+    when(createOpeningService.createOpening(any(), anyString(), any(byte[].class)))
+        .thenThrow(
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Duplicate tenure at indices [0, 1]: fileId=F001, cuttingPermit=CP1, cutBlock=A1"));
 
     mockMvc
         .perform(

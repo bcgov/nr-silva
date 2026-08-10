@@ -86,7 +86,9 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
             List.of(
                 new TenureValidationResultDto(0, true, null),
                 new TenureValidationResultDto(1, true, null)),
-            List.of(new DuplicateConflictDto(List.of(0, 1), "fileId=TFL001, cutBlock=CB001")),
+            List.of(
+                new DuplicateConflictDto(
+                    List.of(0, 1), "fileId=TFL001, cuttingPermit=CP1, cutBlock=CB001")),
             false);
     when(tenureValidationService.validateTenures(any())).thenReturn(response);
 
