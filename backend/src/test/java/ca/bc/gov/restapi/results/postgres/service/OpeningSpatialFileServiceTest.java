@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -26,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @DisplayName("Unit Test | OpeningSpatialFileService")
 class OpeningSpatialFileServiceTest {
 
@@ -422,6 +424,24 @@ class OpeningSpatialFileServiceTest {
   }
 
   @Test
+  @DisplayName("Should reject GeoJSON with more than one feature")
+  void shouldRejectMultiFeatureGeojson() {
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":["
+            + "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
+            + "-120.5,49.2],[-120.4,49.2],[-120.4,49.3],[-120.5,49.3],[-120.5,49.2]]]}},"
+            + "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
+            + "-121.5,50.2],[-121.4,50.2],[-121.4,50.3],[-121.5,50.3],[-121.5,50.2]]]}}"
+            + "]}";
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "multi.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("exactly one feature");
+  }
+
+  @Test
   void shouldThrowOnXmlExtension() {
     assertThatThrownBy(
             () ->
@@ -460,7 +480,7 @@ class OpeningSpatialFileServiceTest {
             "calculateGeometryAreaHectares", Geometry.class, String.class);
     m.setAccessible(true);
     BigDecimal result = (BigDecimal) m.invoke(service, poly, "3005");
-    assertThat(result).isEqualByComparingTo(new BigDecimal("10000.0000"));
+    assertThat(result).isEqualByComparingTo(new BigDecimal("10000.0"));
   }
 
   @Test

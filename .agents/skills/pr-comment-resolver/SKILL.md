@@ -110,6 +110,11 @@ For each validated comment:
 
 When working on the **nr-silva** repository, verify your changes using the following local commands:
 
+## Backend test commands
+- For backend with Oracle as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=oracle --no-transfer-progress -P all-tests`
+- For backend with Postgres as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=postgres --no-transfer-progress -P all-tests`
+Below we use `./mvnw test` for short.
+
 ### For Limited Changes (1-2 files)
 Identify the affected test classes and run targeted tests:
 ```bash

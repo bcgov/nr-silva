@@ -110,7 +110,13 @@ public class OpeningSpatialFileService {
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
 
-    // Just return the result from the handler; reprojection is handled in each process* method
+    // RISS-ls §5.4.4: exactly one opening boundary per opening
+    JsonNode features = result.geoJson().get("features");
+    if (features != null && features.size() > 1) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Spatial file must contain exactly one feature (found " + features.size() + ")");
+    }
     return result;
   }
 
@@ -215,6 +221,7 @@ public class OpeningSpatialFileService {
           Geometry geom = parseGmlElement((Element) nodes.item(i), gf);
           if (geom != null) geometries.add(geom);
         }
+        if (!geometries.isEmpty()) break; // stop scanning sub-tags once top-level type is found
       }
 
       // Fallback: try parsing the root element directly
@@ -887,7 +894,7 @@ public class OpeningSpatialFileService {
   private BigDecimal calculateGeometryAreaHectares(Geometry geom, String crsCode) {
     Geometry geomIn3005 = "3005".equals(crsCode) ? geom : reprojectTo3005(geom);
     double areaM2 = geomIn3005.getArea();
-    return BigDecimal.valueOf(areaM2 / 10_000.0).setScale(4, RoundingMode.HALF_UP);
+    return BigDecimal.valueOf(areaM2 / 10_000.0).setScale(1, RoundingMode.DOWN);
   }
 
   private void validateNonZeroArea(Geometry geom, String crsCode, int index) {

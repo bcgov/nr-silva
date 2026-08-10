@@ -1,5 +1,16 @@
 [
   {
+    "name": "org.hibernate.spatial.HSMessageLogger_$logger",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.geolatte.geom.codec.db.oracle.DefaultConnectionFinder",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
     "name": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true,

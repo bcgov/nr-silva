@@ -67,6 +67,8 @@ Before marking complete:
 - Run relevant unit tests
 - Run linters and build checks
 - For backend: `./mvnw test` or specific test files
+  - For backend with Oracle as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=oracle --no-transfer-progress -P all-tests`
+  - For backend with Postgres as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=postgres --no-transfer-progress -P all-tests`
 - For frontend: `npm test` or `npm run build`
 - Check that no imports are broken
 - Verify changes match the task requirements
