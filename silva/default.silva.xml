@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><database name="default" schema="silva" type="PostgreSQL - 17.0 (Debian 17.0-1.pgdg110+1)">
+   <sequences>
+      <sequence increment="1" name="cut_block_open_admin_id_seq" startValue="1"/>
+      <sequence increment="1" name="opening_id_seq" startValue="1"/>
+   </sequences>
    <tables>
       <table name="activity_treatment_unit" remarks="An Activity Treatment Unit is a Silvicultural treatment that is performed on a mappable area which deliniates a specific area of land. ATUs may not span opening boundaries but an opening may have more than one ATU associated with it." schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="activity_treatment_unit_id" nullable="false" remarks="System generated value uniquely identifying the Activity Treatment Unit." size="19" type="int8" typeCode="-5">
