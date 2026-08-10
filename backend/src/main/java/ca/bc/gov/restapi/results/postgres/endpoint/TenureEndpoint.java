@@ -6,6 +6,7 @@ import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/tenures", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class TenureEndpoint {
 
   private final TenureValidationService tenureValidationService;
