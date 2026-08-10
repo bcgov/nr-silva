@@ -57,6 +57,9 @@ public class TenureValidationService {
 
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
+      if (tenure == null || tenure.fileId() == null || tenure.cutBlock() == null) {
+        continue;
+      }
       String key = buildTenureKey(tenure);
       keyToIndices.computeIfAbsent(key, k -> new ArrayList<>()).add(i);
     }
