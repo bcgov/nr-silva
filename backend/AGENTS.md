@@ -250,6 +250,10 @@ Spring AOT (GraalVM native image) requires all classes serialized/deserialized b
 
 **you must add its `.class` to the `@RegisterReflectionForBinding` annotation in `SilvaGlobalConfiguration.java` and import it.**
 
+This includes **enums embedded inside DTOs** — if a DTO field is an enum type and the DTO is registered, the enum must also be registered separately (e.g. `TenureValidationErrorCode` is a field in `TenureValidationResultDto` and `DuplicateConflictDto`, so all three are registered).
+
+**Exception classes do not need registration** — custom exceptions extending `ResponseStatusException` are handled by Spring's built-in mechanism and are not Jackson-serialized directly.
+
 Forgetting this causes silent failures in native-image builds (classes work fine in JVM mode but fail at runtime in native mode).
 
 ---
