@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningCategoryNotFoundException;
-import ca.bc.gov.restapi.results.common.projection.CutBlockValidationProjection;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
@@ -18,10 +17,15 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
+import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockValidationRepository;
+import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
+import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
+import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -52,7 +56,8 @@ class CreateOpeningServiceTest {
   @Mock private OpenMapsService openMapsService;
   @Mock private OpeningPostgresRepository openingRepository;
   @Mock private OpeningGeometryPostgresRepository openingGeometryRepository;
-  @Mock private CutBlockValidationRepository cutBlockValidationRepository;
+  @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
+  @Mock private CutBlockPostgresRepository cutBlockRepository;
   @Mock private OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   @Mock private OrgUnitPostgresRepository orgUnitRepository;
   @Mock private TenureValidationService tenureValidationService;
@@ -62,7 +67,6 @@ class CreateOpeningServiceTest {
 
   private CreateOpeningService service;
 
-  /** Simple valid GeoJSON FeatureCollection with one polygon feature. */
   private static final String VALID_GEOJSON =
       """
       {
@@ -84,6 +88,9 @@ class CreateOpeningServiceTest {
 
   private static final MapsheetDto FAKE_MAPSHEET = new MapsheetDto("092", "L", "057", "0", "0");
 
+  private static final CutBlockEntity DUMMY_BLOCK =
+      CutBlockEntity.builder().cbSkey(42L).timberMark("TM001").build();
+
   @BeforeEach
   void setUp() {
     service =
@@ -92,7 +99,8 @@ class CreateOpeningServiceTest {
             openMapsService,
             openingRepository,
             openingGeometryRepository,
-            cutBlockValidationRepository,
+            cutBlockOpenAdminRepository,
+            cutBlockRepository,
             openCategoryCodeRepository,
             orgUnitRepository,
             tenureValidationService,
@@ -111,7 +119,6 @@ class CreateOpeningServiceTest {
         new BigDecimal("100.0000"),
         new BigDecimal("10.0"),
         "12345678",
-        "01",
         "DAS",
         "FTML",
         null,
@@ -126,9 +133,16 @@ class CreateOpeningServiceTest {
     return new TenureRequestDto("TFL002", null, "CB002", false);
   }
 
-  /** Set up mocks for steps 1–5 (spatial file + mapsheet). */
+  private TenureValidationResponseDto validTenureResponse(List<TenureRequestDto> tenures) {
+    List<TenureValidationResultDto> results =
+        java.util.stream.IntStream.range(0, tenures.size())
+            .mapToObj(i -> new TenureValidationResultDto(i, true, null, null))
+            .toList();
+    return new TenureValidationResponseDto(results, List.of(), true);
+  }
+
   private void mockGeometryAndMapsheetSteps() throws Exception {
-    ExtractedGeoDataDto geoData = buildGeoData(); // build before entering when() context
+    ExtractedGeoDataDto geoData = buildGeoData();
     when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any()))
         .thenReturn(geoData);
     when(openMapsService.getMapsheetForPoint(any(double.class), any(double.class)))
@@ -137,49 +151,27 @@ class CreateOpeningServiceTest {
         .thenReturn(1);
   }
 
-  /** Additionally stub detectDuplicates for tests that reach step 11. */
-  private void mockNoDuplicates() {
-    when(tenureValidationService.detectDuplicates(any()))
-        .thenReturn(java.util.Collections.emptyList());
-  }
-
   @Test
   @DisplayName("Happy path should create opening and return response with new opening ID")
   void createOpening_happyPath_shouldSucceed() throws Exception {
     mockGeometryAndMapsheetSteps();
-    mockNoDuplicates();
-
-    // Category + org unit
     when(openCategoryCodeRepository.findById("FTML"))
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
     when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
 
-    // Auth
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
+    List<TenureRequestDto> tenures = List.of(primaryTenure());
+    when(tenureValidationService.validateTenures(any(), anyString()))
+        .thenReturn(validTenureResponse(tenures));
 
-    // Cut block validation
-    CutBlockValidationProjection block =
-        new CutBlockValidationProjection() {
-          public Long getCbSkey() {
-            return 42L;
-          }
-
-          public String getTimberMark() {
-            return "TM001";
-          }
-        };
-    when(cutBlockValidationRepository.findCutBlockByTenureAndClient(
-            eq("TFL001"), eq("CP01"), eq("CB001"), eq("12345678"), eq("01")))
-        .thenReturn(Optional.of(block));
-
-    // Audit
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(10001L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
+    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
+        .thenReturn(Optional.of(DUMMY_BLOCK));
 
     CreateOpeningResponseDto response =
-        service.createOpening(buildDto(List.of(primaryTenure())), "test.zip", new byte[0]);
+        service.createOpening(buildDto(tenures), "test.zip", new byte[0]);
 
     assertThat(response).isNotNull();
     assertThat(response.openingId()).isEqualTo(10001L);
@@ -193,7 +185,6 @@ class CreateOpeningServiceTest {
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
     when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
 
     assertThatThrownBy(
             () ->
@@ -214,7 +205,6 @@ class CreateOpeningServiceTest {
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
     when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
 
     TenureRequestDto primary2 = new TenureRequestDto("TFL002", null, "CB002", true);
 
@@ -230,14 +220,15 @@ class CreateOpeningServiceTest {
   }
 
   @Test
-  @DisplayName("Unauthorized client number should throw 403 FORBIDDEN")
-  void createOpening_unauthorizedClient_shouldThrow403() throws Exception {
+  @DisplayName("Tenure validation failure (e.g. 403 from auth) should propagate")
+  void createOpening_tenureValidationThrows_shouldPropagate() throws Exception {
     mockGeometryAndMapsheetSteps();
     when(openCategoryCodeRepository.findById("FTML"))
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
     when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(false);
+    when(tenureValidationService.validateTenures(any(), anyString()))
+        .thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorised"));
 
     assertThatThrownBy(
             () ->
@@ -247,6 +238,33 @@ class CreateOpeningServiceTest {
             ex ->
                 assertThat(((ResponseStatusException) ex).getStatusCode())
                     .isEqualTo(HttpStatus.FORBIDDEN));
+  }
+
+  @Test
+  @DisplayName("Invalid tenure validation result should throw 400 BAD_REQUEST")
+  void createOpening_tenureValidationInvalid_shouldThrow400() throws Exception {
+    mockGeometryAndMapsheetSteps();
+    when(openCategoryCodeRepository.findById("FTML"))
+        .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
+    OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
+    when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
+
+    List<TenureValidationResultDto> badResults =
+        List.of(
+            new TenureValidationResultDto(
+                0, false, TenureValidationErrorCode.TENURE_NOT_FOUND, "Cut block not found"));
+    TenureValidationResponseDto invalid =
+        new TenureValidationResponseDto(badResults, List.of(), false);
+    when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(invalid);
+
+    assertThatThrownBy(
+            () ->
+                service.createOpening(buildDto(List.of(primaryTenure())), "test.zip", new byte[0]))
+        .isInstanceOf(ResponseStatusException.class)
+        .satisfies(
+            ex ->
+                assertThat(((ResponseStatusException) ex).getStatusCode())
+                    .isEqualTo(HttpStatus.BAD_REQUEST));
   }
 
   @Test
@@ -276,66 +294,33 @@ class CreateOpeningServiceTest {
   }
 
   @Test
-  @DisplayName("Cut block not found for a tenure should throw 400 BAD_REQUEST")
-  void createOpening_cutBlockNotFound_shouldThrow400() throws Exception {
-    mockGeometryAndMapsheetSteps();
-    mockNoDuplicates();
-    when(openCategoryCodeRepository.findById("FTML"))
-        .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
-    OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
-    when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
-    when(cutBlockValidationRepository.findCutBlockByTenureAndClient(
-            any(), any(), any(), any(), any()))
-        .thenReturn(Optional.empty());
-
-    assertThatThrownBy(
-            () ->
-                service.createOpening(buildDto(List.of(primaryTenure())), "test.zip", new byte[0]))
-        .isInstanceOf(ResponseStatusException.class)
-        .satisfies(
-            ex ->
-                assertThat(((ResponseStatusException) ex).getStatusCode())
-                    .isEqualTo(HttpStatus.BAD_REQUEST));
-  }
-
-  @Test
-  @DisplayName("Happy path with non-null licenseeOpeningId should set it on the opening entity")
+  @DisplayName("Happy path with non-null licenseeOpeningId should succeed")
   void createOpening_withLicenseeOpeningId_shouldSucceed() throws Exception {
     mockGeometryAndMapsheetSteps();
-    mockNoDuplicates();
     when(openCategoryCodeRepository.findById("FTML"))
         .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
     OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
     when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
-    CutBlockValidationProjection block =
-        new CutBlockValidationProjection() {
-          public Long getCbSkey() {
-            return 42L;
-          }
 
-          public String getTimberMark() {
-            return "TM001";
-          }
-        };
-    when(cutBlockValidationRepository.findCutBlockByTenureAndClient(
-            any(), any(), any(), any(), any()))
-        .thenReturn(Optional.of(block));
+    List<TenureRequestDto> tenures = List.of(primaryTenure());
+    when(tenureValidationService.validateTenures(any(), anyString()))
+        .thenReturn(validTenureResponse(tenures));
+
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(20002L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
+    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
+        .thenReturn(Optional.of(DUMMY_BLOCK));
 
     CreateOpeningRequestDto dto =
         new CreateOpeningRequestDto(
             new BigDecimal("100.0000"),
             new BigDecimal("10.0"),
             "12345678",
-            "01",
             "DAS",
             "FTML",
             " LIC-001 ",
-            List.of(primaryTenure()));
+            tenures);
 
     CreateOpeningResponseDto response = service.createOpening(dto, "file.shp", new byte[0]);
 

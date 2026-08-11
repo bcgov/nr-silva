@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,6 +14,7 @@ import ca.bc.gov.restapi.results.postgres.config.TenureEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
+import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -57,15 +59,15 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
     TenureValidationResponseDto response =
         new TenureValidationResponseDto(
             List.of(
-                new TenureValidationResultDto(0, true, null),
-                new TenureValidationResultDto(1, true, null)),
+                new TenureValidationResultDto(0, true, null, null),
+                new TenureValidationResultDto(1, true, null, null)),
             List.of(),
             true);
-    when(tenureValidationService.validateTenures(any())).thenReturn(response);
+    when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc
         .perform(
-            post("/api/tenures/validate")
+            post("/api/tenures/validate?clientNumber=12345678")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -84,17 +86,19 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
     TenureValidationResponseDto response =
         new TenureValidationResponseDto(
             List.of(
-                new TenureValidationResultDto(0, true, null),
-                new TenureValidationResultDto(1, true, null)),
+                new TenureValidationResultDto(0, true, null, null),
+                new TenureValidationResultDto(1, true, null, null)),
             List.of(
                 new DuplicateConflictDto(
-                    List.of(0, 1), "fileId=TFL001, cuttingPermit=CP1, cutBlock=CB001")),
+                    List.of(0, 1),
+                    "fileId=TFL001, cuttingPermit=CP1, cutBlock=CB001",
+                    TenureValidationErrorCode.DUPLICATE_IN_REQUEST)),
             false);
-    when(tenureValidationService.validateTenures(any())).thenReturn(response);
+    when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc
         .perform(
-            post("/api/tenures/validate")
+            post("/api/tenures/validate?clientNumber=12345678")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -117,7 +121,7 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
 
     mockMvc
         .perform(
-            post("/api/tenures/validate")
+            post("/api/tenures/validate?clientNumber=12345678")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -131,11 +135,11 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   void validateTenures_emptyList_returns200() throws Exception {
     TenureValidationResponseDto response =
         new TenureValidationResponseDto(List.of(), List.of(), true);
-    when(tenureValidationService.validateTenures(any())).thenReturn(response);
+    when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc
         .perform(
-            post("/api/tenures/validate")
+            post("/api/tenures/validate?clientNumber=12345678")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
