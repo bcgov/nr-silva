@@ -94,6 +94,21 @@ class TenureValidationServiceTest {
   // ========== validateTenures() — field errors ==========
 
   @Test
+  @DisplayName("Null tenure element should return FIELD_INVALID without NPE")
+  void validateTenures_nullElement_returnsFieldErrorNotNpe() {
+    List<TenureRequestDto> tenures = new java.util.ArrayList<>();
+    tenures.add(null);
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isFalse();
+    TenureValidationResultDto r = result.validationResults().get(0);
+    assertThat(r.isValid()).isFalse();
+    assertThat(r.errorCode()).isEqualTo(TenureValidationErrorCode.FIELD_INVALID);
+    assertThat(r.errorMessage()).contains("null");
+  }
+
+  @Test
   @DisplayName("Blank fileId should return errorCode FIELD_INVALID and errorMessage with 'fileId'")
   void validateTenures_blankFileId_returnsFieldError() {
     List<TenureRequestDto> tenures = List.of(new TenureRequestDto("  ", null, "CB001", true));

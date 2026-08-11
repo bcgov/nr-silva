@@ -45,6 +45,8 @@ public class TenureValidationService {
    * @param clientNumber the 8-character client number the caller claims ownership of
    * @return a {@link TenureValidationResponseDto} with per-tenure results and duplicate conflicts
    */
+  private record ValidatedTenure(TenureValidationResultDto result, CutBlockEntity block) {}
+
   public TenureValidationResponseDto validateTenures(
       List<TenureRequestDto> tenures, String clientNumber) {
 
@@ -55,18 +57,22 @@ public class TenureValidationService {
     }
 
     List<TenureValidationResultDto> validationResults = new ArrayList<>();
+    Map<Integer, CutBlockEntity> resolvedBlocks = new HashMap<>();
     List<DuplicateConflictDto> duplicates = detectDuplicates(tenures);
 
     for (int i = 0; i < tenures.size(); i++) {
-      TenureRequestDto tenure = tenures.get(i);
-      validationResults.add(validateOneTenure(i, tenure, clientNumber));
+      ValidatedTenure vt = validateOneTenure(i, tenures.get(i), clientNumber);
+      validationResults.add(vt.result());
+      if (vt.block() != null) {
+        resolvedBlocks.put(i, vt.block());
+      }
     }
 
     boolean isValid =
         validationResults.stream().allMatch(TenureValidationResultDto::isValid)
             && duplicates.isEmpty();
 
-    return new TenureValidationResponseDto(validationResults, duplicates, isValid);
+    return new TenureValidationResponseDto(validationResults, duplicates, isValid, resolvedBlocks);
   }
 
   /**
@@ -104,14 +110,23 @@ public class TenureValidationService {
     return conflicts;
   }
 
-  private TenureValidationResultDto validateOneTenure(
+  private ValidatedTenure validateOneTenure(
       int index, TenureRequestDto tenure, String clientNumber) {
+
+    if (tenure == null) {
+      return new ValidatedTenure(
+          new TenureValidationResultDto(
+              index, false, TenureValidationErrorCode.FIELD_INVALID, "tenure: must not be null"),
+          null);
+    }
 
     // Step 1: field constraints
     String fieldError = validateFields(tenure);
     if (fieldError != null) {
-      return new TenureValidationResultDto(
-          index, false, TenureValidationErrorCode.FIELD_INVALID, fieldError);
+      return new ValidatedTenure(
+          new TenureValidationResultDto(
+              index, false, TenureValidationErrorCode.FIELD_INVALID, fieldError),
+          null);
     }
 
     String fileId = tenure.fileId().trim();
@@ -122,40 +137,47 @@ public class TenureValidationService {
     Optional<CutBlockEntity> blockOpt =
         cutBlockRepository.findByTenure(fileId, cutBlock, cuttingPermit);
     if (blockOpt.isEmpty()) {
-      return new TenureValidationResultDto(
-          index,
-          false,
-          TenureValidationErrorCode.TENURE_NOT_FOUND,
-          String.format(
-              "Cut block not found: fileId=%s, cuttingPermit=%s, cutBlock=%s",
-              fileId, cuttingPermit, cutBlock));
+      return new ValidatedTenure(
+          new TenureValidationResultDto(
+              index,
+              false,
+              TenureValidationErrorCode.TENURE_NOT_FOUND,
+              String.format(
+                  "Cut block not found: fileId=%s, cuttingPermit=%s, cutBlock=%s",
+                  fileId, cuttingPermit, cutBlock)),
+          null);
     }
 
     // Step 3: caller's client must be a licensee for this cut block
     Long cbSkey = blockOpt.get().getCbSkey();
     if (!cutBlockClientRepository.existsByCbSkeyAndClientNumber(cbSkey, clientNumber)) {
-      return new TenureValidationResultDto(
-          index,
-          false,
-          TenureValidationErrorCode.CLIENT_NOT_LICENSEE,
-          String.format(
-              "Client %s is not a licensee for cut block: fileId=%s, cutBlock=%s",
-              clientNumber, fileId, cutBlock));
+      return new ValidatedTenure(
+          new TenureValidationResultDto(
+              index,
+              false,
+              TenureValidationErrorCode.CLIENT_NOT_LICENSEE,
+              String.format(
+                  "Client %s is not a licensee for cut block: fileId=%s, cutBlock=%s",
+                  clientNumber, fileId, cutBlock)),
+          null);
     }
 
     // Step 4: tenure must not already be linked to another opening in cut_block_open_admin
     if (cutBlockOpenAdminRepository.existsAllocatedByTenure(fileId, cutBlock, cuttingPermit)) {
-      return new TenureValidationResultDto(
-          index,
-          false,
-          TenureValidationErrorCode.TENURE_DUPLICATE_OPENING,
-          String.format(
-              "Tenure already linked to an existing opening: fileId=%s, cuttingPermit=%s,"
-                  + " cutBlock=%s",
-              fileId, cuttingPermit, cutBlock));
+      return new ValidatedTenure(
+          new TenureValidationResultDto(
+              index,
+              false,
+              TenureValidationErrorCode.TENURE_DUPLICATE_OPENING,
+              String.format(
+                  "Tenure already linked to an existing opening: fileId=%s, cuttingPermit=%s,"
+                      + " cutBlock=%s",
+                  fileId, cuttingPermit, cutBlock)),
+          null);
     }
 
-    return new TenureValidationResultDto(index, true, null, null);
+    return new ValidatedTenure(
+        new TenureValidationResultDto(index, true, null, null), blockOpt.get());
   }
 
   private String validateFields(TenureRequestDto tenure) {

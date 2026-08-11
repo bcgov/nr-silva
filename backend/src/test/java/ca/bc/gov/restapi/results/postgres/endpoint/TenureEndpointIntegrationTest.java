@@ -18,6 +18,7 @@ import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,8 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
                 new TenureValidationResultDto(0, true, null, null),
                 new TenureValidationResultDto(1, true, null, null)),
             List.of(),
-            true);
+            true,
+            Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc
@@ -93,7 +95,8 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
                     List.of(0, 1),
                     "fileId=TFL001, cuttingPermit=CP1, cutBlock=CB001",
                     TenureValidationErrorCode.DUPLICATE_IN_REQUEST)),
-            false);
+            false,
+            Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc
@@ -134,7 +137,7 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   @DisplayName("Empty tenure list should return 200")
   void validateTenures_emptyList_returns200() throws Exception {
     TenureValidationResponseDto response =
-        new TenureValidationResponseDto(List.of(), List.of(), true);
+        new TenureValidationResponseDto(List.of(), List.of(), true, Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc

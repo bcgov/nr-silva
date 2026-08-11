@@ -25,7 +25,6 @@ import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodePostgresEn
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -34,6 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +57,6 @@ class CreateOpeningServiceTest {
   @Mock private OpeningPostgresRepository openingRepository;
   @Mock private OpeningGeometryPostgresRepository openingGeometryRepository;
   @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
-  @Mock private CutBlockPostgresRepository cutBlockRepository;
   @Mock private OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   @Mock private OrgUnitPostgresRepository orgUnitRepository;
   @Mock private TenureValidationService tenureValidationService;
@@ -100,7 +99,6 @@ class CreateOpeningServiceTest {
             openingRepository,
             openingGeometryRepository,
             cutBlockOpenAdminRepository,
-            cutBlockRepository,
             openCategoryCodeRepository,
             orgUnitRepository,
             tenureValidationService,
@@ -138,7 +136,11 @@ class CreateOpeningServiceTest {
         java.util.stream.IntStream.range(0, tenures.size())
             .mapToObj(i -> new TenureValidationResultDto(i, true, null, null))
             .toList();
-    return new TenureValidationResponseDto(results, List.of(), true);
+    Map<Integer, CutBlockEntity> blocks =
+        java.util.stream.IntStream.range(0, tenures.size())
+            .boxed()
+            .collect(java.util.stream.Collectors.toMap(i -> i, i -> DUMMY_BLOCK));
+    return new TenureValidationResponseDto(results, List.of(), true, blocks);
   }
 
   private void mockGeometryAndMapsheetSteps() throws Exception {
@@ -167,8 +169,6 @@ class CreateOpeningServiceTest {
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(10001L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
-    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
-        .thenReturn(Optional.of(DUMMY_BLOCK));
 
     CreateOpeningResponseDto response =
         service.createOpening(buildDto(tenures), "test.zip", new byte[0]);
@@ -254,7 +254,7 @@ class CreateOpeningServiceTest {
             new TenureValidationResultDto(
                 0, false, TenureValidationErrorCode.TENURE_NOT_FOUND, "Cut block not found"));
     TenureValidationResponseDto invalid =
-        new TenureValidationResponseDto(badResults, List.of(), false);
+        new TenureValidationResponseDto(badResults, List.of(), false, Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(invalid);
 
     assertThatThrownBy(
@@ -309,8 +309,6 @@ class CreateOpeningServiceTest {
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(20002L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
-    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
-        .thenReturn(Optional.of(DUMMY_BLOCK));
 
     CreateOpeningRequestDto dto =
         new CreateOpeningRequestDto(

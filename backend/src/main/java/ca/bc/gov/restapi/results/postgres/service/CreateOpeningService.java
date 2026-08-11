@@ -15,7 +15,6 @@ import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -26,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -56,7 +56,6 @@ public class CreateOpeningService {
   private final OpeningPostgresRepository openingRepository;
   private final OpeningGeometryPostgresRepository openingGeometryRepository;
   private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
-  private final CutBlockPostgresRepository cutBlockRepository;
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
   private final TenureValidationService tenureValidationService;
@@ -214,19 +213,13 @@ public class CreateOpeningService {
 
     // Step 17: persist one cut_block_open_admin row per tenure
     List<TenureRequestDto> tenures = dto.tenures();
+    Map<Integer, CutBlockEntity> resolvedBlocks = tenureValidation.resolvedBlocks();
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
       String fileId = tenure.fileId().trim();
       String cutBlock = tenure.cutBlock().trim();
       String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
-      CutBlockEntity block =
-          cutBlockRepository
-              .findByTenure(fileId, cutBlock, cuttingPermit)
-              .orElseThrow(
-                  () ->
-                      new ResponseStatusException(
-                          HttpStatus.BAD_REQUEST,
-                          "Cut block not found for fileId=" + fileId + ", cutBlock=" + cutBlock));
+      CutBlockEntity block = resolvedBlocks.get(i);
 
       CutBlockOpenAdminEntity cboa =
           CutBlockOpenAdminEntity.builder()
