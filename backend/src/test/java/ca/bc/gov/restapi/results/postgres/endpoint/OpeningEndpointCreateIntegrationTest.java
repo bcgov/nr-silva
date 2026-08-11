@@ -240,11 +240,10 @@ class OpeningEndpointCreateIntegrationTest extends AbstractTestContainerIntegrat
   void createOpening_withDuplicateTenures_shouldReturn400() throws Exception {
     String duplicateTenuresData =
         "{\"openingGrossArea\": 100.5, \"maxAllowablePermAccessPerc\": 25.5, \"clientNumber\":"
-            + ": \"00001012\", \"orgUnitCode\": \"DCC\","
-            + " \"openingCategoryCode\": \"FTML\", \"tenures\": [{\"fileId\": \"F001\","
-            + " \"cuttingPermit\": \"CP1\", \"cutBlock\": \"A1\", \"isPrimary\": true},{\"fileId\":"
-            + " \"F001\", \"cuttingPermit\": \"CP1\", \"cutBlock\": \"A1\", \"isPrimary\": false}"
-            + "]}";
+            + " \"00001012\", \"orgUnitCode\": \"DCC\", \"openingCategoryCode\": \"FTML\","
+            + " \"tenures\": [{\"fileId\": \"F001\", \"cuttingPermit\": \"CP1\", \"cutBlock\":"
+            + " \"A1\", \"isPrimary\": true},{\"fileId\": \"F001\", \"cuttingPermit\": \"CP1\","
+            + " \"cutBlock\": \"A1\", \"isPrimary\": false}]}";
 
     MockMultipartFile dataFile =
         new MockMultipartFile(
