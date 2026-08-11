@@ -60,7 +60,7 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 3. **Geometry reprojection** — the opening geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
 4. **Mapsheet derivation** — the geometry centroid (EPSG:4326) is passed to the BC OpenMaps WFS to derive the BCGS 1:20K mapsheet key (see §Mapsheet Key below). WFS failure → HTTP 422.
 5. **Opening number** — the next sequential `opening_number` within the mapsheet tile is computed (`MAX + 1`, capped at 9999).
-6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; no duplicate tenure combinations (same fileId + cuttingPermit + cutBlock); each tenure's cut block must exist in `silva.cut_block` joined to `silva.cut_block_client` for the supplied `clientNumber` / `clientLocationCode`.
+6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; no duplicate tenure combinations (same fileId + cuttingPermit + cutBlock); each tenure's cut block must exist in `silva.cut_block` and the caller must be a licensee for that cut block.
 7. **Insertion** — three rows are inserted atomically in a single transaction:
    - `silva.opening` — opening header
    - `silva.opening_geometry` — reprojected geometry (PostGIS; EPSG:3005)

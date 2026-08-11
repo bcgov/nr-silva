@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,7 +40,8 @@ public class TenureEndpoint {
   @PostMapping(value = "/validate", consumes = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   public TenureValidationResponseDto validateTenures(
-      @RequestParam String clientNumber, @Valid @RequestBody List<TenureRequestDto> tenures) {
+      @RequestParam String clientNumber,
+      @Valid @NotNull @RequestBody List<TenureRequestDto> tenures) {
     return tenureValidationService.validateTenures(tenures, clientNumber);
   }
 }

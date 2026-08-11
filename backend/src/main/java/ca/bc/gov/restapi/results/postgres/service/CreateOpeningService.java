@@ -146,11 +146,11 @@ public class CreateOpeningService {
               .filter(r -> !r.isValid())
               .map(r -> "tenure[" + r.tenureIndex() + "]: " + r.errorMessage())
               .reduce((a, b) -> a + "; " + b)
-              .orElse("Tenure validation failed");
+              .orElse("");
       if (!tenureValidation.duplicateConflicts().isEmpty()) {
         String dups =
             tenureValidation.duplicateConflicts().stream()
-                .map(d -> "Duplicate tenure: " + d.reason())
+                .map(d -> "Duplicate tenure at indices " + d.duplicateIndices() + ": " + d.reason())
                 .reduce((a, b) -> a + "; " + b)
                 .orElse("");
         msg = msg.isBlank() ? dups : msg + "; " + dups;
@@ -219,6 +219,9 @@ public class CreateOpeningService {
       String fileId = tenure.fileId().trim();
       String cutBlock = tenure.cutBlock().trim();
       String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
+      if (cuttingPermit != null && cuttingPermit.isBlank()) {
+        cuttingPermit = null;
+      }
       CutBlockEntity block = resolvedBlocks.get(i);
 
       CutBlockOpenAdminEntity cboa =

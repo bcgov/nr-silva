@@ -35,29 +35,26 @@ A JSON array of tenure objects:
 ```json
 [
   {
-    "forestFileId":    "TFL001",
-    "cuttingPermitId": "CP01",
-    "cutBlockId":      "CB001",
-    "isPrimaryTenure": true
+    "fileId":        "TFL001",
+    "cuttingPermit": "CP01",
+    "cutBlock":      "CB001",
+    "isPrimary":     true
   },
   {
-    "forestFileId":    "TFL002",
-    "cuttingPermitId": null,
-    "cutBlockId":      "CB002",
-    "isPrimaryTenure": false
+    "fileId":        "TFL002",
+    "cuttingPermit": null,
+    "cutBlock":      "CB002",
+    "isPrimary":     false
   }
 ]
 ```
 
 | Field            | Type    | Required | Max Length | Notes                              |
 |------------------|---------|----------|------------|------------------------------------|
-| `forestFileId`   | String  | Yes      | 10         | Licence / Tree Farm Licence ID.    |
-| `cuttingPermitId`| String  | No       | 3          | Null allowed; matched as NULL in DB.|
-| `cutBlockId`     | String  | Yes      | 4          | Cut block identifier.              |
-| `isPrimaryTenure`| Boolean | Yes      | —          | Exactly one tenure must be `true`. |
-
----
-
+| `fileId`         | String  | Yes      | 10         | Licence / Tree Farm Licence ID.    |
+| `cuttingPermit`  | String  | No       | 3          | Null allowed; matched as NULL in DB.|
+| `cutBlock`       | String  | Yes      | 10         | Cut block identifier.              |
+| `isPrimary`      | Boolean | Yes      | —          | Exactly one tenure must be `true`. |
 ## Response
 
 ### Success (HTTP 200)

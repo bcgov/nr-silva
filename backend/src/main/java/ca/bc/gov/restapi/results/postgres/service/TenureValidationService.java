@@ -132,6 +132,9 @@ public class TenureValidationService {
     String fileId = tenure.fileId().trim();
     String cutBlock = tenure.cutBlock().trim();
     String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
+    if (cuttingPermit != null && cuttingPermit.isBlank()) {
+      cuttingPermit = null;
+    }
 
     // Step 2: cut block must exist in silva.cut_block
     Optional<CutBlockEntity> blockOpt =
