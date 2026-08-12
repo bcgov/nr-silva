@@ -1,533 +1,131 @@
-# Backend – Agent Guidelines
+# Backend Agent Guidelines
 
-Spring Boot 3 backend (`ca.bc.gov.restapi.results`) that connects to **two live databases simultaneously**: Oracle (legacy source-of-truth) and Postgres (migrated target). Both are always wired; a single property selects which is "primary" at runtime.
+**Quick Start:** This is the minimal entry point. For detailed coding patterns, load the `backend-patterns` skill (search for "backend patterns" in Copilot Chat) which provides 5 focused reference files:
+- **dual-db-architecture.md** — Oracle/Postgres JPA config, schema conventions, @ConditionalOnProperty
+- **code-table-patterns.md** — 6-step checklist for adding code lookups (entity → repo → service → endpoint)
+- **search-api-patterns.md** — Native SQL queries, projections, ForestClient enrichment, pagination
+- **opening-details-patterns.md** — Sub-service orchestration, how details endpoints are structured
+- **testing-patterns.md** — Unit/Mockito/integration 3-tier tests, WireMock, Postgres null-check pattern
 
-## Dual-DB Architecture
+## Tech Stack
 
-### Runtime switch
+- Java 17+ with Spring Boot 3
+- **Dual Databases:** Oracle (legacy) + Postgres (target), runtime switch via `server.primary-db`
+- JPA with native SQL queries
+- REST API (OpenAPI/Swagger documented)
+- Maven build tool
+- TestContainers + Flyway for integration tests
+- WireMock for external API stubs (ForestClient)
+
+## Runtime Database Selection
+
 ```yaml
 server:
   primary-db: postgres   # or "oracle"
 ```
-`@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres|oracle")` gates every repository, service, and any bean that is DB-specific. **Every new DB-specific class must carry this annotation.**
 
-### JPA configuration
-| DB | Config class | Package scanned | Persistence unit |
-|----|-------------|-----------------|-----------------|
-| Postgres | `PostgresJpaConfiguration` | `ca.bc.gov.restapi.results.postgres` | `postgres` (primary) |
-| Oracle | `OracleJpaConfiguration` | `ca.bc.gov.restapi.results.oracle` | `oracle` |
+Every DB-specific bean carries `@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres|oracle")`.
 
-The two `EntityManagerFactory` beans are completely separate. Entities/repositories **must** live in the correct package or they will be picked up by the wrong factory.
-
-### Schema conventions
-| DB | Schema | Table/column casing | Example |
-|----|--------|---------------------|---------|
-| Oracle | `THE` | `UPPER_CASE` | `THE.SILV_FUND_SRCE_CODE` / `SILV_FUND_SRCE_CODE` |
-| Postgres | `silva` | `snake_case` | `silva.silv_fund_srce_code` / `silv_fund_srce_code` |
-
-## Package Layout
+## Folder Structure
 
 ```
-common/    – interfaces, DTOs, abstract classes, shared endpoints, shared services
-oracle/    – Oracle-specific entities, repositories, services
-postgres/  – Postgres-specific entities, repositories, services
+src/main/java/ca/bc/gov/restapi/results/
+├── common/              # Shared: endpoints, services (interfaces), DTOs, projections
+│   ├── endpoint/        # REST controllers
+│   ├── service/         # Service interfaces & abstracts
+│   ├── repository/      # Repository interfaces (@NoRepositoryBean)
+│   └── dto/             # Data transfer objects
+├── oracle/              # Oracle-specific: entities, repos, services
+│   ├── entity/
+│   ├── repository/
+│   └── service/
+├── postgres/            # Postgres-specific: entities, repos, services
+│   ├── entity/
+│   ├── repository/
+│   └── service/
+└── config/              # JPA configs, beans, reflection registry
 ```
-
-Endpoints always live in `common/endpoint/` and depend on a **common interface** (e.g. `CodeService`). They never import Oracle or Postgres packages directly.
-
-## Adding a New Code Lookup Table
-
-Follow `SilvFundSrceCode` as the canonical example. All six steps are required:
-
-1. **Oracle entity** – `oracle/entity/code/XxxOracleEntity.java`
-   - Extends `AbstractCodeOracleEntity`
-   - `@Table(schema = "THE", name = "TABLE_NAME")`
-   - `@AttributeOverride(name = "code", column = @Column(name = "TABLE_NAME", length = N))`
-
-2. **Postgres entity** – `postgres/entity/code/XxxPostgresEntity.java`
-   - Extends `AbstractCodePostgresEntity`
-   - `@Table(schema = "silva", name = "table_name")`
-   - `@AttributeOverride(name = "code", column = @Column(name = "table_name", length = N))`
-
-3. **Oracle repository** – `oracle/repository/XxxOracleRepository.java`
-   - `extends GenericCodeRepository<XxxOracleEntity>`
-   - `@ConditionalOnProperty(..., havingValue = "oracle")`
-
-4. **Postgres repository** – `postgres/repository/XxxPostgresRepository.java`
-   - `extends GenericCodeRepository<XxxPostgresEntity>`
-   - `@ConditionalOnProperty(..., havingValue = "postgres")`
-
-5. **Service layer** (three files to touch):
-   - Add `List<CodeDescriptionDto> getAllXxx()` to `common/service/CodeService.java`
-   - Add `protected GenericCodeRepository<?> xxxRepository;` field + `@Override getAllXxx()` body to `common/service/impl/AbstractCodeService.java` (uses `@AllArgsConstructor`, so **field order = constructor order**)
-   - Inject new repository in `oracle/service/CodeOracleService.java` and `postgres/service/CodePostgresService.java` — both delegate to `super(...)`
-
-6. **Endpoint** – add `@GetMapping("/xxx")` method to `common/endpoint/CodesEndpoint.java` calling `codeService.getAllXxx()`
-
-## Entity Inheritance Chain
-
-```
-GenericCodeEntity          (common/entity – fields: code, description, effectiveDate, expiryDate, updateTimestamp)
-  └── AbstractCodeOracleEntity   (oracle – UPPER_CASE @AttributeOverrides, @MappedSuperclass)
-        └── XxxOracleEntity      (oracle – supplies @Table + @AttributeOverride for the PK column)
-  └── AbstractCodePostgresEntity (postgres – snake_case @AttributeOverrides, @MappedSuperclass)
-        └── XxxPostgresEntity    (postgres – supplies @Table + @AttributeOverride for the PK column)
-```
-
-`GenericCodeEntity` exposes `isExpired()` and is the type used by `GenericCodeRepository<T>` and `CodeConverterUtil`.
-
-## Key Shared Utilities
-
-| Class | Purpose |
-|-------|---------|
-| `CodeConverterUtil.toCodeDescriptionDtos(list)` | Converts any `List<? extends GenericCodeEntity>` to `List<CodeDescriptionDto>` |
-| `GenericCodeRepository<T>` | JPA base with `findAll()`, `findAllByOrderByExpiryDateDesc()`, `findAllByExpiryDateAfter(LocalDate)` |
-| `SilvaConfiguration` | Spring `@ConfigurationProperties("ca.bc.gov.nrs")` — org units, external API addresses, data limits |
 
 ## Naming Conventions
 
-- Oracle classes: `XxxOracleEntity`, `XxxOracleRepository`, `XxxOracleService` (or `CodeOracleService` if shared)
+- Oracle classes: `XxxOracleEntity`, `XxxOracleRepository`, `XxxOracleService`
 - Postgres classes: `XxxPostgresEntity`, `XxxPostgresRepository`, `XxxPostgresService`
-- Common interfaces/abstracts: `XxxService` (interface), `AbstractXxxService` (abstract impl)
-- Lombok: `@SuperBuilder` + `@With` + `@NoArgsConstructor` on all entities; `@AllArgsConstructor(access = PROTECTED)` on abstract services
-- Always use top-level imports — never inline fully-qualified type names (e.g. `@Parameter`, not `@io.swagger.v3.oas.annotations.Parameter`)
+- Shared interfaces/abstracts: `XxxService` (interface), `AbstractXxxService` (abstract impl)
+- DTOs: Plain `@Getter` + `@NoArgsConstructor` (use `@Setter` for nullable fields, not records)
 
----
-
-## Search / Query Endpoints
-
-### Endpoint map
-
-| HTTP | Path | Controller | Notes |
-|------|------|-----------|-------|
-| GET | `/api/search/openings` | `SearchEndpoint` (common) | Paginated exact-match opening search |
-| GET | `/api/search/activities` | `SearchEndpoint` (common) | Paginated activity/silviculture search |
-| GET | `/api/search/disturbances` | `SearchEndpoint` (common) | Paginated disturbance search |
-| GET | `/api/search/forest-cover` | `SearchEndpoint` (common) | Paginated forest cover search |
-| GET | `/api/search/stocking-standards` | `SearchEndpoint` (common) | Paginated stocking standards search |
-| GET | `/api/search/stocking-standards/comments` | `SearchEndpoint` (common) | LIKE search across stocking standards text fields |
-| GET | `/api/openings/{id}/tombstone` | `OpeningEndpoint` (common) | Opening summary/overview |
-| GET | `/api/openings/{id}/ssu` | `OpeningEndpoint` (common) | Stocking standard units |
-| GET | `/api/openings/favourites` | `OpeningEndpoint` (postgres) | User-favourite openings (Postgres only) |
-
-`SearchEndpoint` lives in `common/endpoint/` and calls **common service interfaces only** — it never touches Oracle/Postgres packages directly.
-
-### Guard: at least one filter required
-
-All search endpoints call `filters.hasAnyFilter()` before hitting the DB. If no filters are set, throw `MissingSearchParameterException` (→ HTTP 400). Always implement `hasAnyFilter()` on new filter DTOs.
-
-### Pagination
-
-Use Spring's `@ParameterObject Pageable` on every paginated endpoint. The abstract service enforces `SilvaConstants.MAX_PAGE_SIZE` (500) or `MAX_PAGE_SIZE_OPENING_SEARCH` (2000) — validate with `validatePageSize(pagination)` from `AbstractOpeningSearchService`.
-
-Date range filters (`updateDateStart` / `updateDateEnd`) are validated with `DateUtil.validateDateRange(start, end)`.
-
-### Filter DTOs
-
-Filter objects (e.g. `OpeningSearchExactFiltersDto`, `ActivitySearchFiltersDto`) live in `common/dto/`. They are plain `@Getter` + `@NoArgsConstructor` classes, not records, because `requestUserId` needs a `@Setter` at runtime. Use `SilvaConstants` string constants (not raw strings) for query-parameter names on the endpoint.
-
-### How search queries are executed
-
-Search queries are **not** Spring Data method names or `@Query` on the repository interface. They are implemented as **native SQL** (or JPQL) on the concrete Oracle/Postgres repository class, exposed through a `@NoRepositoryBean` common interface.
-
-Pattern:
-```
-common/repository/OpeningRepository<T>        ← @NoRepositoryBean interface with method signatures
-  oracle/repository/OpeningOracleRepository   ← @Repository + native query impl (Oracle SQL)
-  postgres/repository/OpeningPostgresRepository ← @Repository + native query impl (Postgres SQL)
-```
-
-The abstract service holds a `protected final OpeningRepository<?>` field and calls it directly — it never knows whether it's Oracle or Postgres. The concrete service (e.g. `OpeningSearchPostgresService`) injects its DB-specific repository and passes it to `super(...)`.
-
-Same pattern applies to `ActivityTreatmentUnitRepository` (used by `ActivityService`) and `ForestCoverRepository` (used by `ForestCoverService`).
-
-### Projection interfaces
-
-Query results are mapped to **projection interfaces** in `common/projection/`, not to entities. Each interface field maps to a SQL column alias. The `getTotalCount()` field on search projections carries the total row count from a `COUNT(*) OVER()` window function in the native query, avoiding a second COUNT query.
-
-Key projections:
-| Projection | Used for |
-|-----------|---------|
-| `SilvicultureSearchProjection` | Opening exact search results |
-| `ActivitySearchProjection` | Activity search results |
-| `DisturbanceSearchProjection` | Disturbance search results |
-| `ForestCoverSearchProjection` | Forest cover search results |
-| `OpeningTombstoneProjection` | Opening tombstone/details |
-
-### ForestClient enrichment
-
-After any search that returns client numbers, call `ForestClientApiProvider` (REST client to an external API) to enrich results with client acronyms/names. The abstract services build a `Map<String, ForestClientDto>` keyed by client number and use it during DTO mapping. Do not call the API per-row; batch distinct client numbers once.
-
-### Opening Details – decomposed sub-services
-
-`/api/openings/{id}/*` routes are handled by `OpeningEndpoint` (common) which delegates to `OpeningDetailsService` (interface). The implementation (`AbstractOpeningDetailsService`) orchestrates **eight focused sub-services**, each responsible for one slice of the opening:
-
-| Sub-service interface | Responsibility |
-|-----------------------|---------------|
-| `OpeningDetailsTombstoneService` | Tombstone / overview |
-| `OpeningDetailsStockingService` | SSU stocking standards |
-| `OpeningDetailsActivitiesService` | Activities & disturbances tabs |
-| `OpeningDetailsTenureService` | Tenure/licence info |
-| `OpeningDetailsForestCoverService` | Forest cover list & details |
-| `OpeningDetailsAttachmentService` | Attachments metadata |
-| `OpeningForestCoverHistoryService` | Forest cover history |
-| `OpeningStandardUnitHistoryService` | SSU history |
-
-Each sub-service follows the same Abstract → Postgres/Oracle concrete pattern. The concrete `OpeningDetailsPostgresService` / `OpeningDetailsOracleService` simply call `super(...)` with the injected sub-services — the orchestration logic lives in `AbstractOpeningDetailsService`.
-
-When adding a new opening detail section, add a method to `OpeningDetailsService` interface, implement it in the relevant sub-service abstract (or a new one), and expose it on `OpeningEndpoint`.
-
-### Postgres-only endpoints
-
-Some endpoints only make sense against Postgres (user state, spatial files) and live in `postgres/endpoint/` instead of `common/endpoint/`. They inject Postgres services directly and carry no `@ConditionalOnProperty` (Postgres is the primary/default DB):
-- `postgres/endpoint/OpeningEndpoint` — favourites CRUD, spatial file upload
-- `postgres/endpoint/UserRecentOpeningEndpoint` — recently viewed openings
-
----
-
-## Integration Test Guidelines
-
-### ForestClient API — always add WireMock
-
-Any abstract integration test class whose service calls `ForestClientService` (i.e. the service does ForestClient enrichment after a DB query) **must** register a WireMock server on port 10000. Without it, the test will fail at runtime with `ResourceAccess I/O error … http://localhost:10000/clients/…`.
-
-The forest-client API address is configured in `application-default.yml` as `http://localhost:10000`, so every integration test context shares the same port.
-
-Add this block to **every** `Abstract*ServiceIntegrationTest` and `Abstract*EndpointIntegrationTest` that touches a service which does ForestClient enrichment:
-
-```java
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
-@RegisterExtension
-static WireMockExtension clientApiStub =
-    WireMockExtension.newInstance()
-        .options(
-            wireMockConfig()
-                .port(10000)
-                .notifier(new WiremockLogNotifier())
-                .asynchronousResponseEnabled(true)
-                .stubRequestLoggingDisabled(false))
-        .configureStaticDsl(true)
-        .build();
-```
-
-Services that currently do ForestClient enrichment (and therefore require WireMock in their tests):
-- `AbstractActivityService` → `AbstractActivityServiceIntegrationTest` / `AbstractSearchEndpointActivitySearchIntegrationTest`
-- `AbstractStandardUnitService` → `AbstractStandardUnitServiceIntegrationTest` / `AbstractSearchEndpointStandardUnitSearchIntegrationTest`
-- `AbstractForestCoverService` → `AbstractSearchEndpointForestCoverSearchIntegrationTest`
-- `AbstractStockingStandardsService` → `AbstractStockingStandardsServiceIntegrationTest` / `AbstractStockingStandardsCommentSearchServiceIntegrationTest` / `AbstractSearchEndpointStockingStandardsSearchIntegrationTest` / `AbstractSearchEndpointStockingStandardsCommentSearchIntegrationTest`
-
-When adding a new service that calls `ForestClientService`, add it to this list and add the WireMock block to its abstract integration test.
-
-### Postgres native query — null-check pattern
-
-PostgreSQL cannot infer the type of a bare `? IS NULL` parameter and will throw `could not determine data type of parameter $1`. Use the same pattern already established throughout `SilvaPostgresQueryConstants` for all nullable scalar bind parameters:
-
-```sql
--- WRONG – type ambiguous
-:#{#filter.someId} IS NULL
-
--- CORRECT – consistent with the rest of the query file
-COALESCE(CAST(:#{#filter.someId} AS text), 'NOVALUE') = 'NOVALUE'
-```
-
-For `boolean` parameters where you need the actual typed value in a branch, `CAST(... AS boolean) IS NULL` is acceptable (see `isComplete` filter). For all other nullable scalars, prefer the `COALESCE(...text..., 'NOVALUE')` form.
-
----
-
-## Native Image Reflection — `SilvaGlobalConfiguration`
-
-Spring AOT (GraalVM native image) requires all classes serialized/deserialized by Jackson or used via reflection to be registered in `@RegisterReflectionForBinding` in `SilvaGlobalConfiguration`.
-
-**Any time you add a new DTO, response record, entity, enum, or projection that is:**
-- returned from a REST endpoint,
-- deserialized from an HTTP request body or multipart part,
-- used in a `FeatureCollection` / GeoJSON response, or
-- used by Jackson in any other way at runtime,
-
-**you must add its `.class` to the `@RegisterReflectionForBinding` annotation in `SilvaGlobalConfiguration.java` and import it.**
-
-This includes **enums embedded inside DTOs** — if a DTO field is an enum type and the DTO is registered, the enum must also be registered separately (e.g. `TenureValidationErrorCode` is a field in `TenureValidationResultDto` and `DuplicateConflictDto`, so all three are registered).
-
-**Exception classes do not need registration** — custom exceptions extending `ResponseStatusException` are handled by Spring's built-in mechanism and are not Jackson-serialized directly.
-
-Forgetting this causes silent failures in native-image builds (classes work fine in JVM mode but fail at runtime in native mode).
-
----
-
-## Frontend API Folder — Do Not Edit
-
-The folder `frontend/src/services/OpenApi/` is **fully generated by OpenAPI codegen** and must never be edited by hand. Any changes will be overwritten on the next codegen run.
-
-To update frontend API types/clients, change the backend's OpenAPI spec (controller annotations, DTOs) and re-run codegen.
-
----
-
-## Writing Tests for Search Features
-
-Every new search feature requires three tiers of tests. Target **>85% branch coverage** on new code.
-
-## Running Tests
-- For backend with Oracle as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=oracle --no-transfer-progress -P all-tests`
-- For backend with Postgres as primary db: `./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=postgres --no-transfer-progress -P all-tests`
-
-### Tier 1 — DTO unit test
-
-For any filter DTO with constructor logic (NOVALUE sentinel, uppercase normalization, helper methods), write a plain JUnit 5 class:
+## Task Classification Decision Tree
 
 ```
-src/test/java/.../common/dto/<package>/<FilterDto>Test.java
+1. Does task involve adding a new code lookup table (e.g., FundSourceCode)?
+   → Load "code-table-patterns.md" reference (6-step checklist)
+
+2. Does task involve search/query endpoints or pagination?
+   → Load "search-api-patterns.md" reference (native SQL, projections)
+
+3. Does task involve opening details or related sub-services?
+   → Load "opening-details-patterns.md" reference (sub-service orchestration)
+
+4. Does task involve adding entities, repositories, or the dual-DB setup?
+   → Load "dual-db-architecture.md" reference (JPA config, schema conventions)
+
+5. Does task involve testing (unit/integration/WireMock)?
+   → Load "testing-patterns.md" reference (3-tier tests, TestContainers)
 ```
 
-- No Spring context. No mocks. Just instantiate the DTO and assert.
-- Cover every normalisation path: null input → sentinel, empty list → sentinel, non-empty → expected value.
-- `@DisplayName("Unit Test | <ClassName>")`
+All reference files are part of the `backend-patterns` skill. Search Copilot Chat for "backend patterns" to load them.
 
-### Tier 2 — Service Mockito unit test
+## ⚠️ Frontend API Folder — Do Not Edit
 
-For `AbstractXxxService` (or any service with non-trivial mapping logic), write a Mockito test:
+The folder `frontend/src/services/OpenApi/` is **fully generated by OpenAPI codegen** and must never be edited by hand. Any changes will be overwritten on the next `npm run generate:openapi` command in the frontend.
 
-```
-src/test/java/.../common/service/impl/Abstract<Xxx>ServiceTest.java   (or a focused variant)
-```
-
-Key pattern:
-```java
-@ExtendWith(MockitoExtension.class)
-class AbstractXxxServiceTest {
-  @Mock private XxxRepository repository;
-  @Mock private ForestClientService forestClientService;
-  private AbstractXxxService service;
-
-  @BeforeEach void setup() {
-    service = new AbstractXxxService(repository, forestClientService) {};
-  }
-}
-```
-
-- Use `Mockito.mock(XxxProjection.class)` + `lenient().when(...)` for all projection stubs so unused stubs don't raise `UnnecessaryStubbingException`.
-- Mock the repository method that the service calls (e.g. `repository.stockingStandardsCommentSearch(any(), anyLong(), anyLong())`).
-- Tests to cover: field mapping, blank-string → null (`StringUtil.nullIfBlank`), null collection → empty list, `parseFspIds` CSV split, `parseCodeDescriptionList` code/name pairing, ForestClient batch call triggered/skipped, empty projection list, null `totalCount`, invalid date range → `ResponseStatusException`.
-- `@DisplayName("Unit Test | AbstractXxxService — <feature name>")`
-
-### Tier 3 — Integration tests (abstract + Postgres concrete)
-
-For each service and each endpoint, create an abstract base class and a Postgres-only concrete subclass.
-
-**Abstract service integration test:**
-```
-src/test/java/.../common/service/Abstract<Feature>ServiceIntegrationTest.java
-```
-```java
-@DisplayName("Integrated Test | <Feature> Service | Contract")
-@WithMockJwt(value = "ttester")
-public abstract class AbstractXxxServiceIntegrationTest
-    extends AbstractTestContainerIntegrationTest {
-  // WireMock block required if service calls ForestClientService (see above)
-  @Autowired protected XxxService xxxService;
-  // Tests call service with filter DTOs and assert result != null / correct structure
-}
-```
-
-**Postgres concrete service test:**
-```
-src/test/java/.../postgres/service/XxxServicePostgresIntegrationTest.java
-```
-```java
-@DisplayName("Integrated Test | <Feature> Service | Postgres-only")
-@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
-@WithMockJwt(value = "ttester")
-public class XxxServicePostgresIntegrationTest extends AbstractXxxServiceIntegrationTest {}
-```
-
-**Abstract endpoint integration test:**
-```
-src/test/java/.../common/endpoint/AbstractSearchEndpoint<Feature>IntegrationTest.java
-```
-```java
-@WithMockJwt(value = "ttester")
-@AutoConfigureMockMvc
-@DisplayName("Integrated Test | <Feature> Endpoint | Contract")
-public abstract class AbstractSearchEndpoint<Feature>IntegrationTest
-    extends AbstractTestContainerIntegrationTest {
-  // WireMock block required if endpoint's service calls ForestClientService
-  @Autowired protected MockMvc mockMvc;
-  // Tests use mockMvc.perform(get("/api/search/...").param(...)).andExpect(...)
-}
-```
-
-**Postgres concrete endpoint test:**
-```
-src/test/java/.../postgres/endpoint/SearchEndpoint<Feature>PostgresIntegrationTest.java
-```
-Empty body; inherits all tests from abstract parent.
-
-### Test data for Postgres integration tests
-
-Flyway dev migrations live in `src/test/resources/migration/postgres/dev/`. Key test data:
-- `V999.0.1__test_data_code_tables.sql` — code tables including `standards_regime_status_code`
-- `V999.1.x__test_data_*.sql` — `standards_regime` rows, `stocking_standard_unit` rows, openings
-- `standards_regime_name = 'Baseline - dry variant'` → use `searchTerm = "Baseline"` for `STANDARDS_NAME` comment search tests
-- `additional_standards` contains "limited", "planting" → use `searchTerm = "limited"` for `ADDITIONAL_STANDARDS` tests
-
-### Build and run tests
-
-#### Database Selection
-Tests run against both Oracle and Postgres configurations. Use the Maven property `-Dserver.primary-db` to specify which database is primary:
-
+**When you modify backend endpoints, DTOs, or response types**, the frontend developer must regenerate the API client:
 ```bash
-# Run with Postgres as primary database
--Dserver.primary-db=postgres
-
-# Run with Oracle as primary database
--Dserver.primary-db=oracle
+cd frontend
+npm run generate:openapi
 ```
 
-**IMPORTANT:** Do NOT use incorrect parameters like `-DdbType=postgres` or `-Ddatabase=postgres`. The correct parameter is derived from `application.yml`:
-```yaml
-server:
-  primary-db: postgres  # ← This is the source; use -Dserver.primary-db in Maven
-```
+This is a **critical cross-layer rule**. Breaking it causes silent API contract mismatches between backend and frontend.
 
-#### Common test commands
+## Key Constraints
 
-```bash
-# Full build with integration tests (Postgres primary)
-cd backend && ./mvnw clean verify \
-  -Dserver.primary-db=postgres \
-  -Pintegration-test
+- Never add DB-specific logic to endpoints (use service layer)
+- Never hardcode Oracle/Postgres; use `@ConditionalOnProperty`
+- Always register new DTOs/entities in `@RegisterReflectionForBinding` (Spring AOT)
+- Query results → projection interfaces (not entities)
+- Never use `@Query`; write native SQL on concrete repository classes
+- Always inject common repository interface, not concrete impl
+- Field order in `@AllArgsConstructor` services = constructor order
+- Always use top-level imports (never inline fully-qualified names)
 
-# Full build with integration tests (Oracle primary)
-cd backend && ./mvnw clean verify \
-  -Dserver.primary-db=oracle \
-  -Pintegration-test
+## Test Requirements
 
-# Unit tests only
-cd backend && ./mvnw clean test \
-  -Dserver.primary-db=postgres
+- **Coverage:** >85% minimum, >90% target
+- **3-tier approach:** DTO unit → Mockito service → Integration (TestContainers)
+- **WireMock required** if service calls `ForestClientService`
+- **Database testing:** Both Oracle and Postgres (use `-Dserver.primary-db`)
+- **Postgres null-check pattern:** Use `COALESCE(CAST(... AS text), 'NOVALUE')` for nullable scalars
 
-# Integration tests only
-cd backend && ./mvnw clean verify \
-  -Dserver.primary-db=postgres \
-  -Pintegration-test \
-  -DskipTests  # Skips unit tests, runs only integration tests via failsafe plugin
+## Quick Checklist
 
-# Single test class (integration)
-cd backend && ./mvnw -Pintegration-test verify \
-  -Dserver.primary-db=postgres \
-  -Dtest=OpeningEndpointIntegrationTest
+- [ ] Package placement: common/oracle/postgres correct
+- [ ] @ConditionalOnProperty on all DB-specific beans
+- [ ] Entities registered in @RegisterReflectionForBinding
+- [ ] DTOs use @Getter/@NoArgsConstructor, not records
+- [ ] Repositories: interface in common, impl in oracle/postgres
+- [ ] Services: abstract in common, concrete in oracle/postgres
+- [ ] Endpoints depend only on common service interfaces
+- [ ] Tests: DTO unit → Mockito service → Integration (TestContainers)
+- [ ] Coverage: >85% minimum
+- [ ] Linter passing, code formatted
 
-# Single test method (integration)
-cd backend && ./mvnw -Pintegration-test verify \
-  -Dserver.primary-db=postgres \
-  -Dtest=OpeningEndpointIntegrationTest#getUserCreatedOpenings_withZeroPageSize_shouldReturnBadRequest
+## Resources
 
-# Run both database configs (Postgres then Oracle)
-cd backend && ./mvnw clean verify -Pintegration-test -Dserver.primary-db=postgres && \
-  ./mvnw verify -Pintegration-test -Dserver.primary-db=oracle
+- Spring Boot: https://spring.io/projects/spring-boot
+- Spring Data JPA: https://spring.io/projects/spring-data-jpa
+- TestContainers: https://www.testcontainers.org/
+- WireMock: https://wiremock.org/
+- OpenAPI/Swagger: https://swagger.io/
 
-# Generate coverage report
-cd backend && ./mvnw clean verify \
-  -Dserver.primary-db=postgres \
-  -Pintegration-test
-# View at: target/site/jacoco/index.html
-```
+---
 
-#### Integration test profile
-
-Use `-Pintegration-test` profile to run integration tests via the Maven Failsafe plugin. This profile enables:
-- Flyway migrations for test database schema
-- TestContainers for Oracle/Postgres container startup
-- Spring Boot test auto-configuration
-- WireMock stubs for external API calls (e.g., ForestClient API on port 10000)
-
-Tests are marked with `@Tag("integration")` or placed in `*IntegrationTest.java` files.
-
-#### Page size validation
-
-When testing pagination endpoints like `getUserCreatedOpenings()`, remember that Spring Data has configurable page size limits set in `application.yml`:
-```yaml
-spring:
-  data:
-    web:
-      pageable:
-        default-page-size: 20
-        max-page-size: 2000
-```
-
-Validation is performed by checking the **raw request parameter** before Spring Data processes it:
-- Request with `?size=0` → HTTP 400 (must be ≥ 1)
-- Request with `?size=2001` → HTTP 400 (must be ≤ 2000, set by `SilvaConstants.MAX_PAGE_SIZE_OPENING_SEARCH`)
-- Request with no `size` param → defaults to 20 (from config)
-- Request with `?size=2000` → HTTP 200 (valid maximum)
-
-### Dual-Database Test Organization — Shared vs. DB-Specific
-
-The backend runs both Oracle and Postgres simultaneously with a single property (`server.primary-db`) selecting which is "primary" at runtime. Tests must reflect this dual-DB reality.
-
-#### Rule 1: Shared endpoints → tests in common
-
-If an endpoint is available for **both Oracle and Postgres** (i.e., the business logic is DB-agnostic and the service layer routes via a common interface), add all tests to:
-
-```
-src/test/java/.../common/endpoint/<Feature>EndpointIntegrationTest.java
-```
-
-**Do NOT** add `@EnabledIfSystemProperty` conditions or database-specific test methods. The tests run identically against both databases through the service layer's `@ConditionalOnProperty` routing.
-
-**Example**: `OpeningEndpoint.getUserCreatedOpenings()` is a shared endpoint tested once in `common/endpoint/OpeningEndpointIntegrationTest.java` with 6 test methods covering pagination, sorting, validation, and boundary cases. Both Oracle and Postgres implementations execute the same test suite via `OpeningSearchService`.
-
-#### Rule 2: DB-specific endpoints → tests only in that DB's folder
-
-If an endpoint exists **only for one database** (e.g., Postgres-only features like user favorites or spatial file uploads), add tests to:
-
-```
-src/test/java/.../postgres/endpoint/<Feature>EndpointIntegrationTest.java
-```
-
-Mark it with `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")` so it only runs when that DB is primary.
-
-**Example**: `postgres/endpoint/OpeningEndpoint.getUserFavouriteOpenings()` is Postgres-only and tested in `postgres/endpoint/OpeningEndpointIntegrationTest.java`.
-
-#### Rule 3: If content differs by DB, use abstract + concrete pattern
-
-For rare cases where the **same endpoint behavior requires different test data or assertions per database** (e.g., different SQL dialects tested separately), use:
-
-```
-src/test/java/.../common/endpoint/Abstract<Feature>IntegrationTest.java        ← abstract base, no DB conditions
-src/test/java/.../postgres/endpoint/<Feature>PostgresIntegrationTest.java      ← concrete, inherits + adds Postgres-specific tests
-src/test/java/.../oracle/endpoint/<Feature>OracleIntegrationTest.java          ← concrete, inherits + adds Oracle-specific tests
-```
-
-Use `@EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres|oracle")` on concrete classes only. This pattern is **not** the default; use only when necessary.
-
-#### Test Coverage Targets
-
-All endpoint and service tests must achieve:
-- **>85% branch coverage** (minimum required for merge)
-- **>90% branch coverage** (desired; target for all new features)
-
-Coverage is measured on:
-- Happy path: default pagination, sorting, expected results
-- Edge cases: zero-size pages, max page size, empty result sets
-- Validation: required filters missing, invalid input, boundary values
-- Error paths: not found (404), bad request (400), unauthorized (401)
-
-Use `mvn clean install -P all-tests` to run the full test suite and generate coverage reports in `target/site/jacoco/`.
-
-### File Organization Checklist
-
-When adding a new shared endpoint:
-- [ ] Endpoint method in `common/endpoint/<Feature>Endpoint.java`
-- [ ] Shared service interface in `common/service/<Feature>Service.java`
-- [ ] Abstract service impl in `common/service/impl/Abstract<Feature>Service.java`
-- [ ] Postgres service impl in `postgres/service/<Feature>PostgresService.java`
-- [ ] Oracle service impl in `oracle/service/<Feature>OracleService.java`
-- [ ] Repository interface in `common/repository/<Feature>Repository.java` (with `@NoRepositoryBean`)
-- [ ] Postgres repository impl in `postgres/repository/<Feature>PostgresRepository.java`
-- [ ] Oracle repository impl in `oracle/repository/<Feature>OracleRepository.java`
-- [ ] Integration tests in `common/endpoint/<Feature>EndpointIntegrationTest.java` (>85% coverage minimum)
-- [ ] Verify both DB configs work: `mvn clean install -Dserver.primary-db=oracle` and `...=postgres`
+**For full details on any pattern, load the `backend-patterns` skill in Copilot Chat.**
