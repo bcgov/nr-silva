@@ -214,14 +214,3 @@ If the task straddles categories:
 2. Load that reference
 3. Mention in response which reference you loaded and why
 4. Note: "If you need [secondary concern] patterns, load [reference name]"
-
----
-
-## Resources
-
-- Main entry: `frontend/AGENTS.md`
-- IBM Carbon Design System: https://carbondesignsystem.com/
-- TanStack Query Docs: https://tanstack.com/query/latest
-- React Testing Library: https://testing-library.com/react
-- TypeScript Handbook: https://www.typescriptlang.org/docs/
-- Vite Docs: https://vitejs.dev/

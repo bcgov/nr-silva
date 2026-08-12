@@ -161,16 +161,3 @@ If the task straddles categories:
 2. Load that reference
 3. Mention in response which reference you loaded and why
 4. Note: "If you need [secondary concern] patterns, load [reference name]"
-
----
-
-## Resources
-
-- Main entry: `backend/AGENTS.md`
-- Spring Boot Docs: https://spring.io/projects/spring-boot
-- JPA/Hibernate: https://hibernate.org/orm/
-- OpenAPI: https://www.openapis.org/
-- TestContainers: https://testcontainers.com/
-- WireMock: https://wiremock.org/
-- Mockito: https://site.mockito.org/
-- Maven: https://maven.apache.org/
