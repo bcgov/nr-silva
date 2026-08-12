@@ -11,7 +11,7 @@ The Silva frontend is a **React + TypeScript** application built with **Vite**, 
 - IBM Carbon components
 - TanStack Query (React Query) for data fetching
 - Playwright for E2E testing
-- Jest for unit testing
+- Vitest for unit testing
 
 **Deployment:** Docker container on OpenShift via GitHub Actions
 
@@ -655,18 +655,21 @@ Use **TanStack Query** (React Query) for all API data fetching, caching, and sta
 
 ### API Client
 
-The API client is **auto-generated** from the backend's OpenAPI specification:
+The API client is generated from the backend's OpenAPI specification:
+
+- **`src/services/OpenApi/**`** — Auto-generated service classes (DO NOT MODIFY). Regenerate after backend changes.
+- **`src/services/API.ts`** — Hand-maintained wrapper. Configures and re-exports generated services for easy access throughout the app.
+
+**Example API.ts structure:**
 
 ```typescript
-// src/services/API.ts - DO NOT MODIFY (auto-generated)
-export class API {
-  static getOpenings(filters?: OpeningFilters) {
-    return fetch('/api/openings', { /* ... */ });
-  }
+// src/services/API.ts - hand-maintained wrapper
+import { OpeningsService } from './OpenApi/services/OpeningsService';  // Auto-generated
+import { ActivitiesService } from './OpenApi/services/ActivitiesService';  // Auto-generated
 
-  static updateOpening(id: string, data: Partial<Opening>) {
-    return fetch(`/api/openings/${id}`, { /* ... */ });
-  }
+export class API {
+  static openings = new OpeningsService();
+  static activities = new ActivitiesService();
 }
 ```
 
@@ -677,7 +680,7 @@ cd frontend
 npm run generate:openapi
 ```
 
-**This command is run by the developer after the backend is implemented and confirmed working.**
+**This command is run by the developer after the backend is implemented and confirmed working.** The generated files in `src/services/OpenApi/**` are replaced, while `src/services/API.ts` (the wrapper) remains unchanged unless new services need to be registered.
 
 ### Query Key Convention
 
@@ -761,22 +764,25 @@ const OpeningsList: React.FC = () => {
 
 ## Services Folder
 
-The `/src/services/` folder is **auto-generated** from the backend's OpenAPI specification.
+The `/src/services/` folder contains API client code:
+
+- **`OpenApi/`** — Auto-generated service classes from the backend's OpenAPI spec (DO NOT MODIFY)
+- **`API.ts`** — Hand-maintained wrapper that configures and re-exports generated services
 
 ### Rules
 
-- **Never modify auto-generated files** (e.g., individual service files)
-- **Only modify `API.ts`** to register new services in the API constructor if needed
+- **Never modify auto-generated files** in `OpenApi/` folder
+- **Only modify `API.ts`** to register new services in the API wrapper class when the backend adds new controllers
 - **Regenerate after backend changes:** Run `npm run generate:openapi`
 
 ### Example: Adding a New Service
 
-If the backend adds a new controller, the OpenAPI generator creates a new service file. You may need to add it to the API constructor:
+If the backend adds a new controller, the OpenAPI generator creates a new service file in `OpenApi/`. Register it in `API.ts`:
 
 ```typescript
 // src/services/API.ts
-import { OpeningsService } from './OpeningsService';  // Auto-generated
-import { ActivitiesService } from './ActivitiesService';  // Auto-generated
+import { OpeningsService } from './OpenApi/services/OpeningsService';  // Auto-generated
+import { ActivitiesService } from './OpenApi/services/ActivitiesService';  // Auto-generated
 
 export class API {
   static openings = new OpeningsService();
