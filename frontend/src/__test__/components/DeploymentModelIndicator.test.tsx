@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import DeploymentModelIndicator from '../../components/DeploymentModelIndicator';
 import * as envModule from '@/env';
+import * as featureFlagsModule from '../../utils/featureFlags';
 
 vi.mock('@/env', () => ({
   env: {
@@ -11,9 +12,14 @@ vi.mock('@/env', () => ({
   }
 }));
 
+vi.mock('../../utils/featureFlags', () => ({
+  isNonProduction: vi.fn(() => true)
+}));
+
 describe('DeploymentModelIndicator', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (featureFlagsModule.isNonProduction as any).mockReturnValue(true);
   });
 
   it('should render the indicator in non-production environments', () => {
@@ -35,7 +41,7 @@ describe('DeploymentModelIndicator', () => {
   });
 
   it('should not render in production', () => {
-    (envModule.env as any).VITE_ZONE = 'PROD';
+    (featureFlagsModule.isNonProduction as any).mockReturnValue(false);
 
     const { container } = render(<DeploymentModelIndicator />);
 

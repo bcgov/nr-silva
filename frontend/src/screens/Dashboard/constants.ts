@@ -1,7 +1,7 @@
 import { FavouriteCardProps } from "@/components/FavouriteCard/definitions";
-import { env } from "@/env";
+import { gatePostgresFeature } from "@/utils/featureFlags";
 
-export const FavouriteCardsConfig: FavouriteCardProps[] = [
+export const getFavouriteCardsConfig = (): FavouriteCardProps[] => [
   {
     index: 0,
     title: 'Openings search',
@@ -14,6 +14,6 @@ export const FavouriteCardsConfig: FavouriteCardProps[] = [
     link: '/',
     icon: 'MapBoundary',
     opensModal: true,
-    hidden: env.VITE_ZONE === 'prod' || env.VITE_DEPLOYMENT_MODEL !== 'postgres'
+    hidden: gatePostgresFeature()
   }
 ]

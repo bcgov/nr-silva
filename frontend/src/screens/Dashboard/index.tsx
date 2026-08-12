@@ -10,7 +10,7 @@ import RecentOpenings from "@/components/RecentOpenings";
 import OpeningSubmissionTrend from "@/components/OpeningSubmissionTrend";
 import FavouriteOpenings from "@/components/FavouriteOpenings";
 import { REDIRECT_KEY } from "@/constants";
-import { FavouriteCardsConfig } from "./constants";
+import { getFavouriteCardsConfig } from "./constants";
 import { isValidRedirect } from "./utils";
 import './styles.scss'
 
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
         {/* Fav cards sub-grid */}
         <Grid className="fav-cards-subgrid">
           {
-            FavouriteCardsConfig
+            getFavouriteCardsConfig()
               .filter((card) => !card.hidden)
               .map((card) => (
                 <Column className="fav-card-column" key={card.index} sm={4} md={4} lg={4}>

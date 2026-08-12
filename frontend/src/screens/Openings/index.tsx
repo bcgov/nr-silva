@@ -8,6 +8,7 @@ import { sanitizeDigits } from "@/utils/InputUtils";
 import { useModal } from "@/contexts/ModalContext";
 import TableSkeleton from "@/components/TableSkeleton";
 import { recentOpeningsHeaders } from "@/components/RecentOpenings/constants";
+import { gatePostgresFeature } from "@/utils/featureFlags";
 
 import { OpeningsTabs } from "./constants";
 import './styles.scss';
@@ -82,8 +83,9 @@ const Openings = () => {
 
       {/* Button subgrid */}
       {
-        env.VITE_ZONE !== 'prod' && env.VITE_DEPLOYMENT_MODEL === 'postgres'
-          ? (
+        gatePostgresFeature()
+          ? null
+          : (
             <Column sm={4} md={8} lg={16}>
               <Grid>
                 <Column sm={4} md={8} lg={6} max={4}>
@@ -92,7 +94,6 @@ const Openings = () => {
               </Grid>
             </Column>
           )
-          : null
       }
 
       <Column sm={4} md={8} lg={16}>
