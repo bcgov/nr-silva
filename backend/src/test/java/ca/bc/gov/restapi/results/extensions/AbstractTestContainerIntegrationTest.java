@@ -28,14 +28,14 @@ import org.testcontainers.utility.DockerImageName;
 @ContextConfiguration
 public abstract class AbstractTestContainerIntegrationTest {
 
-  static final PostgreSQLContainer<?> postgres;
-  static final OracleContainer oracle;
+  static final PostgreSQLContainer<?> postgres = createPostgresContainer();
+
+  static final OracleContainer oracle = createOracleContainer();
   static final Flyway flywayPostgres;
   static Flyway flywayOracle;
 
   static final String primaryDb = resolveTestProperty("server.primary-db", "PRIMARY_DB", "oracle");
 
-  // Static fields declared like this are instantiated first by the JVM
   static {
     String[] postgresLocations;
     if ("oracle".equals(primaryDb)) {
@@ -56,15 +56,6 @@ public abstract class AbstractTestContainerIntegrationTest {
               + primaryDb
               + "'. Expected one of: oracle, postgres.");
     }
-
-    postgres =
-        new PostgreSQLContainer(
-                DockerImageName.parse("postgis/postgis:17-master")
-                    .asCompatibleSubstituteFor("postgres"))
-            .withDatabaseName("silva")
-            .withUsername("silva")
-            .withPassword(UUID.randomUUID().toString());
-    oracle = new CustomOracleContainer();
 
     postgres.start();
 
@@ -130,6 +121,21 @@ public abstract class AbstractTestContainerIntegrationTest {
       registry.add("spring.oracle.username", oracle::getUsername);
       registry.add("spring.oracle.password", oracle::getPassword);
     }
+  }
+
+  private static OracleContainer createOracleContainer() {
+    return new CustomOracleContainer();
+  }
+
+  private static PostgreSQLContainer<?> createPostgresContainer() {
+    PostgreSQLContainer<?> container =
+        new PostgreSQLContainer<>(
+            DockerImageName.parse("postgis/postgis:17-master")
+                .asCompatibleSubstituteFor("postgres"));
+    container.withDatabaseName("silva");
+    container.withUsername("silva");
+    container.withPassword(UUID.randomUUID().toString());
+    return container;
   }
 
   private static String resolveTestProperty(

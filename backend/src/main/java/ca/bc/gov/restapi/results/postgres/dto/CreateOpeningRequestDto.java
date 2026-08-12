@@ -15,7 +15,6 @@ import java.util.List;
  * @param openingGrossArea total opening gross area in hectares
  * @param maxAllowablePermAccessPerc maximum allowable permanent access percentage
  * @param clientNumber the 8-character client number for authorisation and tenure lookup
- * @param clientLocationCode the 2-character client location code for tenure lookup
  * @param orgUnitCode the organisation unit code identifying the managing district
  * @param openingCategoryCode the opening category code (e.g. "FTML")
  * @param licenseeOpeningId optional licensee-provided opening identifier
@@ -25,7 +24,6 @@ public record CreateOpeningRequestDto(
     @NotNull @Digits(integer = 7, fraction = 4) BigDecimal openingGrossArea,
     @NotNull @Digits(integer = 2, fraction = 1) BigDecimal maxAllowablePermAccessPerc,
     @NotBlank @Size(max = 8) String clientNumber,
-    @NotBlank @Size(max = 2) String clientLocationCode,
     @NotBlank @Size(max = 6) String orgUnitCode,
     @NotBlank @Size(max = 7) String openingCategoryCode,
     @Size(max = 30) String licenseeOpeningId,

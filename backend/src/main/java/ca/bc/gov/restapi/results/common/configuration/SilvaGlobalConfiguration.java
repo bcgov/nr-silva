@@ -61,14 +61,19 @@ import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.DashboardFiltersDto;
+import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
+import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geojson.Crs;
 import org.geojson.Feature;
@@ -191,7 +196,12 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   CreateOpeningRequestDto.class,
   CreateOpeningResponseDto.class,
   ExtractedGeoDataDto.class,
-  MapsheetDto.class
+  MapsheetDto.class,
+  TenureRequestDto.class,
+  TenureValidationResultDto.class,
+  DuplicateConflictDto.class,
+  TenureValidationResponseDto.class,
+  TenureValidationErrorCode.class
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
