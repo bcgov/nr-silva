@@ -1,8 +1,6 @@
 ---
 name: backend-patterns
-type: skill
 description: Backend coding patterns for Java Spring Boot, dual-database architecture, REST APIs, and testing in Silva
-trigger: ["backend patterns", "Spring Boot patterns", "database patterns", "Java patterns", "dual-database"]
 ---
 
 # Backend Patterns Skill

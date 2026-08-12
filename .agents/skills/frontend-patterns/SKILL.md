@@ -1,8 +1,6 @@
 ---
 name: frontend-patterns
-type: skill
 description: Frontend coding patterns for React, TypeScript, styling, API integration, and testing in Silva
-trigger: ["frontend patterns", "React patterns", "styling guide", "component structure"]
 ---
 
 # Frontend Patterns Skill
