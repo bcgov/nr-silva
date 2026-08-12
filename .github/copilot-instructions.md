@@ -1,10 +1,3 @@
----
-name: caveman + ponytail
-description: >
-  Dual-skill mode: Caveman terse output (65% token reduction, default ultra) + Ponytail lazy-dev YAGNI ladder (54% LOC reduction, default full).
-  Both active every conversation. Switch intensity with /caveman [lite|full|ultra|off] and /ponytail [lite|full|ultra|off].
----
-
 # Caveman + Ponytail: Dual Skill Mode
 
 Auto-active every response. See skill files for detailed rules:
