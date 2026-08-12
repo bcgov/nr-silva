@@ -14,6 +14,6 @@ export const FavouriteCardsConfig: FavouriteCardProps[] = [
     link: '/',
     icon: 'MapBoundary',
     opensModal: true,
-    hidden: env.VITE_ZONE === 'prod' && env.VITE_DEPLOYMENT_MODEL !== 'postgres'
+    hidden: env.VITE_ZONE === 'prod' || env.VITE_DEPLOYMENT_MODEL !== 'postgres'
   }
 ]
