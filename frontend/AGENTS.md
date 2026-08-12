@@ -701,7 +701,7 @@ Query keys must match the API endpoint structure:
 ```typescript
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { API } from '@/services/API';
+import API from '@/services/API';
 import type { Opening } from '@/types/Opening';
 
 const OpeningsList: React.FC = () => {
@@ -710,13 +710,13 @@ const OpeningsList: React.FC = () => {
   // Fetch data
   const { data, isLoading, error } = useQuery({
     queryKey: ['openings'],
-    queryFn: () => API.getOpenings(),
+    queryFn: () => API.OpeningsEndpointService.getOpenings(),
   });
 
   // Mutate data
   const updateMutation = useMutation({
     mutationFn: (opening: Opening) =>
-      API.updateOpening(opening.id, opening),
+      API.OpeningsEndpointService.updateOpening(opening.id, opening),
     onSuccess: (updatedOpening) => {
       // Invalidate cache
       queryClient.invalidateQueries({ queryKey: ['openings'] });
@@ -795,7 +795,7 @@ Then use it in components:
 ```typescript
 const { data } = useQuery({
   queryKey: ['activities'],
-  queryFn: () => API.activities.getActivities(),
+  queryFn: () => API.ActivitiesEndpointService.getActivities(),
 });
 ```
 
