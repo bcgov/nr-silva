@@ -1,11 +1,9 @@
 # Backend Agent Guidelines
 
-**Quick Start:** This is the minimal entry point. For detailed coding patterns, load the `backend-patterns` skill (search for "backend patterns" in Copilot Chat) which provides 5 focused reference files:
-- **dual-db-architecture.md** — Oracle/Postgres JPA config, schema conventions, @ConditionalOnProperty
-- **code-table-patterns.md** — 6-step checklist for adding code lookups (entity → repo → service → endpoint)
-- **search-api-patterns.md** — Native SQL queries, projections, ForestClient enrichment, pagination
-- **opening-details-patterns.md** — Sub-service orchestration, how details endpoints are structured
-- **testing-patterns.md** — Unit/Mockito/integration 3-tier tests, WireMock, Postgres null-check pattern
+**Quick Start:** This is the minimal entry point. For detailed coding patterns, load the `backend-patterns` skill (search for "backend patterns" in Copilot Chat) which provides 3 focused reference files:
+- **db-patterns.md** — Dual-database architecture, JPA/Hibernate config, entity → DTO → mapper chain, code lookup tables (6-step), native SQL dialects, null-check patterns, conditional bean registration
+- **api-patterns.md** — Search endpoints, response DTOs & projections, opening detail service orchestration, REST structure, pagination, filtering, OpenAPI documentation
+- **testing.md** — Unit/Mockito/integration 3-tier tests, TestContainers, WireMock, Postgres null-check pattern, database testing
 
 ## Tech Stack
 
@@ -62,20 +60,14 @@ src/main/java/ca/bc/gov/restapi/results/
 ## Task Classification Decision Tree
 
 ```
-1. Does task involve adding a new code lookup table (e.g., FundSourceCode)?
-   → Load "code-table-patterns.md" reference (6-step checklist)
+1. Does task involve adding entities, repositories, code lookups, native queries, or dual-DB setup?
+   → Load "db-patterns.md" reference
 
-2. Does task involve search/query endpoints or pagination?
-   → Load "search-api-patterns.md" reference (native SQL, projections)
+2. Does task involve search/query endpoints, DTOs, projections, REST structure, or opening details?
+   → Load "api-patterns.md" reference
 
-3. Does task involve opening details or related sub-services?
-   → Load "opening-details-patterns.md" reference (sub-service orchestration)
-
-4. Does task involve adding entities, repositories, or the dual-DB setup?
-   → Load "dual-db-architecture.md" reference (JPA config, schema conventions)
-
-5. Does task involve testing (unit/integration/WireMock)?
-   → Load "testing-patterns.md" reference (3-tier tests, TestContainers)
+3. Does task involve testing (unit/integration/WireMock)?
+   → Load "testing.md" reference
 ```
 
 All reference files are part of the `backend-patterns` skill. Search Copilot Chat for "backend patterns" to load them.
