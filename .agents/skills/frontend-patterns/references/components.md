@@ -121,23 +121,19 @@ const Avatar: React.FC<AvatarProps> = ({ initials, size = 'md' }) => {
 export default Avatar;
 ```
 
-### Pattern B: Composite Components (Folder with Sub-Components)
+### Pattern B: Composite Components (Single Folder with Related Components)
 
 For complex components with multiple related sub-components:
 
 ```
 src/components/OpeningDetails/
-├── index.tsx                    # Barrel export file
-├── OpeningOverview/
-│   ├── index.tsx
-│   └── styles.scss
-├── OpeningSummary/
-│   ├── index.tsx
-│   └── styles.scss
-├── OpeningActivities/
-│   ├── index.tsx
-│   └── styles.scss
-└── styles.scss                  # Parent component styles (if needed)
+├── index.tsx           # Barrel export file
+├── OpeningOverview.tsx # Sub-component
+├── OpeningSummary.tsx  # Sub-component
+├── OpeningActivities.tsx # Sub-component
+├── styles.scss         # Shared styles
+├── utils.ts(x)         # Utility functions (optional)
+└── constants.ts(x)     # Constants (optional)
 ```
 
 **Barrel Export Pattern:**
@@ -147,6 +143,25 @@ src/components/OpeningDetails/
 export { default as OpeningOverview } from './OpeningOverview';
 export { default as OpeningSummary } from './OpeningSummary';
 export { default as OpeningActivities } from './OpeningActivities';
+```
+
+**Sub-Component File:**
+
+```typescript
+// src/components/OpeningDetails/OpeningOverview.tsx
+import React from 'react';
+
+import './styles.scss';
+
+interface OpeningOverviewProps {
+  id: number;
+}
+
+const OpeningOverview: React.FC<OpeningOverviewProps> = ({ id }) => {
+  return <div className="opening-overview">{/* content */}</div>;
+};
+
+export default OpeningOverview;
 ```
 
 **Usage:**
@@ -169,10 +184,11 @@ const MyScreen = () => (
 
 ### Component Structure Guidelines
 
-- Keep sub-components in their own folders with `index.tsx` and `styles.scss`
-- Parent `index.tsx` is a **barrel export file** only (re-exports sub-components)
-- Each sub-component is self-contained and independently styled
-- Use this pattern when components naturally group together or are heavily interdependent
+- All related sub-components live flat in same folder
+- Parent `index.tsx` is barrel export only
+- Each sub-component is own `.tsx` file, self-contained
+- Shared styles in single `styles.scss`
+- Use pattern when components group naturally or share logic
 
 ---
 

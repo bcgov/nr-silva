@@ -33,17 +33,6 @@ public class OpeningController {
 }
 ```
 
-### Query Key Convention (Frontend)
-
-Frontend query keys must match endpoint structure:
-
-| Endpoint | Query Key |
-|----------|-----------|
-| `GET /api/openings` | `['openings']` |
-| `GET /api/openings/123` | `['openings', '123']` |
-| `GET /api/openings/search?region=x` | `['openings', 'search', { region: 'x' }]` |
-| `GET /api/openings/123/activities` | `['openings', '123', 'activities']` |
-
 ---
 
 ## Response DTOs & Projections

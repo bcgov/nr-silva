@@ -10,21 +10,27 @@
 ## Tech Stack
 
 - Java 17+ with Spring Boot 3
-- **Dual Databases:** Oracle (legacy) + Postgres (target), runtime switch via `server.primary-db`
+- Dual-database backend (Oracle + Postgres, selected at startup via `server.primary-db`)
 - JPA with native SQL queries
 - REST API (OpenAPI/Swagger documented)
 - Maven build tool
 - TestContainers + Flyway for integration tests
 - WireMock for external API stubs (ForestClient)
 
-## Runtime Database Selection
+## Operating Modes
 
-```yaml
-server:
-  primary-db: postgres   # or "oracle"
-```
+Silva backend configured at deployment time via `server.primary-db` environment variable. Two configurations exist:
 
-Every DB-specific bean carries `@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres|oracle")`.
+| Mode | Config | Deployment | Behavior |
+|------|--------|-----------|----------|
+| **Hybrid** | `server.primary-db=oracle` | **Production** | Oracle = business data (openings, activities, code tables). Postgres = user state only (favorites). Read-only UI for RESULTS modernization — users view data in improved Silva interface instead of legacy RESULTS. |
+| **Postgres-only** | `server.primary-db=postgres` | Dev/testing | Postgres holds all business data. Full CRUD operations (create, update, delete) enabled. Feature testing before production release. |
+
+**Constraint:** Changes must not break either mode. Always validate both configurations when implementing endpoints or services.
+
+Example: `POST /api/openings` (create opening) only works in Postgres-only; returns 404 in Hybrid. Read endpoints (`GET`) work in both.
+
+Implementation detail: Every DB-specific class uses `@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle|postgres")` to conditionally enable/disable based on startup config.
 
 ## Folder Structure
 
@@ -117,14 +123,6 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 - [ ] Tests: DTO unit → Mockito service → Integration (TestContainers)
 - [ ] Coverage: >85% minimum
 - [ ] Linter passing, code formatted
-
-## Resources
-
-- Spring Boot: https://spring.io/projects/spring-boot
-- Spring Data JPA: https://spring.io/projects/spring-data-jpa
-- TestContainers: https://www.testcontainers.org/
-- WireMock: https://wiremock.org/
-- OpenAPI/Swagger: https://swagger.io/
 
 ---
 
