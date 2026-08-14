@@ -48,7 +48,7 @@
     <spring-logging.version>3.5.0</spring-logging.version>
     <oracle-database.version>23.8.0.25.04</oracle-database.version>
     <tomcat.version>10.1.55</tomcat.version>
-    <postgresql.version>42.7.11</postgresql.version>
+    <postgresql.version>42.7.12</postgresql.version>
     <nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
     <spring-web.version>6.2.19</spring-web.version>
   </properties>
