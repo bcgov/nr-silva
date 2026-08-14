@@ -8,21 +8,15 @@ import org.testcontainers.utility.DockerImageName;
 public class CustomOracleContainer extends OracleContainer {
 
   public CustomOracleContainer() {
-    super(
-        DockerImageName
-            .parse("gvenzl/oracle-free:23.6-full-faststart")
-    );
+    super(DockerImageName.parse("gvenzl/oracle-free:23.6-full-faststart"));
 
-    this.withDatabaseName("legacyfsa")
-        .withUsername("THE")
-        .withPassword(UUID.randomUUID().toString().substring(24));
+    this.withDatabaseName("legacyfsa");
+    this.withUsername("THE");
+    this.withPassword(UUID.randomUUID().toString().substring(24));
   }
 
   @Override
   protected void waitUntilContainerStarted() {
-    getWaitStrategy()
-        .withStartupTimeout(Duration.ofMinutes(10))
-        .waitUntilReady(this);
+    getWaitStrategy().withStartupTimeout(Duration.ofMinutes(10)).waitUntilReady(this);
   }
-
 }
