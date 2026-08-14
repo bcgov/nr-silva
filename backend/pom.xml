@@ -619,6 +619,12 @@
         <version>2.2</version>
         <scope>compile</scope>
       </dependency>
+      <!-- Force ANTLR version to align Hibernate and Spring Data transitive paths -->
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>4.13.2</version>
+      </dependency>
       <!-- Force jts-core 1.20.0 across all transitive paths (geolatte-geom pulls 1.19.0) -->
       <dependency>
         <groupId>org.locationtech.jts</groupId>
