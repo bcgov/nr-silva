@@ -2,7 +2,6 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningCategoryNotFoundException;
-import ca.bc.gov.restapi.results.common.projection.CutBlockValidationProjection;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.common.service.OpenMapsService;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
@@ -10,11 +9,12 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
+import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockValidationRepository;
+import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -55,9 +55,10 @@ public class CreateOpeningService {
   private final OpenMapsService openMapsService;
   private final OpeningPostgresRepository openingRepository;
   private final OpeningGeometryPostgresRepository openingGeometryRepository;
-  private final CutBlockValidationRepository cutBlockValidationRepository;
+  private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
+  private final TenureValidationService tenureValidationService;
   private final LoggedUserHelper loggedUserHelper;
   private final JdbcTemplate jdbcTemplate;
   private final ObjectMapper objectMapper;
@@ -121,12 +122,9 @@ public class CreateOpeningService {
             .orElseThrow(() -> new NotFoundGenericException("OrgUnit"));
     Long orgUnitNo = orgUnit.getOrgUnitNo();
 
-    // Step 9: authorise caller for the supplied client number
+    // Step 9: resolve client number for tenure validation (auth delegated to
+    // TenureValidationService)
     String clientNumber = dto.clientNumber().trim();
-    if (!loggedUserHelper.hasRoleMatching(role -> role.endsWith("_" + clientNumber))) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN, "Not authorised for client number " + clientNumber);
-    }
 
     // Step 10: exactly one primary tenure required
     long primaryCount = dto.tenures().stream().filter(TenureRequestDto::isPrimary).count();
@@ -140,38 +138,35 @@ public class CreateOpeningService {
           "Exactly one primary tenure is required; " + primaryCount + " supplied");
     }
 
-    // Step 11: validate each tenure against cut_block + cut_block_client
-    String clientLocnCode = dto.clientLocationCode().trim();
-    List<CutBlockValidationProjection> validatedBlocks = new ArrayList<>();
-    for (TenureRequestDto tenure : dto.tenures()) {
-      CutBlockValidationProjection block =
-          cutBlockValidationRepository
-              .findCutBlockByTenureAndClient(
-                  tenure.fileId().trim(),
-                  tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null,
-                  tenure.cutBlock().trim(),
-                  clientNumber,
-                  clientLocnCode)
-              .orElseThrow(
-                  () ->
-                      new ResponseStatusException(
-                          HttpStatus.BAD_REQUEST,
-                          "Cut block not found for fileId="
-                              + tenure.fileId()
-                              + ", cutBlock="
-                              + tenure.cutBlock()));
-      validatedBlocks.add(block);
+    // Steps 11+12: validate tenures (field constraints, JWT auth, DB existence, licensee, CBOA dup)
+    var tenureValidation = tenureValidationService.validateTenures(dto.tenures(), clientNumber);
+    if (!tenureValidation.isValid()) {
+      String msg =
+          tenureValidation.validationResults().stream()
+              .filter(r -> !r.isValid())
+              .map(r -> "tenure[" + r.tenureIndex() + "]: " + r.errorMessage())
+              .reduce((a, b) -> a + "; " + b)
+              .orElse("");
+      if (!tenureValidation.duplicateConflicts().isEmpty()) {
+        String dups =
+            tenureValidation.duplicateConflicts().stream()
+                .map(d -> "Duplicate tenure at indices " + d.duplicateIndices() + ": " + d.reason())
+                .reduce((a, b) -> a + "; " + b)
+                .orElse("");
+        msg = msg.isBlank() ? dups : msg + "; " + dups;
+      }
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
     }
 
-    // Step 12: build audit fields
+    // Step 13: build audit fields
     String auditUserId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = LocalDateTime.now();
 
-    // Step 13: allocate opening ID from sequence (committed immediately regardless of TX outcome)
+    // Step 14: allocate opening ID from sequence (committed immediately regardless of TX outcome)
     Long openingId =
         jdbcTemplate.queryForObject("SELECT nextval('silva.opening_id_seq')", Long.class);
 
-    // Step 14: persist opening
+    // Step 15: persist opening
     OpeningEntity opening =
         OpeningEntity.builder()
             .id(openingId)
@@ -190,7 +185,7 @@ public class CreateOpeningService {
             .mapsheetSquare(mapsheet.square())
             .mapsheetQuad(mapsheet.quad())
             .mapsheetSubQuad(mapsheet.subQuad())
-            .openingNumber(String.format("%04d", openingNumber))
+            .openingNumber(String.valueOf(openingNumber))
             .revisionCount(1)
             .entryUserId(auditUserId)
             .entryTimestamp(now)
@@ -199,7 +194,7 @@ public class CreateOpeningService {
             .build();
     openingRepository.save(opening);
 
-    // Step 15: persist opening geometry
+    // Step 16: persist opening geometry
     OpeningGeometryEntity geometry =
         OpeningGeometryEntity.builder()
             .openingId(openingId)
@@ -216,19 +211,25 @@ public class CreateOpeningService {
             .build();
     openingGeometryRepository.save(geometry);
 
-    // Step 16: persist one cut_block_open_admin row per tenure
+    // Step 17: persist one cut_block_open_admin row per tenure
     List<TenureRequestDto> tenures = dto.tenures();
+    Map<Integer, CutBlockEntity> resolvedBlocks = tenureValidation.resolvedBlocks();
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
-      CutBlockValidationProjection block = validatedBlocks.get(i);
+      String fileId = tenure.fileId().trim();
+      String cutBlock = tenure.cutBlock().trim();
+      String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
+      if (cuttingPermit != null && cuttingPermit.isBlank()) {
+        cuttingPermit = null;
+      }
+      CutBlockEntity block = resolvedBlocks.get(i);
 
       CutBlockOpenAdminEntity cboa =
           CutBlockOpenAdminEntity.builder()
               .openingId(openingId)
-              .forestFileId(tenure.fileId().trim())
-              .cuttingPermitId(
-                  tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null)
-              .cutBlockId(tenure.cutBlock().trim())
+              .forestFileId(fileId)
+              .cuttingPermitId(cuttingPermit)
+              .cutBlockId(cutBlock)
               .timberMark(block.getTimberMark())
               .cbSkey(block.getCbSkey())
               .openingGrossArea(dto.openingGrossArea())
@@ -239,10 +240,10 @@ public class CreateOpeningService {
               .updateUserId(auditUserId)
               .updateTimestamp(now)
               .build();
-      cutBlockValidationRepository.save(cboa);
+      cutBlockOpenAdminRepository.save(cboa);
     }
 
-    // Step 17: return the new opening ID
+    // Step 18: return the new opening ID
     return new CreateOpeningResponseDto(openingId);
   }
 
