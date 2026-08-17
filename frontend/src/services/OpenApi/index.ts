@@ -11,8 +11,11 @@ export type { ActivitySearchResponseDto } from './models/ActivitySearchResponseD
 export type { CodeDescriptionDto } from './models/CodeDescriptionDto';
 export type { CommentDto } from './models/CommentDto';
 export { CommentSearchResponseDto } from './models/CommentSearchResponseDto';
+export type { CreateOpeningRequestDto } from './models/CreateOpeningRequestDto';
+export type { CreateOpeningResponseDto } from './models/CreateOpeningResponseDto';
 export { Crs } from './models/Crs';
 export type { DisturbanceSearchResponseDto } from './models/DisturbanceSearchResponseDto';
+export { DuplicateConflictDto } from './models/DuplicateConflictDto';
 export type { ExtractedGeoDataDto } from './models/ExtractedGeoDataDto';
 export type { Feature } from './models/Feature';
 export type { FeatureCollection } from './models/FeatureCollection';
@@ -88,11 +91,16 @@ export type { SimplePageDto } from './models/SimplePageDto';
 export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchResponseDto';
 export { StockingStandardsCommentSearchResponseDto } from './models/StockingStandardsCommentSearchResponseDto';
 export type { StockingStandardsSearchResponseDto } from './models/StockingStandardsSearchResponseDto';
+export type { TenureRequestDto } from './models/TenureRequestDto';
+export type { TenureValidationResponseDto } from './models/TenureValidationResponseDto';
+export { TenureValidationResultDto } from './models/TenureValidationResultDto';
 
 export { CodesEndpointService } from './services/CodesEndpointService';
 export { ForestClientEndpointService } from './services/ForestClientEndpointService';
+export { OpeningCreateEndpointService } from './services/OpeningCreateEndpointService';
 export { OpeningEndpointService } from './services/OpeningEndpointService';
 export { OpeningMapsEndpointService } from './services/OpeningMapsEndpointService';
 export { SearchEndpointService } from './services/SearchEndpointService';
+export { TenureEndpointService } from './services/TenureEndpointService';
 export { UserActionsEndpointService } from './services/UserActionsEndpointService';
 export { UserRecentOpeningEndpointService } from './services/UserRecentOpeningEndpointService';
