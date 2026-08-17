@@ -6,6 +6,7 @@ import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { OpeningTypes } from '@/types/OpeningTypes';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
+import FeatureUnavailable from '@/components/FeatureUnavailable';
 import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
 import { isRealNumber } from '@/utils/ValidationUtils';
 import ModalHead from '@/components/Modals/ModalHead';
@@ -29,24 +30,46 @@ const CreateOpening = () => {
   });
   const [warnText, setWarnText] = useState<string | undefined>();
 
-  useEffect(() => {
-    const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
+  const isGovFundedOpening = type === GOV_FUNDED_OPENING;
+  const isValidType = type === TENURED_OPENING || isGovFundedOpening;
+  const openingType = isValidType ? (type as OpeningTypes) : TENURED_OPENING;
 
+  useEffect(() => {
     if (!isValidType) {
       console.warn("Invalid opening type");
       navigate("/", { replace: true });
-      return;
     }
-  }, [type, navigate]);
+  }, [isValidType, navigate]);
 
-  const openingType = type! as OpeningTypes;
+  if (isGovFundedOpening) {
+    return (
+      <Grid className='create-opening-grid default-grid'>
+        <Column sm={4} md={8} lg={16} id="title-col">
+          <PageTitle
+            title={`Create an opening: ${TitleText[openingType]}`}
+            subtitle="Register an opening to cover licensee or ministry responsibilities"
+          />
+        </Column>
+
+        <Column sm={4} md={8} lg={16}>
+          <FeatureUnavailable
+            featureName="Government funded opening"
+            title="Government funded openings are unavailable"
+            description="Creating government funded openings is not supported yet. Please create a tenure-based opening or return to the openings list."
+            actionLabel="Back to openings"
+            onActionClick={() => navigate(OpeningsRoute.path!)}
+          />
+        </Column>
+      </Grid>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   const fileMutation = useMutation({
-    mutationFn: (file: Blob) => API.OpeningEndpointService.uploadOpeningSpatialFile({ file }),
+    mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
     onSuccess: (res) => {
       setForm(prev => ({
         ...prev,

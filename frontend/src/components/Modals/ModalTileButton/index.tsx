@@ -10,16 +10,18 @@ type ModalTileButtonProps = {
   subtitle?: string;
   selected?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const ModalTileButton = (
-  { icon, title, subtitle, selected, onClick, id }: ModalTileButtonProps
+  { icon, title, subtitle, selected, onClick, id, disabled }: ModalTileButtonProps
 ) => (
   <button
     id={id}
     type="button"
     className={`modal-tile-button${selected ? ' selected' : ''}`}
     onClick={onClick}
+    disabled={disabled}
   >
     <div className="tile-button-content">
       <div className="icon-row">
