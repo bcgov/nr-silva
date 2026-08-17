@@ -28,7 +28,10 @@
 
         .landing-subtitle {
           @include type.type-style('fluid-paragraph-01', true);
-          color: var(--#{vars.$bcgov-prefix}-text-secondary);
+
+          & {
+            color: var(--#{vars.$bcgov-prefix}-text-secondary);
+          }
         }
       }
 

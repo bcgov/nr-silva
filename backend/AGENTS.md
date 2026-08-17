@@ -90,7 +90,8 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 - Never hardcode Oracle/Postgres; use `@ConditionalOnProperty`
 - Always register new DTOs/entities in `@RegisterReflectionForBinding` (Spring AOT)
 - Query results → projection interfaces (not entities)
-- Never use `@Query`; write native SQL on concrete repository classes
+- Query logic (postgres-only): prefer proper JPA (JPQL `@Query` or derived methods) over native SQL; ask user for DDL upfront instead of searching the codebase
+- Query logic (oracle or dual-DB): native SQL required on concrete repository classes (no `@Query`)
 - Always inject common repository interface, not concrete impl
 - Field order in `@AllArgsConstructor` services = constructor order
 - Always use top-level imports (never inline fully-qualified names)
@@ -115,6 +116,7 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 - [ ] Tests: DTO unit → Mockito service → Integration (TestContainers)
 - [ ] Coverage: >85% minimum
 - [ ] Linter passing, code formatted
+- [ ] Quick native image sanity check: new classes registered in `@RegisterReflectionForBinding`; no reflection, dynamic proxies, or classpath scanning that would break GraalVM AOT (no deep investigation needed)
 
 ---
 

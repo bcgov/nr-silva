@@ -4,6 +4,8 @@ import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
+const ibmPlexPath = fileURLToPath(new URL('./node_modules/@ibm/plex', import.meta.url));
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const define = {
@@ -37,6 +39,13 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1024,
       outDir: 'build'
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true
+        }
+      }
+    },
     server: {
       port: 3000,
       hmr: {
@@ -48,6 +57,8 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
+        '~@ibm/plex': ibmPlexPath,
+        '@ibm/plex': ibmPlexPath,
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
