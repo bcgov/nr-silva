@@ -13,14 +13,14 @@ import RequiredLabel from "../../RequiredLabel";
 
 import "./styles.scss";
 
-type FileUploadProps = {
+type StepOneProps = {
   form: CreateOpeningFormType;
   setForm: React.Dispatch<React.SetStateAction<CreateOpeningFormType>>;
 }
 
-const FileUpload = ({
+const StepOne = ({
   form, setForm
-}: FileUploadProps) => {
+}: StepOneProps) => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
@@ -144,21 +144,14 @@ const FileUpload = ({
   return (
     <>
       <Column sm={4} md={8} lg={16}>
-        <h2 className="default-heading-28px">File Upload</h2>
-      </Column>
-
-      <Column sm={4} md={8} lg={16}>
-        <TextInput
-          labelText="Client"
-          id="selected-client"
-          readOnly
-          required
-          defaultValue={formatForestClient(userClientQuery.data)}
-        />
+        <h2 className="default-heading-28px">Opening information</h2>
       </Column>
 
       <Column sm={4} md={8} lg={16}>
         <Stack gap={5} className="file-uploader-container">
+
+          <h3 className="default-heading-20px">Spatial information</h3>
+
           <div className="file-uploader-title">
             <RequiredLabel id={labelId} htmlFor="opening-map-file-drop-container">
               Upload opening map geometry
@@ -200,8 +193,20 @@ const FileUpload = ({
           }
         </Stack>
       </Column>
+
+      <Column sm={4} md={8} lg={16}>
+        <TextInput
+          labelText="Client"
+          id="selected-client"
+          readOnly
+          required
+          defaultValue={formatForestClient(userClientQuery.data)}
+        />
+      </Column>
+
+
     </>
   );
 };
 
-export default FileUpload;
+export default StepOne;

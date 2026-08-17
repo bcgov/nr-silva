@@ -45,6 +45,11 @@ export function parsePrivileges(groups: string[]): USER_PRIVILEGE_TYPE {
   return result;
 }
 
+export function hasCreateOpeningPriviledge(privileges: USER_PRIVILEGE_TYPE): boolean {
+  const requiredRoles: ROLE_TYPE[] = ["Submitter", "Approver", "Planner", "Admin"];
+  return requiredRoles.some((role) => privileges[role] !== undefined);
+}
+
 /**
  * Extracts all unique client numbers from an array of role group strings.
  * Only numeric suffixes from valid role strings are included.

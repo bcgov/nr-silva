@@ -1,6 +1,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
-@use '@carbon/type';
+@use '@/styles/type' as type;
 
 .silva-header {
   .header-link {
@@ -96,6 +96,11 @@
     .#{vars.$bcgov-prefix}--side-nav__icon>svg {
       fill: var(--#{vars.$bcgov-prefix}-link-primary);
     }
+  }
+
+  a.#{vars.$bcgov-prefix}--side-nav__link,
+  .#{vars.$bcgov-prefix}--side-nav__submenu {
+    font-weight: 400;
   }
 }
 

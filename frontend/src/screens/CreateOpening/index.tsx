@@ -7,10 +7,12 @@ import { OpeningTypes } from '@/types/OpeningTypes';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import FeatureUnavailable from '@/components/FeatureUnavailable';
-import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
+import { CreateOpeningStepOne as StepOne, CreateOpeningForm } from '@/components/CreateOpeningSteps';
 import { isRealNumber } from '@/utils/ValidationUtils';
 import ModalHead from '@/components/Modals/ModalHead';
 import { OpeningsRoute } from '@/routes/config';
+import { useAuth } from '@/contexts/AuthProvider';
+import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
 
 import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm, TitleText } from './constants';
@@ -21,6 +23,7 @@ import './styles.scss';
 
 const CreateOpening = () => {
   const [searchParams] = useSearchParams();
+  const auth = useAuth();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -40,6 +43,27 @@ const CreateOpening = () => {
       navigate("/", { replace: true });
     }
   }, [isValidType, navigate]);
+
+  if (!auth.user || !hasCreateOpeningPriviledge(auth.user.privileges)) {
+    return (
+      <Grid className='create-opening-grid default-grid'>
+        <Column sm={4} md={8} lg={16} id="title-col">
+          <PageTitle
+            title={`Create an opening: ${TitleText[openingType]}`}
+            subtitle="Register an opening to cover licensee or ministry responsibilities"
+          />
+        </Column>
+        <Column sm={4} md={8} lg={16}>
+          <InlineNotification
+            lowContrast
+            kind="warning"
+            title="Insufficient privileges"
+            subtitle="You do not have permission to create an opening."
+          />
+        </Column>
+      </Grid>
+    );
+  }
 
   if (isGovFundedOpening) {
     return (
@@ -181,21 +205,18 @@ const CreateOpening = () => {
         >
           <ProgressStep
             current={currentStep === 0}
-            description="File Upload"
-            label="File Upload"
-            secondaryLabel="Step 1"
+            description="Opening information"
+            label="Opening information"
           />
           <ProgressStep
             current={currentStep === 1}
-            description="Opening Details"
-            label="Opening Details"
-            secondaryLabel="Step 2"
+            description="Tenure information"
+            label="Tenure information"
           />
           <ProgressStep
             current={currentStep === 2}
-            description="Review & Create"
-            label="Review & Create"
-            secondaryLabel="Step 3"
+            description="Review and create"
+            label="Review and create"
           />
         </ProgressIndicator>
       </Column>
@@ -215,7 +236,7 @@ const CreateOpening = () => {
           <Grid className="create-opening-form-grid">
             {
               currentStep === 0
-                ? <CreateOpeningFileUpload form={form} setForm={setForm} />
+                ? <StepOne form={form} setForm={setForm} />
                 : null
             }
             {
