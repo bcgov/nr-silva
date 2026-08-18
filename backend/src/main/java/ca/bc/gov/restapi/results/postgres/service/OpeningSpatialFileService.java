@@ -817,7 +817,9 @@ public class OpeningSpatialFileService {
       CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:" + sourceCrsCode);
       CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
       MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-      return JTS.transform(geometry, transform);
+      Geometry transformed = JTS.transform(geometry, transform);
+      transformed.setSRID(4326);
+      return transformed;
     } catch (Exception e) {
       log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
       return geometry;

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, InlineNotification, Stack, TextInput } from "@carbon/react";
+import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, InlineLoading, InlineNotification, Stack, TextInput } from "@carbon/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { formatForestClient, getClientLocationLabel, sortLocationOptions } from "@/utils/ForestClientUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
+import MapPreview from "@/components/MapPreview";
 
 import RequiredLabel from "../../RequiredLabel";
 
@@ -16,10 +17,12 @@ type StepOneProps = {
   setForm: React.Dispatch<React.SetStateAction<CreateOpeningFormType>>;
   uploadError?: string;
   onUploadErrorDismiss?: () => void;
+  onFileAdded: (file: File) => void;
+  isUploading: boolean;
 }
 
 const StepOne = ({
-  form, setForm, uploadError, onUploadErrorDismiss
+  form, setForm, uploadError, onUploadErrorDismiss, onFileAdded, isUploading
 }: StepOneProps) => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
@@ -121,6 +124,7 @@ const StepOne = ({
         validatedObj: undefined,
       }
     }));
+    onFileAdded(f);
   };
 
   const handleFileDelete = () => {
@@ -183,13 +187,17 @@ const StepOne = ({
             aria-describedby={helpId}
           />
 
+          {isUploading ? <InlineLoading description="Validating file…" status="active" /> : null}
+
+          <MapPreview geojson={form.file?.validatedObj?.geoJson as GeoJSON.FeatureCollection ?? null} />
+
           {
             (form.file?.value || error)
               ? (
                 <FileUploaderItem
                   className="default-file-uploader-item"
                   name={form.file?.value?.name ?? "Invalid file"}
-                  status="edit"
+                  status={form.file?.validatedObj ? "complete" : "edit"}
                   onDelete={handleFileDelete}
                   invalid={!!error}
                   errorSubject={error ?? undefined}

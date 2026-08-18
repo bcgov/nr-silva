@@ -21,14 +21,14 @@ import { getNewTenureForm, TenureHeaderConfig } from "./constants";
 
 import './styles.scss';
 
-type DataFormProps = {
+type StepTwoProps = {
   isReview: boolean;
   form: CreateOpeningFormType;
   setForm: React.Dispatch<React.SetStateAction<CreateOpeningFormType>>;
   handleBack: () => void;
 }
 
-const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
+const StepTwo = ({ isReview, form, setForm, handleBack }: StepTwoProps) => {
   const [isEditTenure, setIsEditTenure] = useState<boolean>(false);
   const [isTenureModalOpen, setIsTenureModalOpen] = useState<boolean>(false);
   const [tenureForm, setTenureForm] = useState<TenureInfoDto>(() => getNewTenureForm());
@@ -520,4 +520,4 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
   )
 }
 
-export default DataForm;
+export default StepTwo;

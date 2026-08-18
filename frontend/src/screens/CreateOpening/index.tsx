@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, InlineNotification, Loading, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Checkmark, TrashCan } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import FeatureUnavailable from '@/components/FeatureUnavailable';
-import { CreateOpeningStepOne as StepOne, CreateOpeningForm } from '@/components/CreateOpeningSteps';
+import { CreateOpeningStepOne as StepOne, CreateOpeningStepTwo as StepTwo } from '@/components/CreateOpeningSteps';
 import { isRealNumber } from '@/utils/ValidationUtils';
 import ModalHead from '@/components/Modals/ModalHead';
 import { OpeningsRoute } from '@/routes/config';
@@ -99,7 +99,6 @@ const CreateOpening = () => {
     onSuccess: (data) => {
       setUploadError(undefined);
       setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: data } : f.file }));
-      setCurrentStep(1);
     },
     onError: (err) => {
       // Spring returns ProblemDetail with `detail`; older errors use `message`
@@ -126,14 +125,13 @@ const CreateOpening = () => {
         return;
       }
 
-      if (!form.file?.value) {
+      if (!form.file?.value || !form.file?.validatedObj) {
         scrollToSection(DefaultOpeningForm.file?.id || 'opening-map-file-drop-container');
         return;
       }
 
-      setUploadError(undefined);
-      fileMutation.mutate(form.file.value);
-
+      setCurrentStep(1);
+      scrollToSection('title-col');
       return;
     }
 
@@ -244,12 +242,19 @@ const CreateOpening = () => {
           <Grid className="create-opening-form-grid">
             {
               currentStep === 0
-                ? <StepOne form={form} setForm={setForm} uploadError={uploadError} onUploadErrorDismiss={() => setUploadError(undefined)} />
+                ? <StepOne
+                  form={form}
+                  setForm={setForm}
+                  uploadError={uploadError}
+                  onUploadErrorDismiss={() => setUploadError(undefined)}
+                  onFileAdded={(f) => { setUploadError(undefined); fileMutation.mutate(f); }}
+                  isUploading={fileMutation.isPending}
+                />
                 : null
             }
             {
               currentStep !== 0
-                ? <CreateOpeningForm isReview={currentStep === 2} form={form} setForm={setForm} handleBack={handleBack} />
+                ? <StepTwo isReview={currentStep === 2} form={form} setForm={setForm} handleBack={handleBack} />
                 : null
             }
           </Grid>
@@ -283,7 +288,7 @@ const CreateOpening = () => {
                   </Button>
                 ) :
                 (
-                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={fileMutation.isPending ? Loading : ArrowRight} disabled={fileMutation.isPending}>
+                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight} disabled={fileMutation.isPending}>
                     Next
                   </Button>
                 )
