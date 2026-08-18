@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, Stack } from "@carbon/react";
+import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, InlineNotification, Stack, TextInput } from "@carbon/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { formatForestClient } from "@/utils/ForestClientUtils";
+import { formatForestClient, getClientLocationLabel, sortLocationOptions } from "@/utils/ForestClientUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 
@@ -14,10 +14,12 @@ import "./styles.scss";
 type StepOneProps = {
   form: CreateOpeningFormType;
   setForm: React.Dispatch<React.SetStateAction<CreateOpeningFormType>>;
+  uploadError?: string;
+  onUploadErrorDismiss?: () => void;
 }
 
 const StepOne = ({
-  form, setForm
+  form, setForm, uploadError, onUploadErrorDismiss
 }: StepOneProps) => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
@@ -40,14 +42,55 @@ const StepOne = ({
         user!.associatedClients.length
       ),
     enabled: !!user?.associatedClients.length,
+    select: (data) => data?.map((client) => ({
+      id: client.clientNumber,
+      label: formatForestClient(client),
+    })) ?? [],
   });
 
-  const clientOptions = userClientQuery.data?.map((client) => ({
-    id: client.clientNumber,
-    label: formatForestClient(client),
-  })) ?? [];
+  const clientLocationQuery = useQuery({
+    queryKey: ["clients", form.client?.value, "locations"],
+    queryFn: () =>
+      API.ForestClientEndpointService.getForestClientLocations(
+        form.client?.value!
+      ),
+    enabled: !!form.client?.value,
+    select: (data) => sortLocationOptions(data),
+  });
 
-  const selectedClient = clientOptions.find((item) => item.id === form.client?.value);
+  const handleClientChange = (selectedItem: { id: string; label: string } | null | undefined) => {
+    setForm((prev) => ({
+      ...prev,
+      client: {
+        ...prev.client,
+        value: selectedItem?.id,
+        isInvalid: false,
+      },
+      locationCode: {
+        ...prev.locationCode,
+        value: undefined,
+      },
+    }));
+  };
+
+  const orgUnitQuery = useQuery({
+    queryKey: ["codes", "org-units"],
+    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits(),
+    select: (data) => data?.map((unit) => ({
+      id: unit.code,
+      label: getClientLocationLabel(unit),
+    })) ?? [],
+  });
+
+  const categoryQuery = useQuery({
+    queryKey: ["codes", "opening-categories"],
+    queryFn: () => API.CodesEndpointService.getOpeningCategories(),
+    select: (data) => data?.map((category) => ({
+      id: category.code,
+      label: getClientLocationLabel(category),
+    })) ?? [],
+  });
+
 
   const handleAddFile = async (addedFiles: File[]) => {
     setError(null);
@@ -75,6 +118,7 @@ const StepOne = ({
       file: {
         ...prev.file,
         value: f,
+        validatedObj: undefined,
       }
     }));
   };
@@ -86,6 +130,7 @@ const StepOne = ({
       file: {
         ...prev.file,
         value: undefined,
+        validatedObj: undefined,
       }
     }));
   };
@@ -104,6 +149,20 @@ const StepOne = ({
         <Stack gap={6} className="file-uploader-container">
 
           <h3 className="default-heading-20px">Spatial information</h3>
+
+          {
+            uploadError
+              ? (
+                <InlineNotification
+                  kind="error"
+                  lowContrast
+                  title="File upload failed"
+                  subtitle={uploadError}
+                  onCloseButtonClick={onUploadErrorDismiss}
+                />
+              )
+              : null
+          }
 
           <div className="file-uploader-title">
             <RequiredLabel id={labelId} htmlFor="opening-map-file-drop-container">
@@ -146,33 +205,142 @@ const StepOne = ({
         <Stack gap={6} className="general-info-container">
           <h3 className="default-heading-20px">General information</h3>
 
-          <Grid>
+          <Grid className="default-sub-grid">
             <Column sm={4} md={8} lg={8}>
               {userClientQuery.isLoading ? (
                 <DropdownSkeleton />
               ) : (
                 <Dropdown
-                  id="selected-client"
+                  id={form.client?.id ?? ''}
                   titleText={
-                    <RequiredLabel id="selected-client-label" htmlFor="selected-client">
+                    <RequiredLabel id="selected-client-label" htmlFor={form.client?.id ?? ''}>
                       Client
                     </RequiredLabel>
                   }
                   label="Choose an option"
-                  items={clientOptions}
-                  selectedItem={selectedClient}
+                  items={userClientQuery.data ?? []}
+                  selectedItem={userClientQuery.data?.find((item) => item.id === form.client?.value)}
+                  itemToString={(item) => item?.label ?? ''}
+                  onChange={({ selectedItem }) => handleClientChange(selectedItem)}
+                  invalid={form.client?.isInvalid}
+                  invalidText="Select a client"
+                />
+              )}
+            </Column>
+
+            <Column sm={4} md={8} lg={8}>
+              {clientLocationQuery.isLoading ? (
+                <DropdownSkeleton />
+              ) : (
+                <Dropdown
+                  id={form.locationCode?.id ?? ''}
+                  titleText={
+                    <RequiredLabel id="selected-location-label" htmlFor={form.locationCode?.id ?? ''}>
+                      Location code
+                    </RequiredLabel>
+                  }
+                  disabled={!form.client?.value}
+                  label="Choose an option"
+                  items={clientLocationQuery.data ?? []}
+                  selectedItem={clientLocationQuery.data?.find((item) => item.id === form.locationCode?.value)}
                   itemToString={(item) => item?.label ?? ''}
                   onChange={({ selectedItem }) =>
                     setForm((prev) => ({
                       ...prev,
-                      client: {
-                        ...prev.client,
-                        value: selectedItem?.id,
+                      locationCode: {
+                        ...prev.locationCode,
+                        value: selectedItem?.id ?? undefined,
+                        isInvalid: false,
                       },
                     }))
                   }
+                  invalid={form.locationCode?.isInvalid}
+                  invalidText="Select a location code"
                 />
               )}
+            </Column>
+
+            <Column sm={4} md={8} lg={8}>
+              {orgUnitQuery.isLoading ? (
+                <DropdownSkeleton />
+              ) : (
+                <Dropdown
+                  id={form.orgUnit?.id ?? ''}
+                  titleText={
+                    <RequiredLabel id="selected-org-unit-label" htmlFor={form.orgUnit?.id ?? ''}>
+                      Org unit
+                    </RequiredLabel>
+                  }
+                  label="Choose an option"
+                  items={orgUnitQuery.data ?? []}
+                  selectedItem={orgUnitQuery.data?.find((item) => item.id === form.orgUnit?.value)}
+                  itemToString={(item) => item?.label ?? ''}
+                  onChange={({ selectedItem }) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      orgUnit: {
+                        ...prev.orgUnit,
+                        value: selectedItem?.id ?? undefined,
+                        isInvalid: false,
+                      },
+                    }))
+                  }
+                  invalid={form.orgUnit?.isInvalid}
+                  invalidText="Select an org unit"
+                />
+              )}
+            </Column>
+
+            <Column sm={4} md={8} lg={8}>
+              {categoryQuery.isLoading ? (
+                <DropdownSkeleton />
+              ) : (
+                <Dropdown
+                  id={form.category?.id ?? ''}
+                  titleText={
+                    <RequiredLabel id="selected-category-label" htmlFor={form.category?.id ?? ''}>
+                      Opening category
+                    </RequiredLabel>
+                  }
+                  label="Choose an option"
+                  items={categoryQuery.data ?? []}
+                  selectedItem={categoryQuery.data?.find((item) => item.id === form.category?.value)}
+                  itemToString={(item) => item?.label ?? ''}
+                  onChange={({ selectedItem }) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      category: {
+                        ...prev.category,
+                        value: selectedItem?.id ?? undefined,
+                        isInvalid: false,
+                      },
+                    }))
+                  }
+                  invalid={form.category?.isInvalid}
+                  invalidText="Select an opening category"
+                />
+              )}
+            </Column>
+
+            <Column sm={4} md={8} lg={8}>
+              <TextInput
+                id={form.licenseeOpeningId?.id ?? ''}
+                labelText="Licensee opening ID"
+                placeholder="Enter licensee opening ID"
+                value={form.licenseeOpeningId?.value ?? ''}
+                invalid={form.licenseeOpeningId?.isInvalid}
+                invalidText="Must be fewer than 30 characters"
+                onBlur={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    licenseeOpeningId: {
+                      ...prev.licenseeOpeningId,
+                      value: e.target.value || undefined,
+                      isInvalid: false,
+                    },
+                  }))
+                }
+              />
             </Column>
           </Grid>
         </Stack>

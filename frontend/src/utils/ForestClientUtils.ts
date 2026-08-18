@@ -46,6 +46,46 @@ export const getClientLocationLabel = (location?: CodeDescriptionDto | null): st
 };
 
 /**
+ * Sorts location options by numeric codes (ascending) first, then non-numeric strings (alphabetically).
+ * Returns an array of objects with `id` and `label` properties suitable for dropdown rendering.
+ *
+ * @param locations - Array of CodeDescriptionDto objects to sort.
+ * @returns Sorted array of location option objects with id and label.
+ */
+export const sortLocationOptions = (
+  locations?: CodeDescriptionDto[] | null
+): Array<{ id: string; label: string }> => {
+  return (locations?.map((location) => ({
+    id: location.code ?? '',
+    label: getClientLocationLabel(location),
+  })) ?? []).sort((a, b) => {
+    const numA = parseFloat(a.id);
+    const numB = parseFloat(b.id);
+
+    const isNumA = !isNaN(numA);
+    const isNumB = !isNaN(numB);
+
+    // Both numbers - sort numerically ascending
+    if (isNumA && isNumB) {
+      return numA - numB;
+    }
+
+    // Only A is number - A comes first
+    if (isNumA) {
+      return -1;
+    }
+
+    // Only B is number - B comes first
+    if (isNumB) {
+      return 1;
+    }
+
+    // Both are strings - sort alphabetically
+    return a.id.localeCompare(b.id);
+  });
+};
+
+/**
  * Formats a ForestClientDto into a display string.
  *
  * @param {ForestClientDto | null | undefined} client - The client object to format.

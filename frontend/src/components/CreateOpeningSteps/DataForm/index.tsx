@@ -345,7 +345,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
           </Column>
 
           {
-            form.tenureInfo.isInvalid
+            form.tenureInfo?.isInvalid
               ? (
                 <Column sm={4} md={8} lg={16}>
                   <InlineNotification
@@ -509,7 +509,7 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
 
               <Button className="modal-button" kind="primary" onClick={isEditTenure ? saveEditedTenure : addTenure} renderIcon={isEditTenure ? Save : Add}>
                 {
-                  isEditTenure ? 'Save changes' : ' Create an opening'
+                  isEditTenure ? 'Save changes' : 'Add licence'
                 }
               </Button>
             </Stack>

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, InlineNotification, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Loading, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Checkmark, TrashCan } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
-import { OpeningTypes } from '@/types/OpeningTypes';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import FeatureUnavailable from '@/components/FeatureUnavailable';
@@ -16,8 +15,11 @@ import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
 
 import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm } from './constants';
+import { validateStepOne } from './utils';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/services/API';
+import { ApiError } from '@/services/OpenApi';
+
 import './styles.scss';
 
 
@@ -32,10 +34,10 @@ const CreateOpening = () => {
     return structuredClone(DefaultOpeningForm);
   });
   const [warnText, setWarnText] = useState<string | undefined>();
+  const [uploadError, setUploadError] = useState<string | undefined>();
 
   const isGovFundedOpening = type === GOV_FUNDED_OPENING;
   const isValidType = type === TENURED_OPENING || isGovFundedOpening;
-  const openingType = isValidType ? (type as OpeningTypes) : TENURED_OPENING;
 
   useEffect(() => {
     if (!isValidType) {
@@ -94,11 +96,17 @@ const CreateOpening = () => {
 
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setUploadError(undefined);
+      setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: data } : f.file }));
       setCurrentStep(1);
     },
     onError: (err) => {
-      console.warn("Upload failed: ", err)
+      // Spring returns ProblemDetail with `detail`; older errors use `message`
+      const body = err instanceof ApiError ? err.body : undefined;
+      const message = body?.detail ?? body?.message;
+      setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: undefined } : f.file }));
+      setUploadError(message || 'File upload failed. Please try again.');
     }
   });
 
@@ -111,12 +119,20 @@ const CreateOpening = () => {
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!form.file?.value) {
-        scrollToSection(form.client?.id)
+      const { isValid, form: validatedForm } = validateStepOne(form);
+      if (!isValid) {
+        setForm(validatedForm);
+        scrollToSection(DefaultOpeningForm.client?.id || 'opening-client-input');
         return;
       }
 
-      fileMutation.mutate(form.file.value)
+      if (!form.file?.value) {
+        scrollToSection(DefaultOpeningForm.file?.id || 'opening-map-file-drop-container');
+        return;
+      }
+
+      setUploadError(undefined);
+      fileMutation.mutate(form.file.value);
 
       return;
     }
@@ -139,30 +155,40 @@ const CreateOpening = () => {
     let isValid = true;
     const validatedForm = structuredClone(form);
 
-    if (!validatedForm.orgUnit.value?.code) {
+    if (!validatedForm.orgUnit?.value) {
       isValid = false;
-      validatedForm.orgUnit.isInvalid = true;
+      if (validatedForm.orgUnit) {
+        validatedForm.orgUnit.isInvalid = true;
+      }
     }
-    if (!validatedForm.category.value?.code) {
+    if (!validatedForm.category?.value) {
       isValid = false;
-      validatedForm.category.isInvalid = true;
+      if (validatedForm.category) {
+        validatedForm.category.isInvalid = true;
+      }
     }
 
-    const openingGrossArea = validatedForm.openingGrossArea.value;
+    const openingGrossArea = validatedForm.openingGrossArea?.value;
     if (!isRealNumber(openingGrossArea)) {
       isValid = false;
-      validatedForm.openingGrossArea.isInvalid = true;
+      if (validatedForm.openingGrossArea) {
+        validatedForm.openingGrossArea.isInvalid = true;
+      }
     }
 
-    const maxAllowablePermAccess = validatedForm.maxAllowablePermAccess.value;
+    const maxAllowablePermAccess = validatedForm.maxAllowablePermAccess?.value;
     if (!isRealNumber(maxAllowablePermAccess)) {
       isValid = false;
-      validatedForm.maxAllowablePermAccess.isInvalid = true;
+      if (validatedForm.maxAllowablePermAccess) {
+        validatedForm.maxAllowablePermAccess.isInvalid = true;
+      }
     }
 
-    if (!validatedForm.tenureInfo.value || !validatedForm.tenureInfo.value.length) {
+    if (!validatedForm.tenureInfo?.value || !validatedForm.tenureInfo.value.length) {
       isValid = false;
-      validatedForm.tenureInfo.isInvalid = true;
+      if (validatedForm.tenureInfo) {
+        validatedForm.tenureInfo.isInvalid = true;
+      }
     }
 
     if (!isValid) {
@@ -218,7 +244,7 @@ const CreateOpening = () => {
           <Grid className="create-opening-form-grid">
             {
               currentStep === 0
-                ? <StepOne form={form} setForm={setForm} />
+                ? <StepOne form={form} setForm={setForm} uploadError={uploadError} onUploadErrorDismiss={() => setUploadError(undefined)} />
                 : null
             }
             {
@@ -257,7 +283,7 @@ const CreateOpening = () => {
                   </Button>
                 ) :
                 (
-                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight}>
+                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={fileMutation.isPending ? Loading : ArrowRight} disabled={fileMutation.isPending}>
                     Next
                   </Button>
                 )
