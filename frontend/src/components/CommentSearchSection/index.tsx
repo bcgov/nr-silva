@@ -6,7 +6,6 @@ import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
 import { CircleDash, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "@/components/EmptySection";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import CommentSearchCard from "./CommentSearchCard";
@@ -172,10 +171,10 @@ const CommentSearchSection = () => {
               <Stack
                 className="search-result-sub-title-section"
                 orientation="horizontal"
-                gap={commentSearchQuery.isLoading || isAuthRefreshInProgress() ? 4 : 2}
+                gap={commentSearchQuery.isLoading ? 4 : 2}
               >
                 <p className="search-result-subtitle">Total search results:</p>
-                {commentSearchQuery.isLoading || isAuthRefreshInProgress() ? (
+                {commentSearchQuery.isLoading ? (
                   <InlineLoading />
                 ) : (
                   <p className="search-result-subtitle">
@@ -186,7 +185,7 @@ const CommentSearchSection = () => {
             </Stack>
           </div>
 
-          {!commentSearchQuery.isLoading && !isAuthRefreshInProgress() ? (
+          {!commentSearchQuery.isLoading ? (
             commentSearchQuery.data?.page?.totalElements &&
               commentSearchQuery.data.page.totalElements > 0 ? (
               <>

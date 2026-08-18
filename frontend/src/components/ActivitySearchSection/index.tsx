@@ -7,7 +7,6 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { CircleDash, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import TableSkeleton from "@/components/TableSkeleton";
 import { ActivityHeaderKeyType, ActivityHeaderType } from "@/types/TableHeader";
 import EmptySection from "@/components/EmptySection";
@@ -213,10 +212,10 @@ const ActivitiesSearchSection = () => {
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={activitySearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={activitySearchQuery.isLoading ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      activitySearchQuery.isLoading && !isAuthRefreshInProgress()
+                      activitySearchQuery.isLoading
                         ? <InlineLoading />
                         : <p className="search-result-subtitle">{activitySearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
@@ -254,7 +253,7 @@ const ActivitiesSearchSection = () => {
 
               {/* Table skeleton */}
               {
-                (activitySearchQuery.isLoading || isAuthRefreshInProgress())
+                activitySearchQuery.isLoading
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -265,7 +264,7 @@ const ActivitiesSearchSection = () => {
                   : null
               }
               {
-                !activitySearchQuery.isLoading && !isAuthRefreshInProgress()
+                !activitySearchQuery.isLoading
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
@@ -304,7 +303,7 @@ const ActivitiesSearchSection = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !activitySearchQuery.isLoading && !isAuthRefreshInProgress()
+                !activitySearchQuery.isLoading
                   ? (
                     activitySearchQuery.data?.page?.totalElements &&
                       activitySearchQuery.data?.page.totalElements > 0 ? (

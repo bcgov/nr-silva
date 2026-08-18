@@ -15,7 +15,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
 
 import { CreateOpeningFormType } from './definitions';
-import { DefaultOpeningForm, TitleText } from './constants';
+import { DefaultOpeningForm } from './constants';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/services/API';
 import './styles.scss';
@@ -49,7 +49,7 @@ const CreateOpening = () => {
       <Grid className='create-opening-grid default-grid'>
         <Column sm={4} md={8} lg={16} id="title-col">
           <PageTitle
-            title={`Create an opening: ${TitleText[openingType]}`}
+            title="Create new opening"
             subtitle="Register an opening to cover licensee or ministry responsibilities"
           />
         </Column>
@@ -70,7 +70,7 @@ const CreateOpening = () => {
       <Grid className='create-opening-grid default-grid'>
         <Column sm={4} md={8} lg={16} id="title-col">
           <PageTitle
-            title={`Create an opening: ${TitleText[openingType]}`}
+            title="Create new opening"
             subtitle="Register an opening to cover licensee or ministry responsibilities"
           />
         </Column>
@@ -94,16 +94,8 @@ const CreateOpening = () => {
 
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
-    onSuccess: (res) => {
-      setForm(prev => ({
-        ...prev,
-        geojson: {
-          ...prev.geojson,
-          value: res.geoJson as GeoJSON.FeatureCollection
-        }
-      }));
+    onSuccess: () => {
       setCurrentStep(1);
-      console.log("Upload success: ", res)
     },
     onError: (err) => {
       console.warn("Upload failed: ", err)
@@ -185,12 +177,7 @@ const CreateOpening = () => {
   return (
     <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16} id="title-col">
-        <PageTitle
-          title={
-            `Create an opening: ${TitleText[openingType]}`
-          }
-          subtitle="Register an opening to cover licensee or ministry responsibilities"
-        />
+        <PageTitle title="Create new opening" />
       </Column>
 
       <Column sm={4} md={8} lg={16}>
@@ -226,7 +213,7 @@ const CreateOpening = () => {
           : null
       }
 
-      <Column sm={4} md={8} lg={16} xlg={12} max={10}>
+      <Column sm={4} md={8} lg={16}>
         <Form noValidate onSubmit={handleSubmit}>
           <Grid className="create-opening-form-grid">
             {
@@ -283,7 +270,7 @@ const CreateOpening = () => {
         passiveModal
         danger
         open={isCancelModalOpen}
-        modalHeading={<ModalHead title="Are you sure you want to cancel?" helperTop={`Create an opening: ${TitleText[openingType]}`} />}
+        modalHeading={<ModalHead title="Are you sure you want to cancel?" helperTop="Create new opening" />}
         onRequestClose={() => setIsCancelModalOpen(false)}
         className="default-modal"
         preventCloseOnClickOutside

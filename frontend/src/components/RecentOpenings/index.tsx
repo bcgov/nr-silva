@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow } from '@carbon/react';
 import { Location } from '@carbon/icons-react';
-import { isAuthRefreshInProgress } from '@/constants/tanstackConfig';
 import { useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 
@@ -107,7 +106,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
 
       {/* Table skeleton */}
       {
-        (recentOpeningsQuery.isLoading || isAuthRefreshInProgress()) ? (
+        recentOpeningsQuery.isLoading ? (
           <TableSkeleton
             headers={recentOpeningsHeaders}
             showToolbar={false}
@@ -119,7 +118,6 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       {
         (
           !recentOpeningsQuery.isLoading &&
-          !isAuthRefreshInProgress() &&
           !recentOpeningsQuery.data?.content?.length
         )
           ? (
@@ -132,7 +130,7 @@ const RecentOpenings = ({ defaultMapOpen = false }: RecentOpeningsProps) => {
       }
       {/* Loaded table content */}
       {
-        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content?.length && !isAuthRefreshInProgress() ?
+        !recentOpeningsQuery.isLoading && recentOpeningsQuery.data?.content?.length ?
           (
             <Table
               className="recent-openings-table default-zebra-table"

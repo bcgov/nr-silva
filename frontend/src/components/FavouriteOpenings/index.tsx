@@ -2,7 +2,6 @@ import React from "react";
 import { Column, Loading, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "../EmptySection";
 import ChartContainer from "../ChartContainer";
 import FavOpeningItem from "./FavOpeningItem";
@@ -28,7 +27,7 @@ const FavouriteOpenings: React.FC = () => {
     >
       <Column className="favourite-content-col" sm={4} md={8} lg={16}>
         {
-          favouriteOpeningsQuery.isLoading || isAuthRefreshInProgress()
+          favouriteOpeningsQuery.isLoading
             ? (
               <div className="loading-container">
                 <Loading withOverlay={false} />
@@ -37,7 +36,7 @@ const FavouriteOpenings: React.FC = () => {
             : null
         }
         {
-          !favouriteOpeningsQuery.isLoading && !isAuthRefreshInProgress() && !favouriteOpeningsQuery.data?.length
+          !favouriteOpeningsQuery.isLoading && !favouriteOpeningsQuery.data?.length
             ? (
               <EmptySection
                 pictogram="UserInsights"
@@ -48,7 +47,7 @@ const FavouriteOpenings: React.FC = () => {
             : null
         }
         {
-          !favouriteOpeningsQuery.isLoading && favouriteOpeningsQuery.data?.length && !isAuthRefreshInProgress()
+          !favouriteOpeningsQuery.isLoading && favouriteOpeningsQuery.data?.length
             ? (
               <Grid className="twelve-col-grid">
                 {

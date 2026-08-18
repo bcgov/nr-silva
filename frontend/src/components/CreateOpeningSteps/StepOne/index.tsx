@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Column, FileUploaderDropContainer, FileUploaderItem, Stack, TextInput } from "@carbon/react";
+import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, Stack } from "@carbon/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
@@ -40,18 +40,17 @@ const StepOne = ({
         user!.associatedClients.length
       ),
     enabled: !!user?.associatedClients.length,
-    select: (data) => data.find((client) => client.clientNumber === form.client?.value),
   });
+
+  const clientOptions = userClientQuery.data?.map((client) => ({
+    id: client.clientNumber,
+    label: formatForestClient(client),
+  })) ?? [];
+
+  const selectedClient = clientOptions.find((item) => item.id === form.client?.value);
 
   const handleAddFile = async (addedFiles: File[]) => {
     setError(null);
-    setForm((prev) => ({
-      ...prev,
-      geojson: {
-        ...prev.geojson,
-        value: undefined
-      }
-    }));
 
     if (!addedFiles?.length) return;
 
@@ -76,10 +75,6 @@ const StepOne = ({
       file: {
         ...prev.file,
         value: f,
-      },
-      geojson: {
-        ...prev.geojson,
-        value: undefined
       }
     }));
   };
@@ -91,10 +86,6 @@ const StepOne = ({
       file: {
         ...prev.file,
         value: undefined,
-      },
-      geojson: {
-        ...prev.geojson,
-        value: undefined
       }
     }));
   };
@@ -110,7 +101,7 @@ const StepOne = ({
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <Stack gap={5} className="file-uploader-container">
+        <Stack gap={6} className="file-uploader-container">
 
           <h3 className="default-heading-20px">Spatial information</h3>
 
@@ -119,7 +110,7 @@ const StepOne = ({
               Upload opening map geometry
             </RequiredLabel>
             <p id={helpId} className="file-type-p">
-              Acceptable file types: GeoJSON, GML, XML(ESF)
+              Supported file types are .GeoJSON and .GML
             </p>
           </div>
 
@@ -127,7 +118,7 @@ const StepOne = ({
             id="opening-map-file-drop-container"
             accept={ACCEPTED_FILE_TYPES}
             multiple={false}
-            labelText="Click to upload or drag and drop the map file here (max 25 MB)"
+            labelText="Drag and drop the map file here or click to upload (max 25 MB)"
             onAddFiles={(_evt, { addedFiles }) => handleAddFile(addedFiles)}
             aria-labelledby={labelId}
             aria-describedby={helpId}
@@ -152,15 +143,40 @@ const StepOne = ({
       </Column>
 
       <Column sm={4} md={8} lg={16}>
-        <TextInput
-          labelText="Client"
-          id="selected-client"
-          readOnly
-          required
-          defaultValue={formatForestClient(userClientQuery.data)}
-        />
-      </Column>
+        <Stack gap={6} className="general-info-container">
+          <h3 className="default-heading-20px">General information</h3>
 
+          <Grid>
+            <Column sm={4} md={8} lg={8}>
+              {userClientQuery.isLoading ? (
+                <DropdownSkeleton />
+              ) : (
+                <Dropdown
+                  id="selected-client"
+                  titleText={
+                    <RequiredLabel id="selected-client-label" htmlFor="selected-client">
+                      Client
+                    </RequiredLabel>
+                  }
+                  label="Choose an option"
+                  items={clientOptions}
+                  selectedItem={selectedClient}
+                  itemToString={(item) => item?.label ?? ''}
+                  onChange={({ selectedItem }) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      client: {
+                        ...prev.client,
+                        value: selectedItem?.id,
+                      },
+                    }))
+                  }
+                />
+              )}
+            </Column>
+          </Grid>
+        </Stack>
+      </Column>
 
     </>
   );

@@ -27,7 +27,6 @@ import API from "@/services/API";
 import { OpeningDetailsOverviewDto, OpeningForestCoverDto, OpeningForestCoverHistoryDto, OpeningForestCoverHistoryOverviewDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { formatDateTime, isMidnight } from "@/utils/DateUtils";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { CardContainer, CardItem } from "@/components/Card";
 
 import { EXPAND_PROMPT, ForestCoverTableHeaders, HistoryOverviewTableHeaders } from "./constants";
@@ -447,7 +446,7 @@ const OpeningForestCover = ({
           <div className="opening-forest-cover-header-container">
             <div className="opening-forest-cover-header-title-container">
               <h3 className="default-tab-content-title">
-                {forestCoverQueryToUse.isLoading || isAuthRefreshInProgress() ? '...' : `${forestCoverQueryToUse.data?.length ?? 0}`} forest cover polygons in this opening
+                {forestCoverQueryToUse.isLoading ? '...' : `${forestCoverQueryToUse.data?.length ?? 0}`} forest cover polygons in this opening
               </h3>
 
               <Link
@@ -465,7 +464,7 @@ const OpeningForestCover = ({
 
             <div className="opening-forest-cover-header-dropdown-container">
               {
-                forestCoverHistoryOverviewQuery.isLoading || isAuthRefreshInProgress()
+                forestCoverHistoryOverviewQuery.isLoading
                   ? <DropdownSkeleton />
                   : (
                     <Dropdown
@@ -514,7 +513,7 @@ const OpeningForestCover = ({
               </Button>
             </TableToolbar>
             {
-              (forestCoverQueryToUse.isLoading || forestCoverSearchQueryToUse.isLoading || isAuthRefreshInProgress())
+              (forestCoverQueryToUse.isLoading || forestCoverSearchQueryToUse.isLoading)
                 ? (
                   <TableSkeleton
                     headers={ForestCoverTableHeaders}

@@ -103,11 +103,12 @@ function errorHandler(
     try {
       if (query) {
         // clear query error and mark as loading/fetching so UI shows a retry in-progress
+        // 'pending' + 'fetching' = isLoading===true in TanStack Query v5
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (query as any).setState?.((oldState: any) => ({
           ...oldState,
           error: null,
-          status: 'loading',
+          status: 'pending',
           fetchStatus: 'fetching'
         }));
       }
@@ -168,8 +169,3 @@ export const queryClientConfig: QueryClientConfig = {
   })
 };
 
-// Export a read-only accessor so UI code can detect when an auth refresh is in
-// progress and suppress transient 401 error UI.
-export function isAuthRefreshInProgress(): boolean {
-  return isRefreshing;
-}

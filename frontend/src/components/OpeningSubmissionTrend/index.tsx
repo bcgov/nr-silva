@@ -27,7 +27,6 @@ import { buildQueryString } from "@/utils/UrlUtils";
 import { Chart } from "@carbon/charts";
 import { CodeDescriptionDto } from "@/services/OpenApi";
 import { OPENING_STATUS_LIST } from "@/constants";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 // Local components
 import EmptySection from "../EmptySection";
@@ -183,7 +182,7 @@ const OpeningSubmissionTrend = () => {
       <Column sm={4} md={8} lg={16}>
         <div className="submission-trend-input-container">
           {
-            (orgUnitQuery.isLoading || isAuthRefreshInProgress())
+            (orgUnitQuery.isLoading)
               ? (
                 <>
                   <DropdownSkeleton />
@@ -230,17 +229,17 @@ const OpeningSubmissionTrend = () => {
       </Column>
 
       <Column className="trend-loading-col" sm={4} md={8} lg={16} xlg={16}>
-        {submissionTrendQuery.isFetching || isAuthRefreshInProgress() ? (
+        {submissionTrendQuery.isFetching ? (
           <Loading className="trend-loading-spinner" withOverlay={false} />
         ) : null}
-        {!submissionTrendQuery.isFetching && !isAuthRefreshInProgress() && !submissionTrendQuery.data ? (
+        {!submissionTrendQuery.isFetching && !submissionTrendQuery.data ? (
           <EmptySection
             pictogram="UserSearch"
             title="No results found"
             description="No results found with the current filters. Try adjusting them to refine your search."
           />
         ) : null}
-        {!submissionTrendQuery.isFetching && !isAuthRefreshInProgress() && submissionTrendQuery.data ? (
+        {!submissionTrendQuery.isFetching && submissionTrendQuery.data ? (
           <GroupedBarChart
             ref={handleChartRef}
             data={submissionTrendQuery.data}

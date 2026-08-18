@@ -6,10 +6,16 @@
     max-inline-size: 100%;
   }
 
-  .file-type-p {
-    margin-top: 0.5rem;
-    @include type.type-style('body-compact-01');
-    color: var(--#{vars.$bcgov-prefix}-text-secondary);
+  .file-uploader-title {
+    label {
+      @include type.type-style('heading-compact-01');
+    }
+
+    .file-type-p {
+      margin-top: 0.5rem;
+      @include type.type-style('body-compact-01');
+      color: var(--#{vars.$bcgov-prefix}-text-secondary);
+    }
   }
 
   .file-uploader-with-error {

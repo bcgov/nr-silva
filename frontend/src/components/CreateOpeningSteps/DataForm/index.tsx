@@ -1,5 +1,4 @@
 import { useState } from "react";
-import MapPreview from "@/components/MapPreview";
 import {
   Button, Column, ComboBox, FileUploaderItem,
   Grid, InlineNotification, Modal, RadioButton, Stack, Table, TableBody,
@@ -266,17 +265,14 @@ const DataForm = ({ isReview, form, setForm, handleBack }: DataFormProps) => {
 
           <Column sm={4} md={8} lg={16}>
             {
-              form.geojson
+              form.file?.value
                 ? (
-                  <Stack className="spatial-file-stack">
-                    <MapPreview geojson={form.geojson.value} />
-                    <FileUploaderItem
-                      className="default-file-uploader-item"
-                      name={form.file?.value?.name ?? "Invalid file"}
-                      size="lg"
-                      status="complete"
-                    />
-                  </Stack>
+                  <FileUploaderItem
+                    className="default-file-uploader-item"
+                    name={form.file.value.name}
+                    size="lg"
+                    status="complete"
+                  />
                 )
                 : null
             }

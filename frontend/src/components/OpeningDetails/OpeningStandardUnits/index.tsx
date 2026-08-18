@@ -36,7 +36,6 @@ import { PLACE_HOLDER } from "@/constants";
 import { formatDateTime, formatLocalDate } from "@/utils/DateUtils";
 import API from "@/services/API";
 import { OpeningDetailsStockingDto, OpeningDetailsStockingLayerDto, OpeningStockingHistoryDto, OpeningStockingHistoryOverviewDto } from "@/services/OpenApi";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 
 import TooltipLabel from "@/components/TooltipLabel";
 import { StockingStandardMilestoneStatusTag } from "@/components/Tags";
@@ -202,7 +201,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
     }
   };
 
-  if (openingDetailSsuQuery.isLoading || isAuthRefreshInProgress()) {
+  if (openingDetailSsuQuery.isLoading) {
     return <TextAreaSkeleton />;
   }
 
@@ -262,7 +261,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
               <h3 className="default-tab-content-title">
                 {
-                  stockingUnitsQuery.isLoading || isAuthRefreshInProgress() ? (
+                  stockingUnitsQuery.isLoading ? (
                     <SkeletonText />
                   ) :
                     <>
@@ -289,7 +288,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
 
             <div className="opening-standard-unit-header-dropdown-container">
 
-              {openingSsuHistoryListQuery.isLoading || isAuthRefreshInProgress() ? (
+              {openingSsuHistoryListQuery.isLoading ? (
                 <DropdownSkeleton />
               ) : (
                 <Dropdown
@@ -318,7 +317,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
         </Column>
 
         {
-          stockingUnitsQuery.isLoading || isAuthRefreshInProgress() ? (
+          stockingUnitsQuery.isLoading ? (
             <Column sm={4} md={8} lg={16} className="accordion-col">
               <AccordionSkeleton open={false} />
             </Column>
@@ -345,7 +344,7 @@ const OpeningStandardUnits = ({ openingId }: OpeningStandardUnitsProps) => {
                             <CardItem
                               label="Net area to be reforested (ha)"
                               isNumber
-                              showSkeleton={openingDetailSsuQuery.isLoading || isAuthRefreshInProgress()}
+                              showSkeleton={openingDetailSsuQuery.isLoading}
                             >
                               {standardUnit.stocking.netArea}
                             </CardItem>

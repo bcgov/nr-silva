@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { StockingStandardsCommentSearchParams } from "@/types/ApiType";
 import { DEFAULT_PAGE_NUM, PageSizesConfig } from "@/constants/tableConstants";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import EmptySection from "@/components/EmptySection";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
@@ -176,10 +175,10 @@ const StockingStandardsCommentSearchSection = () => {
               <Stack
                 className="search-result-sub-title-section"
                 orientation="horizontal"
-                gap={stockingCommentSearchQuery.isLoading || isAuthRefreshInProgress() ? 4 : 2}
+                gap={stockingCommentSearchQuery.isLoading ? 4 : 2}
               >
                 <p className="search-result-subtitle">Total search results:</p>
-                {stockingCommentSearchQuery.isLoading || isAuthRefreshInProgress() ? (
+                {stockingCommentSearchQuery.isLoading ? (
                   <InlineLoading />
                 ) : (
                   <p className="search-result-subtitle">
@@ -190,7 +189,7 @@ const StockingStandardsCommentSearchSection = () => {
             </Stack>
           </div>
 
-          {!stockingCommentSearchQuery.isLoading && !isAuthRefreshInProgress() ? (
+          {!stockingCommentSearchQuery.isLoading ? (
             stockingCommentSearchQuery.data?.page?.totalElements &&
               stockingCommentSearchQuery.data.page.totalElements > 0 ? (
               <>
