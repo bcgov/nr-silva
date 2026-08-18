@@ -14,7 +14,6 @@ export type CreateOpeningFormType = {
   client?: FormInputType<string>;
   file?: FormInputType<File>;
   geojson?: FormInputType<GeoJSON.FeatureCollection>;
-  isGeoJsonMissing?: FormInputType<boolean>;
   orgUnit: FormInputType<CodeDescriptionDto>;
   category: FormInputType<CodeDescriptionDto>;
   openingGrossArea: FormInputType<string>;

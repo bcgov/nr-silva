@@ -119,12 +119,7 @@ const CreateOpening = () => {
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!form.geojson?.value || !form.file?.value) {
-        setForm(
-          (prev) => (
-            { ...prev, isGeoJsonMissing: { ...prev.isGeoJsonMissing, value: true } }
-          )
-        )
+      if (!form.file?.value) {
         scrollToSection(form.client?.id)
         return;
       }
