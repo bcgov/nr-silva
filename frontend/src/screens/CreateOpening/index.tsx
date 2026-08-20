@@ -18,7 +18,7 @@ import { DefaultOpeningForm } from './constants';
 import { validateStepOne } from './utils';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/services/API';
-import { ApiError } from '@/services/OpenApi';
+import { ApiError, TenureRequestDto, TenureValidationResponseDto } from '@/services/OpenApi';
 
 import './styles.scss';
 
@@ -35,6 +35,9 @@ const CreateOpening = () => {
   });
   const [warnText, setWarnText] = useState<string | undefined>();
   const [uploadError, setUploadError] = useState<string | undefined>();
+  const [tenureValidationResult, setTenureValidationResult] = useState<TenureValidationResponseDto | null>(null);
+  const [showNoPrimaryError, setShowNoPrimaryError] = useState(false);
+  const [tenureFieldErrors, setTenureFieldErrors] = useState<Array<{ fileId?: boolean; cutBlock?: boolean }> | undefined>();
 
   const isGovFundedOpening = type === GOV_FUNDED_OPENING;
   const isValidType = type === TENURED_OPENING || isGovFundedOpening;
@@ -98,7 +101,17 @@ const CreateOpening = () => {
     mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
     onSuccess: (data) => {
       setUploadError(undefined);
-      setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: data } : f.file }));
+      setForm(f => ({
+        ...f,
+        file: f.file ? { ...f.file, validatedObj: data } : f.file,
+        openingGrossArea: f.openingGrossArea
+          ? {
+            ...f.openingGrossArea,
+            value: data?.geometryArea ? String(data.geometryArea) : f.openingGrossArea.value,
+            isInvalid: false,
+          }
+          : f.openingGrossArea,
+      }));
     },
     onError: (err) => {
       // Spring returns ProblemDetail with `detail`; older errors use `message`
@@ -107,6 +120,28 @@ const CreateOpening = () => {
       setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: undefined } : f.file }));
       setUploadError(message || 'File upload failed. Please try again.');
     }
+  });
+
+  const tenureValidationMutation = useMutation({
+    mutationFn: (tenures: Array<TenureRequestDto>) =>
+      API.TenureEndpointService.validateTenures(form.client?.value ?? '', tenures),
+    onSuccess: (data) => {
+      setWarnText(undefined);
+      if (data.isValid) {
+        setCurrentStep(2);
+        scrollToSection('title-col');
+      } else {
+        setTenureValidationResult(data);
+        scrollToSection('title-col');
+      }
+    },
+    onError: (err) => {
+      const status = err instanceof ApiError ? err.status : 0;
+      if (status === 401) return; // global handler will refresh + retry
+      const body = err instanceof ApiError ? err.body : undefined;
+      const message = body?.detail ?? body?.message;
+      setWarnText(message || 'Tenure validation failed. Please try again.');
+    },
   });
 
   const handleBack = () => {
@@ -125,19 +160,36 @@ const CreateOpening = () => {
         return;
       }
 
-      if (!form.file?.value || !form.file?.validatedObj) {
-        scrollToSection(DefaultOpeningForm.file?.id || 'opening-map-file-drop-container');
-        return;
-      }
-
       setCurrentStep(1);
       scrollToSection('title-col');
       return;
     }
 
-    if (currentStep === 1 && validateForm()) {
-      setCurrentStep(2);
-      scrollToSection('title-col');
+    if (currentStep === 1) {
+      const tenures = form.tenureInfo?.value ?? [];
+      const trimmed = tenures.map(t => ({
+        ...t,
+        fileId: t.fileId?.trim() ?? '',
+        cuttingPermit: t.cuttingPermit?.trim() ?? '',
+        cutBlock: t.cutBlock?.trim() ?? '',
+      }));
+      const errors = trimmed.map(t => ({ fileId: !t.fileId, cutBlock: !t.cutBlock }));
+      if (errors.some(e => e.fileId || e.cutBlock)) {
+        setTenureFieldErrors(errors);
+        setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
+        scrollToSection('title-col');
+        return;
+      }
+      if (!trimmed.some(t => t.isPrimary)) {
+        setShowNoPrimaryError(true);
+        setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
+        scrollToSection('title-col');
+        return;
+      }
+      setShowNoPrimaryError(false);
+      setTenureFieldErrors(undefined);
+      setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
+      tenureValidationMutation.mutate(trimmed);
     }
   }
 
@@ -254,7 +306,18 @@ const CreateOpening = () => {
             }
             {
               currentStep !== 0
-                ? <StepTwo isReview={currentStep === 2} form={form} setForm={setForm} handleBack={handleBack} />
+                ? <StepTwo
+                  form={form}
+                  setForm={setForm}
+                  validationResult={tenureValidationResult}
+                  showNoPrimaryError={showNoPrimaryError}
+                  fieldErrors={tenureFieldErrors}
+                  onTenuresChange={() => {
+                    setTenureValidationResult(null);
+                    setShowNoPrimaryError(false);
+                    setTenureFieldErrors(undefined);
+                  }}
+                />
                 : null
             }
           </Grid>
@@ -288,7 +351,7 @@ const CreateOpening = () => {
                   </Button>
                 ) :
                 (
-                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight} disabled={fileMutation.isPending}>
+                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight} disabled={fileMutation.isPending || tenureValidationMutation.isPending}>
                     Next
                   </Button>
                 )

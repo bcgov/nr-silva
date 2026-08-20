@@ -225,6 +225,143 @@ export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>, maxLen
   el.setSelectionRange(pos, pos);
 };
 
+/**
+ * Enforce decimal numeric input with max digits and decimal places on keydown.
+ * Spec: numeric(11,4) = 11 total digits, 4 decimal places max.
+ * Allows: digits, single decimal point. Prevents: multiple decimals, overflow.
+ *
+ * @param {number} [maxLen=11] - Maximum total digits (including decimal point)
+ * @param {number} [maxDecimals=4] - Maximum decimal places
+ * Example: `<input onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 11, 4)} />`
+ */
+export const enforceDecimalInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, maxLen: number = 11, maxDecimals: number = 4) => {
+  const allowed = [
+    'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End',
+  ];
+  if (allowed.includes(e.key)) return;
+  if (e.ctrlKey || e.metaKey) return; // allow copy/paste shortcuts
+
+  const key = e.key;
+  const currentValue = e.currentTarget.value;
+  const start = e.currentTarget.selectionStart ?? 0;
+  const end = e.currentTarget.selectionEnd ?? 0;
+
+  // Allow decimal point if not already present
+  if (key === '.') {
+    if (currentValue.includes('.')) {
+      e.preventDefault();
+    }
+    return;
+  }
+
+  // Only allow digits
+  if (typeof key === 'string' && key.length === 1) {
+    const code = key.charCodeAt(0);
+    if (code >= 48 && code <= 57) {
+      // Check digit count constraint
+      const digitsOnly = currentValue.replace('.', '');
+      const beforeLength = start;
+      const afterLength = currentValue.length - end;
+      // Account for decimal point length
+      const decimalOffset = currentValue.includes('.') ? 1 : 0;
+      const totalDigits = digitsOnly.length;
+
+      // Check if adding digit would exceed max length
+      if (totalDigits >= maxLen - decimalOffset) {
+        e.preventDefault();
+        return;
+      }
+
+      // Check decimal places if inserting after decimal point
+      if (currentValue.includes('.')) {
+        const decimalIndex = currentValue.indexOf('.');
+        if (start > decimalIndex) {
+          const decimalsAfterPoint = currentValue.slice(decimalIndex + 1).length;
+          if (decimalsAfterPoint >= maxDecimals) {
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+      return;
+    }
+  }
+  e.preventDefault();
+};
+
+/**
+ * Enforce decimal numeric paste with max digits and decimal places.
+ * Spec: numeric(11,4) = 11 total digits, 4 decimal places max.
+ *
+ * @param {HTMLInputElement | null} el - The input element reference.
+ * @param {React.ClipboardEvent<HTMLInputElement>} e - The paste event.
+ * @param {number} [maxLen=11] - Maximum total digits (including decimal point)
+ * @param {number} [maxDecimals=4] - Maximum decimal places
+ * Call from an `onPaste` handler: `onPaste={(e) => enforceDecimalInputOnPaste(inputRef.current, e, 11, 4)}`
+ */
+export const enforceDecimalInputOnPaste = (el: HTMLInputElement | null, e: React.ClipboardEvent<HTMLInputElement>, maxLen: number = 11, maxDecimals: number = 4) => {
+  e.preventDefault();
+  if (!el) return;
+
+  const text = e.clipboardData?.getData('text') ?? '';
+  // Extract only digits and decimal point
+  let paste = '';
+  let decimalCount = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text.charAt(i);
+    if (ch === '.') {
+      if (decimalCount === 0) {
+        paste += ch;
+        decimalCount++;
+      }
+    } else {
+      const code = ch.charCodeAt(0);
+      if (code >= 48 && code <= 57) {
+        paste += ch;
+      }
+    }
+  }
+
+  if (!paste) return;
+
+  const start = el.selectionStart ?? 0;
+  const end = el.selectionEnd ?? 0;
+  const before = el.value.slice(0, start);
+  const after = el.value.slice(end);
+  let newValue = before + paste + after;
+
+  // Validate result doesn't exceed constraints
+  const parts = newValue.split('.');
+  if (parts.length > 2) {
+    // Multiple decimal points - remove extras
+    const part0 = parts[0] ?? '';
+    newValue = part0 + '.' + parts.slice(1).join('');
+  }
+
+  // Check total digits
+  const digitsOnly = newValue.replace('.', '');
+  if (digitsOnly.length > maxLen) {
+    const part0 = parts[0] ?? '';
+    const part1 = parts[1] ?? '';
+    newValue = parts.length === 2
+      ? part0.slice(0, maxLen - maxDecimals) + '.' + part1.slice(0, maxDecimals)
+      : digitsOnly.slice(0, maxLen);
+  }
+
+  // Check decimal places
+  if (parts.length === 2) {
+    const part0 = parts[0] ?? '';
+    const part1 = parts[1] ?? '';
+    if (part1.length > maxDecimals) {
+      newValue = part0 + '.' + part1.slice(0, maxDecimals);
+    }
+  }
+
+  el.value = newValue;
+  const cursorPos = start + paste.length;
+  el.setSelectionRange(cursorPos, cursorPos);
+};
+
 export const comboBoxStringFilter = (options: {
   item: string;
   itemToString?: ItemToStringHandler<string>;

@@ -554,3 +554,9 @@ ul.default-tab-accordion {
     padding: 1rem;
   }
 }
+
+.default-white-input {
+  input {
+    background-color: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
+}

@@ -7,9 +7,6 @@ export const DefaultOpeningForm: CreateOpeningFormType = {
   file: {
     id: 'opening-map-file-drop-container',
   },
-  locationCode: {
-    id: 'opening-location-code-input',
-  },
   orgUnit: {
     id: 'opening-org-unit-input',
   },
@@ -24,6 +21,7 @@ export const DefaultOpeningForm: CreateOpeningFormType = {
   },
   maxAllowablePermAccess: {
     id: 'opening-max-allowable-perm-access-input',
+    value: '7',
   },
   tenureInfo: {}
 }

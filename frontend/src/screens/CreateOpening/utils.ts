@@ -10,10 +10,6 @@ export function validateStepOne(form: CreateOpeningFormType): { isValid: boolean
     isValid = false;
     if (updated.client) updated.client.isInvalid = true;
   }
-  if (!updated.locationCode?.value) {
-    isValid = false;
-    if (updated.locationCode) updated.locationCode.isInvalid = true;
-  }
   if (!updated.orgUnit?.value) {
     isValid = false;
     if (updated.orgUnit) updated.orgUnit.isInvalid = true;
@@ -25,6 +21,19 @@ export function validateStepOne(form: CreateOpeningFormType): { isValid: boolean
   if (updated.licenseeOpeningId?.value && updated.licenseeOpeningId.value.length > LICENSEE_OPENING_ID_MAX_LEN) {
     isValid = false;
     if (updated.licenseeOpeningId) updated.licenseeOpeningId.isInvalid = true;
+  }
+  if (!updated.file?.value) {
+    isValid = false;
+    updated.file = updated.file || {};
+    updated.file.isInvalid = true;
+  }
+  if (!updated.openingGrossArea?.value || Number(updated.openingGrossArea.value) <= 0) {
+    isValid = false;
+    if (updated.openingGrossArea) updated.openingGrossArea.isInvalid = true;
+  }
+  if (!updated.maxAllowablePermAccess?.value) {
+    isValid = false;
+    if (updated.maxAllowablePermAccess) updated.maxAllowablePermAccess.isInvalid = true;
   }
 
   return { isValid, form: updated };

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, InlineLoading, InlineNotification, Stack, TextInput } from "@carbon/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { formatForestClient, getClientLocationLabel, sortLocationOptions } from "@/utils/ForestClientUtils";
+import { formatForestClient, getClientLocationLabel } from "@/utils/ForestClientUtils";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "./constants";
 import { CreateOpeningFormType } from "@/screens/CreateOpening/definitions";
 import MapPreview from "@/components/MapPreview";
+import { enforceDecimalInputOnKeyDown, enforceDecimalInputOnPaste } from "@/utils/InputUtils";
 
 import RequiredLabel from "../../RequiredLabel";
 
@@ -22,10 +23,11 @@ type StepOneProps = {
 }
 
 const StepOne = ({
-  form, setForm, uploadError, onUploadErrorDismiss, onFileAdded, isUploading
+  form, setForm, uploadError, onUploadErrorDismiss, onFileAdded, isUploading,
 }: StepOneProps) => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const openingGrossAreaRef = useRef<HTMLInputElement>(null);
 
   const validate = (f: File) => {
     if (f.size > MAX_FILE_SIZE) return `"${f.name}" exceeds ${MAX_FILE_MB} MB.`;
@@ -51,16 +53,6 @@ const StepOne = ({
     })) ?? [],
   });
 
-  const clientLocationQuery = useQuery({
-    queryKey: ["clients", form.client?.value, "locations"],
-    queryFn: () =>
-      API.ForestClientEndpointService.getForestClientLocations(
-        form.client?.value!
-      ),
-    enabled: !!form.client?.value,
-    select: (data) => sortLocationOptions(data),
-  });
-
   const handleClientChange = (selectedItem: { id: string; label: string } | null | undefined) => {
     setForm((prev) => ({
       ...prev,
@@ -68,10 +60,6 @@ const StepOne = ({
         ...prev.client,
         value: selectedItem?.id,
         isInvalid: false,
-      },
-      locationCode: {
-        ...prev.locationCode,
-        value: undefined,
       },
     }));
   };
@@ -122,6 +110,7 @@ const StepOne = ({
         ...prev.file,
         value: f,
         validatedObj: undefined,
+        isInvalid: false,
       }
     }));
     onFileAdded(f);
@@ -135,6 +124,7 @@ const StepOne = ({
         ...prev.file,
         value: undefined,
         validatedObj: undefined,
+        isInvalid: false,
       }
     }));
   };
@@ -155,13 +145,13 @@ const StepOne = ({
           <h3 className="default-heading-20px">Spatial information</h3>
 
           {
-            uploadError
+            uploadError || (form.file?.isInvalid && !form.file?.value)
               ? (
                 <InlineNotification
                   kind="error"
                   lowContrast
-                  title="File upload failed"
-                  subtitle={uploadError}
+                  title={uploadError ? "File upload failed" : "File is required"}
+                  subtitle={uploadError || "Upload opening map geometry"}
                   onCloseButtonClick={onUploadErrorDismiss}
                 />
               )
@@ -192,11 +182,11 @@ const StepOne = ({
           <MapPreview geojson={form.file?.validatedObj?.geoJson as GeoJSON.FeatureCollection ?? null} />
 
           {
-            (form.file?.value || error)
+            form.file?.value
               ? (
                 <FileUploaderItem
                   className="default-file-uploader-item"
-                  name={form.file?.value?.name ?? "Invalid file"}
+                  name={form.file?.value?.name ?? "No file selected"}
                   status={form.file?.validatedObj ? "complete" : "edit"}
                   onDelete={handleFileDelete}
                   invalid={!!error}
@@ -205,7 +195,73 @@ const StepOne = ({
               )
               : null
           }
-
+          {
+            form.file?.validatedObj
+              ? (
+                <Grid className="default-sub-grid">
+                  <Column sm={4} md={8} lg={8}>
+                    <TextInput
+                      id="geometry-area-display-input"
+                      readOnly
+                      labelText="Geometry area (ha)"
+                      value={form.file?.validatedObj?.geometryArea ?? ''}
+                    />
+                  </Column>
+                  <Column sm={4} md={8} lg={8}>
+                    <TextInput
+                      ref={openingGrossAreaRef}
+                      id={form.openingGrossArea?.id ?? ''}
+                      labelText={
+                        <RequiredLabel id="opening-gross-area-label" htmlFor={form.openingGrossArea?.id ?? ''}>
+                          Opening gross area (ha)
+                        </RequiredLabel>
+                      }
+                      placeholder="Enter opening gross area"
+                      defaultValue={form.openingGrossArea?.value ?? ''}
+                      invalid={form.openingGrossArea?.isInvalid}
+                      invalidText="Opening gross area is required and must be greater than zero"
+                      onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 11, 4)}
+                      onPaste={(e) => enforceDecimalInputOnPaste(openingGrossAreaRef.current, e, 11, 4)}
+                      onBlur={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          openingGrossArea: {
+                            ...prev.openingGrossArea,
+                            value: e.target.value || undefined,
+                          },
+                        }))
+                      }
+                    />
+                  </Column>
+                  <Column sm={4} md={8} lg={8}>
+                    <TextInput
+                      id={form.maxAllowablePermAccess?.id ?? ''}
+                      labelText={
+                        <RequiredLabel id="max-allowable-perm-access-label" htmlFor={form.maxAllowablePermAccess?.id ?? ''}>
+                          Maximum allowable permanent access (%)
+                        </RequiredLabel>
+                      }
+                      placeholder="Enter percentage"
+                      defaultValue={form.maxAllowablePermAccess?.value ?? ''}
+                      invalid={form.maxAllowablePermAccess?.isInvalid}
+                      invalidText="Must be between 0.0 and 99.9"
+                      onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 3, 1)}
+                      onPaste={(e) => enforceDecimalInputOnPaste(openingGrossAreaRef.current, e, 3, 1)}
+                      onBlur={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          maxAllowablePermAccess: {
+                            ...prev.maxAllowablePermAccess,
+                            value: e.target.value || undefined,
+                          },
+                        }))
+                      }
+                    />
+                  </Column>
+                </Grid>
+              )
+              : null
+          }
         </Stack>
       </Column>
 
@@ -236,37 +292,6 @@ const StepOne = ({
               )}
             </Column>
 
-            <Column sm={4} md={8} lg={8}>
-              {clientLocationQuery.isLoading ? (
-                <DropdownSkeleton />
-              ) : (
-                <Dropdown
-                  id={form.locationCode?.id ?? ''}
-                  titleText={
-                    <RequiredLabel id="selected-location-label" htmlFor={form.locationCode?.id ?? ''}>
-                      Location code
-                    </RequiredLabel>
-                  }
-                  disabled={!form.client?.value}
-                  label="Choose an option"
-                  items={clientLocationQuery.data ?? []}
-                  selectedItem={clientLocationQuery.data?.find((item) => item.id === form.locationCode?.value)}
-                  itemToString={(item) => item?.label ?? ''}
-                  onChange={({ selectedItem }) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      locationCode: {
-                        ...prev.locationCode,
-                        value: selectedItem?.id ?? undefined,
-                        isInvalid: false,
-                      },
-                    }))
-                  }
-                  invalid={form.locationCode?.isInvalid}
-                  invalidText="Select a location code"
-                />
-              )}
-            </Column>
 
             <Column sm={4} md={8} lg={8}>
               {orgUnitQuery.isLoading ? (
@@ -335,7 +360,7 @@ const StepOne = ({
                 id={form.licenseeOpeningId?.id ?? ''}
                 labelText="Licensee opening ID"
                 placeholder="Enter licensee opening ID"
-                value={form.licenseeOpeningId?.value ?? ''}
+                defaultValue={form.licenseeOpeningId?.value ?? ''}
                 invalid={form.licenseeOpeningId?.isInvalid}
                 invalidText="Must be fewer than 30 characters"
                 onBlur={(e) =>
