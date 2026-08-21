@@ -140,7 +140,7 @@ class CreateOpeningServiceTest {
         java.util.stream.IntStream.range(0, tenures.size())
             .boxed()
             .collect(java.util.stream.Collectors.toMap(i -> i, i -> DUMMY_BLOCK));
-    return new TenureValidationResponseDto(results, List.of(), true, blocks);
+    return new TenureValidationResponseDto(results, List.of(), true, List.of(), blocks);
   }
 
   private void mockGeometryAndMapsheetSteps() throws Exception {
@@ -254,7 +254,7 @@ class CreateOpeningServiceTest {
             new TenureValidationResultDto(
                 0, false, TenureValidationErrorCode.TENURE_NOT_FOUND, "Cut block not found"));
     TenureValidationResponseDto invalid =
-        new TenureValidationResponseDto(badResults, List.of(), false, Map.of());
+        new TenureValidationResponseDto(badResults, List.of(), false, List.of(), Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(invalid);
 
     assertThatThrownBy(

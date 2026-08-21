@@ -66,6 +66,7 @@ import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
@@ -198,6 +199,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   ExtractedGeoDataDto.class,
   MapsheetDto.class,
   TenureRequestDto.class,
+  TenureDto.class,
   TenureValidationResultDto.class,
   DuplicateConflictDto.class,
   TenureValidationResponseDto.class,

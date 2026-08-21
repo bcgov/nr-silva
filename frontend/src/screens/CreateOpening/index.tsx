@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, InlineNotification, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Loading, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Checkmark, TrashCan } from '@carbon/icons-react';
+import { ArrowRight, TrashCan } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
 import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
 import FeatureUnavailable from '@/components/FeatureUnavailable';
-import { CreateOpeningStepOne as StepOne, CreateOpeningStepTwo as StepTwo } from '@/components/CreateOpeningSteps';
-import { isRealNumber } from '@/utils/ValidationUtils';
+import {
+  CreateOpeningStepOne as StepOne,
+  CreateOpeningStepTwo as StepTwo,
+  CreateOpeningStepThree as StepThree
+} from '@/components/CreateOpeningSteps';
 import ModalHead from '@/components/Modals/ModalHead';
 import { OpeningsRoute } from '@/routes/config';
+import { OPENING_CREATE_SUCCESS_PATH } from '@/routes/paths';
 import { useAuth } from '@/contexts/AuthProvider';
 import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
 
@@ -18,7 +22,8 @@ import { DefaultOpeningForm } from './constants';
 import { validateStepOne } from './utils';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/services/API';
-import { ApiError, TenureRequestDto, TenureValidationResponseDto } from '@/services/OpenApi';
+import { ApiError, CreateOpeningRequestDto, TenureRequestDto, TenureValidationResponseDto } from '@/services/OpenApi';
+import { sortValidatedTenures } from '@/utils/TenureUtils';
 
 import './styles.scss';
 
@@ -41,6 +46,13 @@ const CreateOpening = () => {
 
   const isGovFundedOpening = type === GOV_FUNDED_OPENING;
   const isValidType = type === TENURED_OPENING || isGovFundedOpening;
+
+  useEffect(() => {
+    document.title = `Create Opening - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, []);
 
   useEffect(() => {
     if (!isValidType) {
@@ -112,9 +124,11 @@ const CreateOpening = () => {
           }
           : f.openingGrossArea,
       }));
+      scrollToSection(form.openingGrossArea?.id);
     },
     onError: (err) => {
-      // Spring returns ProblemDetail with `detail`; older errors use `message`
+      const status = err instanceof ApiError ? err.status : 0;
+      if (status === 401) return;
       const body = err instanceof ApiError ? err.body : undefined;
       const message = body?.detail ?? body?.message;
       setForm(f => ({ ...f, file: f.file ? { ...f.file, validatedObj: undefined } : f.file }));
@@ -127,6 +141,8 @@ const CreateOpening = () => {
       API.TenureEndpointService.validateTenures(form.client?.value ?? '', tenures),
     onSuccess: (data) => {
       setWarnText(undefined);
+      const sortedTenures = sortValidatedTenures(data.tenures);
+      setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, validatedTenures: sortedTenures } }));
       if (data.isValid) {
         setCurrentStep(2);
         scrollToSection('title-col');
@@ -137,10 +153,73 @@ const CreateOpening = () => {
     },
     onError: (err) => {
       const status = err instanceof ApiError ? err.status : 0;
-      if (status === 401) return; // global handler will refresh + retry
+      if (status === 401) return;
       const body = err instanceof ApiError ? err.body : undefined;
       const message = body?.detail ?? body?.message;
       setWarnText(message || 'Tenure validation failed. Please try again.');
+    },
+  });
+
+  /**
+   * Build multipart payload for opening creation.
+   * Form data at step 3 is already validated from steps 1 & 2,
+   * so we trust the data integrity here.
+   */
+  const buildCreatePayload = () => {
+    // Construct the CreateOpeningRequestDto
+    const dto: CreateOpeningRequestDto = {
+      clientNumber: form.client?.value ?? '',
+      orgUnitCode: form.orgUnit?.value ?? '',
+      openingCategoryCode: form.category?.value ?? '',
+      licenseeOpeningId: form.licenseeOpeningId?.value || undefined,
+      openingGrossArea: parseFloat(form.openingGrossArea?.value ?? '0'),
+      maxAllowablePermAccessPerc: parseFloat(form.maxAllowablePermAccess?.value ?? '7'),
+      tenures: form.tenureInfo?.value ?? [],
+    };
+
+    // Use the original uploaded file (not the processed GeoJSON).
+    const fileBlob = form.file?.value;
+
+    return { dto, fileBlob };
+  };
+
+  const createMutation = useMutation({
+    mutationFn: async ({ dto, fileBlob }: { dto: CreateOpeningRequestDto; fileBlob?: Blob }) => {
+      if (!fileBlob) {
+        throw new Error('Spatial file is required for opening creation');
+      }
+      return API.OpeningCreateEndpointService.createOpening({
+        data: dto,
+        file: fileBlob,
+      });
+    },
+    onSuccess: (data) => {
+      setWarnText(undefined);
+      navigate(`${OPENING_CREATE_SUCCESS_PATH}?openingId=${data.openingId}`);
+    },
+    onError: (err) => {
+      const status = err instanceof ApiError ? err.status : 0;
+      if (status === 401) return;
+
+      const body = err instanceof ApiError ? err.body : undefined;
+      const message = body?.detail ?? body?.message;
+
+      // Map error status codes to user-friendly messages
+      let userMessage = message || 'Creation failed. Please try again.';
+      if (status === 400) {
+        userMessage = `Form validation failed: ${message || 'Please check all fields.'}`;
+      } else if (status === 403) {
+        userMessage = 'Not authorized to create opening for this client.';
+      } else if (status === 404) {
+        userMessage = `Required resource not found: ${message || 'Check opening category and organization unit.'}`;
+      } else if (status === 422) {
+        userMessage = `File or coordinates invalid: ${message || 'Please verify your spatial file.'}`;
+      } else if (status >= 500) {
+        userMessage = 'Server error. Please try again or contact support.';
+      }
+
+      setWarnText(userMessage);
+      scrollToSection('title-col');
     },
   });
 
@@ -198,57 +277,9 @@ const CreateOpening = () => {
   }
 
   const handleCreate = () => {
-    console.log(form);
+    const payload = buildCreatePayload();
+    createMutation.mutate(payload);
   }
-
-  function validateForm(): boolean {
-    let isValid = true;
-    const validatedForm = structuredClone(form);
-
-    if (!validatedForm.orgUnit?.value) {
-      isValid = false;
-      if (validatedForm.orgUnit) {
-        validatedForm.orgUnit.isInvalid = true;
-      }
-    }
-    if (!validatedForm.category?.value) {
-      isValid = false;
-      if (validatedForm.category) {
-        validatedForm.category.isInvalid = true;
-      }
-    }
-
-    const openingGrossArea = validatedForm.openingGrossArea?.value;
-    if (!isRealNumber(openingGrossArea)) {
-      isValid = false;
-      if (validatedForm.openingGrossArea) {
-        validatedForm.openingGrossArea.isInvalid = true;
-      }
-    }
-
-    const maxAllowablePermAccess = validatedForm.maxAllowablePermAccess?.value;
-    if (!isRealNumber(maxAllowablePermAccess)) {
-      isValid = false;
-      if (validatedForm.maxAllowablePermAccess) {
-        validatedForm.maxAllowablePermAccess.isInvalid = true;
-      }
-    }
-
-    if (!validatedForm.tenureInfo?.value || !validatedForm.tenureInfo.value.length) {
-      isValid = false;
-      if (validatedForm.tenureInfo) {
-        validatedForm.tenureInfo.isInvalid = true;
-      }
-    }
-
-    if (!isValid) {
-      console.log(validatedForm);
-      setForm(validatedForm);
-    }
-
-    return isValid;
-  }
-
 
   return (
     <Grid className='create-opening-grid default-grid'>
@@ -305,7 +336,7 @@ const CreateOpening = () => {
                 : null
             }
             {
-              currentStep !== 0
+              currentStep === 1
                 ? <StepTwo
                   form={form}
                   setForm={setForm}
@@ -320,6 +351,11 @@ const CreateOpening = () => {
                 />
                 : null
             }
+            {
+              currentStep === 2
+                ? <StepThree form={form} setStep={setCurrentStep} />
+                : null
+            }
           </Grid>
         </Form>
       </Column>
@@ -328,7 +364,7 @@ const CreateOpening = () => {
         <Grid className="create-opening-button-grid">
           <Column sm={4} md={4}>
             {
-              currentStep === 2
+              currentStep === 0
                 ? (
                   <Button className="default-button" kind="secondary" onClick={handleCancel}>
                     Cancel
@@ -336,18 +372,23 @@ const CreateOpening = () => {
                 ) :
                 (
                   <Button className="default-button" kind="secondary" onClick={handleBack}>
-                    Back
+                    Previous
                   </Button>
                 )
             }
-
           </Column>
           <Column sm={4} md={4}>
             {
               currentStep === 2
                 ? (
-                  <Button className="default-button" kind="primary" onClick={handleCreate} renderIcon={Checkmark}>
-                    Create
+                  <Button
+                    className="default-button"
+                    kind="primary"
+                    onClick={handleCreate}
+                    disabled={fileMutation.isPending || tenureValidationMutation.isPending || createMutation.isPending}
+                    renderIcon={createMutation.isPending ? Loading : undefined}
+                  >
+                    Create new opening
                   </Button>
                 ) :
                 (

@@ -104,7 +104,7 @@ const OpeningDetails = () => {
     }
   }, [openingId, openingDetailsTombstoneQuery.status]);
 
-  if (openingDetailsTombstoneQuery.isError) {
+  if (openingDetailsTombstoneQuery.isError && !openingDetailsTombstoneQuery.isFetching) {
     const openingDetailsError =
       openingDetailsTombstoneQuery.error as AxiosError;
     const errorCode = openingDetailsError?.response?.status;

@@ -91,6 +91,7 @@ export type { SimplePageDto } from './models/SimplePageDto';
 export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchResponseDto';
 export { StockingStandardsCommentSearchResponseDto } from './models/StockingStandardsCommentSearchResponseDto';
 export type { StockingStandardsSearchResponseDto } from './models/StockingStandardsSearchResponseDto';
+export type { TenureDto } from './models/TenureDto';
 export type { TenureRequestDto } from './models/TenureRequestDto';
 export type { TenureValidationResponseDto } from './models/TenureValidationResponseDto';
 export { TenureValidationResultDto } from './models/TenureValidationResultDto';

@@ -34,11 +34,12 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
         <Column sm={4} md={4} lg={8} className="tenure-column">
           <TextInput
             id={`file-id-input-${index}`}
+            name="fileId"
             className="default-white-input"
             defaultValue={tenure.fileId ?? ''}
             invalid={fieldErrors?.fileId}
             invalidText="File ID is required."
-            onBlur={(e) => setTenure({ ...tenure, fileId: e.target.value.trim() })}
+            onChange={(e) => setTenure({ ...tenure, fileId: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, FILE_ID_MAX)}
             onPaste={(e) => handleAutoUpperPaste(e, FILE_ID_MAX)}
             labelText={
@@ -52,9 +53,10 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
         <Column sm={4} md={4} lg={8} className="tenure-column">
           <TextInput
             id={`cutting-permit-input-${index}`}
+            name="cuttingPermit"
             className="default-white-input"
             defaultValue={tenure.cuttingPermit ?? ''}
-            onBlur={(e) => setTenure({ ...tenure, cuttingPermit: e.target.value.trim() })}
+            onChange={(e) => setTenure({ ...tenure, cuttingPermit: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, CUTTING_PERMIT_MAX)}
             onPaste={(e) => handleAutoUpperPaste(e, CUTTING_PERMIT_MAX)}
             labelText="Cutting permit"
@@ -64,11 +66,12 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
         <Column sm={4} md={4} lg={8} className="tenure-column">
           <TextInput
             id={`cut-block-input-${index}`}
+            name="cutBlock"
             className="default-white-input"
             defaultValue={tenure.cutBlock ?? ''}
             invalid={fieldErrors?.cutBlock}
             invalidText="Cut block is required."
-            onBlur={(e) => setTenure({ ...tenure, cutBlock: e.target.value.trim() })}
+            onChange={(e) => setTenure({ ...tenure, cutBlock: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, CUT_BLOCK_MAX)}
             onPaste={(e) => handleAutoUpperPaste(e, CUT_BLOCK_MAX)}
             labelText={

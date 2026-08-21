@@ -1,5 +1,5 @@
 import FormInputType from "@/types/FormInputType";
-import type { ExtractedGeoDataDto, TenureRequestDto } from "@/services/OpenApi";
+import type { ExtractedGeoDataDto, TenureRequestDto, TenureDto } from "@/services/OpenApi";
 
 export type CreateOpeningFormType = {
   client?: FormInputType<string>;
@@ -9,5 +9,5 @@ export type CreateOpeningFormType = {
   licenseeOpeningId?: FormInputType<string>;
   openingGrossArea?: FormInputType<string>;
   maxAllowablePermAccess?: FormInputType<string>;
-  tenureInfo?: FormInputType<TenureRequestDto[]>;
+  tenureInfo?: FormInputType<TenureRequestDto[]> & { validatedTenures?: TenureDto[] };
 }

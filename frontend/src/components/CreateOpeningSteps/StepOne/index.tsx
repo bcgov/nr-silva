@@ -358,6 +358,7 @@ const StepOne = ({
             <Column sm={4} md={8} lg={8}>
               <TextInput
                 id={form.licenseeOpeningId?.id ?? ''}
+                name="licensee-opening-id"
                 labelText="Licensee opening ID"
                 placeholder="Enter licensee opening ID"
                 defaultValue={form.licenseeOpeningId?.value ?? ''}
@@ -378,7 +379,6 @@ const StepOne = ({
           </Grid>
         </Stack>
       </Column>
-
     </>
   );
 };

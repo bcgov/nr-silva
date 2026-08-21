@@ -559,4 +559,44 @@ ul.default-tab-accordion {
   input {
     background-color: var(--#{vars.$bcgov-prefix}-layer-02);
   }
+
+  input:-webkit-autofill {
+    box-shadow: var(--#{vars.$bcgov-prefix}-layer-02);
+  }
+}
+
+.default-hr {
+  margin: 0;
+  border: 1px solid var(--#{vars.$bcgov-prefix}-border-strong-01);
+}
+
+.default-centred-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-height: calc(100vh - 3rem);
+  padding: 0;
+  margin: 0;
+
+  .default-centred-container-stack {
+    width: min(62rem, calc(100% - 2rem));
+    max-width: 62rem;
+    margin: 0 auto;
+  }
+}
+
+.default-button-grid {
+  padding: 0;
+  column-gap: 1rem;
+  row-gap: 1rem;
+
+  .default-button-grid-column {
+    margin: 0;
+
+    .#{vars.$bcgov-prefix}--btn {
+      inline-size: 100%;
+      max-inline-size: unset;
+    }
+  }
 }

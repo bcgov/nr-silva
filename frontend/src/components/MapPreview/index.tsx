@@ -37,7 +37,8 @@ const MapPreview = ({ geojson }: MapPreviewProps) => {
         style={{ height: "100%", width: "100%" }}
         center={[49.25, -123.1]}
         zoom={6}
-        zoomControl={false}
+        zoomControl
+        scrollWheelZoom={false}
       >
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"

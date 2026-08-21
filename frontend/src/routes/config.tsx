@@ -6,6 +6,7 @@ import {
   DASHBOARD_PATH,
   OPENINGS_PATH,
   OPENINGS_SEARCH_PATH,
+  OPENING_CREATE_SUCCESS_PATH,
   ACTIVITY_SEARCH_PATH,
   FOREST_COVER_SEARCH_PATH,
   STANDARDS_UNIT_SEARCH_PATH,
@@ -18,6 +19,7 @@ const Dashboard = lazy(() => import('@/screens/Dashboard'));
 const Openings = lazy(() => import('@/screens/Openings'));
 const OpeningDetails = lazy(() => import('@/screens/Openings/OpeningDetails'));
 const CreateOpening = lazy(() => import('@/screens/CreateOpening'));
+const CreateOpeningSuccess = lazy(() => import('@/screens/CreateOpening/CreateOpeningSuccess'));
 const OpeningsSearch = lazy(() => import('@/screens/OpeningsSearch'));
 const ActivitySearch = lazy(() => import('@/screens/ActivitySearch'));
 const ForestCoverSearch = lazy(() => import('@/screens/ForestCoverSearch'));
@@ -46,6 +48,11 @@ export const OpeningsSearchRoute: RouteObject = {
 export const CreateOpeningRoute: RouteObject = {
   path: "/openings/create",
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpening /></Suspense>} />,
+}
+
+export const CreateOpeningSuccessRoute: RouteObject = {
+  path: OPENING_CREATE_SUCCESS_PATH,
+  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpeningSuccess /></Suspense>} />,
 }
 
 export const OpeningDetailsRoute: RouteObject = {
