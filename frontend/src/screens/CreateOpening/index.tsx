@@ -12,7 +12,7 @@ import {
   CreateOpeningStepThree as StepThree
 } from '@/components/CreateOpeningSteps';
 import ModalHead from '@/components/Modals/ModalHead';
-import { OpeningsRoute } from '@/routes/config';
+import { CreateOpeningRoute, OpeningsRoute } from '@/routes/config';
 import { OPENING_CREATE_SUCCESS_PATH } from '@/routes/paths';
 import { useAuth } from '@/contexts/AuthProvider';
 import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
@@ -54,6 +54,16 @@ const CreateOpening = () => {
     };
   }, []);
 
+  // Alert user if they try to leave via browser refresh or navigation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   useEffect(() => {
     if (!isValidType) {
       console.warn("Invalid opening type");
@@ -88,7 +98,7 @@ const CreateOpening = () => {
         <Column sm={4} md={8} lg={16} id="title-col">
           <PageTitle
             title="Create new opening"
-            subtitle="Register an opening to cover licensee or ministry responsibilities"
+            breadCrumbs={[{ name: "Openings", path: OpeningsRoute.path! }, { name: "Create new opening", path: CreateOpeningRoute.path! }]}
           />
         </Column>
 
@@ -284,7 +294,10 @@ const CreateOpening = () => {
   return (
     <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16} id="title-col">
-        <PageTitle title="Create new opening" />
+        <PageTitle
+          title="Create new opening"
+          breadCrumbs={[{ name: "Openings", path: OpeningsRoute.path! }, { name: "Create new opening", path: `${CreateOpeningRoute.path!}?type=${type}`, current: true }]}
+        />
       </Column>
 
       <Column sm={4} md={8} lg={16}>

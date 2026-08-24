@@ -39,7 +39,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
                 breadCrumbs.map((crumb) => (
                   <BreadcrumbItem
                     key={crumb.name}
-                    isCurrentPage={location.pathname === crumb.path}
+                    isCurrentPage={crumb.current ?? location.pathname === crumb.path}
                     onClick={() => navigate(crumb.path)}
                   >
                     {crumb.name}

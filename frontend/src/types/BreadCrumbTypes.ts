@@ -1,4 +1,5 @@
 export type BreadCrumbType = {
   name: string,
-  path: string
+  path: string,
+  current?: boolean
 }
