@@ -1,4 +1,5 @@
 import { CreateOpeningFormType } from './definitions';
+import { TenureRequestDto } from '@/services/OpenApi';
 
 const LICENSEE_OPENING_ID_MAX_LEN = 30;
 
@@ -37,4 +38,25 @@ export function validateStepOne(form: CreateOpeningFormType): { isValid: boolean
   }
 
   return { isValid, form: updated };
+}
+
+export function validateStepTwo(tenures: Array<Partial<TenureRequestDto>> = []) {
+  const trimmed = tenures.map((t) => ({
+    ...t,
+    fileId: t.fileId?.trim() ?? '',
+    cuttingPermit: t.cuttingPermit?.trim() ?? '',
+    cutBlock: t.cutBlock?.trim() ?? '',
+  })) as TenureRequestDto[];
+
+  const errors = trimmed.map((t) => ({
+    fileId: !t.fileId,
+    cutBlock: !t.cutBlock,
+  }));
+
+  return {
+    isValid: !errors.some((e) => e.fileId || e.cutBlock),
+    hasPrimary: trimmed.some((t) => t.isPrimary),
+    errors,
+    trimmed,
+  };
 }

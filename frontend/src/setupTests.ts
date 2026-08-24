@@ -27,11 +27,11 @@ window.matchMedia = window.matchMedia || function () {
   };
 };
 
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn()
-}));
+global.ResizeObserver = class {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+};
 
 Object.defineProperty(global.SVGElement.prototype, 'getScreenCTM', {
   writable: true,

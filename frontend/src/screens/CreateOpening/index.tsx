@@ -19,7 +19,7 @@ import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
 
 import { CreateOpeningFormType } from './definitions';
 import { DefaultOpeningForm } from './constants';
-import { validateStepOne } from './utils';
+import { validateStepOne, validateStepTwo } from './utils';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/services/API';
 import { ApiError, CreateOpeningRequestDto, TenureRequestDto, TenureValidationResponseDto } from '@/services/OpenApi';
@@ -256,25 +256,22 @@ const CreateOpening = () => {
 
     if (currentStep === 1) {
       const tenures = form.tenureInfo?.value ?? [];
-      const trimmed = tenures.map(t => ({
-        ...t,
-        fileId: t.fileId?.trim() ?? '',
-        cuttingPermit: t.cuttingPermit?.trim() ?? '',
-        cutBlock: t.cutBlock?.trim() ?? '',
-      }));
-      const errors = trimmed.map(t => ({ fileId: !t.fileId, cutBlock: !t.cutBlock }));
-      if (errors.some(e => e.fileId || e.cutBlock)) {
+      const { isValid, hasPrimary, errors, trimmed } = validateStepTwo(tenures);
+
+      if (!isValid) {
         setTenureFieldErrors(errors);
         setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
         scrollToSection('title-col');
         return;
       }
-      if (!trimmed.some(t => t.isPrimary)) {
+
+      if (!hasPrimary) {
         setShowNoPrimaryError(true);
         setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
         scrollToSection('title-col');
         return;
       }
+
       setShowNoPrimaryError(false);
       setTenureFieldErrors(undefined);
       setForm(f => ({ ...f, tenureInfo: { ...f.tenureInfo, value: trimmed } }));
