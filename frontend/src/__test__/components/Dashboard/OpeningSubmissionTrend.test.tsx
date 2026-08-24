@@ -7,6 +7,7 @@ import {
   act,
   within,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OpeningSubmissionTrend from "../../../components/OpeningSubmissionTrend";
@@ -168,6 +169,7 @@ describe("OpeningSubmissionTrend Component", () => {
   });
 
   it("should update org units and trigger data fetch", async () => {
+    const user = userEvent.setup();
     (
       API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
     ).mockResolvedValueOnce([]);
@@ -185,16 +187,21 @@ describe("OpeningSubmissionTrend Component", () => {
       expect(within(container!).getByText("District")).toBeInTheDocument();
     });
 
+    // Find the FilterableMultiSelect input field
     const districtInput = document.getElementById(
       "district-dropdown-input"
     ) as HTMLInputElement;
     expect(districtInput).toBeInTheDocument();
 
-    fireEvent.change(districtInput, { target: { value: "District A" } });
+    // Click on the input to open the menu
+    await user.click(districtInput);
 
-    expect(
-      screen.getByRole("option", { name: "DAS - District A" })
-    ).toBeInTheDocument();
+    // Wait for and verify the option appears
+    await waitFor(() => {
+      expect(
+        screen.getByRole("option", { name: "DAS - District A" })
+      ).toBeInTheDocument();
+    });
   });
 
   it("should show loading spinner when fetching", async () => {
