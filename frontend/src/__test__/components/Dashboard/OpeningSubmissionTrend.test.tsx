@@ -207,7 +207,7 @@ describe("OpeningSubmissionTrend Component", () => {
   it("should show loading spinner when fetching", async () => {
     (
       API.UserActionsEndpointService.getOpeningsSubmissionTrends as vi.Mock
-    ).mockImplementation(() => new Promise(() => {}));
+    ).mockImplementation(() => new Promise(() => { }));
     (
       API.CodesEndpointService.getOpeningOrgUnits as vi.Mock
     ).mockResolvedValueOnce([]);
