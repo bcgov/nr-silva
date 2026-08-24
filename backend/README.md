@@ -45,8 +45,6 @@ Using Maven Wrapper:
 ./mvnw spring-boot:run
 ```
 
-If you use Spring Boot DevTools locally, add `spring.devtools.restart.exclude: org/hibernate/spatial/**` to your local config so the Hibernate spatial shadow class stays on the base classloader.
-
 ---
 
 ## Configuration
