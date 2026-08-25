@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button, Column, Grid, InlineNotification, Stack } from '@carbon/react';
-import { ArrowRight, Construction, Document } from '@carbon/icons-react';
-import PageTitle from '@/components/PageTitle';
-import { CreateOpeningRoute, OpeningsRoute } from '@/routes/config';
+import { Construction } from '@carbon/icons-react';
 import EmptySection from '@/components/EmptySection';
 
 const CreateOpeningSuccess = () => {
