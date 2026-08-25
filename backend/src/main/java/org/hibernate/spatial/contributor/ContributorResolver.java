@@ -49,7 +49,7 @@ class ContributorResolver {
     Dialect dialect = serviceRegistry.getService(JdbcServices.class).getDialect();
     Function<ServiceRegistry, ContributorImplementor> fn = CONTRIBUTOR_MAP.get(dialect.getClass());
     if (fn != null) {
-      fn.apply(serviceRegistry);
+      return fn.apply(serviceRegistry);
     }
     for (Map.Entry<Class<? extends Dialect>, Function<ServiceRegistry, ContributorImplementor>>
         entry : CONTRIBUTOR_MAP.entrySet()) {
