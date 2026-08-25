@@ -45,7 +45,7 @@ export function parsePrivileges(groups: string[]): USER_PRIVILEGE_TYPE {
   return result;
 }
 
-export function hasCreateOpeningPriviledge(privileges: USER_PRIVILEGE_TYPE): boolean {
+export function hasCreateOpeningPrivilege(privileges: USER_PRIVILEGE_TYPE): boolean {
   const requiredRoles: ROLE_TYPE[] = ["Submitter", "Approver", "Planner", "Admin"];
   return requiredRoles.some((role) => privileges[role] !== undefined);
 }

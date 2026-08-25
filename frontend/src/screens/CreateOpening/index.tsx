@@ -6,7 +6,7 @@ import PageTitle from '@/components/PageTitle';
 import FeatureUnavailable from '@/components/FeatureUnavailable';
 import { CreateOpeningRoute, OpeningsRoute } from '@/routes/config';
 import { useAuth } from '@/contexts/AuthProvider';
-import { hasCreateOpeningPriviledge } from '@/utils/famUtils';
+import { hasCreateOpeningPrivilege } from '@/utils/famUtils';
 import { CreateOpeningForm } from './CreateOpeningForm';
 
 import './styles.scss';
@@ -47,7 +47,7 @@ const CreateOpening = () => {
   }, [isValidType, navigate]);
 
   // Guard: Check authentication and privileges
-  if (!auth.user || !hasCreateOpeningPriviledge(auth.user.privileges)) {
+  if (!auth.user || !hasCreateOpeningPrivilege(auth.user.privileges)) {
     return (
       <Grid className='create-opening-grid default-grid'>
         <Column sm={4} md={8} lg={16} id="title-col">
