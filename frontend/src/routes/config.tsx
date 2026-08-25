@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { type RouteObject, Outlet, Navigate } from "react-router-dom";
 import { Loading } from "@carbon/react";
 import SideLayout from '@/layouts/SideLayout';
+import FeatureGateRoute from '@/routes/FeatureGateRoute';
 import {
   DASHBOARD_PATH,
   OPENINGS_PATH,
@@ -47,12 +48,28 @@ export const OpeningsSearchRoute: RouteObject = {
 
 export const CreateOpeningRoute: RouteObject = {
   path: "/openings/create",
-  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpening /></Suspense>} />,
+  element: (
+    <FeatureGateRoute
+      featureName="Create opening"
+      title="Opening creation is unavailable"
+      description="Creating new tenure-based openings is disabled in this deployment model. Please return to the openings list."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpening /></Suspense>} />
+    </FeatureGateRoute>
+  ),
 }
 
 export const CreateOpeningSuccessRoute: RouteObject = {
   path: OPENING_CREATE_SUCCESS_PATH,
-  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpeningSuccess /></Suspense>} />,
+  element: (
+    <FeatureGateRoute
+      featureName="Create opening"
+      title="Opening creation is unavailable"
+      description="The opening creation workflow is disabled in this deployment model. Please return to the openings list."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpeningSuccess /></Suspense>} />
+    </FeatureGateRoute>
+  ),
 }
 
 export const OpeningDetailsRoute: RouteObject = {

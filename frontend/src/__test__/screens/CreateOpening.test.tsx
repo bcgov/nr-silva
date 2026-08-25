@@ -19,6 +19,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../../utils/famUtils');
+vi.mock('../../utils/featureFlags');
 
 vi.mock('../../contexts/AuthProvider', async () => {
   const actual = await vi.importActual('../../contexts/AuthProvider');
