@@ -16,6 +16,22 @@ import { JWT } from "@/types/amplify";
 
 let isRefreshing = false;
 let isRedirecting = false;
+const authRefreshListeners = new Set<() => void>();
+
+const setAuthRefreshInProgress = (refreshing: boolean) => {
+  if (isRefreshing === refreshing) {
+    return;
+  }
+
+  isRefreshing = refreshing;
+  authRefreshListeners.forEach((listener) => listener());
+};
+
+export const isAuthRefreshInProgress = () => isRefreshing;
+export const subscribeAuthRefresh = (listener: () => void) => {
+  authRefreshListeners.add(listener);
+  return () => authRefreshListeners.delete(listener);
+};
 
 const failedQueue: {
   query?: Query<unknown, unknown, unknown, readonly unknown[]>;
@@ -56,12 +72,12 @@ function processFailedQueue() {
       mutation.execute(variables);  // this safely retries the mutation
     }
     if (query) {
-      query.fetch();       // triggers query refetch
+      query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
     }
   });
 
   failedQueue.length = 0;
-  isRefreshing = false;
+  setAuthRefreshInProgress(false);
 }
 
 function refreshTokenAndRetry(
@@ -72,14 +88,14 @@ function refreshTokenAndRetry(
   failedQueue.push({ query, mutation, variables });
 
   if (!isRefreshing) {
-    isRefreshing = true;
+    setAuthRefreshInProgress(true);
 
     refreshAccessToken().then((token) => {
       if (token) {
         processFailedQueue();
       } else {
         failedQueue.length = 0;
-        isRefreshing = false;
+        setAuthRefreshInProgress(false);
       }
     });
   }
@@ -102,8 +118,8 @@ function errorHandler(
     // Prevent the query from remaining in errored state while we attempt token refresh.
     try {
       if (query) {
-        // clear query error and mark as retry in-progress without forcing internal fetchStatus
-        // Partial state updates are supported in TanStack Query v5.
+        // clear query error and keep the query pending until retry.
+        // Do not force fetchStatus here; that can interfere with query.fetch().
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (query as any).setState?.({
           error: null,
