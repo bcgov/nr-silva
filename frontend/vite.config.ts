@@ -84,7 +84,8 @@ export default defineConfig(({ mode }) => {
           'src/module.d.ts',
           'src/react-app-env.d.ts',
           'src/reportWebVitals.ts',
-          'src/__e2e__/**/*.ts'
+          'src/__e2e__/**/*',
+          'src/__test__/**/*'
         ]
       },
       server: {
