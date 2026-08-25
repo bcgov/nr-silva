@@ -208,7 +208,6 @@ const StepOne = ({
                   </Column>
                   <Column sm={4} md={8} lg={8}>
                     <TextInput
-                      ref={openingGrossAreaRef}
                       id={form.openingGrossArea?.id ?? ''}
                       labelText={
                         <RequiredLabel id="opening-gross-area-label" htmlFor={form.openingGrossArea?.id ?? ''}>

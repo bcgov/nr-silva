@@ -36,7 +36,7 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             id={`file-id-input-${index}`}
             name="fileId"
             className="default-white-input"
-            defaultValue={tenure.fileId ?? ''}
+            value={tenure.fileId ?? ''}
             invalid={fieldErrors?.fileId}
             invalidText="File ID is required."
             onChange={(e) => setTenure({ ...tenure, fileId: e.target.value.trim() })}
@@ -55,7 +55,7 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             id={`cutting-permit-input-${index}`}
             name="cuttingPermit"
             className="default-white-input"
-            defaultValue={tenure.cuttingPermit ?? ''}
+            value={tenure.cuttingPermit ?? ''}
             onChange={(e) => setTenure({ ...tenure, cuttingPermit: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, CUTTING_PERMIT_MAX)}
             onPaste={(e) => handleAutoUpperPaste(e, CUTTING_PERMIT_MAX)}
@@ -68,7 +68,7 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             id={`cut-block-input-${index}`}
             name="cutBlock"
             className="default-white-input"
-            defaultValue={tenure.cutBlock ?? ''}
+            value={tenure.cutBlock ?? ''}
             invalid={fieldErrors?.cutBlock}
             invalidText="Cut block is required."
             onChange={(e) => setTenure({ ...tenure, cutBlock: e.target.value.trim() })}
@@ -87,7 +87,7 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
         <Checkbox
           id={`isPrimary-${index}`}
           labelText="Set as primary tenure"
-          checked={false}
+          checked={tenure.isPrimary ?? false}
           onChange={() => onSetPrimary()}
         />
       ) : null}

@@ -1,7 +1,7 @@
 import { Button, Stack } from "@carbon/react";
 import { TenureRequestDto, TenureValidationResponseDto, TenureValidationResultDto } from "@/services/OpenApi";
 import TenureItemInput, { TenureItemError } from "./TenureItemInput";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Add } from "@carbon/icons-react";
 import './styles.scss';
 
@@ -31,9 +31,29 @@ const emptyTenure: TenureRequestDto = {
 };
 
 const TenureListInput = ({ tenures, setTenures, validationResult, onTenuresChange, fieldErrors }: props) => {
+  const rowIdCounter = useRef(0);
+  const [rowIds, setRowIds] = useState<string[]>(() =>
+    Array.from({ length: Math.max(1, tenures.length) }, () => `tenure-${rowIdCounter.current++}`)
+  );
+
+  const ensureRowIds = (length: number) => {
+    setRowIds((current) => {
+      if (current.length === length) return current;
+      const nextIds = current.slice(0, length);
+      while (nextIds.length < length) {
+        nextIds.push(`tenure-${rowIdCounter.current++}`);
+      }
+      return nextIds;
+    });
+  };
+
   useEffect(() => {
     if (tenures.length === 0) setTenures([structuredClone(emptyTenure)]);
   }, []);
+
+  useEffect(() => {
+    ensureRowIds(Math.max(1, tenures.length));
+  }, [tenures.length]);
 
   const addTenure = () => {
     setTenures([...tenures, structuredClone(emptyTenure)]);
@@ -90,7 +110,7 @@ const TenureListInput = ({ tenures, setTenures, validationResult, onTenuresChang
     <Stack gap={6} className="tenure-list-stack">
       {tenures.map((tenure, index) => (
         <TenureItemInput
-          key={index}
+          key={rowIds[index]}
           index={index}
           tenure={tenure}
           setTenure={(updated) => updateTenure(index, updated)}
