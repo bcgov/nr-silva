@@ -35,7 +35,10 @@ const TenureListInput = ({ tenures, setTenures, validationResult, onTenuresChang
     if (tenures.length === 0) setTenures([structuredClone(emptyTenure)]);
   }, []);
 
-  const addTenure = () => setTenures([...tenures, structuredClone(emptyTenure)]);
+  const addTenure = () => {
+    setTenures([...tenures, structuredClone(emptyTenure)]);
+    onTenuresChange?.();
+  };
 
   const updateTenure = (index: number, updated: TenureRequestDto) => {
     setTenures(tenures.map((t, i) => (i === index ? updated : t)));
