@@ -43,7 +43,7 @@ describe('CreateOpening screen', () => {
   });
 
   it('shows insufficient privileges notification when user lacks privilege', () => {
-    vi.mocked(famUtils.hasCreateOpeningPriviledge).mockReturnValue(false);
+    vi.mocked(famUtils.hasCreateOpeningPrivilege).mockReturnValue(false);
     mockUseAuth.mockReturnValue({ user: { privileges: {}, associatedClients: [] } });
     mockUseSearchParams.mockReturnValue([new URLSearchParams([['type', TENURED_OPENING]]), vi.fn()]);
 
@@ -55,7 +55,7 @@ describe('CreateOpening screen', () => {
   });
 
   it('shows feature unavailable for government funded opening type', () => {
-    vi.mocked(famUtils.hasCreateOpeningPriviledge).mockReturnValue(true);
+    vi.mocked(famUtils.hasCreateOpeningPrivilege).mockReturnValue(true);
     mockUseAuth.mockReturnValue({ user: { privileges: {}, associatedClients: [] } });
     mockUseSearchParams.mockReturnValue([new URLSearchParams([['type', GOV_FUNDED_OPENING]]), vi.fn()]);
 
@@ -66,7 +66,7 @@ describe('CreateOpening screen', () => {
   });
 
   it('navigates to / when type is invalid', () => {
-    vi.mocked(famUtils.hasCreateOpeningPriviledge).mockReturnValue(true);
+    vi.mocked(famUtils.hasCreateOpeningPrivilege).mockReturnValue(true);
     mockUseAuth.mockReturnValue({ user: { privileges: {}, associatedClients: [] } });
     mockUseSearchParams.mockReturnValue([new URLSearchParams([['type', 'invalid']]), vi.fn()]);
 
@@ -76,7 +76,7 @@ describe('CreateOpening screen', () => {
   });
 
   it('renders CreateOpeningForm when guards pass (tenured opening with privilege)', () => {
-    vi.mocked(famUtils.hasCreateOpeningPriviledge).mockReturnValue(true);
+    vi.mocked(famUtils.hasCreateOpeningPrivilege).mockReturnValue(true);
     mockUseAuth.mockReturnValue({ user: { privileges: { canCreateOpening: true }, associatedClients: [] } });
     mockUseSearchParams.mockReturnValue([new URLSearchParams([['type', TENURED_OPENING]]), vi.fn()]);
 

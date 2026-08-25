@@ -102,15 +102,13 @@ function errorHandler(
     // Prevent the query from remaining in errored state while we attempt token refresh.
     try {
       if (query) {
-        // clear query error and mark as loading/fetching so UI shows a retry in-progress
-        // 'pending' + 'fetching' = isLoading===true in TanStack Query v5
+        // clear query error and mark as retry in-progress without forcing internal fetchStatus
+        // Partial state updates are supported in TanStack Query v5.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (query as any).setState?.((oldState: any) => ({
-          ...oldState,
+        (query as any).setState?.({
           error: null,
-          status: 'pending',
-          fetchStatus: 'fetching'
-        }));
+          status: 'pending'
+        });
       }
     } catch (e) {
       // ignore if we can't touch internal state

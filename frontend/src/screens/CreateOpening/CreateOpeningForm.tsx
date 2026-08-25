@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Button, Column, Form, Grid, InlineNotification, Loading, Modal, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Loading, Stack } from '@carbon/react';
 import { useBlocker, useNavigate } from 'react-router-dom';
 import { ArrowRight, TrashCan } from '@carbon/icons-react';
 import { scrollToSection } from '@/utils/InputUtils';
@@ -28,7 +28,7 @@ interface CreateOpeningFormProps {
 
 export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateOpeningFormProps) => {
   // All hooks called unconditionally at component top
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const [isLeavePageModalOpen, setIsLeavePageModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const [form, setForm] = useState<CreateOpeningFormType>(() => {
     return structuredClone(DefaultOpeningForm);
@@ -215,16 +215,30 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
   }
 
   const handleCancel = () => {
-    setIsCancelModalOpen(true);
+    if (!isNavigationBlocked) {
+      bypassBlockerRef.current = true;
+      navigate(OpeningsRoute.path!);
+      return;
+    }
+
+    setIsLeavePageModalOpen(true);
   };
 
   const handleLeaveConfirm = () => {
     bypassBlockerRef.current = true;
-    blocker.proceed();
+    setIsLeavePageModalOpen(false);
+
+    if (blocker.state === 'blocked') {
+      blocker?.proceed?.();
+      return;
+    }
+
+    navigate(OpeningsRoute.path!);
   };
 
   const handleStay = () => {
-    blocker.reset();
+    setIsLeavePageModalOpen(false);
+    blocker?.reset?.();
   };
 
   const handleCreate = () => {
@@ -325,38 +339,8 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
         </Grid>
       </Column>
 
-      <Modal
-        passiveModal
-        danger
-        open={isCancelModalOpen}
-        modalHeading={<ModalHead title="Are you sure you want to cancel?" helperTop="Create new opening" />}
-        onRequestClose={() => setIsCancelModalOpen(false)}
-        className="default-modal"
-        preventCloseOnClickOutside
-        size="sm"
-      >
-        <Grid>
-          <Column sm={4} md={8} lg={16}>
-            <p className='cancel-content'>
-              If you leave this page, all the information you've entered will be lost.
-            </p>
-          </Column>
-          <Column sm={4} md={8} lg={16}>
-            <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
-              <Button className="modal-button" kind="secondary" onClick={() => setIsCancelModalOpen(false)}>
-                Continue reviewing
-              </Button>
-
-              <Button className="modal-button" kind="danger" renderIcon={TrashCan} onClick={() => { bypassBlockerRef.current = true; navigate(OpeningsRoute.path!); }}>
-                Leave without saving
-              </Button>
-            </Stack>
-          </Column>
-        </Grid>
-      </Modal>
-
       <LeavePageModal
-        open={blocker.state === 'blocked'}
+        open={isLeavePageModalOpen || blocker.state === 'blocked'}
         onRequestClose={handleStay}
         onLeave={handleLeaveConfirm}
         onStay={handleStay}

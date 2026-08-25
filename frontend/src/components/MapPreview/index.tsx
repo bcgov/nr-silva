@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, useMap, ZoomControl } from "react-leaflet";
 import { geoJSON } from "leaflet";
 
 type MapPreviewProps = {
@@ -37,9 +37,10 @@ const MapPreview = ({ geojson }: MapPreviewProps) => {
         style={{ height: "100%", width: "100%" }}
         center={[49.25, -123.1]}
         zoom={6}
-        zoomControl
+        zoomControl={false}
         scrollWheelZoom={false}
       >
+        <ZoomControl position="bottomright" />
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
           attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
