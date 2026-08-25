@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Column, Dropdown, DropdownSkeleton, FileUploaderDropContainer, FileUploaderItem, Grid, InlineLoading, InlineNotification, Stack, TextInput } from "@carbon/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
@@ -96,7 +96,8 @@ const StepOne = ({
         ...prev,
         file: {
           ...prev.file,
-          value: undefined
+          value: undefined,
+          isInvalid: true,
         }
       }));
       setError(err);
@@ -128,6 +129,11 @@ const StepOne = ({
     }));
   };
 
+  const handleNotificationDismiss = () => {
+    setError(null);
+    if (onUploadErrorDismiss) onUploadErrorDismiss();
+  };
+
   // A11y ids to associate label and helper text with the drop container
   const labelId = "opening-map-label";
   const helpId = "opening-map-help";
@@ -144,14 +150,14 @@ const StepOne = ({
           <h3 className="default-heading-20px">Spatial information</h3>
 
           {
-            uploadError || (form.file?.isInvalid && !form.file?.value)
+            uploadError || error || (form.file?.isInvalid && !form.file?.value)
               ? (
                 <InlineNotification
                   kind="error"
                   lowContrast
-                  title={uploadError ? "File upload failed" : "File is required"}
-                  subtitle={uploadError || "Upload opening map geometry"}
-                  onCloseButtonClick={onUploadErrorDismiss}
+                  title={uploadError ? "File upload failed" : error ? "Invalid file" : "File is required"}
+                  subtitle={uploadError || error || "Upload opening map geometry"}
+                  onCloseButtonClick={handleNotificationDismiss}
                 />
               )
               : null
@@ -170,10 +176,12 @@ const StepOne = ({
             id="opening-map-file-drop-container"
             accept={ACCEPTED_FILE_TYPES}
             multiple={false}
+            disabled={isUploading}
             labelText="Drag and drop the map file here or click to upload (max 25 MB)"
             onAddFiles={(_evt, { addedFiles }) => handleAddFile(addedFiles)}
             aria-labelledby={labelId}
             aria-describedby={helpId}
+            maxFileSize={MAX_FILE_SIZE}
           />
 
           {isUploading ? <InlineLoading description="Validating file…" status="active" /> : null}
