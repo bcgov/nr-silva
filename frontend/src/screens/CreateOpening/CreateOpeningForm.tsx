@@ -1,14 +1,15 @@
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Column, Form, Grid, InlineNotification, Loading, Modal, Stack } from '@carbon/react';
-import { useNavigate } from 'react-router-dom';
+import { useBlocker, useNavigate } from 'react-router-dom';
 import { ArrowRight, TrashCan } from '@carbon/icons-react';
-import { useState } from 'react';
 import { scrollToSection } from '@/utils/InputUtils';
 import {
   CreateOpeningStepOne as StepOne,
   CreateOpeningStepTwo as StepTwo,
   CreateOpeningStepThree as StepThree
 } from '@/components/CreateOpeningSteps';
+import LeavePageModal from '@/components/Modals/LeavePageModal';
 import ModalHead from '@/components/Modals/ModalHead';
 import { OpeningsRoute } from '@/routes/config';
 import { OPENING_CREATE_SUCCESS_PATH } from '@/routes/paths';
@@ -37,8 +38,10 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
   const [tenureValidationResult, setTenureValidationResult] = useState<TenureValidationResponseDto | null>(null);
   const [showNoPrimaryError, setShowNoPrimaryError] = useState(false);
   const [tenureFieldErrors, setTenureFieldErrors] = useState<Array<{ fileId?: boolean; cutBlock?: boolean }> | undefined>();
+  const [isNavigationBlocked, setIsNavigationBlocked] = useState(false);
+  const bypassBlockerRef = useRef(false);
+  const blocker = useBlocker(useCallback(() => isNavigationBlocked && !bypassBlockerRef.current, [isNavigationBlocked]));
 
-  // Wrapper to handle React state setter style calls (for StepThree)
   const handleSetCurrentStep = (stepOrUpdater: number | ((prev: number) => number)) => {
     const newStep = typeof stepOrUpdater === 'function' ? stepOrUpdater(currentStep) : stepOrUpdater;
     setCurrentStep(newStep);
@@ -47,6 +50,11 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    const hasStarted = currentStep !== 0 || JSON.stringify(form) !== JSON.stringify(DefaultOpeningForm);
+    setIsNavigationBlocked(hasStarted);
+  }, [currentStep, form]);
 
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
@@ -132,6 +140,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
     },
     onSuccess: (data) => {
       setWarnText(undefined);
+      bypassBlockerRef.current = true;
       navigate(`${OPENING_CREATE_SUCCESS_PATH}?openingId=${data.openingId}`);
     },
     onError: (err) => {
@@ -207,12 +216,21 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
 
   const handleCancel = () => {
     setIsCancelModalOpen(true);
-  }
+  };
+
+  const handleLeaveConfirm = () => {
+    bypassBlockerRef.current = true;
+    blocker.proceed();
+  };
+
+  const handleStay = () => {
+    blocker.reset();
+  };
 
   const handleCreate = () => {
     const payload = buildCreatePayload();
     createMutation.mutate(payload);
-  }
+  };
 
   return (
     <>
@@ -329,13 +347,20 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
                 Continue reviewing
               </Button>
 
-              <Button className="modal-button" kind="danger" renderIcon={TrashCan} onClick={() => navigate(OpeningsRoute.path!)}>
+              <Button className="modal-button" kind="danger" renderIcon={TrashCan} onClick={() => { bypassBlockerRef.current = true; navigate(OpeningsRoute.path!); }}>
                 Leave without saving
               </Button>
             </Stack>
           </Column>
         </Grid>
       </Modal>
+
+      <LeavePageModal
+        open={blocker.state === 'blocked'}
+        onRequestClose={handleStay}
+        onLeave={handleLeaveConfirm}
+        onStay={handleStay}
+      />
     </>
   );
 };
