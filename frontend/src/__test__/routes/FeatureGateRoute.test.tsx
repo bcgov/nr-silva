@@ -11,7 +11,7 @@ const MockChild = () => <div>Child route content</div>;
 
 describe('FeatureGateRoute', () => {
   it('renders children when gate is enabled', () => {
-    vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(true);
+    vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(false);
 
     render(
       <MemoryRouter initialEntries={['/test']}>
@@ -25,8 +25,7 @@ describe('FeatureGateRoute', () => {
   });
 
   it('renders FeatureUnavailable when gate is disabled', () => {
-    vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(false);
-
+    vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(true);
     render(
       <MemoryRouter initialEntries={['/test']}>
         <Routes>
