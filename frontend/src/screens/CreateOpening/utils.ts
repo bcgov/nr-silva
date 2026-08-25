@@ -23,7 +23,7 @@ export function validateStepOne(form: CreateOpeningFormType): { isValid: boolean
     isValid = false;
     if (updated.licenseeOpeningId) updated.licenseeOpeningId.isInvalid = true;
   }
-  if (!updated.file?.value) {
+  if (!updated.file?.value || !updated.file.validatedObj) {
     isValid = false;
     updated.file = updated.file || {};
     updated.file.isInvalid = true;
