@@ -27,7 +27,6 @@ const StepOne = ({
 }: StepOneProps) => {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
-  const openingGrossAreaRef = useRef<HTMLInputElement>(null);
 
   const validate = (f: File) => {
     if (f.size > MAX_FILE_SIZE) return `"${f.name}" exceeds ${MAX_FILE_MB} MB.`;
@@ -221,7 +220,7 @@ const StepOne = ({
                       invalid={form.openingGrossArea?.isInvalid}
                       invalidText="Opening gross area is required and must be greater than zero"
                       onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 11, 4)}
-                      onPaste={(e) => enforceDecimalInputOnPaste(openingGrossAreaRef.current, e, 11, 4)}
+                      onPaste={(e) => enforceDecimalInputOnPaste(e.currentTarget, e, 11, 4)}
                       onBlur={(e) =>
                         setForm((prev) => ({
                           ...prev,
