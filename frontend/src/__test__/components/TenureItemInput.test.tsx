@@ -26,6 +26,12 @@ describe('TenureItemInput Component', () => {
   const mockOnSetPrimary = vi.fn();
   const mockDeleteTenure = vi.fn();
 
+  beforeEach(() => {
+    mockSetTenure.mockClear();
+    mockOnSetPrimary.mockClear();
+    mockDeleteTenure.mockClear();
+  });
+
   it('renders tenure item input fields', () => {
     const tenure: TenureRequestDto = {
       fileId: 'FILE001',
@@ -136,6 +142,36 @@ describe('TenureItemInput Component', () => {
 
     const fileIdInput = screen.getByDisplayValue('FILE001') as HTMLInputElement;
     fireEvent.change(fileIdInput, { target: { value: 'FILE002' } });
+
+    expect(mockSetTenure).toHaveBeenCalledWith(
+      expect.objectContaining({ fileId: 'FILE002' })
+    );
+  });
+
+  it('calls setTenure when fileId input is pasted', () => {
+    const tenure: TenureRequestDto = {
+      fileId: 'FILE001',
+      cuttingPermit: 'CP001',
+      cutBlock: 'CB001',
+      isPrimary: false,
+    };
+
+    render(
+      <TenureItemInput
+        index={0}
+        tenure={tenure}
+        setTenure={mockSetTenure}
+        onSetPrimary={mockOnSetPrimary}
+        deleteTenure={mockDeleteTenure}
+      />
+    );
+
+    const fileIdInput = screen.getByDisplayValue('FILE001') as HTMLInputElement;
+    fireEvent.paste(fileIdInput, {
+      clipboardData: {
+        getData: () => ' file002 ',
+      },
+    } as any);
 
     expect(mockSetTenure).toHaveBeenCalledWith(
       expect.objectContaining({ fileId: 'FILE002' })

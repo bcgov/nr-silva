@@ -41,7 +41,10 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             invalidText="File ID is required."
             onChange={(e) => setTenure({ ...tenure, fileId: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, FILE_ID_MAX)}
-            onPaste={(e) => handleAutoUpperPaste(e, FILE_ID_MAX)}
+            onPaste={(e) => {
+              handleAutoUpperPaste(e, FILE_ID_MAX);
+              setTenure({ ...tenure, fileId: e.currentTarget.value.trim() });
+            }}
             labelText={
               <RequiredLabel id={`file-id-label-${index}`} htmlFor={`file-id-input-${index}`}>
                 File ID
@@ -58,7 +61,10 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             value={tenure.cuttingPermit ?? ''}
             onChange={(e) => setTenure({ ...tenure, cuttingPermit: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, CUTTING_PERMIT_MAX)}
-            onPaste={(e) => handleAutoUpperPaste(e, CUTTING_PERMIT_MAX)}
+            onPaste={(e) => {
+              handleAutoUpperPaste(e, CUTTING_PERMIT_MAX);
+              setTenure({ ...tenure, cuttingPermit: e.currentTarget.value.trim() });
+            }}
             labelText="Cutting permit"
           />
         </Column>
@@ -73,7 +79,10 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
             invalidText="Cut block is required."
             onChange={(e) => setTenure({ ...tenure, cutBlock: e.target.value.trim() })}
             onInput={(e) => handleAutoUpperInput(e, CUT_BLOCK_MAX)}
-            onPaste={(e) => handleAutoUpperPaste(e, CUT_BLOCK_MAX)}
+            onPaste={(e) => {
+              handleAutoUpperPaste(e, CUT_BLOCK_MAX);
+              setTenure({ ...tenure, cutBlock: e.currentTarget.value.trim() });
+            }}
             labelText={
               <RequiredLabel id={`cut-block-label-${index}`} htmlFor={`cut-block-input-${index}`}>
                 Cut block
