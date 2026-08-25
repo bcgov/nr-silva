@@ -20,7 +20,7 @@ type props = {
 const StepThree = ({ form, setStep }: props) => {
 
   const clientQuery = useQuery({
-    queryKey: ["forest-clients", "byNameAcronymNumber"],
+    queryKey: ["forest-clients", "byNameAcronymNumber", form.client?.value],
     queryFn: () => API.ForestClientEndpointService.searchForestClients(form.client?.value ?? ''),
     enabled: !!form.client?.value,
     select: (data) => {
