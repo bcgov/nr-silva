@@ -48,7 +48,11 @@ describe('CreateOpening utils', () => {
         client: { id: 'client-id', value: 'client-1' },
         orgUnit: { id: 'org-unit-id', value: 'OU' },
         category: { id: 'category-id', value: 'CAT' },
-        file: { id: 'file-id', value: new File(['{}'], 'file.geojson', { type: 'application/json' }) },
+        file: {
+          id: 'file-id',
+          value: new File(['{}'], 'file.geojson', { type: 'application/json' }),
+          validatedObj: { geoJson: { type: 'FeatureCollection', features: [] }, geometryArea: 1 },
+        },
         openingGrossArea: { id: 'opening-gross-area-input', value: '10' },
         maxAllowablePermAccess: { id: 'max-allowable-perm-access-input', value: '7' },
       };
@@ -58,6 +62,36 @@ describe('CreateOpening utils', () => {
       expect(isValid).toBe(true);
       expect(validated.client?.isInvalid).not.toBe(true);
       expect(validated.file?.isInvalid).not.toBe(true);
+    });
+
+    it('marks invalid opening gross area values as invalid', () => {
+      const form: CreateOpeningFormType = {
+        client: { id: 'client-id', value: 'client-1' },
+        orgUnit: { id: 'org-unit-id', value: 'OU' },
+        category: { id: 'category-id', value: 'CAT' },
+        file: { id: 'file-id', value: new File(['{}'], 'file.geojson', { type: 'application/json' }) },
+        openingGrossArea: { id: 'opening-gross-area-input', value: '12345678' },
+        maxAllowablePermAccess: { id: 'max-allowable-perm-access-input', value: '7' },
+      };
+
+      const { isValid, form: validated } = validateStepOne(form);
+      expect(isValid).toBe(false);
+      expect(validated.openingGrossArea?.isInvalid).toBe(true);
+    });
+
+    it('marks invalid max allowable permanent access values as invalid', () => {
+      const form: CreateOpeningFormType = {
+        client: { id: 'client-id', value: 'client-1' },
+        orgUnit: { id: 'org-unit-id', value: 'OU' },
+        category: { id: 'category-id', value: 'CAT' },
+        file: { id: 'file-id', value: new File(['{}'], 'file.geojson', { type: 'application/json' }) },
+        openingGrossArea: { id: 'opening-gross-area-input', value: '10' },
+        maxAllowablePermAccess: { id: 'max-allowable-perm-access-input', value: '999' },
+      };
+
+      const { isValid, form: validated } = validateStepOne(form);
+      expect(isValid).toBe(false);
+      expect(validated.maxAllowablePermAccess?.isInvalid).toBe(true);
     });
   });
 

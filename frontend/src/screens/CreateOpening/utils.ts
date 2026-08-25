@@ -1,5 +1,6 @@
 import { CreateOpeningFormType } from './definitions';
 import { TenureRequestDto } from '@/services/OpenApi';
+import { isValidDecimalInput } from '@/utils/InputUtils';
 
 const LICENSEE_OPENING_ID_MAX_LEN = 30;
 
@@ -28,11 +29,14 @@ export function validateStepOne(form: CreateOpeningFormType): { isValid: boolean
     updated.file = updated.file || {};
     updated.file.isInvalid = true;
   }
-  if (!updated.openingGrossArea?.value || Number(updated.openingGrossArea.value) <= 0) {
+  const openingGrossArea = updated.openingGrossArea?.value ?? '';
+  if (!isValidDecimalInput(openingGrossArea, 7, 4) || Number(openingGrossArea) <= 0) {
     isValid = false;
     if (updated.openingGrossArea) updated.openingGrossArea.isInvalid = true;
   }
-  if (!updated.maxAllowablePermAccess?.value) {
+
+  const maxAllowablePermAccess = updated.maxAllowablePermAccess?.value ?? '';
+  if (!isValidDecimalInput(maxAllowablePermAccess, 2, 1)) {
     isValid = false;
     if (updated.maxAllowablePermAccess) updated.maxAllowablePermAccess.isInvalid = true;
   }

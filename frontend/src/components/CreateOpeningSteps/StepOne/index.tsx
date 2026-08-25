@@ -245,8 +245,8 @@ const StepOne = ({
                       defaultValue={form.maxAllowablePermAccess?.value ?? ''}
                       invalid={form.maxAllowablePermAccess?.isInvalid}
                       invalidText="Must be between 0.0 and 99.9"
-                      onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 3, 1)}
-                      onPaste={(e) => enforceDecimalInputOnPaste(openingGrossAreaRef.current, e, 3, 1)}
+                      onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 2, 1)}
+                      onPaste={(e) => enforceDecimalInputOnPaste(null, e, 2, 1)}
                       onBlur={(e) =>
                         setForm((prev) => ({
                           ...prev,

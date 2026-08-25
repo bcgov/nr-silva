@@ -39,6 +39,68 @@ export const sanitizeDigits = (value: string): string => {
   return out.join('');
 };
 
+const isDigit = (char: string): boolean => {
+  if (char.length !== 1) return false;
+  const code = char.charCodeAt(0);
+  return code >= 48 && code <= 57;
+};
+
+const splitDecimalString = (value: string): { integer: string; fraction: string } | null => {
+  let dotCount = 0;
+  let integer = '';
+  let fraction = '';
+
+  for (let i = 0; i < value.length; i++) {
+    const ch = value.charAt(i);
+    if (ch === '.') {
+      dotCount += 1;
+      if (dotCount > 1) {
+        return null;
+      }
+      continue;
+    }
+    if (!isDigit(ch)) {
+      return null;
+    }
+    if (dotCount === 0) {
+      integer += ch;
+    } else {
+      fraction += ch;
+    }
+  }
+
+  return { integer, fraction };
+};
+
+export const isValidDecimalInput = (
+  value: string,
+  maxInteger: number,
+  maxDecimals: number,
+  allowLeadingDot = true
+): boolean => {
+  const input = value?.trim() ?? '';
+  if (!input || input === '.') {
+    return false;
+  }
+
+  const parts = splitDecimalString(input);
+  if (!parts) {
+    return false;
+  }
+
+  const { integer, fraction } = parts;
+  if (!allowLeadingDot && integer.length === 0) {
+    return false;
+  }
+  if (integer.length > maxInteger) {
+    return false;
+  }
+  if (fraction.length > maxDecimals) {
+    return false;
+  }
+  return integer.length > 0 || fraction.length > 0;
+};
+
 /**
  * Enforce maximum length constraint on a string.
  * @param value - The string to constrain
@@ -226,15 +288,18 @@ export const handleAutoUpperPaste = (e: ClipboardEvent<HTMLInputElement>, maxLen
 };
 
 /**
- * Enforce decimal numeric input with max digits and decimal places on keydown.
- * Spec: numeric(11,4) = 11 total digits, 4 decimal places max.
- * Allows: digits, single decimal point. Prevents: multiple decimals, overflow.
+ * Enforce decimal numeric input with separate integer/fraction limits on keydown.
+ * Backend rules use @Digits(integer, fraction) and allow a single decimal separator.
  *
- * @param {number} [maxLen=11] - Maximum total digits (including decimal point)
+ * @param {number} [maxLen=11] - Maximum integer digits
  * @param {number} [maxDecimals=4] - Maximum decimal places
- * Example: `<input onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 11, 4)} />`
+ * Example: `<input onKeyDown={(e) => enforceDecimalInputOnKeyDown(e, 7, 4)} />`
  */
-export const enforceDecimalInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, maxLen: number = 11, maxDecimals: number = 4) => {
+export const enforceDecimalInputOnKeyDown = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  maxLen: number = 11,
+  maxDecimals: number = 4
+) => {
   const allowed = [
     'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End',
   ];
@@ -246,7 +311,6 @@ export const enforceDecimalInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputEle
   const start = e.currentTarget.selectionStart ?? 0;
   const end = e.currentTarget.selectionEnd ?? 0;
 
-  // Allow decimal point if not already present
   if (key === '.') {
     if (currentValue.includes('.')) {
       e.preventDefault();
@@ -254,34 +318,15 @@ export const enforceDecimalInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputEle
     return;
   }
 
-  // Only allow digits
   if (typeof key === 'string' && key.length === 1) {
     const code = key.charCodeAt(0);
     if (code >= 48 && code <= 57) {
-      // Check digit count constraint
-      const digitsOnly = currentValue.replace('.', '');
-      const beforeLength = start;
-      const afterLength = currentValue.length - end;
-      // Account for decimal point length
-      const decimalOffset = currentValue.includes('.') ? 1 : 0;
-      const totalDigits = digitsOnly.length;
+      const before = currentValue.slice(0, start);
+      const after = currentValue.slice(end);
+      const proposedValue = before + key + after;
 
-      // Check if adding digit would exceed max length
-      if (totalDigits >= maxLen - decimalOffset) {
+      if (!isValidDecimalInput(proposedValue, maxLen, maxDecimals)) {
         e.preventDefault();
-        return;
-      }
-
-      // Check decimal places if inserting after decimal point
-      if (currentValue.includes('.')) {
-        const decimalIndex = currentValue.indexOf('.');
-        if (start > decimalIndex) {
-          const decimalsAfterPoint = currentValue.slice(decimalIndex + 1).length;
-          if (decimalsAfterPoint >= maxDecimals) {
-            e.preventDefault();
-            return;
-          }
-        }
       }
       return;
     }
@@ -290,21 +335,25 @@ export const enforceDecimalInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputEle
 };
 
 /**
- * Enforce decimal numeric paste with max digits and decimal places.
- * Spec: numeric(11,4) = 11 total digits, 4 decimal places max.
+ * Enforce decimal numeric paste with separate integer/fraction limits.
+ * Backend rules use @Digits(integer, fraction) and allow a single decimal separator.
  *
  * @param {HTMLInputElement | null} el - The input element reference.
  * @param {React.ClipboardEvent<HTMLInputElement>} e - The paste event.
- * @param {number} [maxLen=11] - Maximum total digits (including decimal point)
+ * @param {number} [maxLen=11] - Maximum integer digits
  * @param {number} [maxDecimals=4] - Maximum decimal places
- * Call from an `onPaste` handler: `onPaste={(e) => enforceDecimalInputOnPaste(inputRef.current, e, 11, 4)}`
+ * Call from an `onPaste` handler: `onPaste={(e) => enforceDecimalInputOnPaste(e.currentTarget, e, 7, 4)}`
  */
-export const enforceDecimalInputOnPaste = (el: HTMLInputElement | null, e: React.ClipboardEvent<HTMLInputElement>, maxLen: number = 11, maxDecimals: number = 4) => {
+export const enforceDecimalInputOnPaste = (
+  el: HTMLInputElement | null,
+  e: React.ClipboardEvent<HTMLInputElement>,
+  maxLen: number = 11,
+  maxDecimals: number = 4
+) => {
   e.preventDefault();
-  if (!el) return;
+  const input = el ?? e.currentTarget;
 
   const text = e.clipboardData?.getData('text') ?? '';
-  // Extract only digits and decimal point
   let paste = '';
   let decimalCount = 0;
   for (let i = 0; i < text.length; i++) {
@@ -322,44 +371,38 @@ export const enforceDecimalInputOnPaste = (el: HTMLInputElement | null, e: React
     }
   }
 
-  if (!paste) return;
+  if (!paste || paste === '.') return;
 
-  const start = el.selectionStart ?? 0;
-  const end = el.selectionEnd ?? 0;
-  const before = el.value.slice(0, start);
-  const after = el.value.slice(end);
+  const start = input.selectionStart ?? 0;
+  const end = input.selectionEnd ?? 0;
+  const before = input.value.slice(0, start);
+  const after = input.value.slice(end);
   let newValue = before + paste + after;
 
-  // Validate result doesn't exceed constraints
   const parts = newValue.split('.');
   if (parts.length > 2) {
-    // Multiple decimal points - remove extras
     const part0 = parts[0] ?? '';
     newValue = part0 + '.' + parts.slice(1).join('');
   }
 
-  // Check total digits
-  const digitsOnly = newValue.replace('.', '');
-  if (digitsOnly.length > maxLen) {
-    const part0 = parts[0] ?? '';
-    const part1 = parts[1] ?? '';
-    newValue = parts.length === 2
-      ? part0.slice(0, maxLen - maxDecimals) + '.' + part1.slice(0, maxDecimals)
-      : digitsOnly.slice(0, maxLen);
+  const normalizedParts = newValue.split('.');
+  let integerPart = normalizedParts[0] ?? '';
+  let fractionPart = normalizedParts[1] ?? '';
+
+  if (integerPart.length > maxLen) {
+    integerPart = integerPart.slice(0, maxLen);
+  }
+  if (fractionPart.length > maxDecimals) {
+    fractionPart = fractionPart.slice(0, maxDecimals);
   }
 
-  // Check decimal places
-  if (parts.length === 2) {
-    const part0 = parts[0] ?? '';
-    const part1 = parts[1] ?? '';
-    if (part1.length > maxDecimals) {
-      newValue = part0 + '.' + part1.slice(0, maxDecimals);
-    }
-  }
+  newValue = normalizedParts.length === 2 ? `${integerPart}.${fractionPart}` : integerPart;
 
-  el.value = newValue;
-  const cursorPos = start + paste.length;
-  el.setSelectionRange(cursorPos, cursorPos);
+  if (!isValidDecimalInput(newValue, maxLen, maxDecimals)) return;
+
+  input.value = newValue;
+  const cursorPos = Math.min(start + paste.length, input.value.length);
+  input.setSelectionRange(cursorPos, cursorPos);
 };
 
 export const comboBoxStringFilter = (options: {
