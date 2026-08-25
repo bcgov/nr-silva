@@ -561,7 +561,7 @@ ul.default-tab-accordion {
   }
 
   input:-webkit-autofill {
-    box-shadow: var(--#{vars.$bcgov-prefix}-layer-02);
+    box-shadow: inset 0 0 0 1000px var(--#{vars.$bcgov-prefix}-layer-02);
   }
 }
 
