@@ -1,0 +1,11 @@
+.feature-unavailable-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
+
+  .feature-unavailable-button {
+    min-width: 200px;
+  }
+}

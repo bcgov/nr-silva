@@ -1,4 +1,5 @@
 // @bcgov-nr/nr-theme has its own components override but that library is not maintained
+
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as variables;
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 
@@ -7,6 +8,56 @@
 @use '@carbon/styles/scss/components/button/vars' with ($button-border-radius: 4px);
 
 @use '@carbon/styles/scss/grid';
+
+// nr-theme's BC Sans Light has invalid font-weight:light; Chrome treats the empty weight as 400,
+// overriding Regular. Re-declare all weights after nr-theme so correct files win.
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-Regular_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-Regular_2f.woff') format('woff');
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-Italic_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-Italic_2f.woff') format('woff');
+  font-style: italic;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-Regular_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-Regular_2f.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-Italic_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-Italic_2f.woff') format('woff');
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-Bold_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-Bold_2f.woff') format('woff');
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('@bcgov-nr/nr-theme/assets/font/BCSans-BoldItalic_2f.woff2') format('woff2'),
+    url('@bcgov-nr/nr-theme/assets/font/BCSans-BoldItalic_2f.woff') format('woff');
+  font-style: italic;
+  font-weight: 700;
+}
 
 @include grid.flex-grid();
 

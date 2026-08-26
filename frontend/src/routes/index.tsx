@@ -5,6 +5,7 @@ import ErrorHandling from '@/screens/ErrorHandling';
 import { Navigate, type RouteObject } from "react-router-dom";
 import {
   CreateOpeningRoute,
+  CreateOpeningSuccessRoute,
   DashboardRoute,
   OpeningDetailsRoute,
   OpeningsRoute,
@@ -33,6 +34,7 @@ const protectedRouteList: RouteObject[] = [
   OpeningsSearchRoute,
   OpeningsRoute,
   CreateOpeningRoute,
+  CreateOpeningSuccessRoute,
   OpeningDetailsRoute,
   ActivitySearchRoute,
   ForestCoverSearchRoute,

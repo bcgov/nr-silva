@@ -95,11 +95,6 @@ vi.mock('../../../hooks/useScrollToSearchResults', () => ({
   default: vi.fn(),
 }));
 
-// Mock isAuthRefreshInProgress
-vi.mock('../../../constants/tanstackConfig', () => ({
-  isAuthRefreshInProgress: vi.fn(() => false),
-}));
-
 // Mock PageContent
 vi.mock('../../../components/PageContent', () => ({
   default: ({ children }: any) => <div>{children}</div>,

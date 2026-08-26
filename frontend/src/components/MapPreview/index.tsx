@@ -1,45 +1,53 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
-import { MapContainer, TileLayer, GeoJSON as RLGeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, useMap, ZoomControl } from "react-leaflet";
 import { geoJSON } from "leaflet";
 
 type MapPreviewProps = {
   geojson?: GeoJSON.FeatureCollection | null
 }
 
-const MapPreview = ({ geojson }: MapPreviewProps) => {
-  const [mapReady, setMapReady] = useState<boolean>(false);
-  const mapRef = useRef<L.Map | null>(null);
-
-  // Fit map to uploaded geometry when it changes and the map is ready
+/** Fits the map to the geojson bounds. Lives inside MapContainer so useMap() is always valid. */
+const FitBoundsLayer = ({ geojson }: { geojson: GeoJSON.FeatureCollection }) => {
+  const map = useMap();
   useEffect(() => {
-    if (!geojson || !mapRef.current || !mapReady) return;
-    const temp = geoJSON(geojson);
+    // Omit non-RFC7946 crs from individual geometries; Leaflet assumes WGS84
+    const normalized = {
+      ...geojson,
+      features: geojson.features.map((f) => {
+        const { crs: _crs, ...geo } = f.geometry as GeoJSON.Geometry & { crs?: unknown };
+        return { ...f, geometry: geo as GeoJSON.Geometry };
+      }),
+    };
+    const temp = geoJSON(normalized);
     const bounds = temp.getBounds();
-    if (bounds && bounds.isValid()) {
-      mapRef.current.fitBounds(bounds, { padding: [24, 24] });
-    }
+    if (bounds?.isValid()) map.fitBounds(bounds, { padding: [24, 24] });
     temp.remove();
-  }, [geojson, mapReady]);
+  }, [map, geojson]);
+  return null;
+};
+
+const MapPreview = ({ geojson }: MapPreviewProps) => {
 
   if (!geojson) return null;
 
   return (
     <div className="map-preview" style={{ height: 294 }}>
       <MapContainer
-        ref={mapRef}
         style={{ height: "100%", width: "100%" }}
         center={[49.25, -123.1]}
         zoom={6}
         zoomControl={false}
-        whenReady={() => setMapReady(true)}
+        scrollWheelZoom={false}
       >
+        <ZoomControl position="bottomright" />
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
           attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
           zIndex={-10000}
         />
         <RLGeoJSON data={geojson} />
+        <FitBoundsLayer geojson={geojson} />
       </MapContainer>
     </div>
   )

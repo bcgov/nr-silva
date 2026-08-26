@@ -1,0 +1,10 @@
+@use 'sass:string';
+
+// Hardcoded to avoid importing type-family.scss here — that file emits @font-face rules,
+// and importing it per-component causes Light @font-face to appear after our overrides.
+@forward '@carbon/type' with ($prefix: 'bx',
+  $custom-property-prefix: 'bx',
+  $font-families: ('mono': string.unquote("'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace"),
+    'sans': string.unquote("'BC Sans', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif"),
+  ),
+);

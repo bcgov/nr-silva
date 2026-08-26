@@ -23,7 +23,6 @@ import {
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import OpeningBookmarkBtn from "@/components/OpeningBookmarkBtn";
 import PageTitle from "@/components/PageTitle";
 import EmptySection from "@/components/EmptySection";
@@ -105,7 +104,7 @@ const OpeningDetails = () => {
     }
   }, [openingId, openingDetailsTombstoneQuery.status]);
 
-  if (openingDetailsTombstoneQuery.isError && !isAuthRefreshInProgress()) {
+  if (openingDetailsTombstoneQuery.isError && !openingDetailsTombstoneQuery.isFetching) {
     const openingDetailsError =
       openingDetailsTombstoneQuery.error as AxiosError;
     const errorCode = openingDetailsError?.response?.status;
@@ -150,7 +149,7 @@ const OpeningDetails = () => {
         <OpeningSummary
           openingId={Number(openingId)}
           tombstoneObj={openingDetailsTombstoneQuery.data?.tombstone}
-          isLoading={openingDetailsTombstoneQuery.isLoading || isAuthRefreshInProgress()}
+          isLoading={openingDetailsTombstoneQuery.isLoading}
           currentTab={activeTab}
           selectedForestCoverIds={selectedForestCoverIds}
           selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
@@ -191,7 +190,7 @@ const OpeningDetails = () => {
                 <Suspense fallback={<TextAreaSkeleton />}>
                   <OpeningOverview
                     overviewObj={openingDetailsTombstoneQuery.data?.overview}
-                    isLoading={openingDetailsTombstoneQuery.isLoading || isAuthRefreshInProgress()}
+                    isLoading={openingDetailsTombstoneQuery.isLoading}
                   />
                 </Suspense>
               ) : null}

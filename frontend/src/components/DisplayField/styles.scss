@@ -1,0 +1,18 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@/styles/type' as type;
+
+.display-field-container {
+
+  .display-field-label {
+    @include type.type-style('label-01');
+
+    .display-field-required {
+      color: var(--#{vars.$bcgov-prefix}-text-error);
+      margin-right: 0.25rem;
+    }
+  }
+
+  .display-field-value {
+    @include type.type-style('body-compact-01');
+  }
+}

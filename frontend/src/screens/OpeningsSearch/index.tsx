@@ -32,7 +32,6 @@ import EmptySection from "@/components/EmptySection";
 import { OpendingHeaderKeyType, OpeningHeaderType } from "@/types/TableHeader";
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/constants/tableConstants";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import OpeningsMap from "@/components/OpeningsMap";
 import TableSkeleton from "@/components/TableSkeleton";
 import useScrollToSearchResults from "@/hooks/useScrollToSearchResults";
@@ -224,10 +223,10 @@ const OpeningsSearch = () => {
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={openingSearchQuery.isLoading ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                      openingSearchQuery.isLoading
                         ? <InlineLoading />
                         : <p className="search-result-subtitle">{openingSearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
@@ -265,7 +264,7 @@ const OpeningsSearch = () => {
 
               {/* Table skeleton */}
               {
-                (openingSearchQuery.isLoading || isAuthRefreshInProgress())
+                (openingSearchQuery.isLoading)
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -276,7 +275,7 @@ const OpeningsSearch = () => {
                   : null
               }
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !openingSearchQuery.isLoading
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
@@ -315,7 +314,7 @@ const OpeningsSearch = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !openingSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !openingSearchQuery.isLoading
                   ? (
                     openingSearchQuery.data?.page?.totalElements &&
                       openingSearchQuery.data?.page.totalElements > 0 ? (

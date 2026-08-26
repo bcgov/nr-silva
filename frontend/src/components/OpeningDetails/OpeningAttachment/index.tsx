@@ -12,7 +12,6 @@ import { pluralize } from "@/utils/StringUtils";
 import { ACCESS_TOKEN_KEY, PLACE_HOLDER } from "@/constants";
 import API from "@/services/API";
 import { OpeningDetailsAttachmentMetaDto } from "@/services/OpenApi";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { getCookie } from "@/utils/CookieUtils";
 import { formatLocalDate } from "@/utils/DateUtils";
 
@@ -104,7 +103,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
       <Column sm={4} md={8} lg={16}>
         <div className="tab-title-container">
           <h3 className="default-tab-content-title">
-            {attachmentListQuery.isLoading || isAuthRefreshInProgress() ? '...' : attachmentListQuery.data?.length}
+            {attachmentListQuery.isLoading ? '...' : attachmentListQuery.data?.length}
             {' '}
             {
               pluralize('attachment', attachmentListQuery.data?.length ?? 0)
@@ -118,7 +117,7 @@ const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
       <Column sm={4} md={8} lg={16}>
         {/* Table skeleton */}
         {
-          attachmentListQuery.isLoading || isAuthRefreshInProgress()
+          attachmentListQuery.isLoading
             ? <TableSkeleton
               headers={AttachmentTableHeaders}
               showToolbar={false}

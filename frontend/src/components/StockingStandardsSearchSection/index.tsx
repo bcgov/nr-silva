@@ -6,7 +6,6 @@ import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from "@/const
 import { CircleDash, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import TableSkeleton from "@/components/TableSkeleton";
 import { StockingStandardsHeaderKeyType, StockingStandardsHeaderType } from "@/types/TableHeader";
 import EmptySection from "@/components/EmptySection";
@@ -169,10 +168,10 @@ const StockingStandardsSearchSection = () => {
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={stockingStandardsSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={stockingStandardsSearchQuery.isLoading ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      stockingStandardsSearchQuery.isLoading && !isAuthRefreshInProgress()
+                      stockingStandardsSearchQuery.isLoading
                         ? <InlineLoading />
                         : <p className="search-result-subtitle">{stockingStandardsSearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
@@ -207,7 +206,7 @@ const StockingStandardsSearchSection = () => {
 
               {/* Table skeleton */}
               {
-                (stockingStandardsSearchQuery.isLoading || isAuthRefreshInProgress())
+                stockingStandardsSearchQuery.isLoading
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -218,7 +217,7 @@ const StockingStandardsSearchSection = () => {
                   : null
               }
               {
-                !stockingStandardsSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !stockingStandardsSearchQuery.isLoading
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
@@ -254,7 +253,7 @@ const StockingStandardsSearchSection = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !stockingStandardsSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !stockingStandardsSearchQuery.isLoading
                   ? (
                     stockingStandardsSearchQuery.data?.page?.totalElements &&
                       stockingStandardsSearchQuery.data?.page.totalElements > 0 ? (

@@ -46,6 +46,68 @@ export const getClientLocationLabel = (location?: CodeDescriptionDto | null): st
 };
 
 /**
+ * Sorts location options by numeric codes (ascending) first, then non-numeric strings (alphabetically).
+ * Returns an array of objects with `id` and `label` properties suitable for dropdown rendering.
+ *
+ * @param locations - Array of CodeDescriptionDto objects to sort.
+ * @returns Sorted array of location option objects with id and label.
+ */
+const parseFullNumericCode = (value: string): number | null => {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) return null;
+
+  let dotCount = 0;
+  for (const char of trimmed) {
+    if (char === '.') {
+      dotCount += 1;
+      if (dotCount > 1) return null;
+      continue;
+    }
+    if (char < '0' || char > '9') {
+      return null;
+    }
+  }
+
+  if (trimmed === '.' || trimmed === '-.') return null;
+
+  const numeric = Number(trimmed);
+  return Number.isFinite(numeric) ? numeric : null;
+};
+
+export const sortLocationOptions = (
+  locations?: CodeDescriptionDto[] | null
+): Array<{ id: string; label: string }> => {
+  return (locations?.map((location) => ({
+    id: location.code ?? '',
+    label: getClientLocationLabel(location),
+  })) ?? []).sort((a, b) => {
+    const numA = parseFullNumericCode(a.id);
+    const numB = parseFullNumericCode(b.id);
+
+    const isNumA = numA !== null;
+    const isNumB = numB !== null;
+
+    // Both numbers - sort numerically ascending
+    if (isNumA && isNumB) {
+      return (numA as number) - (numB as number);
+    }
+
+    // Only A is number - A comes first
+    if (isNumA) {
+      return -1;
+    }
+
+    // Only B is number - B comes first
+    if (isNumB) {
+      return 1;
+    }
+
+    // Both are strings - sort alphabetically
+    return a.id.localeCompare(b.id);
+  });
+};
+
+/**
  * Formats a ForestClientDto into a display string.
  *
  * @param {ForestClientDto | null | undefined} client - The client object to format.

@@ -4,7 +4,6 @@ import { Column, Grid } from "@carbon/react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import useDeepLinkScroll from "@/hooks/useDeepLinkScroll";
 import { DEEP_LINK_ELEMENT_ID } from "@/constants/deepLinkConstants";
 
@@ -49,7 +48,7 @@ const ActivityDetail = ({ activity, openingId, targetComment }: ActivityDetailOu
 
     if (!code) return null;
 
-    const isLoading = activityDetailQuery.isLoading || isAuthRefreshInProgress();
+    const isLoading = activityDetailQuery.isLoading;
 
     const detailComponents: Record<string, JSX.Element> = {
       DS: <DirectSeedingActivityDetail activityDetail={activityDetailQuery.data} isLoading={isLoading} />,
@@ -72,7 +71,7 @@ const ActivityDetail = ({ activity, openingId, targetComment }: ActivityDetailOu
           base={activity.base}
           isPlanning={activity.status.code === "P" ? true : false}
           isComplex={isComplexActivity()}
-          isLoading={activityDetailQuery.isLoading || isAuthRefreshInProgress()} />
+          isLoading={activityDetailQuery.isLoading} />
       </Column>
 
       {isComplexActivity() ? (
@@ -82,7 +81,7 @@ const ActivityDetail = ({ activity, openingId, targetComment }: ActivityDetailOu
       ) : null}
 
       <Column sm={4} md={4} lg={16} id={DEEP_LINK_ELEMENT_ID.activityComment(activity.atuId)}>
-        <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading || isAuthRefreshInProgress()}>
+        <CardItem label="Comment" showSkeleton={activityDetailQuery.isLoading}>
           <Comments comments={activityDetailQuery.data?.comments ?? []} />
         </CardItem>
       </Column>

@@ -28,9 +28,9 @@ vi.mock("../../components/FavouriteOpenings", () => ({
   default: () => <div data-testid="favourite-openings">Favourite Openings</div>,
 }));
 
-// Mock FavouriteCardsConfig
+// Mock getFavouriteCardsConfig
 vi.mock("../../screens/Dashboard/constants", () => ({
-  FavouriteCardsConfig: [
+  getFavouriteCardsConfig: () => [
     { index: 1, title: "Card 1", link: "/card1", icon: "icon1" },
     { index: 2, title: "Card 2", link: "/card2", icon: "icon2" },
   ],

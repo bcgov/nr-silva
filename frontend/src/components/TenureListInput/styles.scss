@@ -1,0 +1,20 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.tenure-item-input-container {
+  background: var(--#{vars.$bcgov-prefix}-field-01);
+  padding: 1.5rem;
+
+  .tenure-item-grid {
+    row-gap: 1rem;
+    column-gap: 1.375rem;
+
+    // For screens larger than lg (1440px+), show 3 columns
+    @media (min-width: 1441px) {
+      --cds-grid-columns: 24;
+
+      .tenure-column {
+        grid-column: span 8;
+      }
+    }
+  }
+}

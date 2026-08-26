@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.config.TenureEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
@@ -64,6 +65,9 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
                 new TenureValidationResultDto(1, true, null, null)),
             List.of(),
             true,
+            List.of(
+                new TenureDto("TFL001", "CP1", "CB001", true, "TM001"),
+                new TenureDto("TFL002", null, "CB002", false, "TM001")),
             Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
@@ -78,7 +82,9 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
         .andExpect(jsonPath("$.isValid").value(true))
         .andExpect(jsonPath("$.duplicateConflicts").isEmpty())
         .andExpect(jsonPath("$.validationResults[0].isValid").value(true))
-        .andExpect(jsonPath("$.validationResults[1].isValid").value(true));
+        .andExpect(jsonPath("$.validationResults[1].isValid").value(true))
+        .andExpect(jsonPath("$.tenures[0].timberMark").value("TM001"))
+        .andExpect(jsonPath("$.tenures[1].timberMark").value("TM001"));
   }
 
   @Test
@@ -96,6 +102,7 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
                     "fileId=TFL001, cuttingPermit=CP1, cutBlock=CB001",
                     TenureValidationErrorCode.DUPLICATE_IN_REQUEST)),
             false,
+            List.of(),
             Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
@@ -137,7 +144,7 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   @DisplayName("Empty tenure list should return 200")
   void validateTenures_emptyList_returns200() throws Exception {
     TenureValidationResponseDto response =
-        new TenureValidationResponseDto(List.of(), List.of(), true, Map.of());
+        new TenureValidationResponseDto(List.of(), List.of(), true, List.of(), Map.of());
     when(tenureValidationService.validateTenures(any(), anyString())).thenReturn(response);
 
     mockMvc

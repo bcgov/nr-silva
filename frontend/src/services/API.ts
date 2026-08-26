@@ -4,13 +4,17 @@ import { getCookie } from "@/utils/CookieUtils";
 import { ACCESS_TOKEN_KEY } from "@/constants";
 
 // All service imports (static classes)
-import { CodesEndpointService } from "./OpenApi/services/CodesEndpointService";
-import { ForestClientEndpointService } from "./OpenApi/services/ForestClientEndpointService";
-import { OpeningEndpointService } from "./OpenApi/services/OpeningEndpointService";
-import { OpeningMapsEndpointService } from "./OpenApi/services/OpeningMapsEndpointService";
-import { UserActionsEndpointService } from "./OpenApi/services/UserActionsEndpointService";
-import { UserRecentOpeningEndpointService } from "./OpenApi/services/UserRecentOpeningEndpointService";
-import { SearchEndpointService } from "./OpenApi";
+import {
+    CodesEndpointService,
+    ForestClientEndpointService,
+    OpeningEndpointService,
+    OpeningMapsEndpointService,
+    UserActionsEndpointService,
+    UserRecentOpeningEndpointService,
+    SearchEndpointService,
+    OpeningCreateEndpointService,
+    TenureEndpointService
+} from "./OpenApi";
 
 // Clean baseURL
 let API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
@@ -36,7 +40,9 @@ const serviceConstructors = {
     OpeningMapsEndpointService,
     UserActionsEndpointService,
     UserRecentOpeningEndpointService,
-    SearchEndpointService
+    SearchEndpointService,
+    OpeningCreateEndpointService,
+    TenureEndpointService
 } as const;
 
 type SilvaApiType = {

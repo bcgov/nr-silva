@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
@@ -58,6 +59,7 @@ public class TenureValidationService {
 
     List<TenureValidationResultDto> validationResults = new ArrayList<>();
     Map<Integer, CutBlockEntity> resolvedBlocks = new HashMap<>();
+    List<TenureDto> tenuresWithTimberMark = new ArrayList<>();
     List<DuplicateConflictDto> duplicates = detectDuplicates(tenures);
 
     for (int i = 0; i < tenures.size(); i++) {
@@ -72,7 +74,22 @@ public class TenureValidationService {
         validationResults.stream().allMatch(TenureValidationResultDto::isValid)
             && duplicates.isEmpty();
 
-    return new TenureValidationResponseDto(validationResults, duplicates, isValid, resolvedBlocks);
+    if (isValid) {
+      for (int i = 0; i < tenures.size(); i++) {
+        TenureRequestDto tenure = tenures.get(i);
+        CutBlockEntity block = resolvedBlocks.get(i);
+        tenuresWithTimberMark.add(
+            new TenureDto(
+                tenure.fileId(),
+                tenure.cuttingPermit(),
+                tenure.cutBlock(),
+                tenure.isPrimary(),
+                block != null ? block.getTimberMark() : null));
+      }
+    }
+
+    return new TenureValidationResponseDto(
+        validationResults, duplicates, isValid, tenuresWithTimberMark, resolvedBlocks);
   }
 
   /**

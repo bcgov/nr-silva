@@ -88,10 +88,6 @@ vi.mock('../../../hooks/useScrollToSearchResults', () => ({
   default: vi.fn(),
 }));
 
-vi.mock('../../../constants/tanstackConfig', () => ({
-  isAuthRefreshInProgress: vi.fn(() => false),
-}));
-
 vi.mock('../../../components/EmptySection', () => ({
   default: () => <div data-testid="empty-section">No results found</div>,
 }));

@@ -1,5 +1,5 @@
-@use '@carbon/type';
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@/styles/type' as type;
 
 .modal-tile-button {
   padding: 1rem;
@@ -23,6 +23,30 @@
   &:hover {
     background-color: var(--#{vars.$bcgov-prefix}-layer-hover-02);
     border-color: var(--#{vars.$bcgov-prefix}-border-subtle-selected-02);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01, #C4C4C4);
+    background: var(--#{vars.$bcgov-prefix}-layer-01, #F5F5F5);
+    color: var(--#{vars.$bcgov-prefix}-text-disabled, #6F6F6F);
+
+    &:hover {
+      background: var(--#{vars.$bcgov-prefix}-layer-01, #F5F5F5);
+      border-color: var(--#{vars.$bcgov-prefix}-border-subtle-01, #C4C4C4);
+    }
+
+    .tile-button-content {
+
+      .main-icon svg,
+      .tile-title,
+      .tile-subtitle,
+      .selected-icon svg {
+        color: var(--#{vars.$bcgov-prefix}-text-disabled, #6F6F6F);
+        fill: var(--#{vars.$bcgov-prefix}-text-disabled, #6F6F6F);
+      }
+    }
   }
 
   .tile-button-content {

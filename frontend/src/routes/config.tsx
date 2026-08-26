@@ -2,10 +2,12 @@ import { lazy, Suspense } from "react";
 import { type RouteObject, Outlet, Navigate } from "react-router-dom";
 import { Loading } from "@carbon/react";
 import SideLayout from '@/layouts/SideLayout';
+import FeatureGateRoute from '@/routes/FeatureGateRoute';
 import {
   DASHBOARD_PATH,
   OPENINGS_PATH,
   OPENINGS_SEARCH_PATH,
+  OPENING_CREATE_SUCCESS_PATH,
   ACTIVITY_SEARCH_PATH,
   FOREST_COVER_SEARCH_PATH,
   STANDARDS_UNIT_SEARCH_PATH,
@@ -18,6 +20,7 @@ const Dashboard = lazy(() => import('@/screens/Dashboard'));
 const Openings = lazy(() => import('@/screens/Openings'));
 const OpeningDetails = lazy(() => import('@/screens/Openings/OpeningDetails'));
 const CreateOpening = lazy(() => import('@/screens/CreateOpening'));
+const CreateOpeningSuccess = lazy(() => import('@/screens/CreateOpening/CreateOpeningSuccess'));
 const OpeningsSearch = lazy(() => import('@/screens/OpeningsSearch'));
 const ActivitySearch = lazy(() => import('@/screens/ActivitySearch'));
 const ForestCoverSearch = lazy(() => import('@/screens/ForestCoverSearch'));
@@ -45,7 +48,28 @@ export const OpeningsSearchRoute: RouteObject = {
 
 export const CreateOpeningRoute: RouteObject = {
   path: "/openings/create",
-  element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpening /></Suspense>} />,
+  element: (
+    <FeatureGateRoute
+      featureName="Create opening"
+      title="Opening creation is unavailable"
+      description="Creating new tenure-based openings is disabled in this deployment model. Please return to the openings list."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpening /></Suspense>} />
+    </FeatureGateRoute>
+  ),
+}
+
+export const CreateOpeningSuccessRoute: RouteObject = {
+  path: OPENING_CREATE_SUCCESS_PATH,
+  element: (
+    <FeatureGateRoute
+      featureName="Create opening"
+      title="Opening creation is unavailable"
+      description="The opening creation workflow is disabled in this deployment model. Please return to the openings list."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateOpeningSuccess /></Suspense>} />
+    </FeatureGateRoute>
+  ),
 }
 
 export const OpeningDetailsRoute: RouteObject = {

@@ -4,6 +4,7 @@ import {
   getDeploymentModel,
   getDeploymentModelDisplayName
 } from '@/constants/deploymentModel';
+import { isNonProduction } from '@/utils/featureFlags';
 import { Tag } from '@carbon/react';
 
 import "./styles.scss";
@@ -15,12 +16,8 @@ import "./styles.scss";
  * This component should be integrated into the app layout for debugging purposes.
  */
 const DeploymentModelIndicator: React.FC = () => {
-  // Determine if we should show the indicator
-  const zone = env.VITE_ZONE?.toLowerCase();
-  const isProd = zone === 'prod';
-
   // Don't render in production
-  if (isProd) {
+  if (!isNonProduction()) {
     return null;
   }
 

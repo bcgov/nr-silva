@@ -79,6 +79,9 @@ class TenureValidationServiceTest {
     assertThat(result.duplicateConflicts()).isEmpty();
     assertThat(result.validationResults()).hasSize(2);
     assertThat(result.validationResults()).allMatch(TenureValidationResultDto::isValid);
+    assertThat(result.tenures()).hasSize(2);
+    assertThat(result.tenures().get(0).timberMark()).isEqualTo("TM001");
+    assertThat(result.tenures().get(1).timberMark()).isEqualTo("TM001");
   }
 
   @Test
@@ -195,6 +198,7 @@ class TenureValidationServiceTest {
     assertThat(result.isValid()).isFalse();
     assertThat(result.validationResults().get(0).isValid()).isTrue();
     assertThat(result.validationResults().get(1).isValid()).isFalse();
+    assertThat(result.tenures()).isEmpty();
   }
 
   // ========== validateTenures() — auth ==========

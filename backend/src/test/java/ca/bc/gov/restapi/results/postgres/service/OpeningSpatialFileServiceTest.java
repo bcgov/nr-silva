@@ -187,18 +187,18 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should throw for unsupported CRS")
   void shouldThrowForUnsupportedCrs() throws Exception {
-    GeometryFactory gf = new GeometryFactory();
-    Geometry pt = gf.createPoint(new Coordinate(-125, 52));
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-125,52]}}]}";
 
     Method m =
         OpeningSpatialFileService.class.getDeclaredMethod(
-            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+            "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
     assertThatThrownBy(
             () -> {
               try {
-                m.invoke(service, pt, "9999");
+                m.invoke(service, geojson, "9999");
               } catch (InvocationTargetException ite) {
                 throw ite.getCause();
               }
@@ -209,41 +209,33 @@ class OpeningSpatialFileServiceTest {
   @Test
   @DisplayName("Should validate geometry within BC boundary (4326)")
   void shouldValidateWithinBoundary4326() throws Exception {
-    GeometryFactory gf = new GeometryFactory();
-    Coordinate[] coords =
-        new Coordinate[] {
-          new Coordinate(-120.5, 49.2),
-          new Coordinate(-120.4, 49.2),
-          new Coordinate(-120.4, 49.3),
-          new Coordinate(-120.5, 49.3),
-          new Coordinate(-120.5, 49.2)
-        };
-    Polygon poly = gf.createPolygon(coords);
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[ -120.5,49.2 ],[ -120.4,49.2 ],[ -120.4,49.3 ],[ -120.5,49.3 ],[ -120.5,49.2 ]]]}}]}";
 
     Method m =
         OpeningSpatialFileService.class.getDeclaredMethod(
-            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+            "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
     // Should not throw
-    m.invoke(service, poly, "4326");
+    m.invoke(service, geojson, "4326");
   }
 
   @Test
   @DisplayName("Should throw when geometry outside BC boundary (4326)")
   void shouldThrowWhenOutsideBoundary4326() throws Exception {
-    GeometryFactory gf = new GeometryFactory();
-    Geometry pt = gf.createPoint(new Coordinate(-10, 10));
+    String geojson =
+        "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-10,10]}}]}";
 
     Method m =
         OpeningSpatialFileService.class.getDeclaredMethod(
-            "validateGmlGeometryAndBoundary", Geometry.class, String.class);
+            "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
     assertThatThrownBy(
             () -> {
               try {
-                m.invoke(service, pt, "4326");
+                m.invoke(service, geojson, "4326");
               } catch (InvocationTargetException ite) {
                 throw ite.getCause();
               }
@@ -449,6 +441,21 @@ class OpeningSpatialFileServiceTest {
                     "data.xml", "<root/>".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Unsupported file type");
+  }
+
+  @Test
+  void shouldRejectCurveGml() {
+    String gml =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<gml:Curve xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
+            + "<gml:segments><gml:ArcString><gml:posList>-123.2 49.2 -123.1 49.3 -123.0 49.2"
+            + "</gml:posList></gml:ArcString></gml:segments></gml:Curve>";
+    assertThatThrownBy(
+            () ->
+                service.processOpeningSpatialFile(
+                    "curve.gml", gml.getBytes(StandardCharsets.UTF_8)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("Only Polygon and MultiPolygon");
   }
 
   @Test

@@ -5,10 +5,13 @@ import {
   sanitizeDigits,
   enforceNumberInputOnKeyDown,
   enforceNumberInputOnPaste,
+  enforceDecimalInputOnKeyDown,
+  enforceDecimalInputOnPaste,
   getMultiSelectedCodes,
   handleAutoUpperInput,
   handleAutoUpperPaste,
   comboBoxStringFilter,
+  isValidDecimalInput,
 } from '@/utils/InputUtils';
 
 describe('InputUtils', () => {
@@ -21,6 +24,17 @@ describe('InputUtils', () => {
     expect(sanitizeDigits('a1b2c3')).toBe('123');
     expect(sanitizeDigits('0123')).toBe('0123');
     expect(sanitizeDigits('no digits')).toBe('');
+  });
+
+  it('isValidDecimalInput enforces integer and decimal digit limits', () => {
+    expect(isValidDecimalInput('99.9', 2, 1)).toBe(true);
+    expect(isValidDecimalInput('12345678', 7, 4)).toBe(false);
+    expect(isValidDecimalInput('999', 2, 1)).toBe(false);
+    expect(isValidDecimalInput('.1234', 7, 4)).toBe(true);
+    expect(isValidDecimalInput('.', 7, 4)).toBe(false);
+    expect(isValidDecimalInput('1234567.1234', 7, 4)).toBe(true);
+    expect(isValidDecimalInput('12345678.1234', 7, 4)).toBe(false);
+    expect(isValidDecimalInput('1234567.12345', 7, 4)).toBe(false);
   });
 
   it('enforceNumberInputOnKeyDown allows navigation and digits but prevents letters', () => {
@@ -64,6 +78,52 @@ describe('InputUtils', () => {
     };
     enforceNumberInputOnKeyDown(evNav, 5);
     expect(evNav.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('enforceDecimalInputOnKeyDown allows valid numeric(2,1) input after a trailing decimal', () => {
+    const input: any = { value: '99.', selectionStart: 3, selectionEnd: 3 };
+    const ev: any = {
+      key: '9',
+      preventDefault: vi.fn(),
+      ctrlKey: false,
+      metaKey: false,
+      currentTarget: input,
+    };
+
+    enforceDecimalInputOnKeyDown(ev, 2, 1);
+    expect(ev.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('enforceDecimalInputOnKeyDown prevents invalid numeric(2,1) input', () => {
+    const input: any = { value: '99', selectionStart: 2, selectionEnd: 2 };
+    const ev: any = {
+      key: '9',
+      preventDefault: vi.fn(),
+      ctrlKey: false,
+      metaKey: false,
+      currentTarget: input,
+    };
+
+    enforceDecimalInputOnKeyDown(ev, 2, 1);
+    expect(ev.preventDefault).toHaveBeenCalled();
+  });
+
+  it('enforceDecimalInputOnPaste enforces numeric(2,1) limits', () => {
+    const input = document.createElement('input');
+    input.value = '99';
+    input.selectionStart = 2;
+    input.selectionEnd = 2;
+
+    const clipboard = { getData: () => '.9' };
+    const ev: any = { clipboardData: clipboard, preventDefault: vi.fn(), currentTarget: input };
+
+    enforceDecimalInputOnPaste(input, ev as any, 2, 1);
+    expect(input.value).toBe('99.9');
+
+    const invalidClipboard = { getData: () => '9' };
+    const evInvalid: any = { clipboardData: invalidClipboard, preventDefault: vi.fn(), currentTarget: input };
+    enforceDecimalInputOnPaste(input, evInvalid as any, 2, 1);
+    expect(input.value).toBe('99.9');
   });
 
   it('enforceNumberInputOnPaste sanitizes digits and inserts into element', () => {

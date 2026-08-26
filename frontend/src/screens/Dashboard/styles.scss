@@ -1,6 +1,6 @@
 @use '@bcgov-nr/nr-theme/design-tokens/colors.scss' as colors;
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
-@use '@carbon/type';
+@use '@/styles/type' as type;
 
 .tab-content {
   background-color: var(--#{vars.$bcgov-prefix}-layer-01);

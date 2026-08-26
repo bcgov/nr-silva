@@ -1,153 +1,104 @@
 import { useEffect, useState } from 'react';
-import { Button, Column, Form, Grid, InlineNotification, Modal, ProgressIndicator, ProgressStep, Stack } from '@carbon/react';
+import { Column, Grid, InlineNotification, ProgressIndicator, ProgressStep } from '@carbon/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Checkmark, TrashCan } from '@carbon/icons-react';
 import { TENURED_OPENING, GOV_FUNDED_OPENING } from '@/constants';
-import { OpeningTypes } from '@/types/OpeningTypes';
-import { scrollToSection } from '@/utils/InputUtils';
 import PageTitle from '@/components/PageTitle';
-import { CreateOpeningFileUpload, CreateOpeningForm } from '@/components/CreateOpeningSteps';
-import { isRealNumber } from '@/utils/ValidationUtils';
-import ModalHead from '@/components/Modals/ModalHead';
-import { OpeningsRoute } from '@/routes/config';
+import FeatureUnavailable from '@/components/FeatureUnavailable';
+import { CreateOpeningRoute, OpeningsRoute } from '@/routes/config';
+import { useAuth } from '@/contexts/AuthProvider';
+import { hasCreateOpeningPrivilege } from '@/utils/famUtils';
+import { CreateOpeningForm } from './CreateOpeningForm';
 
-import { CreateOpeningFormType } from './definitions';
-import { DefaultOpeningForm, TitleText } from './constants';
-import { useMutation } from '@tanstack/react-query';
-import API from '@/services/API';
 import './styles.scss';
 
 
 const CreateOpening = () => {
   const [searchParams] = useSearchParams();
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const auth = useAuth();
   const navigate = useNavigate();
   const type = searchParams.get('type');
-  const [form, setForm] = useState<CreateOpeningFormType>(() => {
-    return structuredClone(DefaultOpeningForm);
-  });
-  const [warnText, setWarnText] = useState<string | undefined>();
+  const [currentStep, setCurrentStep] = useState<number>(0);
+
+  const isGovFundedOpening = type === GOV_FUNDED_OPENING;
+  const isValidType = type === TENURED_OPENING || isGovFundedOpening;
 
   useEffect(() => {
-    const isValidType = type === TENURED_OPENING || type === GOV_FUNDED_OPENING;
+    document.title = `Create Opening - Silva`;
+    return () => {
+      document.title = "Silva";
+    };
+  }, []);
 
+  // Alert user if they try to leave via browser refresh or navigation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  useEffect(() => {
     if (!isValidType) {
       console.warn("Invalid opening type");
       navigate("/", { replace: true });
-      return;
     }
-  }, [type, navigate]);
+  }, [isValidType, navigate]);
 
-  const openingType = type! as OpeningTypes;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  };
-
-  const fileMutation = useMutation({
-    mutationFn: (file: Blob) => API.OpeningEndpointService.uploadOpeningSpatialFile({ file }),
-    onSuccess: (res) => {
-      setForm(prev => ({
-        ...prev,
-        geojson: {
-          ...prev.geojson,
-          value: res.geoJson as GeoJSON.FeatureCollection
-        }
-      }));
-      setCurrentStep(1);
-      console.log("Upload success: ", res)
-    },
-    onError: (err) => {
-      console.warn("Upload failed: ", err)
-    }
-  });
-
-  const handleBack = () => {
-    if (currentStep === 0) {
-      navigate(OpeningsRoute.path!)
-    }
-    setCurrentStep(s => Math.max(0, s - 1));
+  // Guard: Check authentication and privileges
+  if (!auth.user || !hasCreateOpeningPrivilege(auth.user.privileges)) {
+    return (
+      <Grid className='create-opening-grid default-grid'>
+        <Column sm={4} md={8} lg={16} id="title-col">
+          <PageTitle
+            title="Create new opening"
+            subtitle="Register an opening to cover licensee or ministry responsibilities"
+          />
+        </Column>
+        <Column sm={4} md={8} lg={16}>
+          <InlineNotification
+            lowContrast
+            kind="warning"
+            title="Insufficient privileges"
+            subtitle="You do not have permission to create an opening."
+          />
+        </Column>
+      </Grid>
+    );
   }
 
-  const handleNext = () => {
-    if (currentStep === 0) {
-      if (!form.geojson?.value || !form.file?.value) {
-        setForm(
-          (prev) => (
-            { ...prev, isGeoJsonMissing: { ...prev.isGeoJsonMissing, value: true } }
-          )
-        )
-        scrollToSection(form.client?.id)
-        return;
-      }
+  // Guard: Check opening type
+  if (isGovFundedOpening) {
+    return (
+      <Grid className='create-opening-grid default-grid'>
+        <Column sm={4} md={8} lg={16} id="title-col">
+          <PageTitle
+            title="Create new opening"
+            breadCrumbs={[{ name: "Openings", path: OpeningsRoute.path! }, { name: "Create new opening", path: CreateOpeningRoute.path! }]}
+          />
+        </Column>
 
-      fileMutation.mutate(form.file.value)
-
-      return;
-    }
-
-    if (currentStep === 1 && validateForm()) {
-      setCurrentStep(2);
-      scrollToSection('title-col');
-    }
+        <Column sm={4} md={8} lg={16}>
+          <FeatureUnavailable
+            featureName="Government funded opening"
+            title="Government funded openings are unavailable"
+            description="Creating government funded openings is not supported yet. Please create a tenure-based opening or return to the openings list."
+            actionLabel="Back to openings"
+            onActionClick={() => navigate(OpeningsRoute.path!)}
+          />
+        </Column>
+      </Grid>
+    );
   }
 
-  const handleCancel = () => {
-    setIsCancelModalOpen(true);
-  }
-
-  const handleCreate = () => {
-    console.log(form);
-  }
-
-  function validateForm(): boolean {
-    let isValid = true;
-    const validatedForm = structuredClone(form);
-
-    if (!validatedForm.orgUnit.value?.code) {
-      isValid = false;
-      validatedForm.orgUnit.isInvalid = true;
-    }
-    if (!validatedForm.category.value?.code) {
-      isValid = false;
-      validatedForm.category.isInvalid = true;
-    }
-
-    const openingGrossArea = validatedForm.openingGrossArea.value;
-    if (!isRealNumber(openingGrossArea)) {
-      isValid = false;
-      validatedForm.openingGrossArea.isInvalid = true;
-    }
-
-    const maxAllowablePermAccess = validatedForm.maxAllowablePermAccess.value;
-    if (!isRealNumber(maxAllowablePermAccess)) {
-      isValid = false;
-      validatedForm.maxAllowablePermAccess.isInvalid = true;
-    }
-
-    if (!validatedForm.tenureInfo.value || !validatedForm.tenureInfo.value.length) {
-      isValid = false;
-      validatedForm.tenureInfo.isInvalid = true;
-    }
-
-    if (!isValid) {
-      console.log(validatedForm);
-      setForm(validatedForm);
-    }
-
-    return isValid;
-  }
-
-
+  // Main form: All hooks in CreateOpeningForm are always called
   return (
     <Grid className='create-opening-grid default-grid'>
       <Column sm={4} md={8} lg={16} id="title-col">
         <PageTitle
-          title={
-            `Create an opening: ${TitleText[openingType]}`
-          }
-          subtitle="Register an opening to cover licensee or ministry responsibilities"
+          title="Create new opening"
+          breadCrumbs={[{ name: "Openings", path: OpeningsRoute.path! }, { name: "Create new opening", path: `${CreateOpeningRoute.path!}?type=${type}`, current: true }]}
         />
       </Column>
 
@@ -158,117 +109,23 @@ const CreateOpening = () => {
         >
           <ProgressStep
             current={currentStep === 0}
-            description="File Upload"
-            label="File Upload"
-            secondaryLabel="Step 1"
+            description="Opening information"
+            label="Opening information"
           />
           <ProgressStep
             current={currentStep === 1}
-            description="Opening Details"
-            label="Opening Details"
-            secondaryLabel="Step 2"
+            description="Tenure information"
+            label="Tenure information"
           />
           <ProgressStep
             current={currentStep === 2}
-            description="Review & Create"
-            label="Review & Create"
-            secondaryLabel="Step 3"
+            description="Review and create"
+            label="Review and create"
           />
         </ProgressIndicator>
       </Column>
 
-      {
-        warnText
-          ? (
-            <Column sm={4} md={8} lg={16}>
-              <InlineNotification lowContrast kind="warning" subtitle={warnText} onCloseButtonClick={() => setWarnText(undefined)} />
-            </Column>
-          )
-          : null
-      }
-
-      <Column sm={4} md={8} lg={16} xlg={12} max={10}>
-        <Form noValidate onSubmit={handleSubmit}>
-          <Grid className="create-opening-form-grid">
-            {
-              currentStep === 0
-                ? <CreateOpeningFileUpload form={form} setForm={setForm} />
-                : null
-            }
-            {
-              currentStep !== 0
-                ? <CreateOpeningForm isReview={currentStep === 2} form={form} setForm={setForm} handleBack={handleBack} />
-                : null
-            }
-          </Grid>
-        </Form>
-      </Column>
-
-      <Column sm={4} md={8} lg={16}>
-        <Grid className="create-opening-button-grid">
-          <Column sm={4} md={4}>
-            {
-              currentStep === 2
-                ? (
-                  <Button className="default-button" kind="secondary" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                ) :
-                (
-                  <Button className="default-button" kind="secondary" onClick={handleBack}>
-                    Back
-                  </Button>
-                )
-            }
-
-          </Column>
-          <Column sm={4} md={4}>
-            {
-              currentStep === 2
-                ? (
-                  <Button className="default-button" kind="primary" onClick={handleCreate} renderIcon={Checkmark}>
-                    Create
-                  </Button>
-                ) :
-                (
-                  <Button className="default-button" kind="primary" onClick={handleNext} renderIcon={ArrowRight}>
-                    Next
-                  </Button>
-                )
-            }
-          </Column>
-        </Grid>
-      </Column>
-
-      <Modal
-        passiveModal
-        danger
-        open={isCancelModalOpen}
-        modalHeading={<ModalHead title="Are you sure you want to cancel?" helperTop={`Create an opening: ${TitleText[openingType]}`} />}
-        onRequestClose={() => setIsCancelModalOpen(false)}
-        className="default-modal"
-        preventCloseOnClickOutside
-        size="sm"
-      >
-        <Grid>
-          <Column sm={4} md={8} lg={16}>
-            <p className='cancel-content'>
-              If you leave this page, all the information you've entered will be lost.
-            </p>
-          </Column>
-          <Column sm={4} md={8} lg={16}>
-            <Stack orientation="horizontal" gap={2} className="default-equal-split-stack">
-              <Button className="modal-button" kind="secondary" onClick={() => setIsCancelModalOpen(false)}>
-                Continue reviewing
-              </Button>
-
-              <Button className="modal-button" kind="danger" renderIcon={TrashCan} onClick={() => navigate(OpeningsRoute.path!)}>
-                Leave without saving
-              </Button>
-            </Stack>
-          </Column>
-        </Grid>
-      </Modal>
+      <CreateOpeningForm type={type} currentStep={currentStep} setCurrentStep={setCurrentStep} />
     </Grid>
   );
 };

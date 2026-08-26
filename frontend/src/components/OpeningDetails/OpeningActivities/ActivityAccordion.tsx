@@ -30,7 +30,6 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { PLACE_HOLDER } from "@/constants";
 import API from "@/services/API";
 import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
 import usePolygonAvailability from "@/hooks/usePolygonAvailability";
@@ -409,7 +408,7 @@ const ActivityAccordion = ({
 
           {/* Table skeleton */}
           {
-            activityQuery.isLoading || isAuthRefreshInProgress()
+            activityQuery.isLoading
               ? <TableSkeleton
                 headers={ActivityTableHeaders}
                 showToolbar={false}

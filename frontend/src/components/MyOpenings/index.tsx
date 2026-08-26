@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, InlineNotification, Table, TableBody, TableHead, TableHeader, TableRow, Pagination } from '@carbon/react';
 import { Location } from '@carbon/icons-react';
-import { isAuthRefreshInProgress } from '@/constants/tanstackConfig';
 import { useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 import { DEFAULT_PAGE_NUM, MAX_PAGINATION_PAGES, PageSizesConfig } from '@/constants/tableConstants';
@@ -121,7 +120,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
 
       {/* Table skeleton */}
       {
-        (myOpeningsQuery.isLoading || isAuthRefreshInProgress()) ? (
+        myOpeningsQuery.isLoading ? (
           <TableSkeleton
             headers={myOpeningsHeaders}
             showToolbar={false}
@@ -131,7 +130,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
       }
       {/* Error state */}
       {
-        myOpeningsQuery.isError && !isAuthRefreshInProgress() ?
+        myOpeningsQuery.isError ?
           (
             <EmptySection
               icon="BreakingChange"
@@ -144,7 +143,6 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
       {
         (
           !myOpeningsQuery.isLoading &&
-          !isAuthRefreshInProgress() &&
           !myOpeningsQuery.isError &&
           !myOpeningsQuery.data?.content?.length
         )
@@ -158,7 +156,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
       }
       {/* Loaded table content */}
       {
-        !myOpeningsQuery.isLoading && myOpeningsQuery.data?.content?.length && !isAuthRefreshInProgress() ?
+        !myOpeningsQuery.isLoading && myOpeningsQuery.data?.content?.length ?
           (
             <Table
               className="my-openings-table default-zebra-table"
@@ -195,7 +193,7 @@ const MyOpenings = ({ defaultMapOpen = false }: MyOpeningsProps) => {
 
       {/* Pagination */}
       {
-        !myOpeningsQuery.isLoading && !isAuthRefreshInProgress() && myOpeningsQuery.data?.page
+        !myOpeningsQuery.isLoading && myOpeningsQuery.data?.page
           ? (
             <Pagination
               className="default-pagination-white"

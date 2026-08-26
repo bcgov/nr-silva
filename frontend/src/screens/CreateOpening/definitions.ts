@@ -1,23 +1,13 @@
 import FormInputType from "@/types/FormInputType";
-import { CodeDescriptionDto } from "@/services/OpenApi";
-
-export type TenureInfoDto = {
-  displayId: string;
-  isPrimary: boolean;
-  forestFileId: FormInputType<string>;
-  cutBlock: FormInputType<string>;
-  cuttingPermit: FormInputType<string>;
-  timberMark: FormInputType<string>;
-}
+import type { ExtractedGeoDataDto, TenureRequestDto, TenureDto } from "@/services/OpenApi";
 
 export type CreateOpeningFormType = {
   client?: FormInputType<string>;
-  file?: FormInputType<File>;
-  geojson?: FormInputType<GeoJSON.FeatureCollection>;
-  isGeoJsonMissing?: FormInputType<boolean>;
-  orgUnit: FormInputType<CodeDescriptionDto>;
-  category: FormInputType<CodeDescriptionDto>;
-  openingGrossArea: FormInputType<string>;
-  maxAllowablePermAccess: FormInputType<string>;
-  tenureInfo: FormInputType<TenureInfoDto[]>;
+  file?: FormInputType<File> & { validatedObj?: ExtractedGeoDataDto };
+  orgUnit?: FormInputType<string>;
+  category?: FormInputType<string>;
+  licenseeOpeningId?: FormInputType<string>;
+  openingGrossArea?: FormInputType<string>;
+  maxAllowablePermAccess?: FormInputType<string>;
+  tenureInfo?: FormInputType<TenureRequestDto[]> & { validatedTenures?: TenureDto[] };
 }

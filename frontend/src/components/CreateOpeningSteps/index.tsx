@@ -1,2 +1,3 @@
-export { default as CreateOpeningFileUpload } from './FileUpload';
-export { default as CreateOpeningForm } from './DataForm';
+export { default as CreateOpeningStepOne } from './StepOne';
+export { default as CreateOpeningStepTwo } from './StepTwo';
+export { default as CreateOpeningStepThree } from './StepThree';

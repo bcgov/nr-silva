@@ -67,6 +67,7 @@ const CreateOpeningModal = () => {
             subtitle="Register an opening to cover ministry responsibilities"
             selected={selectedType === GOV_FUNDED_OPENING}
             onClick={() => handleTileClick(GOV_FUNDED_OPENING)}
+            disabled={true}
           />
         </Column>
 

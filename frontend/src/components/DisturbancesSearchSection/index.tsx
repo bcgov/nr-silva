@@ -6,7 +6,6 @@ import { MAP_KINDS } from "@/constants/mapKindConstants";
 import { CircleDash, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import TableSkeleton from "@/components/TableSkeleton";
 import { DisturbanceHeaderKeyType, DisturbanceHeaderType } from "@/types/TableHeader";
 import EmptySection from "@/components/EmptySection";
@@ -202,10 +201,10 @@ const DisturbancesSearchSection = () => {
                 <Stack className="search-result-title-section" orientation="vertical">
                   <h5 className="search-result-title">Search results</h5>
 
-                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={disturbanceSearchQuery.isLoading && !isAuthRefreshInProgress() ? 4 : 2}>
+                  <Stack className="search-result-sub-title-section" orientation="horizontal" gap={disturbanceSearchQuery.isLoading ? 4 : 2}>
                     <p className="search-result-subtitle">Total search results:</p>
                     {
-                      disturbanceSearchQuery.isLoading && !isAuthRefreshInProgress()
+                      disturbanceSearchQuery.isLoading
                         ? <InlineLoading />
                         : <p className="search-result-subtitle">{disturbanceSearchQuery.data?.page?.totalElements ?? 0}</p>
                     }
@@ -243,7 +242,7 @@ const DisturbancesSearchSection = () => {
 
               {/* Table skeleton */}
               {
-                (disturbanceSearchQuery.isLoading || isAuthRefreshInProgress())
+                disturbanceSearchQuery.isLoading
                   ? (
                     <TableSkeleton
                       headers={searchTableHeaders}
@@ -254,7 +253,7 @@ const DisturbancesSearchSection = () => {
                   : null
               }
               {
-                !disturbanceSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !disturbanceSearchQuery.isLoading
                   ? (
                     <Table
                       className="opening-search-table default-zebra-table"
@@ -293,7 +292,7 @@ const DisturbancesSearchSection = () => {
 
               {/* Display either pagination or empty message */}
               {
-                !disturbanceSearchQuery.isLoading && !isAuthRefreshInProgress()
+                !disturbanceSearchQuery.isLoading
                   ? (
                     disturbanceSearchQuery.data?.page?.totalElements &&
                       disturbanceSearchQuery.data?.page.totalElements > 0 ? (

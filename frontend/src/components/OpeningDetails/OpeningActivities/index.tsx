@@ -4,7 +4,6 @@ import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import { isAuthRefreshInProgress } from "@/constants/tanstackConfig";
 import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 
 import EmptySection from "../../EmptySection";
@@ -54,7 +53,7 @@ const OpeningActivities = ({
   });
 
   // Loading case
-  if (disturbanceQuery.isLoading || activityQuery.isLoading || isAuthRefreshInProgress()) {
+  if (disturbanceQuery.isLoading || activityQuery.isLoading) {
     return (
       <AccordionSkeleton />
     )
