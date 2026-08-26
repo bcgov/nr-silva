@@ -83,6 +83,7 @@
 
       .tile-title {
         @include type.type-style('heading-03');
+        color: var(--#{vars.$bcgov-prefix}-text-primary);
       }
 
       .tile-subtitle {
