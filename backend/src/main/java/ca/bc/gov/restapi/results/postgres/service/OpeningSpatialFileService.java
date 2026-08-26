@@ -799,8 +799,7 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326. Uses axis order
-   * hint for correct GeoJSON output.
+   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326.
    *
    * @param geometry the input JTS geometry
    * @param sourceCrsCode the EPSG code as a string ("3005" or "4326")
