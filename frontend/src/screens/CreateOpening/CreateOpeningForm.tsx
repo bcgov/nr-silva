@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Column, Form, Grid, InlineNotification, Loading, Stack } from '@carbon/react';
 import { useBlocker, useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
     setCurrentStep(newStep);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
   };
 
