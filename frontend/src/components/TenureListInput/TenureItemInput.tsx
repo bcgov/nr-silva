@@ -92,14 +92,12 @@ const TenureItemInput = ({ index, tenure, setTenure, onSetPrimary, deleteDisable
         </Column>
       </Grid>
 
-      {!tenure.isPrimary ? (
-        <Checkbox
-          id={`isPrimary-${index}`}
-          labelText="Set as primary tenure"
-          checked={tenure.isPrimary ?? false}
-          onChange={() => onSetPrimary()}
-        />
-      ) : null}
+      <Checkbox
+        id={`isPrimary-${index}`}
+        labelText="Set as primary tenure"
+        checked={tenure.isPrimary ?? false}
+        onChange={() => onSetPrimary()}
+      />
 
       {itemError ? (
         <InlineNotification
