@@ -36,21 +36,20 @@ public abstract class AbstractOpeningDetailsTenureService implements OpeningDeta
           "plannedNetArea", "PLANNED_NET_BLOCK_AREA");
 
   @Override
-  public OpeningDetailsTenuresDto getOpeningTenures(Long openingId, String mainSearchTerm,
-      Pageable pageable) {
+  public OpeningDetailsTenuresDto getOpeningTenures(
+      Long openingId, String mainSearchTerm, boolean all, Pageable pageable) {
     String normalizedSearch =
         Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null);
+    var resolvedSort =
+        PaginationUtil.resolveSort(pageable.getSort(), "CUT_BLOCK_OPEN_ADMIN_ID", TENURE_SORT_FIELDS);
+    Pageable queryPageable =
+        all
+            ? Pageable.unpaged(resolvedSort)
+            : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), resolvedSort);
 
     Page<OpeningDetailsTenureDto> tenuresPage =
         cutBlockOpenAdminRepository
-            .findAllTenuresByOpeningId(
-                openingId,
-                normalizedSearch,
-                PageRequest.of(
-                    pageable.getPageNumber(),
-                    pageable.getPageSize(),
-                    PaginationUtil.resolveSort(
-                        pageable.getSort(), "CUT_BLOCK_OPEN_ADMIN_ID", TENURE_SORT_FIELDS)))
+            .findAllTenuresByOpeningId(openingId, normalizedSearch, queryPageable)
             .map(mapProjectionToDto());
 
     OpeningDetailsTenureDto primaryTenure =
@@ -81,6 +80,7 @@ public abstract class AbstractOpeningDetailsTenureService implements OpeningDeta
     return projection ->
         new OpeningDetailsTenureDto(
             projection.getId(),
+            projection.getRevisionCount(),
             projection.getPrimaryTenure(),
             projection.getFileId(),
             projection.getCutBlock(),

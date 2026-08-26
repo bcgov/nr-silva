@@ -29,6 +29,16 @@ import org.springframework.stereotype.Repository;
 public interface ActivityTreatmentUnitPostgresRepository
     extends JpaRepository<ActivityTreatmentUnitEntity, Long>, ActivityTreatmentUnitRepository {
 
+  /**
+   * Checks whether an opening has an assigned activity of requested base type.
+   *
+   * @param openingId opening to inspect
+   * @param silvBaseCode activity base code
+   * @return true when an assigned matching activity exists
+   */
+  boolean existsByOpeningIdAndSilvBaseCodeAndCutBlockOpenAdminIdIsNotNull(
+      Long openingId, String silvBaseCode);
+
   @Override
   @Query(
       nativeQuery = true,

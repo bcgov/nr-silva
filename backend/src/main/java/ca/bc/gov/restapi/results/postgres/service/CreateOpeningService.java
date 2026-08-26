@@ -56,6 +56,7 @@ public class CreateOpeningService {
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
   private final TenureValidationService tenureValidationService;
+  private final OpeningTenureAssociationHistoryService tenureAssociationHistoryService;
   private final LoggedUserHelper loggedUserHelper;
   private final JdbcTemplate jdbcTemplate;
   private final ObjectMapper objectMapper;
@@ -238,6 +239,7 @@ public class CreateOpeningService {
               .updateTimestamp(now)
               .build();
       cutBlockOpenAdminRepository.save(cboa);
+      tenureAssociationHistoryService.record("ASSOCIATED", openingId, cboa, auditUserId);
     }
 
     // Step 18: return the new opening ID

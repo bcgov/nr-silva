@@ -18,4 +18,13 @@ public class ActivityTreatmentUnitEntity {
   @Column(name = "activity_treatment_unit_id")
   @Id
   private Long id;
+
+  @Column(name = "opening_id")
+  private Long openingId;
+
+  @Column(name = "silv_base_code")
+  private String silvBaseCode;
+
+  @Column(name = "cut_block_open_admin_id")
+  private Long cutBlockOpenAdminId;
 }

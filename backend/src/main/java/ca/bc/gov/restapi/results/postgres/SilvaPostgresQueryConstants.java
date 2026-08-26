@@ -908,6 +908,7 @@ public class SilvaPostgresQueryConstants {
 				"""
 				SELECT
 					cboa.cut_block_open_admin_id AS id,
+					cboa.revision_count AS revision_count,
 					CASE WHEN COALESCE(cboa.opening_prime_licence_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
 					cboa.forest_file_id AS file_id,
 					cboa.cut_block_id AS cut_block,
@@ -960,6 +961,7 @@ public class SilvaPostgresQueryConstants {
 				"""
 						SELECT
 							cboa.cut_block_open_admin_id AS id,
+							cboa.revision_count AS revision_count,
 							CASE WHEN COALESCE(cboa.opening_prime_licence_ind, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
 								 cboa.forest_file_id AS file_id,
 								 cboa.cut_block_id AS cut_block,

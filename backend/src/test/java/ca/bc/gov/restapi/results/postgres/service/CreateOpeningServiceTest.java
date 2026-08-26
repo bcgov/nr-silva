@@ -60,6 +60,7 @@ class CreateOpeningServiceTest {
   @Mock private OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   @Mock private OrgUnitPostgresRepository orgUnitRepository;
   @Mock private TenureValidationService tenureValidationService;
+  @Mock private OpeningTenureAssociationHistoryService tenureAssociationHistoryService;
   @Mock private LoggedUserHelper loggedUserHelper;
   @Mock private JdbcTemplate jdbcTemplate;
   @Spy private ObjectMapper objectMapper = new ObjectMapper();
@@ -102,6 +103,7 @@ class CreateOpeningServiceTest {
             openCategoryCodeRepository,
             orgUnitRepository,
             tenureValidationService,
+            tenureAssociationHistoryService,
             loggedUserHelper,
             jdbcTemplate,
             objectMapper);
