@@ -51,6 +51,7 @@
     <postgresql.version>42.7.12</postgresql.version>
     <nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
     <spring-web.version>6.2.19</spring-web.version>
+    <proj4j.version>1.4.3</proj4j.version>
   </properties>
 
   <profiles>
@@ -267,34 +268,9 @@
 
     <!-- Spatial -->
     <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-geojson</artifactId>
-      <version>33.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-main</artifactId>
-      <version>33.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-referencing</artifactId>
-      <version>33.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-epsg-hsql</artifactId>
-      <version>33.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools.xsd</groupId>
-      <artifactId>gt-xsd-gml2</artifactId>
-      <version>33.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools.xsd</groupId>
-      <artifactId>gt-xsd-gml3</artifactId>
-      <version>33.0</version>
+      <groupId>org.locationtech.proj4j</groupId>
+      <artifactId>proj4j</artifactId>
+      <version>${proj4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.locationtech.jts</groupId>

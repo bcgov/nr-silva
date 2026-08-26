@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,6 +17,8 @@ import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -161,5 +164,27 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  @DisplayName("Should preserve server error status during the internal error dispatch")
+  void shouldPreserveServerErrorStatusDuringErrorDispatch() throws Exception {
+    mockMvc
+        .perform(
+            get("/error")
+                .with(
+                    request -> {
+                      request.setDispatcherType(DispatcherType.ERROR);
+                      return request;
+                    })
+                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 500)
+                .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/api/openings/create/upload"))
+        .andExpect(status().isInternalServerError());
+  }
+
+  @Test
+  @DisplayName("Should continue to deny direct requests to the error endpoint")
+  void shouldDenyDirectRequestToErrorEndpoint() throws Exception {
+    mockMvc.perform(get("/error")).andExpect(status().isForbidden());
   }
 }

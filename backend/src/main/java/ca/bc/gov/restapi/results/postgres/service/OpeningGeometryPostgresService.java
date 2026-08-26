@@ -7,6 +7,7 @@ import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
+import ca.bc.gov.restapi.results.postgres.util.GeometryReprojectionUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -19,10 +20,6 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.GeoJsonObject;
 import org.geojson.jackson.CrsType;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
@@ -118,13 +115,8 @@ public class OpeningGeometryPostgresService implements OpeningGeometryService {
 
   private Geometry reprojectTo4326(Geometry geometry3005) {
     try {
-      CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:3005");
-      CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4326", true);
-      MathTransform transform = CRS.findMathTransform(sourceCrs, targetCrs, true);
-      Geometry reprojected = JTS.transform(geometry3005, transform);
-      reprojected.setSRID(4326);
-      return reprojected;
-    } catch (Exception e) {
+      return GeometryReprojectionUtils.to4326(geometry3005);
+    } catch (RuntimeException e) {
       log.error("Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);
       throw new IllegalStateException(
           "Failed to reproject geometry from EPSG:3005 to EPSG:4326", e);

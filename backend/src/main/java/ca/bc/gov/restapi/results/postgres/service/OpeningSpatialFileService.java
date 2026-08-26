@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
+import ca.bc.gov.restapi.results.postgres.util.GeometryReprojectionUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -18,10 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -802,8 +799,7 @@ public class OpeningSpatialFileService {
   }
 
   /**
-   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326. Uses axis order
-   * hint for correct GeoJSON output.
+   * Reprojects a JTS Geometry to EPSG:4326 if the source CRS is not already 4326.
    *
    * @param geometry the input JTS geometry
    * @param sourceCrsCode the EPSG code as a string ("3005" or "4326")
@@ -813,29 +809,11 @@ public class OpeningSpatialFileService {
     if ("4326".equals(sourceCrsCode)) {
       return geometry;
     }
-    try {
-      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:" + sourceCrsCode);
-      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
-      MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-      Geometry transformed = JTS.transform(geometry, transform);
-      transformed.setSRID(4326);
-      return transformed;
-    } catch (Exception e) {
-      log.warn("Failed to reproject geometry to EPSG:4326: {}", e.getMessage());
-      return geometry;
-    }
+    return GeometryReprojectionUtils.to4326(geometry);
   }
 
   private Geometry reprojectTo3005(Geometry geometry) {
-    try {
-      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
-      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3005");
-      MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-      return JTS.transform(geometry, transform);
-    } catch (Exception e) {
-      log.warn("Failed to reproject geometry to EPSG:3005: {}", e.getMessage());
-      return geometry;
-    }
+    return GeometryReprojectionUtils.to3005(geometry);
   }
 
   private BigDecimal calculateGeometryAreaHectares(Geometry geom, String crsCode) {

@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.security;
 
 import ca.bc.gov.restapi.results.common.util.SecurityEnvironmentUtil;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -13,10 +14,9 @@ import org.springframework.stereotype.Component;
  * defined.
  */
 @Component
-public class ApiAuthorizationCustomizer implements
-    Customizer<
-        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
-        > {
+public class ApiAuthorizationCustomizer
+    implements Customizer<
+        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> {
 
   /**
    * The environment of the application, which is injected from the application properties. The
@@ -27,11 +27,13 @@ public class ApiAuthorizationCustomizer implements
 
   @Override
   public void customize(
-      AuthorizeHttpRequestsConfigurer<HttpSecurity>
-          .AuthorizationManagerRequestMatcherRegistry authorize
-  ) {
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+          authorize) {
 
     authorize
+        // Preserve the original status when Spring dispatches an exception to /error
+        .dispatcherTypeMatchers(DispatcherType.ERROR)
+        .permitAll()
         // Allow actuator endpoints to be accessed without authentication
         .requestMatchers(HttpMethod.GET, "/actuator/**")
         .permitAll();
@@ -39,12 +41,10 @@ public class ApiAuthorizationCustomizer implements
     // Only allow OpenAPI and Swagger UI in the local environment
     if (SecurityEnvironmentUtil.isLocalEnvironment(environment)) {
       authorize
-        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-        .permitAll();
+          .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+          .permitAll();
     } else {
-      authorize
-        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-        .denyAll();
+      authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").denyAll();
     }
 
     authorize
@@ -55,7 +55,7 @@ public class ApiAuthorizationCustomizer implements
         .requestMatchers(HttpMethod.OPTIONS, "/**")
         .authenticated()
         // Deny all other requests
-        .anyRequest().denyAll();
-
+        .anyRequest()
+        .denyAll();
   }
 }

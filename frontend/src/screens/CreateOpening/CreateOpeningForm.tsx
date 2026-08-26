@@ -1,8 +1,8 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Column, Form, Grid, InlineNotification, Loading, Stack } from '@carbon/react';
 import { useBlocker, useNavigate } from 'react-router-dom';
-import { ArrowRight, TrashCan } from '@carbon/icons-react';
+import { ArrowRight } from '@carbon/icons-react';
 import { scrollToSection } from '@/utils/InputUtils';
 import {
   CreateOpeningStepOne as StepOne,
@@ -10,7 +10,6 @@ import {
   CreateOpeningStepThree as StepThree
 } from '@/components/CreateOpeningSteps';
 import LeavePageModal from '@/components/Modals/LeavePageModal';
-import ModalHead from '@/components/Modals/ModalHead';
 import { OpeningsRoute } from '@/routes/config';
 import { OPENING_CREATE_SUCCESS_PATH } from '@/routes/paths';
 import { CreateOpeningFormType } from './definitions';
@@ -47,7 +46,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
     setCurrentStep(newStep);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
   };
 
