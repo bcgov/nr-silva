@@ -14,7 +14,6 @@ import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -25,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +52,10 @@ public class CreateOpeningService {
   private final OpenMapsService openMapsService;
   private final OpeningPostgresRepository openingRepository;
   private final OpeningGeometryPostgresRepository openingGeometryRepository;
-  private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
   private final OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   private final OrgUnitPostgresRepository orgUnitRepository;
   private final TenureValidationService tenureValidationService;
+  private final OpeningTenureAssociationService tenureAssociationService;
   private final OpeningTenureAssociationHistoryService tenureAssociationHistoryService;
   private final LoggedUserHelper loggedUserHelper;
   private final JdbcTemplate jdbcTemplate;
@@ -90,7 +90,7 @@ public class CreateOpeningService {
     // Step 3: reproject 4326 → 3005; compute area and perimeter from projected geometry
     Geometry geometry3005 = reprojectTo3005(geometry4326);
     BigDecimal featureArea =
-        BigDecimal.valueOf(geometry3005.getArea()).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal.valueOf(geometry3005.getArea() / 10_000.0).setScale(4, RoundingMode.HALF_UP);
     BigDecimal featurePerimeter =
         BigDecimal.valueOf(geometry3005.getLength()).setScale(4, RoundingMode.HALF_UP);
 
@@ -184,6 +184,7 @@ public class CreateOpeningService {
             .mapsheetQuad(mapsheet.quad())
             .mapsheetSubQuad(mapsheet.subQuad())
             .openingNumber(String.valueOf(openingNumber))
+            .openingGrossArea(dto.openingGrossArea())
             .revisionCount(1)
             .entryUserId(auditUserId)
             .entryTimestamp(now)
@@ -209,36 +210,20 @@ public class CreateOpeningService {
             .build();
     openingGeometryRepository.save(geometry);
 
-    // Step 17: persist one cut_block_open_admin row per tenure
+    // Step 17: associate each tenure, then reconcile CBOA-derived opening data.
     List<TenureRequestDto> tenures = dto.tenures();
     Map<Integer, CutBlockEntity> resolvedBlocks = tenureValidation.resolvedBlocks();
+    List<CutBlockOpenAdminEntity> associatedTenures = new ArrayList<>();
+
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
-      String fileId = tenure.fileId().trim();
-      String cutBlock = tenure.cutBlock().trim();
-      String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
-      if (cuttingPermit != null && cuttingPermit.isBlank()) {
-        cuttingPermit = null;
-      }
       CutBlockEntity block = resolvedBlocks.get(i);
-
       CutBlockOpenAdminEntity cboa =
-          CutBlockOpenAdminEntity.builder()
-              .openingId(openingId)
-              .forestFileId(fileId)
-              .cuttingPermitId(cuttingPermit)
-              .cutBlockId(cutBlock)
-              .timberMark(block.getTimberMark())
-              .cbSkey(block.getCbSkey())
-              .openingGrossArea(dto.openingGrossArea())
-              .openingPrimeLicenceInd(tenure.isPrimary() ? "Y" : "N")
-              .revisionCount(1)
-              .entryUserId(auditUserId)
-              .entryTimestamp(now)
-              .updateUserId(auditUserId)
-              .updateTimestamp(now)
-              .build();
-      cutBlockOpenAdminRepository.save(cboa);
+          tenureAssociationService.associate(opening, tenure, block, auditUserId, now);
+      associatedTenures.add(cboa);
+    }
+    tenureAssociationService.reconcile(opening, associatedTenures, null, auditUserId, now);
+    for (CutBlockOpenAdminEntity cboa : associatedTenures) {
       tenureAssociationHistoryService.record("ASSOCIATED", openingId, cboa, auditUserId);
     }
 

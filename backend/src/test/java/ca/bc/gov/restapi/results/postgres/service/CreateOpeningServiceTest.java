@@ -21,11 +21,11 @@ import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
+import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpenCategoryCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningGeometryPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
@@ -57,10 +57,10 @@ class CreateOpeningServiceTest {
   @Mock private OpenMapsService openMapsService;
   @Mock private OpeningPostgresRepository openingRepository;
   @Mock private OpeningGeometryPostgresRepository openingGeometryRepository;
-  @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
   @Mock private OpenCategoryCodePostgresRepository openCategoryCodeRepository;
   @Mock private OrgUnitPostgresRepository orgUnitRepository;
   @Mock private TenureValidationService tenureValidationService;
+  @Mock private OpeningTenureAssociationService tenureAssociationService;
   @Mock private OpeningTenureAssociationHistoryService tenureAssociationHistoryService;
   @Mock private LoggedUserHelper loggedUserHelper;
   @Mock private JdbcTemplate jdbcTemplate;
@@ -100,10 +100,10 @@ class CreateOpeningServiceTest {
             openMapsService,
             openingRepository,
             openingGeometryRepository,
-            cutBlockOpenAdminRepository,
             openCategoryCodeRepository,
             orgUnitRepository,
             tenureValidationService,
+            tenureAssociationService,
             tenureAssociationHistoryService,
             loggedUserHelper,
             jdbcTemplate,
@@ -172,6 +172,8 @@ class CreateOpeningServiceTest {
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(10001L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
+    when(tenureAssociationService.associate(any(), any(), any(), anyString(), any()))
+        .thenReturn(CutBlockOpenAdminEntity.builder().id(1L).build());
 
     CreateOpeningResponseDto response =
         service.createOpening(buildDto(tenures), "test.zip", new byte[0]);
@@ -314,6 +316,8 @@ class CreateOpeningServiceTest {
     when(loggedUserHelper.getAuditUserId()).thenReturn("testuser");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(20002L);
     when(openingRepository.save(any(OpeningEntity.class))).thenAnswer(i -> i.getArgument(0));
+    when(tenureAssociationService.associate(any(), any(), any(), anyString(), any()))
+        .thenReturn(CutBlockOpenAdminEntity.builder().id(1L).build());
 
     CreateOpeningRequestDto dto =
         new CreateOpeningRequestDto(

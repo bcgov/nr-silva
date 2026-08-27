@@ -8,8 +8,8 @@ import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateItemDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
+import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.repository.ActivityTreatmentUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
@@ -41,6 +41,7 @@ public class UpdateTenuresService {
   private final CutBlockOpenAdminPostgresRepository cboaRepository;
   private final ActivityTreatmentUnitPostgresRepository activityRepository;
   private final TenureValidationService tenureValidationService;
+  private final OpeningTenureAssociationService tenureAssociationService;
   private final OpeningTenureAssociationHistoryService historyService;
   private final LoggedUserHelper loggedUserHelper;
 
@@ -63,9 +64,11 @@ public class UpdateTenuresService {
    *   <li>Update the primary flag for retained CBOA rows and increment revision only when it
    *       changes.
    *   <li>Associate new or replacement tenure keys by reusing an unassociated CBOA when available,
-   *       otherwise creating one; record each association in history.
+   *       otherwise creating one.
    *   <li>For removed rows, record the unassociation in history, clear the opening association,
    *       clear opening-specific values, and increment the revision count.
+   *   <li>Reconcile all final rows: copy the opening gross area and recalculate DN-derived
+   *       disturbance values, including unassigned DN values on the primary tenure.
    * </ol>
    *
    * @param openingId opening whose tenure list is replaced
@@ -77,9 +80,10 @@ public class UpdateTenuresService {
   public Optional<TenureUpdateValidationResponseDto> updateTenures(
       Long openingId, String clientNumber, List<TenureUpdateItemDto> items) {
     // Step 1: target opening must exist.
-    if (!openingRepository.existsById(openingId)) {
-      throw new NotFoundGenericException("Opening");
-    }
+    OpeningEntity opening =
+        openingRepository
+            .findById(openingId)
+            .orElseThrow(() -> new NotFoundGenericException("Opening"));
     // Step 2: final list must retain exactly one primary tenure.
     if (items.isEmpty()) {
       throw new ResponseStatusException(
@@ -102,6 +106,19 @@ public class UpdateTenuresService {
 
     // Step 4: lock current associations before evaluating client identity metadata.
     List<CutBlockOpenAdminEntity> current = cboaRepository.findAllByOpeningId(openingId);
+    java.math.BigDecimal legacyCboaGrossArea =
+        current.stream()
+            .filter(row -> "Y".equals(row.getOpeningPrimeLicenceInd()))
+            .map(CutBlockOpenAdminEntity::getOpeningGrossArea)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElseGet(
+                () ->
+                    current.stream()
+                        .map(CutBlockOpenAdminEntity::getOpeningGrossArea)
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse(null));
     Map<Long, CutBlockOpenAdminEntity> currentById =
         current.stream().collect(Collectors.toMap(CutBlockOpenAdminEntity::getId, value -> value));
     // Step 5: reject CBOA rows not owned by opening or changed since screen load.
@@ -137,17 +154,26 @@ public class UpdateTenuresService {
       TenureUpdateItemDto item = retained.get(row.getId());
       if (item != null) {
         updatePrimary(row, item.isPrimary(), userId, now);
-        cboaRepository.save(row);
       }
     }
-    // Step 8: allocate added and key-replacement rows, recording association history.
+    List<CutBlockOpenAdminEntity> finalTenures =
+        current.stream()
+            .filter(row -> !removedIds.contains(row.getId()))
+            .collect(Collectors.toList());
+    List<CutBlockOpenAdminEntity> associatedTenures = new ArrayList<>();
+    // Step 8: allocate added and key-replacement rows.
     for (int index = 0; index < items.size(); index++) {
       TenureUpdateItemDto item = items.get(index);
       if (item.cboaId() == null || !retained.containsKey(item.cboaId())) {
         CutBlockOpenAdminEntity allocated =
-            allocate(openingId, item, validation.resolvedBlocks().get(index), current, userId, now);
-        cboaRepository.save(allocated);
-        historyService.record("ASSOCIATED", openingId, allocated, userId);
+            tenureAssociationService.associate(
+                opening,
+                item.toTenureRequest(),
+                validation.resolvedBlocks().get(index),
+                userId,
+                now);
+        finalTenures.add(allocated);
+        associatedTenures.add(allocated);
       }
     }
     // Step 9: unassociate removed rows after a replacement primary exists.
@@ -156,6 +182,11 @@ public class UpdateTenuresService {
       historyService.record("UNASSOCIATED", openingId, row, userId);
       unassociate(row, userId, now);
       cboaRepository.save(row);
+    }
+    // Step 10: synchronize the final tenure list with opening and DN-derived data.
+    tenureAssociationService.reconcile(opening, finalTenures, legacyCboaGrossArea, userId, now);
+    for (CutBlockOpenAdminEntity associated : associatedTenures) {
+      historyService.record("ASSOCIATED", openingId, associated, userId);
     }
     return Optional.empty();
   }
@@ -227,42 +258,6 @@ public class UpdateTenuresService {
         && Objects.equals(row.getCutBlockId(), item.cutBlock().trim())
         && Objects.equals(
             normalizePermit(row.getCuttingPermitId()), normalizePermit(item.cuttingPermit()));
-  }
-
-  /** Reuses an unassociated matching CBOA or creates one, then associates it to the opening. */
-  private CutBlockOpenAdminEntity allocate(
-      Long openingId,
-      TenureUpdateItemDto item,
-      CutBlockEntity block,
-      List<CutBlockOpenAdminEntity> current,
-      String userId,
-      LocalDateTime now) {
-    String permit = normalizePermit(item.cuttingPermit());
-    Optional<CutBlockOpenAdminEntity> reusable =
-        permit == null
-            ? cboaRepository
-                .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdIsNullAndOpeningIdIsNull(
-                    item.fileId().trim(), item.cutBlock().trim())
-            : cboaRepository
-                .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdAndOpeningIdIsNull(
-                    item.fileId().trim(), item.cutBlock().trim(), permit);
-    CutBlockOpenAdminEntity row = reusable.orElseGet(CutBlockOpenAdminEntity::new);
-    row.setOpeningId(openingId);
-    row.setForestFileId(item.fileId().trim());
-    row.setCutBlockId(item.cutBlock().trim());
-    row.setCuttingPermitId(permit);
-    row.setTimberMark(block.getTimberMark());
-    row.setCbSkey(block.getCbSkey());
-    row.setOpeningPrimeLicenceInd(item.isPrimary() ? "Y" : "N");
-    row.setOpeningGrossArea(current.isEmpty() ? null : current.get(0).getOpeningGrossArea());
-    row.setRevisionCount(row.getRevisionCount() == null ? 1 : row.getRevisionCount() + 1);
-    if (row.getEntryUserId() == null) {
-      row.setEntryUserId(userId);
-      row.setEntryTimestamp(now);
-    }
-    row.setUpdateUserId(userId);
-    row.setUpdateTimestamp(now);
-    return row;
   }
 
   /** Updates a retained row's primary flag and audit fields only when the flag changes. */

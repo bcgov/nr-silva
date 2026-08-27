@@ -17,7 +17,7 @@ public class SilvaPostgresQueryConstants {
 		,op.open_category_code AS category
 		,op.opening_status_code AS status
 		,op.licensee_opening_id AS licensee_opening_id
-		,cboa.opening_gross_area as opening_gross_area
+		,COALESCE(op.opening_gross_area, cboa.opening_gross_area) as opening_gross_area
 		,cboa.disturbance_gross_area as disturbance_gross_area
 		,to_char(cboa.disturbance_start_date,'YYYY-MM-DD') as disturbance_start_date
 		,ou.org_unit_code as org_unit_code
@@ -312,7 +312,7 @@ public class SilvaPostgresQueryConstants {
 		cboa.cutting_permit_id,
 		cboa.timber_mark,
 		op.max_allow_permnt_access_pct AS  max_allowed_access, --max allowed permanent access FROM inquiry
-		cboa.opening_gross_area,
+		COALESCE(op.opening_gross_area, cboa.opening_gross_area) AS opening_gross_area,
 		op.entry_userid AS created_by,
 		to_char(op.entry_timestamp,'YYYY-MM-DD') AS created_on,
 		op.update_timestamp AS last_updated_on, -- needs TO be ON any of the related date

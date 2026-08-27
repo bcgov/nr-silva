@@ -18,6 +18,7 @@ import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
+import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.repository.ActivityTreatmentUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
@@ -47,6 +48,7 @@ class UpdateTenuresServiceTest {
   @Mock private CutBlockOpenAdminPostgresRepository cboaRepository;
   @Mock private ActivityTreatmentUnitPostgresRepository activityRepository;
   @Mock private TenureValidationService tenureValidationService;
+  @Mock private OpeningTenureAssociationService tenureAssociationService;
   @Mock private OpeningTenureAssociationHistoryService historyService;
   @Mock private LoggedUserHelper loggedUserHelper;
 
@@ -60,16 +62,32 @@ class UpdateTenuresServiceTest {
             cboaRepository,
             activityRepository,
             tenureValidationService,
+            tenureAssociationService,
             historyService,
             loggedUserHelper);
-    when(openingRepository.existsById(OPENING_ID)).thenReturn(true);
+    when(openingRepository.findById(OPENING_ID))
+        .thenReturn(
+            Optional.of(
+                OpeningEntity.builder()
+                    .id(OPENING_ID)
+                    .openingGrossArea(new BigDecimal("10"))
+                    .build()));
+    when(tenureAssociationService.associate(any(), any(), any(), anyString(), any()))
+        .thenAnswer(
+            invocation ->
+                CutBlockOpenAdminEntity.builder()
+                    .id(99L)
+                    .openingId(OPENING_ID)
+                    .openingPrimeLicenceInd("Y")
+                    .revisionCount(1)
+                    .build());
     when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
   }
 
   @Test
   @DisplayName("Missing opening is rejected before tenure validation")
   void updateTenures_missingOpening_throwsNotFound() {
-    when(openingRepository.existsById(OPENING_ID)).thenReturn(false);
+    when(openingRepository.findById(OPENING_ID)).thenReturn(Optional.empty());
 
     assertThatThrownBy(
             () -> service.updateTenures(OPENING_ID, CLIENT_NUMBER, List.of(item(null, null, true))))
@@ -205,32 +223,27 @@ class UpdateTenuresServiceTest {
 
     ArgumentCaptor<CutBlockOpenAdminEntity> saved =
         ArgumentCaptor.forClass(CutBlockOpenAdminEntity.class);
-    verify(cboaRepository, org.mockito.Mockito.times(2)).save(saved.capture());
-    assertThat(saved.getAllValues().get(0).getOpeningId()).isEqualTo(OPENING_ID);
-    assertThat(saved.getAllValues().get(1).getOpeningId()).isNull();
+    verify(cboaRepository).save(saved.capture());
+    assertThat(saved.getValue().getOpeningId()).isNull();
+    verify(tenureAssociationService).associate(any(), any(), any(), anyString(), any());
+    verify(tenureAssociationService).reconcile(any(), any(), any(), anyString(), any());
     verify(historyService).record(eq("ASSOCIATED"), eq(OPENING_ID), any(), anyString());
     verify(historyService).record(eq("UNASSOCIATED"), eq(OPENING_ID), eq(old), anyString());
     assertThat(old.getRevisionCount()).isEqualTo(3);
   }
 
   @Test
-  @DisplayName("New tenure reuses an unassociated matching CBOA")
-  void updateTenures_newTenure_reusesUnassociatedCboa() {
-    CutBlockOpenAdminEntity reusable = cboa(99L, "FILE1", null, "BLOCK1", null, 4);
+  @DisplayName("New tenure delegates association and reconciliation to the shared service")
+  void updateTenures_newTenure_usesSharedAssociationService() {
     List<TenureUpdateItemDto> items = List.of(item(null, null, true));
     when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
         .thenReturn(validation(true, items));
     when(cboaRepository.findAllByOpeningId(OPENING_ID)).thenReturn(List.of());
-    when(cboaRepository
-            .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdIsNullAndOpeningIdIsNull(
-                "FILE1", "BLOCK1"))
-        .thenReturn(Optional.of(reusable));
-
     assertThat(service.updateTenures(OPENING_ID, CLIENT_NUMBER, items)).isEmpty();
 
-    assertThat(reusable.getOpeningId()).isEqualTo(OPENING_ID);
-    assertThat(reusable.getRevisionCount()).isEqualTo(5);
-    verify(historyService).record("ASSOCIATED", OPENING_ID, reusable, "IDIR\\tester");
+    verify(tenureAssociationService).associate(any(), any(), any(), anyString(), any());
+    verify(tenureAssociationService).reconcile(any(), any(), any(), anyString(), any());
+    verify(historyService).record(eq("ASSOCIATED"), eq(OPENING_ID), any(), eq("IDIR\\tester"));
   }
 
   private TenureUpdateItemDto item(Long cboaId, Integer revisionCount, boolean primary) {

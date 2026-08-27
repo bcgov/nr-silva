@@ -68,6 +68,9 @@ The request body is the final list of tenures for the opening.
 9. **Disturbance work protects tenure membership.** If the opening has an assigned disturbance
    activity with base code `DN`, no tenure can be removed or replaced. Changing only the primary
    designation is still allowed.
+10. **Opening gross area remains owned by the opening.** Added and retained CBOA rows receive a
+    derived copy of `opening.opening_gross_area`. For older openings where that value is null,
+    SILVA falls back to the existing CBOA value.
 
 ---
 
@@ -85,10 +88,14 @@ The request body is the final list of tenures for the opening.
    one exists, reject the removal or replacement.
 7. Update retained tenures when their primary designation changed.
 8. Associate added or replacement tenures. SILVA reuses an available unassociated tenure record
-   when one exists; otherwise it creates a new record.
+   when one exists; otherwise it creates a new record. Planned values on a reused record remain
+   unchanged.
 9. Unassociate removed tenures from the opening. The tenure source record remains available, but
    its opening-specific values are cleared.
-10. Record every association and unassociation in tenure-association history, including who made
+10. Reconcile every final tenure. SILVA copies the opening gross area and recalculates DN-derived
+    disturbance values; unassigned DN work belongs to the primary tenure. No DN amount produces a
+    null disturbance area, while an explicit zero remains zero.
+11. Record every association and unassociation in tenure-association history, including who made
     the change, when, and the CBOA revision at that time.
 
 All accepted changes are saved together. A failed validation leaves the opening's tenure list

@@ -39,6 +39,10 @@ public interface ActivityTreatmentUnitPostgresRepository
   boolean existsByOpeningIdAndSilvBaseCodeAndCutBlockOpenAdminIdIsNotNull(
       Long openingId, String silvBaseCode);
 
+  /** Returns activities for reconciliation of derived CBOA disturbance data. */
+  List<ActivityTreatmentUnitEntity> findByOpeningIdAndSilvBaseCode(
+      Long openingId, String silvBaseCode);
+
   @Override
   @Query(
       nativeQuery = true,
