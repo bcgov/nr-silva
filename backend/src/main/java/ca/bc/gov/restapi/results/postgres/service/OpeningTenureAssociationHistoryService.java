@@ -33,7 +33,7 @@ public class OpeningTenureAssociationHistoryService {
             .cutBlockId(tenure.getCutBlockId())
             .timberMark(tenure.getTimberMark())
             .openingPrimeLicenceInd(tenure.getOpeningPrimeLicenceInd())
-            .revisionCount(tenure.getRevisionCount())
+            .cboaRevisionCount(tenure.getRevisionCount())
             .eventUserid(userId)
             .eventTimestamp(LocalDateTime.now())
             .build());

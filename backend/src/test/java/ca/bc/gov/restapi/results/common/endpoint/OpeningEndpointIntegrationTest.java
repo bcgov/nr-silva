@@ -575,9 +575,43 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.page.number").value("0"))
         .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("21"))
-        .andExpect(jsonPath("$.content[0].id").value(258063))
-        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andExpect(jsonPath("$.content[0].cboaId").value(258063))
+        .andExpect(jsonPath("$.content[0].revisionCount").isNumber())
+        .andExpect(jsonPath("$.primary.cboaId").value(258073))
         .andReturn();
+  }
+
+  @Test
+  @DisplayName("Get Opening Tenures all returns every filtered and sorted row")
+  void getOpeningTenures_allTrue_shouldIgnorePageSizeAndKeepSort() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/tenures")
+                .param("all", "true")
+                .param("size", "1")
+                .param("sort", "fileId,asc")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.content.length()").value(21))
+        .andExpect(jsonPath("$.page.totalElements").value("21"))
+        .andExpect(jsonPath("$.content[0].fileId").value("A70881"));
+  }
+
+  @Test
+  @DisplayName("Get Opening Tenures all keeps filter")
+  void getOpeningTenures_allTrueWithFilter_shouldReturnFilteredRows() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/openings/1589595/tenures")
+                .param("all", "true")
+                .param("filter", "073")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].cboaId").value(258114));
   }
 
   @Test
@@ -598,7 +632,7 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.totalUnfiltered").value("21"))
         .andExpect(jsonPath("$.content").isArray())
         .andExpect(jsonPath("$.content").isEmpty())
-        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andExpect(jsonPath("$.primary.cboaId").value(258073))
         .andReturn();
   }
 
@@ -618,8 +652,8 @@ class OpeningEndpointIntegrationTest extends AbstractTestContainerIntegrationTes
         .andExpect(jsonPath("$.page.size").value("20"))
         .andExpect(jsonPath("$.page.totalElements").value("1"))
         .andExpect(jsonPath("$.totalUnfiltered").value("21"))
-        .andExpect(jsonPath("$.content[0].id").value(258114))
-        .andExpect(jsonPath("$.primary.id").value(258073))
+        .andExpect(jsonPath("$.content[0].cboaId").value(258114))
+        .andExpect(jsonPath("$.primary.cboaId").value(258073))
         .andReturn();
   }
 

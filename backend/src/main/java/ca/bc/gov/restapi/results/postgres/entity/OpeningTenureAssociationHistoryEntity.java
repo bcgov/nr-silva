@@ -42,8 +42,8 @@ public class OpeningTenureAssociationHistoryEntity {
   @Column(name = "opening_prime_licence_ind", length = 1)
   private String openingPrimeLicenceInd;
 
-  @Column(name = "revision_count", nullable = false)
-  private Integer revisionCount;
+  @Column(name = "cboa_revision_count", nullable = false)
+  private Integer cboaRevisionCount;
 
   @Column(name = "event_userid", nullable = false, length = 30)
   private String eventUserid;

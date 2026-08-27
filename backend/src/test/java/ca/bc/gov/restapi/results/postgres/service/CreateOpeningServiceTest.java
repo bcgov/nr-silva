@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
@@ -177,6 +178,8 @@ class CreateOpeningServiceTest {
 
     assertThat(response).isNotNull();
     assertThat(response.openingId()).isEqualTo(10001L);
+    verify(tenureAssociationHistoryService)
+        .record(eq("ASSOCIATED"), eq(10001L), any(), eq("testuser"));
   }
 
   @Test

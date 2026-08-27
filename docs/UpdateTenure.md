@@ -89,7 +89,7 @@ The request body is the final list of tenures for the opening.
 9. Unassociate removed tenures from the opening. The tenure source record remains available, but
    its opening-specific values are cleared.
 10. Record every association and unassociation in tenure-association history, including who made
-    the change and when.
+    the change, when, and the CBOA revision at that time.
 
 All accepted changes are saved together. A failed validation leaves the opening's tenure list
 unchanged.

@@ -8,7 +8,7 @@ CREATE TABLE silva.opening_tenure_association_history (
   cut_block_id varchar(10),
   timber_mark varchar(10),
   opening_prime_licence_ind varchar(1) CHECK (opening_prime_licence_ind IN ('Y', 'N')),
-  revision_count integer NOT NULL,
+  cboa_revision_count integer NOT NULL,
   event_userid varchar(30) NOT NULL,
   event_timestamp timestamp(0) NOT NULL
 );
