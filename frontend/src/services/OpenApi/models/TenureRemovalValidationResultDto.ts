@@ -2,13 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TenureValidationResultDto = {
-    tenureIndex?: number;
-    isValid?: boolean;
-    errorCode?: TenureValidationResultDto.errorCode;
+export type TenureRemovalValidationResultDto = {
+    cboaId?: number;
+    errorCode?: TenureRemovalValidationResultDto.errorCode;
     errorMessage?: string;
 };
-export namespace TenureValidationResultDto {
+export namespace TenureRemovalValidationResultDto {
     export enum errorCode {
         FIELD_INVALID = 'FIELD_INVALID',
         TENURE_NOT_FOUND = 'TENURE_NOT_FOUND',

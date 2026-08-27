@@ -9,8 +9,9 @@ import {
   TableToolbarSearch,
   Tag,
 } from "@carbon/react";
-import { Search } from "@carbon/icons-react";
+import { Edit, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import { generatePath, useNavigate } from 'react-router-dom';
 import { pluralize } from "@/utils/StringUtils";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PLACE_HOLDER } from "@/constants";
@@ -18,6 +19,7 @@ import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import API from "@/services/API";
 import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
+import { EDIT_TENURE_PATH } from '@/routes/paths';
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
 import { CutBlockStatusTag } from "@/components/Tags";
@@ -34,6 +36,7 @@ type OpeningTenureProps = {
 }
 
 const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
+  const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
   const [currPageSize, setCurrPageSize] = useState<number>(() => OddPageSizesConfig[0]!);
@@ -52,6 +55,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       return API.OpeningEndpointService.getTenures(
         openingId,
         filter,
+        undefined, // all = undefined to use default behavior
         page,
         size,
         sort
@@ -202,7 +206,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
 
   return (
     <Grid className="opening-tenure-id-grid default-grid">
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={12}>
         <div className="tab-title-container">
           <h3 className="default-tab-content-title">
             {tenureQuery.data?.totalUnfiltered ?? '...'}
@@ -226,6 +230,18 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
               )
               : null
           }
+        </div>
+      </Column>
+
+      <Column sm={4} md={8} lg={4}>
+        <div className="edit-tenure-container">
+          <Button
+            kind="primary"
+            renderIcon={Edit}
+            onClick={() => navigate(generatePath(EDIT_TENURE_PATH, { openingId: String(openingId) }))}
+          >
+            Edit tenure information
+          </Button>
         </div>
       </Column>
 
@@ -288,7 +304,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
                   <TableBody>
                     {
                       tenureQuery.data?.content.map((row) => (
-                        <TableRow key={row.id}>
+                        <TableRow key={row.cboaId}>
                           {
                             TenureTableHeaders
                               .map((header) => (

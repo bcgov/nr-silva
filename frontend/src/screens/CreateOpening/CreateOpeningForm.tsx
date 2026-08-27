@@ -340,6 +340,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
 
       <LeavePageModal
         open={isLeavePageModalOpen || blocker.state === 'blocked'}
+        helperTop="Create new opening"
         onRequestClose={handleStay}
         onLeave={handleLeaveConfirm}
         onStay={handleStay}

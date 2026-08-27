@@ -18,3 +18,14 @@
     }
   }
 }
+
+.tenure-item-skeleton {
+  .cds--skeleton__placeholder {
+    width: 100%;
+  }
+
+  &__remove {
+    max-width: 10rem;
+    height: 2.5rem;
+  }
+}

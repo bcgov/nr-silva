@@ -1,4 +1,34 @@
-import type { TenureDto } from "@/services/OpenApi";
+import type { TenureDto, TenureRequestDto } from "@/services/OpenApi";
+
+export type TenureFieldErrors = { fileId?: boolean; cutBlock?: boolean };
+
+/** Trims tenure input while preserving edit-only metadata on each item. */
+export const normalizeTenures = <T extends Partial<TenureRequestDto>>(tenures: T[] = []): T[] =>
+  tenures.map(
+    (tenure) =>
+      ({
+        ...tenure,
+        fileId: tenure.fileId?.trim() ?? '',
+        cuttingPermit: tenure.cuttingPermit?.trim() ?? '',
+        cutBlock: tenure.cutBlock?.trim() ?? '',
+      }) as T
+  );
+
+/** Validates the shared required-field and primary-tenure rules used by tenure forms. */
+export const validateTenureList = <T extends Partial<TenureRequestDto>>(tenures: T[] = []) => {
+  const trimmed = normalizeTenures(tenures);
+  const errors: TenureFieldErrors[] = trimmed.map((tenure) => ({
+    fileId: !tenure.fileId,
+    cutBlock: !tenure.cutBlock,
+  }));
+
+  return {
+    isValid: !errors.some((error) => error.fileId || error.cutBlock),
+    hasPrimary: trimmed.some((tenure) => tenure.isPrimary),
+    errors,
+    trimmed,
+  };
+};
 
 /**
  * Sorts validated tenure records for display and review.
