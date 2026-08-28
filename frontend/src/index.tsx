@@ -10,7 +10,7 @@ import amplifyconfig from "./amplifyconfiguration";
 import { CookieStorage } from "aws-amplify/utils";
 import { cognitoUserPoolsTokenProvider } from "aws-amplify/auth/cognito";
 import { AuthProvider } from "./contexts/AuthProvider";
-import { NotificationProvider } from "./contexts/NotificationProvider";
+import ToastProvider from "./contexts/ToastProvider";
 import { PreferenceProvider } from "@/contexts/PreferenceProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { queryClientConfig } from "./constants/tanstackConfig";
@@ -30,13 +30,13 @@ if (container) {
       <ClassPrefix prefix={CARBON_CLASS_PREFIX}>
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
-            <NotificationProvider>
+            <ToastProvider>
               <PreferenceProvider>
                 <ThemePreference>
                   <App />
                 </ThemePreference>
               </PreferenceProvider>
-            </NotificationProvider>
+            </ToastProvider>
           </QueryClientProvider>
         </AuthProvider>
       </ClassPrefix>

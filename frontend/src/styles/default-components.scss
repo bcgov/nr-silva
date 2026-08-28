@@ -106,13 +106,6 @@
   border: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-00);
 }
 
-.silva-toast {
-  position: fixed;
-  top: 64px;
-  right: 16px;
-  z-index: 2;
-}
-
 .default-pagination-white {
   background: var(--#{vars.$bcgov-prefix}-layer-02);
   border-bottom: 1px solid var(--#{vars.$bcgov-prefix}-border-subtle-02);
