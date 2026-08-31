@@ -69,6 +69,7 @@ const TenureListInput = <T extends TenureRequestDto>({
   }, [tenures.length]);
 
   const addTenure = () => {
+    setRowIds((current) => [...current, `tenure-${rowIdCounter.current++}`]);
     setTenures([...tenures, structuredClone(emptyTenure) as T]);
     onTenuresChange?.();
   };
@@ -86,6 +87,7 @@ const TenureListInput = <T extends TenureRequestDto>({
   };
 
   const deleteTenure = (index: number) => {
+    setRowIds((current) => current.filter((_, itemIndex) => itemIndex !== index));
     setTenures(tenures.filter((_, i) => i !== index));
     onTenuresChange?.();
   };
@@ -98,13 +100,15 @@ const TenureListInput = <T extends TenureRequestDto>({
       if (COMBO_ERROR_CODES.has(code)) {
         return {
           kind: 'combo',
-          subtitle: 'The combination of File ID, cutting permit, and cut block is incorrect. Please enter the details again.',
+          subtitle:
+            result.errorMessage ??
+            'The combination of File ID, cutting permit, and cut block is incorrect. Please enter the details again.',
         };
       }
       if (EXISTING_OPENING_ERROR_CODES.has(code)) {
         return {
           kind: 'combo',
-          subtitle: 'This tenure is already linked to an existing opening.',
+          subtitle: result.errorMessage ?? 'This tenure is already linked to an existing opening.',
         };
       }
       if (
@@ -140,7 +144,7 @@ const TenureListInput = <T extends TenureRequestDto>({
         <>
           {tenures.map((tenure, index) => (
             <TenureItemInput
-              key={rowIds[index]}
+              key={rowIds[index] ?? `pending-tenure-${index}`}
               index={index}
               tenure={tenure}
               setTenure={(updated) => updateTenure(index, updated)}

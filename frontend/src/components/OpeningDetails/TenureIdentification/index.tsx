@@ -61,6 +61,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
         sort
       );
     },
+    refetchOnMount: 'always',
   });
 
   const renderCellContent = (headerKey: keyof OpeningDetailsTenureDto, row: OpeningDetailsTenureDto) => {

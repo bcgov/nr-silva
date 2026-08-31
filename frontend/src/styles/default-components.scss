@@ -1,6 +1,13 @@
 @use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
 @use '@/styles/type' as type;
 
+// Carbon's page-header styles hide every element with a data-hidden attribute.
+// React-Toastify uses data-hidden on its progress wrapper to control opacity,
+// so keep the wrapper in the layout for its native animation lifecycle.
+.Toastify__progress-bar--wrp[data-hidden]:not([data-fixed]) {
+  display: block;
+}
+
 .default-grid {
   margin: 0;
   width: 100%;
@@ -608,4 +615,13 @@ ul.default-tab-accordion {
 
 .default-tag {
   max-width: fit-content;
+}
+
+.default-toast-container {
+  margin-top: 3.5rem;
+
+
+  .Toastify__toast-theme--colored.Toastify__toast--success {
+    background: var(--#{vars.$bcgov-prefix}-support-success);
+  }
 }

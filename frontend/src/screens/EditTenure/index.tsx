@@ -15,8 +15,9 @@ import {
   TenureValidationResponseDto,
 } from '@/services/OpenApi';
 import { TenureFieldErrors, validateTenureList } from '@/utils/TenureUtils';
+import { showToast } from '@/utils/Toast';
 
-import { getEditTenureCrumbs } from './constants';
+import { EDIT_TENURE_TOAST_MESSAGES, getEditTenureCrumbs } from './constants';
 import {
   buildTenureUpdatePayload,
   EditTenureItem,
@@ -100,6 +101,7 @@ const EditTenure = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['opening', openingId, 'tenure'] });
       bypassBlockerRef.current = true;
+      showToast.success(EDIT_TENURE_TOAST_MESSAGES.SAVED);
       navigate(openingDetailsPath);
     },
     onError: (error: unknown) => {
@@ -128,6 +130,7 @@ const EditTenure = () => {
 
     if (!hasTenureChanges(tenures, initialTenuresRef.current ?? [])) {
       bypassBlockerRef.current = true;
+      showToast.success(EDIT_TENURE_TOAST_MESSAGES.NO_CHANGES);
       navigate(openingDetailsPath);
       return;
     }
