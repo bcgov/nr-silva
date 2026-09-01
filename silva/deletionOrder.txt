@@ -28,6 +28,7 @@ standards_regime_layer_species
 standards_regime_client
 spar_request
 silv_project_comment_link
+opening_tenure_association_history
 opening_comment_link
 opening_attachment
 open_viewable_category

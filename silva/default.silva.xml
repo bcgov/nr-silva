@@ -317,8 +317,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="forest_file_id" nullable="false" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="cutting_permit_id" nullable="true" remarks="Identifier for a cutting permit associated with a harvesting tenure." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12">
-            <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
             <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
+            <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cut_block_id" nullable="false" remarks="Identifier for a cut block of a harvesting tenure (within a cutting permit for tenures with cp&quot;s)." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="6" name="sp_exempt_ind" nullable="false" remarks="Only set to &quot;Y&quot; for &quot;Exemption for silviculture Prescriptions&quot; under sec. 30 of the Forest Practices Code of British Columbia Act, eg cut blocks under one hectare, or the use of the land will be incompatible with the establishment of a free growing stand." size="1" type="varchar" typeCode="12"/>
@@ -448,6 +448,7 @@
       <table name="cut_block_open_admin" remarks="Used by FTA and RESULTS to track area and date information associated with a cut block and/or opening." schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="cut_block_open_admin_id" nullable="false" remarks="Primary Unique identifier for a Cut Block Open Admin." size="19" type="int8" typeCode="-5">
             <child column="cut_block_open_admin_id" foreignKey="atu_cboa_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+            <child column="cut_block_open_admin_id" foreignKey="opening_tenure_association_history_cut_block_open_admin_id_fkey" implied="false" onDeleteCascade="false" schema="silva" table="opening_tenure_association_history"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="forest_file_id" nullable="true" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12"/>
@@ -1778,6 +1779,7 @@
             <child column="opening_id" foreignKey="ocl_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_comment_link"/>
             <child column="opening_id" foreignKey="og_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_geometry"/>
             <child column="opening_id" foreignKey="ols_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_land_status"/>
+            <child column="opening_id" foreignKey="opening_tenure_association_history_opening_id_fkey" implied="false" onDeleteCascade="false" schema="silva" table="opening_tenure_association_history"/>
             <child column="opening_id" foreignKey="spr_sr1_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="spar_request"/>
             <child column="opening_id" foreignKey="se_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_ecology"/>
             <child column="opening_id" foreignKey="seh_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="stocking_event_history"/>
@@ -1850,6 +1852,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="update_userid" nullable="false" remarks="The USERID of the individual who last updated the information." size="30" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="update_timestamp" nullable="false" remarks="The date and time of the last update." size="22" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="revision_count" nullable="false" remarks="A counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved." size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="4" id="35" name="opening_gross_area" nullable="true" remarks="Silva-owned source of truth for the total opening gross area in hectares." size="11" type="numeric" typeCode="2"/>
          <primaryKey column="opening_id" sequenceNumberInPK="1"/>
          <index name="opening_pkey" unique="true">
             <column ascending="true" name="opening_id"/>
@@ -1953,7 +1956,7 @@
             <parent column="opening_id" foreignKey="og_o_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="geometry" nullable="false" remarks="Spatial coordinate representation of the polygon related to the Opening." size="2147483647" type="geometry" typeCode="1111"/>
-         <column autoUpdated="false" defaultValue="null" digits="4" id="2" name="feature_area" nullable="false" remarks="The area of the polygon pertaining to the Opening measured in square metres." size="11" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="4" id="2" name="feature_area" nullable="false" remarks="Area of the opening geometry in hectares." size="11" type="numeric" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="4" id="3" name="feature_perimeter" nullable="false" remarks="The perimeter of the polygon pertaining to the Opening measured in metres." size="11" type="numeric" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="feature_class_skey" nullable="false" remarks="Unique identifier of the feature class." size="19" type="int8" typeCode="-5">
             <parent column="feature_class_skey" foreignKey="og_corpfcc_fk" implied="false" onDeleteCascade="false" schema="silva" table="feature_classes"/>
@@ -2020,6 +2023,34 @@
          <index name="opening_status_code_pkey" unique="true">
             <column ascending="true" name="opening_status_code"/>
          </index>
+      </table>
+      <table name="opening_tenure_association_history" remarks="" schema="silva" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="opening_tenure_association_history_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="cut_block_open_admin_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="cut_block_open_admin_id" foreignKey="opening_tenure_association_history_cut_block_open_admin_id_fkey" implied="false" onDeleteCascade="false" schema="silva" table="cut_block_open_admin"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="opening_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="opening_id" foreignKey="opening_tenure_association_history_opening_id_fkey" implied="false" onDeleteCascade="false" schema="silva" table="opening"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="action" nullable="false" remarks="" size="12" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="forest_file_id" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cutting_permit_id" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="cut_block_id" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="timber_mark" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="opening_prime_licence_ind" nullable="true" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="cboa_revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="event_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="event_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <primaryKey column="opening_tenure_association_history_id" sequenceNumberInPK="1"/>
+         <index name="opening_tenure_association_history_pkey" unique="true">
+            <column ascending="true" name="opening_tenure_association_history_id"/>
+         </index>
+         <index name="opening_tenure_association_history_opening_i" unique="false">
+            <column ascending="true" name="opening_id"/>
+            <column ascending="true" name="event_timestamp"/>
+         </index>
+         <checkConstraint constraint="((opening_prime_licence_ind)::text = ANY ((ARRAY['Y'::character varying, 'N'::character varying])::text[]))" name="opening_tenure_association_hist_opening_prime_licence_ind_check"/>
+         <checkConstraint constraint="((action)::text = ANY ((ARRAY['ASSOCIATED'::character varying, 'UNASSOCIATED'::character varying])::text[]))" name="opening_tenure_association_history_action_check"/>
       </table>
       <table name="org_unit" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
@@ -2876,8 +2907,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="fiscal_year" nullable="false" remarks="The fiscal year in which the project commenced, or, in the case of a planned project, is expected to commence. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
-            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
             <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
+            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="project_sequence" nullable="false" remarks="A one to four character identifier that is meaningful to the user and assists in distinguishing one Project from another within the same SILV BASE CODE, FISCAL YEAR, ORG UNIT CODE. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="4" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="project_location" nullable="true" remarks="A comment regarding the general location of the project." size="30" type="varchar" typeCode="12"/>

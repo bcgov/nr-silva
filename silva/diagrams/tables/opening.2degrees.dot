@@ -117,6 +117,8 @@ digraph "twoDegreesRelationshipsDiagram" {
   "opening_geometry":"feature_class_skey":w -> "feature_classes":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "opening_geometry":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=teeodot];
   "opening_land_status":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
+  "opening_tenure_association_history":"cut_block_open_admin_id":w -> "cut_block_open_admin":"cut_block_open_admin_id":e [arrowhead=none dir=back arrowtail=crowodot];
+  "opening_tenure_association_history":"opening_id":w -> "opening":"opening_id.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "planting_rslt":"elipses":w -> "activity_treatment_unit":"activity_treatment_unit_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "planting_rslt":"elipses":w -> "silv_tree_species_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "prov_forest_use":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -230,7 +232,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="134" HEIGHT="16"><B>cut_block_open_admin</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="cut_block_open_admin.html"
     target="_top"
@@ -502,7 +504,8 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="update_userid" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">update_userid</TD></TR></TABLE></TD><TD PORT="update_userid.type" ALIGN="LEFT">varchar[30]</TD></TR>
       <TR><TD PORT="update_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">update_timestamp</TD></TR></TABLE></TD><TD PORT="update_timestamp.type" ALIGN="LEFT">timestamp[22]</TD></TR>
       <TR><TD PORT="revision_count" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">revision_count</TD></TR></TABLE></TD><TD PORT="revision_count.type" ALIGN="LEFT">int4[10]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
+      <TR><TD PORT="opening_gross_area" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="180" HEIGHT="16">opening_gross_area</TD></TR></TABLE></TD><TD PORT="opening_gross_area.type" ALIGN="LEFT">numeric[11,4]</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15 &gt;</TD></TR>
     </TABLE>>
     URL="opening.html"
     target="_top"
@@ -586,6 +589,17 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="opening_status_code.html"
     target="_top"
     tooltip="opening_status_code"
+  ];
+  "opening_tenure_association_history" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="214" HEIGHT="16"><B>opening_tenure_association_history</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="opening_tenure_association_history.html"
+    target="_top"
+    tooltip="opening_tenure_association_history"
   ];
   "org_unit" [
    label=<

@@ -108,6 +108,7 @@ activity_tu_comment_link
 open_viewable_category
 opening_attachment
 opening_comment_link
+opening_tenure_association_history
 silv_project_comment_link
 spar_request
 standards_regime_client
