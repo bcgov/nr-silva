@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TenureRequestDto, TenureValidationResponseDto, TenureValidationResultDto } from '@/services/OpenApi';
 import TenureListInput from '../../components/TenureListInput';
 import '@testing-library/jest-dom';
@@ -49,6 +49,10 @@ vi.mock('@/components/TenureListInput/TenureItemInput', () => ({
 describe('TenureListInput Component', () => {
   const mockSetTenures = vi.fn();
 
+  beforeEach(() => {
+    mockSetTenures.mockClear();
+  });
+
   it('renders empty tenure on mount with empty array', () => {
     const tenures: TenureRequestDto[] = [];
     render(
@@ -56,6 +60,19 @@ describe('TenureListInput Component', () => {
     );
 
     expect(mockSetTenures).toHaveBeenCalled();
+  });
+
+  it('does not initialize an empty row when used by the loading edit form', () => {
+    render(<TenureListInput tenures={[]} setTenures={mockSetTenures} initializeEmptyTenure={false} />);
+
+    expect(mockSetTenures).not.toHaveBeenCalled();
+  });
+
+  it('shows loading placeholders instead of editable tenure controls while data is loading', () => {
+    const { container } = render(<TenureListInput tenures={[]} setTenures={mockSetTenures} loading />);
+
+    expect(container.querySelectorAll('.tenure-item-skeleton')).toHaveLength(3);
+    expect(screen.queryByRole('button', { name: /add multi-tenure/i })).not.toBeInTheDocument();
   });
 
   it('renders multiple tenure items', () => {
@@ -242,6 +259,38 @@ describe('TenureListInput Component', () => {
     expect(error.textContent).toContain('already linked to an existing opening');
   });
 
+  it.each([
+    TenureValidationResultDto.errorCode.STALE_TENURE,
+    TenureValidationResultDto.errorCode.TENURE_NOT_ASSOCIATED,
+  ])('displays a reload message for %s server validation errors', (errorCode) => {
+    render(
+      <TenureListInput
+        tenures={[{ fileId: 'FILE001', cuttingPermit: 'CP001', cutBlock: 'CB001', isPrimary: true }]}
+        setTenures={mockSetTenures}
+        validationResult={{ validationResults: [{ isValid: false, errorCode }] }}
+      />
+    );
+
+    expect(screen.getByTestId('error-0')).toHaveTextContent('Reload and try again.');
+  });
+
+  it('displays the duplicate fallback when duplicate conflict indices are not supplied', () => {
+    render(
+      <TenureListInput
+        tenures={[{ fileId: 'FILE001', cuttingPermit: 'CP001', cutBlock: 'CB001', isPrimary: true }]}
+        setTenures={mockSetTenures}
+        validationResult={{
+          validationResults: [{
+            isValid: false,
+            errorCode: TenureValidationResultDto.errorCode.DUPLICATE_IN_REQUEST,
+          }],
+        }}
+      />
+    );
+
+    expect(screen.getByTestId('error-0')).toHaveTextContent('duplicate of another tenure');
+  });
+
   it('calls onTenuresChange when tenure is updated', () => {
     const mockOnChange = vi.fn();
     const tenures: TenureRequestDto[] = [
@@ -281,6 +330,19 @@ describe('TenureListInput Component', () => {
     fireEvent.click(deleteButton);
 
     expect(mockOnChange).toHaveBeenCalled();
+  });
+
+  it('calls onTenuresChange when a row is added or selected as primary', () => {
+    const mockOnChange = vi.fn();
+    const tenures: TenureRequestDto[] = [
+      { fileId: 'FILE001', cuttingPermit: 'CP001', cutBlock: 'CB001', isPrimary: false },
+    ];
+
+    render(<TenureListInput tenures={tenures} setTenures={mockSetTenures} onTenuresChange={mockOnChange} />);
+    fireEvent.click(screen.getByRole('button', { name: /add multi-tenure/i }));
+    fireEvent.click(screen.getByTestId('primary-0'));
+
+    expect(mockOnChange).toHaveBeenCalledTimes(2);
   });
 
   it('handles field errors prop correctly', () => {

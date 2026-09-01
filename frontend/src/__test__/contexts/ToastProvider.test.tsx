@@ -35,7 +35,7 @@ describe('ToastProvider', () => {
   });
 
   it('dismisses active toasts when Escape is pressed', () => {
-    render(
+    const { unmount } = render(
       <ToastProvider>
         <p>Application content</p>
       </ToastProvider>
@@ -43,6 +43,10 @@ describe('ToastProvider', () => {
 
     fireEvent.keyDown(document, { key: 'Escape' });
 
+    expect(toast.dismiss).toHaveBeenCalledOnce();
+
+    unmount();
+    fireEvent.keyDown(document, { key: 'Escape' });
     expect(toast.dismiss).toHaveBeenCalledOnce();
   });
 });
