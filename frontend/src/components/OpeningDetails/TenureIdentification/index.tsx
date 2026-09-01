@@ -55,7 +55,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
       return API.OpeningEndpointService.getTenures(
         openingId,
         filter,
-        undefined, // all = undefined to use default behavior
+        false, // all parameter must be boolean, not undefined
         page,
         size,
         sort
