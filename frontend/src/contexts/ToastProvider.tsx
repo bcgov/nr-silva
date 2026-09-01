@@ -8,7 +8,7 @@ interface ToastProviderProps {
 }
 
 const ToastProvider = ({ children }: ToastProviderProps) => {
-  const { theme } = useTheme();
+  useTheme(); // hook for re-rendering when theme changes
 
   useEffect(() => {
     const dismissToastsOnEscape = (event: KeyboardEvent) => {
