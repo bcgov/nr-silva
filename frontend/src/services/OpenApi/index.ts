@@ -92,7 +92,10 @@ export type { StandardUnitSearchResponseDto } from './models/StandardUnitSearchR
 export { StockingStandardsCommentSearchResponseDto } from './models/StockingStandardsCommentSearchResponseDto';
 export type { StockingStandardsSearchResponseDto } from './models/StockingStandardsSearchResponseDto';
 export type { TenureDto } from './models/TenureDto';
+export { TenureRemovalValidationResultDto } from './models/TenureRemovalValidationResultDto';
 export type { TenureRequestDto } from './models/TenureRequestDto';
+export type { TenureUpdateItemDto } from './models/TenureUpdateItemDto';
+export type { TenureUpdateValidationResponseDto } from './models/TenureUpdateValidationResponseDto';
 export type { TenureValidationResponseDto } from './models/TenureValidationResponseDto';
 export { TenureValidationResultDto } from './models/TenureValidationResultDto';
 

@@ -30,7 +30,7 @@ public interface OpeningDetailsService {
   OpeningActivityBaseDto getOpeningActivitiesActivity(Long openingId, Long atuId);
 
   OpeningDetailsTenuresDto getOpeningTenures(
-      Long openingId, String filter, Pageable pageable);
+      Long openingId, String filter, boolean all, Pageable pageable);
 
   List<OpeningForestCoverDto> getOpeningForestCoverList(
       Long openingId, String mainSearchTerm);

@@ -95,13 +95,14 @@ public abstract class AbstractOpeningDetailsService implements OpeningDetailsSer
   }
 
   public OpeningDetailsTenuresDto getOpeningTenures(
-      Long openingId, String filter, Pageable pageable) {
+      Long openingId, String filter, boolean all, Pageable pageable) {
     log.info(
-        "Fetching tenures for opening with id: {}, filter: {}, and page: {}",
+        "Fetching tenures for opening with id: {}, filter: {}, all: {}, and page: {}",
         openingId,
         filter,
+        all,
         pageable);
-    return tenureService.getOpeningTenures(openingId, filter, pageable);
+    return tenureService.getOpeningTenures(openingId, filter, all, pageable);
   }
 
   public List<OpeningForestCoverDto> getOpeningForestCoverList(

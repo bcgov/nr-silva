@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface OpeningDetailsTenureService {
   OpeningDetailsTenuresDto getOpeningTenures(
-      Long openingId, String mainSearchTerm, Pageable pageable);
+      Long openingId, String mainSearchTerm, boolean all, Pageable pageable);
 
 }

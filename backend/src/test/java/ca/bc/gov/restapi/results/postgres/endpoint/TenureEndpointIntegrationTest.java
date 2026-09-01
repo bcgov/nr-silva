@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,13 +14,17 @@ import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.config.TenureEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureRemovalValidationResultDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
+import ca.bc.gov.restapi.results.postgres.service.UpdateTenuresService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +45,7 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   @Autowired private MockMvc mockMvc;
 
   @Autowired private TenureValidationService tenureValidationService;
+  @Autowired private UpdateTenuresService updateTenuresService;
 
   private static final String VALID_TENURES_JSON =
       """
@@ -52,6 +58,69 @@ class TenureEndpointIntegrationTest extends AbstractTestContainerIntegrationTest
   @BeforeEach
   void resetMocks() {
     Mockito.reset(tenureValidationService);
+    Mockito.reset(updateTenuresService);
+  }
+
+  @Test
+  @WithMockJwt
+  @DisplayName("Update tenure list succeeds with 204")
+  void updateTenures_validList_returns204() throws Exception {
+    when(updateTenuresService.updateTenures(any(), anyString(), any()))
+        .thenReturn(Optional.empty());
+
+    mockMvc
+        .perform(
+            put("/api/openings/101/tenures?clientNumber=12345678")
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    [{"cboaId": 1, "revisionCount": 2, "fileId": "TFL001", "cuttingPermit": "CP1", "cutBlock": "CB001", "isPrimary": true}]
+                    """))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockJwt
+  @DisplayName("Update tenure list returns structured 422 validation")
+  void updateTenures_validationFailure_returns422() throws Exception {
+    TenureValidationResponseDto validation =
+        new TenureValidationResponseDto(
+            List.of(
+                new TenureValidationResultDto(
+                    0,
+                    false,
+                    TenureValidationErrorCode.STALE_TENURE,
+                    "Tenure was changed by another request")),
+            List.of(),
+            false,
+            List.of(),
+            Map.of());
+    when(updateTenuresService.updateTenures(any(), anyString(), any()))
+        .thenReturn(
+            Optional.of(
+                new TenureUpdateValidationResponseDto(
+                    validation,
+                    List.of(
+                        new TenureRemovalValidationResultDto(
+                            1L,
+                            TenureValidationErrorCode.DISTURBANCE_EXISTS,
+                            "Tenure cannot be removed while a disturbance activity exists")))));
+
+    mockMvc
+        .perform(
+            put("/api/openings/101/tenures?clientNumber=12345678")
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    [{"cboaId": 1, "revisionCount": 1, "fileId": "TFL001", "cuttingPermit": null, "cutBlock": "CB001", "isPrimary": true}]
+                    """))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(
+            jsonPath("$.tenureValidation.validationResults[0].errorCode").value("STALE_TENURE"))
+        .andExpect(jsonPath("$.removalErrors[0].cboaId").value(1))
+        .andExpect(jsonPath("$.removalErrors[0].errorCode").value("DISTURBANCE_EXISTS"));
   }
 
   @Test

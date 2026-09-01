@@ -116,8 +116,9 @@ public class OpeningEndpoint {
   public OpeningDetailsTenuresDto getTenures(
       @PathVariable Long openingId,
       @RequestParam(name = "filter", required = false) String filter,
+      @RequestParam(name = "all", defaultValue = "false") boolean all,
       @ParameterObject Pageable pageable) {
-    return openingDetailsService.getOpeningTenures(openingId, filter, pageable);
+    return openingDetailsService.getOpeningTenures(openingId, filter, all, pageable);
   }
 
   @GetMapping("/{openingId}/cover")

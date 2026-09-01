@@ -14,6 +14,13 @@ import {
   COMMENT_SEARCH_PATH,
   STOCKING_STANDARDS_SEARCH_PATH,
   STOCKING_STANDARDS_COMMENT_SEARCH_PATH,
+  CREATE_OPENING_PATH,
+  OPENING_DETAILS_PATH,
+  EDIT_TENURE_PATH,
+  ACTIVITY_SEARCH_ACTIVITIES_PATH,
+  ACTIVITY_SEARCH_DISTURBANCES_PATH,
+  ACTIVITY_SEARCH_ACTIVITIES_FULL_PATH,
+  WILDCARD_PATH,
 } from './paths';
 
 const Dashboard = lazy(() => import('@/screens/Dashboard'));
@@ -28,6 +35,7 @@ const StandardsUnitSearch = lazy(() => import('@/screens/StandardsUnitSearch'));
 const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
 const StockingStandardsSearch = lazy(() => import('@/screens/StockingStandardsSearch'));
 const StockingStandardsCommentSearch = lazy(() => import('@/screens/StockingStandardsCommentSearch'));
+const EditTenure = lazy(() => import('@/screens/EditTenure'));
 
 const PageLoader = () => <Loading withOverlay />;
 
@@ -47,7 +55,7 @@ export const OpeningsSearchRoute: RouteObject = {
 }
 
 export const CreateOpeningRoute: RouteObject = {
-  path: "/openings/create",
+  path: CREATE_OPENING_PATH,
   element: (
     <FeatureGateRoute
       featureName="Create opening"
@@ -72,8 +80,21 @@ export const CreateOpeningSuccessRoute: RouteObject = {
   ),
 }
 
+export const EditTenureRoute: RouteObject = {
+  path: EDIT_TENURE_PATH,
+  element: (
+    <FeatureGateRoute
+      featureName="Edit tenure"
+      title="Tenure editing is unavailable"
+      description="The tenure editing workflow is disabled in this deployment model. Please return to the openings list."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><EditTenure /></Suspense>} />
+    </FeatureGateRoute>
+  ),
+}
+
 export const OpeningDetailsRoute: RouteObject = {
-  path: "/openings/:openingId",
+  path: OPENING_DETAILS_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><OpeningDetails /></Suspense>} />,
 }
 
@@ -82,20 +103,20 @@ export const ActivitySearchRoute: RouteObject = {
   element: <SideLayout pageContent={<Outlet />} />,
   children: [
     {
-      path: "activities",
+      path: ACTIVITY_SEARCH_ACTIVITIES_PATH,
       element: <Suspense fallback={<PageLoader />}><ActivitySearch type="activities" /></Suspense>,
     },
     {
-      path: "disturbances",
+      path: ACTIVITY_SEARCH_DISTURBANCES_PATH,
       element: <Suspense fallback={<PageLoader />}><ActivitySearch type="disturbances" /></Suspense>,
     },
     {
       index: true,
-      element: <Navigate to="activities" replace />,
+      element: <Navigate to={ACTIVITY_SEARCH_ACTIVITIES_PATH} replace />,
     },
     {
-      path: "*",
-      element: <Navigate to="/activity-search/activities" replace />,
+      path: WILDCARD_PATH,
+      element: <Navigate to={ACTIVITY_SEARCH_ACTIVITIES_FULL_PATH} replace />,
     },
   ],
 }
@@ -124,4 +145,3 @@ export const StockingStandardsCommentSearchRoute: RouteObject = {
   path: STOCKING_STANDARDS_COMMENT_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><StockingStandardsCommentSearch /></Suspense>} />,
 }
-

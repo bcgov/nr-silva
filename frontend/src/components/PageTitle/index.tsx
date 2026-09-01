@@ -10,7 +10,7 @@ import './styles.scss';
 
 interface PageTitleProps {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   experimental?: boolean;
   children?: React.ReactNode;
   breadCrumbs?: BreadCrumbType[];
@@ -61,7 +61,11 @@ const PageTitle: React.FC<PageTitleProps> = ({
           }
         </div>
         {
-          subtitle ? <Subtitle text={subtitle} /> : null
+          subtitle
+            ? React.isValidElement(subtitle)
+              ? subtitle
+              : <Subtitle text={subtitle} />
+            : null
         }
       </div>
     </Column>

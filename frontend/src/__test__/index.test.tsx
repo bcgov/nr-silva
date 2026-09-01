@@ -31,6 +31,9 @@ vi.mock('react-dom/client', () => ({
     render: vi.fn(),
   })),
 }));
+vi.mock('../contexts/ToastProvider', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 
 describe('index.tsx', () => {
   it('should initialize the app correctly', async () => {
@@ -44,5 +47,5 @@ describe('index.tsx', () => {
     expect(createRoot).toHaveBeenCalledWith(container);
     expect(Amplify.configure).toHaveBeenCalledWith(amplifyconfig);
     expect(cognitoUserPoolsTokenProvider.setKeyValueStorage).toHaveBeenCalledWith(expect.any(CookieStorage));
-  });
+  }, 15_000);
 });

@@ -37,20 +37,31 @@ public class TenureValidationService {
   private final CutBlockClientPostgresRepository cutBlockClientRepository;
   private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
 
-  /**
-   * Validates a list of tenures: field constraints, JWT client auth, cut block existence, client
-   * licensee membership, and CBOA duplicate-opening check. Throws 403 if the caller's JWT does not
-   * carry a role matching the supplied client number.
-   *
-   * @param tenures the tenures to validate
-   * @param clientNumber the 8-character client number the caller claims ownership of
-   * @return a {@link TenureValidationResponseDto} with per-tenure results and duplicate conflicts
-   */
   private record ValidatedTenure(TenureValidationResultDto result, CutBlockEntity block) {}
 
+  /**
+   * Validates a list of new tenures.
+   *
+   * @param tenures tenures to validate
+   * @param clientNumber client number the caller claims ownership of
+   * @return per-tenure results and duplicate conflicts
+   */
   public TenureValidationResponseDto validateTenures(
       List<TenureRequestDto> tenures, String clientNumber) {
 
+    return validateTenures(tenures, clientNumber, null);
+  }
+
+  /**
+   * Validates tenures, allowing CBOA rows already allocated to {@code openingId}.
+   *
+   * @param tenures final submitted tenure list
+   * @param clientNumber client used for authorization and licensee validation
+   * @param openingId opening allowed to retain its existing CBOA allocations
+   * @return per-item validation results and resolved cut blocks
+   */
+  public TenureValidationResponseDto validateTenures(
+      List<TenureRequestDto> tenures, String clientNumber, Long openingId) {
     // Auth check fails fast — security boundary, not a data validation error
     if (!loggedUserHelper.hasRoleMatching(role -> role.endsWith("_" + clientNumber))) {
       throw new ResponseStatusException(
@@ -63,7 +74,7 @@ public class TenureValidationService {
     List<DuplicateConflictDto> duplicates = detectDuplicates(tenures);
 
     for (int i = 0; i < tenures.size(); i++) {
-      ValidatedTenure vt = validateOneTenure(i, tenures.get(i), clientNumber);
+      ValidatedTenure vt = validateOneTenure(i, tenures.get(i), clientNumber, openingId);
       validationResults.add(vt.result());
       if (vt.block() != null) {
         resolvedBlocks.put(i, vt.block());
@@ -128,7 +139,7 @@ public class TenureValidationService {
   }
 
   private ValidatedTenure validateOneTenure(
-      int index, TenureRequestDto tenure, String clientNumber) {
+      int index, TenureRequestDto tenure, String clientNumber, Long openingId) {
 
     if (tenure == null) {
       return new ValidatedTenure(
@@ -183,7 +194,12 @@ public class TenureValidationService {
     }
 
     // Step 4: tenure must not already be linked to another opening in cut_block_open_admin
-    if (cutBlockOpenAdminRepository.existsAllocatedByTenure(fileId, cutBlock, cuttingPermit)) {
+    boolean allocated =
+        openingId == null
+            ? cutBlockOpenAdminRepository.existsAllocatedByTenure(fileId, cutBlock, cuttingPermit)
+            : cutBlockOpenAdminRepository.existsAllocatedByTenureForAnotherOpening(
+                fileId, cutBlock, cuttingPermit, openingId);
+    if (allocated) {
       return new ValidatedTenure(
           new TenureValidationResultDto(
               index,

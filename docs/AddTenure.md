@@ -12,6 +12,10 @@ The tenure validation endpoint checks one or more tenure (cut block) entries bef
 
 The caller must provide their `clientNumber`; the service verifies the JWT contains a role ending in `_<clientNumber>` and returns **403 Forbidden** if not.
 
+When a validated tenure is later associated with an opening during create or edit, SILVA copies the
+opening's Silva-owned gross area to the CBOA row. The CBOA value is derived data, not the source of
+truth for the opening area.
+
 ---
 
 ## Endpoint

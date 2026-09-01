@@ -71,4 +71,4 @@ Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
 });
 
 window.HTMLElement.prototype.scrollIntoView = function () { };
-
+window.scrollTo = vi.fn();
