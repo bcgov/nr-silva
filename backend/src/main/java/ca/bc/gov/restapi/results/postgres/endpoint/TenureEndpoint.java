@@ -6,6 +6,9 @@ import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateItemDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.TenureValidationService;
 import ca.bc.gov.restapi.results.postgres.service.UpdateTenuresService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -61,6 +64,14 @@ public class TenureEndpoint {
    * @return {@code 204} after persistence or a structured {@code 422} validation response
    */
   @PutMapping(value = "/api/openings/{openingId}/tenures", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "204", description = "Tenures updated successfully, no content returned")
+  @ApiResponse(
+      responseCode = "422",
+      description = "Validation failed",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = TenureUpdateValidationResponseDto.class)))
   public ResponseEntity<TenureUpdateValidationResponseDto> updateTenures(
       @PathVariable Long openingId,
       @RequestParam String clientNumber,
