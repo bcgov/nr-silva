@@ -1,4 +1,4 @@
-import { Column, Grid, SkeletonPlaceholder, SkeletonText, Stack } from '@carbon/react';
+import { SkeletonPlaceholder, SkeletonText, Stack } from '@carbon/react';
 
 import './styles.scss';
 
