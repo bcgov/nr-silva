@@ -65,23 +65,6 @@ class UpdateTenuresServiceTest {
             tenureAssociationService,
             historyService,
             loggedUserHelper);
-    when(openingRepository.findById(OPENING_ID))
-        .thenReturn(
-            Optional.of(
-                OpeningEntity.builder()
-                    .id(OPENING_ID)
-                    .openingGrossArea(new BigDecimal("10"))
-                    .build()));
-    when(tenureAssociationService.associate(any(), any(), any(), anyString(), any()))
-        .thenAnswer(
-            invocation ->
-                CutBlockOpenAdminEntity.builder()
-                    .id(99L)
-                    .openingId(OPENING_ID)
-                    .openingPrimeLicenceInd("Y")
-                    .revisionCount(1)
-                    .build());
-    when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
   }
 
   @Test
@@ -98,6 +81,7 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("Empty list and non-exact primary counts are rejected")
   void updateTenures_invalidPrimaryList_throws422() {
+    givenOpening();
     assertThatThrownBy(() -> service.updateTenures(OPENING_ID, CLIENT_NUMBER, List.of()))
         .isInstanceOf(ResponseStatusException.class)
         .satisfies(
@@ -118,6 +102,7 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("Shared tenure validation failure returns its item errors without persistence")
   void updateTenures_sharedValidationFailure_returnsValidationBody() {
+    givenOpening();
     List<TenureUpdateItemDto> items = List.of(item(null, null, true));
     TenureValidationResponseDto invalid = validation(false, items);
     when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
@@ -135,6 +120,7 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("Foreign, duplicated, and stale CBOA IDs return item validation errors")
   void updateTenures_invalidExistingIdentity_returnsItemErrors() {
+    givenOpening();
     CutBlockOpenAdminEntity current = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 3);
     List<TenureUpdateItemDto> items =
         List.of(item(1L, 2, true), item(9L, 1, false), item(9L, 1, false));
@@ -158,6 +144,7 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("DN activity blocks a removed tenure and leaves CBOA rows unchanged")
   void updateTenures_dnWithRemoval_returnsRemovalError() {
+    givenOpening();
     CutBlockOpenAdminEntity retained = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 1);
     CutBlockOpenAdminEntity removed = cboa(2L, "FILE2", null, "BLOCK2", "N", 1);
     List<TenureUpdateItemDto> items = List.of(item(1L, 1, true));
@@ -185,9 +172,14 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("Primary-only change remains allowed when DN activity exists")
   void updateTenures_dnWithoutRemoval_updatesPrimary() {
+    givenOpening();
+    givenUser();
     CutBlockOpenAdminEntity first = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 1);
     CutBlockOpenAdminEntity second = cboa(2L, "FILE2", null, "BLOCK2", "N", 1);
-    List<TenureUpdateItemDto> items = List.of(item(1L, 1, false), item(2L, 1, true));
+    List<TenureUpdateItemDto> items =
+        List.of(
+            item(1L, 1, false),
+            new TenureUpdateItemDto(2L, 1, "FILE2", null, "BLOCK2", true));
     when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
         .thenReturn(validation(true, items));
     when(cboaRepository.findAllByOpeningId(OPENING_ID)).thenReturn(List.of(first, second));
@@ -205,6 +197,9 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("Replacement associates a new CBOA before unassociating old CBOA")
   void updateTenures_replacement_recordsBothHistoryEvents() {
+    givenOpening();
+    givenAssociation();
+    givenUser();
     CutBlockOpenAdminEntity old = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 2);
     List<TenureUpdateItemDto> items =
         List.of(new TenureUpdateItemDto(1L, 2, "FILE2", null, "BLOCK2", true));
@@ -214,11 +209,6 @@ class UpdateTenuresServiceTest {
     when(activityRepository.existsByOpeningIdAndSilvBaseCodeAndCutBlockOpenAdminIdIsNotNull(
             OPENING_ID, "DN"))
         .thenReturn(false);
-    when(cboaRepository
-            .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdIsNullAndOpeningIdIsNull(
-                "FILE2", "BLOCK2"))
-        .thenReturn(Optional.empty());
-
     assertThat(service.updateTenures(OPENING_ID, CLIENT_NUMBER, items)).isEmpty();
 
     ArgumentCaptor<CutBlockOpenAdminEntity> saved =
@@ -235,6 +225,9 @@ class UpdateTenuresServiceTest {
   @Test
   @DisplayName("New tenure delegates association and reconciliation to the shared service")
   void updateTenures_newTenure_usesSharedAssociationService() {
+    givenOpening();
+    givenAssociation();
+    givenUser();
     List<TenureUpdateItemDto> items = List.of(item(null, null, true));
     when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
         .thenReturn(validation(true, items));
@@ -248,6 +241,32 @@ class UpdateTenuresServiceTest {
 
   private TenureUpdateItemDto item(Long cboaId, Integer revisionCount, boolean primary) {
     return new TenureUpdateItemDto(cboaId, revisionCount, "FILE1", "CP1", "BLOCK1", primary);
+  }
+
+  private void givenOpening() {
+    when(openingRepository.findById(OPENING_ID))
+        .thenReturn(
+            Optional.of(
+                OpeningEntity.builder()
+                    .id(OPENING_ID)
+                    .openingGrossArea(new BigDecimal("10"))
+                    .build()));
+  }
+
+  private void givenAssociation() {
+    when(tenureAssociationService.associate(any(), any(), any(), anyString(), any()))
+        .thenAnswer(
+            invocation ->
+                CutBlockOpenAdminEntity.builder()
+                    .id(99L)
+                    .openingId(OPENING_ID)
+                    .openingPrimeLicenceInd("Y")
+                    .revisionCount(1)
+                    .build());
+  }
+
+  private void givenUser() {
+    when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
   }
 
   private CutBlockOpenAdminEntity cboa(
