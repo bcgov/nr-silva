@@ -20,15 +20,17 @@ import API from "@/services/API";
 import { OpeningDetailsTenureDto } from "@/services/OpenApi";
 import { DEFAULT_PAGE_NUM, MAX_SEARCH_LENGTH, OddPageSizesConfig } from "@/constants/tableConstants";
 import { EDIT_TENURE_PATH } from '@/routes/paths';
+import { gatePostgresFeature } from "@/utils/featureFlags";
 
 import OpeningTenureTooltip from "./OpeningTenureTooltip";
 import { CutBlockStatusTag } from "@/components/Tags";
-import EmptySection from "../../EmptySection";
-import TableSkeleton from "../../TableSkeleton";
+import EmptySection from "@/components/EmptySection";
+import TableSkeleton from "@/components/TableSkeleton";
 
 import { DefaultFilter, TenureTableHeaders } from "./constants";
 import { formatPrimaryTenureLabel } from "./utils";
 import { TenureFilterType } from "./definitions";
+
 import './styles.scss';
 
 type OpeningTenureProps = {
@@ -233,19 +235,23 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
           }
         </div>
       </Column>
-
-      <Column sm={4} md={8} lg={4}>
-        <div className="edit-tenure-container">
-          <Button
-            kind="primary"
-            renderIcon={Edit}
-            onClick={() => navigate(generatePath(EDIT_TENURE_PATH, { openingId: String(openingId) }))}
-          >
-            Edit tenure information
-          </Button>
-        </div>
-      </Column>
-
+      {
+        gatePostgresFeature()
+          ? null
+          : (
+            <Column sm={4} md={8} lg={4}>
+              <div className="edit-tenure-container">
+                <Button
+                  kind="primary"
+                  renderIcon={Edit}
+                  onClick={() => navigate(generatePath(EDIT_TENURE_PATH, { openingId: String(openingId) }))}
+                >
+                  Edit tenure information
+                </Button>
+              </div>
+            </Column>
+          )
+      }
       <Column sm={4} md={8} lg={16}>
         <TableContainer className="default-table-container">
           <TableToolbar>
