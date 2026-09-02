@@ -141,102 +141,18 @@ jobs:
     if: success()
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    env:
-      FLYWAY_VERSION: "10.13.0"
     steps:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Cache Flyway CLI
-        id: cache-flyway
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/flyway
-          key: flyway-cli-${{ env.FLYWAY_VERSION }}-linux-x64
-
-      - name: Install Flyway CLI
-        if: steps.cache-flyway.outputs.cache-hit != 'true'
-        run: |
-          FLYWAY_DIR="${{ runner.temp }}/flyway"
-          mkdir -p "$FLYWAY_DIR"
-          curl -sSLo /tmp/flyway.tar.gz "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}-linux-x64.tar.gz"
-          tar -xzf /tmp/flyway.tar.gz -C "$FLYWAY_DIR" --strip-components=1
-          chmod -R +rx "$FLYWAY_DIR"
-          rm -f /tmp/flyway.tar.gz
-
-      - name: Apply Dev Test Data to PostgreSQL Pod
-        uses: bcgov/action-oc-runner@v1.7.0
-        env:
-          PR_NUMBER: ${{ github.event.number }}
-          FLYWAY_CMD: ${{ runner.temp }}/flyway/flyway
+      - name: Seed PostgreSQL with dev test data
+        uses: ./.github/actions/load-test-data
         with:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          commands: |
-            echo "Starting Flyway dev test data load for PR $PR_NUMBER (PostgreSQL)"
-            echo "Git branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'detached') ($(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'))"
-
-            TARGET_ZONE="${PR_NUMBER}-postgres"
-            SECRET_NAME="nr-silva-${TARGET_ZONE}-database"
-            SERVICE_NAME="service/nr-silva-${TARGET_ZONE}-database"
-            LOCAL_PORT=54332
-
-            # Retrieve database credentials from OpenShift secret
-            echo "Retrieving PostgreSQL credentials from secret $SECRET_NAME..."
-            DB_NAME=$(oc get secret "$SECRET_NAME" -o jsonpath='{.data.database-name}' | base64 -d)
-            DB_USER=$(oc get secret "$SECRET_NAME" -o jsonpath='{.data.database-user}' | base64 -d)
-            DB_PASS=$(oc get secret "$SECRET_NAME" -o jsonpath='{.data.database-password}' | base64 -d)
-
-            # Mask database credentials in GitHub Actions output
-            echo "::add-mask::$DB_PASS"
-
-            if [[ -z "$DB_NAME" || -z "$DB_USER" || -z "$DB_PASS" ]]; then
-              echo "Error: Failed to retrieve PostgreSQL database credentials from secret $SECRET_NAME" >&2
-              exit 1
-            fi
-
-            echo "Connecting to $SERVICE_NAME via port-forward on port $LOCAL_PORT..."
-            oc port-forward --address 127.0.0.1 "$SERVICE_NAME" "${LOCAL_PORT}:5432" &
-            PF_PID=$!
-
-            # Ensure port-forward process is terminated when script exits
-            trap 'echo "Stopping port-forward (PID: $PF_PID)..."; kill $PF_PID 2>/dev/null || true' EXIT
-
-            # Wait for port-forward to become available
-            echo "Waiting for port-forward to open on port $LOCAL_PORT..."
-            READY=0
-            for i in $(seq 1 30); do
-              if ss -tln | grep -q ":$LOCAL_PORT " || (echo > /dev/tcp/127.0.0.1/$LOCAL_PORT) 2>/dev/null; then
-                READY=1
-                echo "Port-forward established successfully."
-                break
-              fi
-              sleep 1
-            done
-
-            if [[ "$READY" -ne 1 ]]; then
-              echo "Error: Timed out waiting for port-forward on port $LOCAL_PORT" >&2
-              exit 1
-            fi
-
-            echo "Executing Flyway migrate with dev test data..."
-            export FLYWAY_URL="jdbc:postgresql://127.0.0.1:${LOCAL_PORT}/${DB_NAME}"
-            export FLYWAY_USER="${DB_USER}"
-            export FLYWAY_PASSWORD="${DB_PASS}"
-
-            "$FLYWAY_CMD" \
-              -schemas="silva" \
-              -defaultSchema="silva" \
-              -baselineOnMigrate=true \
-              -validateOnMigrate=false \
-              -connectRetries=10 \
-              -locations="filesystem:${GITHUB_WORKSPACE}/backend/src/main/resources/db/migration,filesystem:${GITHUB_WORKSPACE}/backend/src/main/resources/db/migration-dev,filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/default,filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/dev" \
-              migrate
-
-            echo "Flyway dev test data migration completed successfully."
+          pr_number: ${{ github.event.number }}
+          pr_branch: ${{ github.event.pull_request.head.ref }}
 
   # ==========================================================================
   # WARNING: This job acts as the required merge gate for this workflow.
