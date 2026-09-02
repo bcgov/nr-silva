@@ -1,7 +1,29 @@
-import { describe, it, expect } from "vitest";
-import { sortValidatedTenures } from "../../utils/TenureUtils";
+import { describe, expect, it } from 'vitest';
+
+import { normalizeTenures, sortValidatedTenures, validateTenureList } from '@/utils/TenureUtils';
 
 describe("TenureUtils", () => {
+  it('normalizes whitespace without discarding edit-only metadata', () => {
+    expect(normalizeTenures([
+      { cboaId: 1, fileId: ' F1 ', cuttingPermit: ' CP1 ', cutBlock: ' B1 ', isPrimary: true },
+    ])).toEqual([
+      { cboaId: 1, fileId: 'F1', cuttingPermit: 'CP1', cutBlock: 'B1', isPrimary: true },
+    ]);
+  });
+
+  it('reports per-row required-field errors and separately identifies a missing primary tenure', () => {
+    const validation = validateTenureList([
+      { fileId: ' ', cuttingPermit: 'CP1', cutBlock: 'B1', isPrimary: false },
+      { fileId: 'F2', cuttingPermit: '', cutBlock: ' ', isPrimary: false },
+    ]);
+
+    expect(validation).toMatchObject({ isValid: false, hasPrimary: false });
+    expect(validation.errors).toEqual([
+      { fileId: true, cutBlock: false },
+      { fileId: false, cutBlock: true },
+    ]);
+  });
+
   it("returns an empty array when no tenures are provided", () => {
     expect(sortValidatedTenures(undefined)).toEqual([]);
   });

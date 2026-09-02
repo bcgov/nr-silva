@@ -9,7 +9,6 @@ import {
 } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import FavouriteOpenings from "../../components/FavouriteOpenings";
-import { NotificationProvider } from "../../contexts/NotificationProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import API from "../../services/API";
 
@@ -30,11 +29,9 @@ const renderWithProviders = async () => {
   await act(async () => {
     rendered = render(
       <QueryClientProvider client={queryClient}>
-        <NotificationProvider>
-          <MemoryRouter>
-            <FavouriteOpenings />
-          </MemoryRouter>
-        </NotificationProvider>
+        <MemoryRouter>
+          <FavouriteOpenings />
+        </MemoryRouter>
       </QueryClientProvider>
     );
   });

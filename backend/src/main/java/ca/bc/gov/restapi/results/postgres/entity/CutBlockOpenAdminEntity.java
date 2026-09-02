@@ -45,6 +45,9 @@ public class CutBlockOpenAdminEntity {
   @Column(name = "opening_gross_area", precision = 11, scale = 4)
   private BigDecimal openingGrossArea;
 
+  @Column(name = "disturbance_gross_area", precision = 11, scale = 4)
+  private BigDecimal disturbanceGrossArea;
+
   @Column(name = "disturbance_start_date")
   private LocalDate disturbanceStartDate;
 

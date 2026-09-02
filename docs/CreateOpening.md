@@ -57,14 +57,15 @@ An authenticated user acting on behalf of a client (identified by `clientNumber`
 
 1. **Virus scan** — the uploaded file is scanned. Infected files → HTTP 422.
 2. **Spatial file processing** — validates CRS (EPSG:4326 or EPSG:3005), geometry type (Polygon / MultiPolygon), topology, BC extents, and vertex count; reprojects to EPSG:4326 if needed. The file must contain **exactly one feature** (per RISS-ls §5.4.4 — an opening has a single boundary); files with multiple features are rejected with HTTP 400.
-3. **Geometry reprojection** — the opening geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` (m²) and `feature_perimeter` (m) are computed from the 3005 geometry.
+3. **Geometry reprojection and measurement** — the opening geometry (EPSG:4326) is reprojected to **EPSG:3005** (BC Albers) for storage. `feature_area` is calculated from that geometry in **hectares**, rounded to four decimal places; `feature_perimeter` is measured in metres.
 4. **Mapsheet derivation** — the geometry centroid (EPSG:4326) is passed to the BC OpenMaps WFS to derive the BCGS 1:20K mapsheet key (see §Mapsheet Key below). WFS failure → HTTP 422.
 5. **Opening number** — the next sequential `opening_number` within the mapsheet tile is computed (`MAX + 1`, capped at 9999).
 6. **Validation** — opening category code and org unit code must exist; call must be authorised for `clientNumber`; exactly one primary tenure required; no duplicate tenure combinations (same fileId + cuttingPermit + cutBlock); each tenure's cut block must exist in `silva.cut_block` and the caller must be a licensee for that cut block.
 7. **Insertion** — three rows are inserted atomically in a single transaction:
-   - `silva.opening` — opening header
+   - `silva.opening` — opening header, including the Silva-owned `opening_gross_area` source of truth
    - `silva.opening_geometry` — reprojected geometry (PostGIS; EPSG:3005)
-   - `silva.cut_block_open_admin` — one row per tenure
+   - `silva.cut_block_open_admin` — one row per tenure; its opening gross-area value is a derived compatibility copy of the opening value
+8. **Tenure reconciliation** — the associated tenure rows are synchronized with the opening gross area and with any derived disturbance values. An association-history record is written for each tenure.
 
 ---
 
@@ -145,6 +146,8 @@ Within a mapsheet tile (identified by all five components above), each opening r
 | Topic | Detail |
 |-------|--------|
 | Geometry storage | EPSG:3005 (BC Albers), PostGIS `geometry(Geometry,3005)` via Hibernate Spatial |
+| Geometry area | `opening_geometry.feature_area` is a geometry-derived area in hectares, not the form's `openingGrossArea` value |
+| Opening gross area | `opening.opening_gross_area` is the source of truth; CBOA stores a derived copy for compatibility |
 | Mapsheet WFS | `https://openmaps.gov.bc.ca/geo/ows`, layer `WHSE_BASEMAPPING.BCGS_20K_GRID` |
 | Opening ID | Allocated from `silva.opening_id_seq` via `SELECT nextval(...)` before the transaction; sequence gaps on rollback are acceptable |
 | `feature_class_skey` | Hardcoded `2409` (RESULTS spatial utility constant) |

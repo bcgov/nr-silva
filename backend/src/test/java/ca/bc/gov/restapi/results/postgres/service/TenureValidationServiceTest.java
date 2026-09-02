@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
@@ -256,6 +257,33 @@ class TenureValidationServiceTest {
     List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
 
     TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isFalse();
+    assertThat(result.validationResults().get(0).errorCode())
+        .isEqualTo(TenureValidationErrorCode.TENURE_DUPLICATE_OPENING);
+  }
+
+  @Test
+  @DisplayName("Edit validation allows tenure already allocated to the current opening")
+  void validateTenures_editSameOpening_allowsExistingAllocation() {
+    List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER, 101L);
+
+    assertThat(result.isValid()).isTrue();
+    verify(cutBlockOpenAdminRepository)
+        .existsAllocatedByTenureForAnotherOpening("TFL001", "CB001", null, 101L);
+  }
+
+  @Test
+  @DisplayName("Edit validation rejects tenure allocated to another opening")
+  void validateTenures_editOtherOpening_returnsDuplicateOpening() {
+    when(cutBlockOpenAdminRepository.existsAllocatedByTenureForAnotherOpening(
+            anyString(), anyString(), any(), anyLong()))
+        .thenReturn(true);
+    List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER, 101L);
 
     assertThat(result.isValid()).isFalse();
     assertThat(result.validationResults().get(0).errorCode())

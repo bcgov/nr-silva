@@ -18,3 +18,17 @@
     }
   }
 }
+
+.tenure-item-skeleton {
+  background: var(--#{vars.$bcgov-prefix}-field-01);
+  padding: 1.5rem;
+
+  .cds--skeleton__placeholder {
+    width: 100%;
+  }
+
+  &__remove {
+    max-width: 10rem;
+    height: 2.5rem;
+  }
+}

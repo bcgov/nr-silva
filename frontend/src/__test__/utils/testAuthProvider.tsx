@@ -1,7 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
-import { NotificationProvider } from '@/contexts/NotificationProvider';
 import { PreferenceProvider } from '@/contexts/PreferenceProvider';
 import { AuthContext } from '@/contexts/AuthProvider';
 
@@ -45,7 +44,7 @@ export const renderWithProviders = () =>
       <PreferenceProvider>
         <TestAuthProvider>
           <MemoryRouter>
-            <NotificationProvider>{children}</NotificationProvider>
+            {children}
           </MemoryRouter>
         </TestAuthProvider>
       </PreferenceProvider>

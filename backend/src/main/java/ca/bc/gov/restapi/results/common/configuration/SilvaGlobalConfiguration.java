@@ -67,7 +67,10 @@ import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureRemovalValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateItemDto;
+import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
@@ -203,7 +206,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   TenureValidationResultDto.class,
   DuplicateConflictDto.class,
   TenureValidationResponseDto.class,
-  TenureValidationErrorCode.class
+  TenureValidationErrorCode.class,
+  TenureUpdateItemDto.class,
+  TenureUpdateValidationResponseDto.class,
+  TenureRemovalValidationResultDto.class
 })
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SilvaGlobalConfiguration {
