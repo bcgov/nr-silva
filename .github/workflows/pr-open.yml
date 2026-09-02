@@ -145,6 +145,8 @@ jobs:
       FLYWAY_VERSION: "10.13.0"
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Cache Flyway CLI
         id: cache-flyway
@@ -172,8 +174,10 @@ jobs:
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
           commands: |
             echo "Starting Flyway dev test data load for PR $PR_NUMBER (PostgreSQL)"
+            echo "Git branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'detached') ($(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'))"
 
             TARGET_ZONE="${PR_NUMBER}-postgres"
             SECRET_NAME="nr-silva-${TARGET_ZONE}-database"
