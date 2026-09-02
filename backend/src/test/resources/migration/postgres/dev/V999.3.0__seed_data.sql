@@ -1,10 +1,3 @@
--- Synthetic Seed Data generated for local volume testing (PostgreSQL)
--- Generated automatically; do not edit manually.
-
-SET search_path = silva,public;
-
-BEGIN;
-
 INSERT INTO silva.cut_block (
   cb_skey, hva_skey, forest_file_id, cutting_permit_id, timber_mark, cut_block_id, sp_exempt_ind, block_status_date, cut_block_description, cut_regulation_code, block_status_st, reforest_declare_type_code, revision_count, entry_userid, entry_timestamp, update_userid, update_timestamp, is_waste_assessment_required, cut_block_guid, fire_harvesting_reason_code, is_under_partition_order, reported_fire_date
 ) VALUES
@@ -130,5 +123,3 @@ INSERT INTO silva.cut_block_client (
   (40000047, 10000007, 'O', '2020-01-01 00:00:00', NULL, '00', '00045503', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000048, 10000038, 'O', '2020-01-01 00:00:00', NULL, '00', '00146886', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000049, 10000019, 'O', '2020-01-01 00:00:00', NULL, '00', '00149237', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00');
-
-COMMIT;
