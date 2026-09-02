@@ -123,3 +123,82 @@ INSERT INTO silva.cut_block_client (
   (40000047, 10000007, 'O', '2020-01-01 00:00:00', NULL, '00', '00045503', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000048, 10000038, 'O', '2020-01-01 00:00:00', NULL, '00', '00146886', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000049, 10000019, 'O', '2020-01-01 00:00:00', NULL, '00', '00149237', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00');
+
+-- silv_tree_species_code seed, sourced from a full Oracle SILV_TREE_SPECIES_CODE export.
+INSERT INTO silva.silv_tree_species_code (silv_tree_species_code, description, effective_date, expiry_date, update_timestamp) VALUES
+  ('AC', 'poplar', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('ACB', 'balsam poplar', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('ACT', 'black cottonwood', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('AT', 'trembling aspen', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('AX', 'hybrid poplars', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('BA', 'amabilis fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('BB', 'balsam fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('BG', 'grand fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('BL', 'subalpine fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('BN', 'Noble fir  (code replaced by Bp)', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('BP', 'noble fir', '2006-07-25', '9999-12-31', '2023-08-09 15:17:52'),
+  ('CW', 'western redcedar', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('DM', 'mountain alder', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('DR', 'red alder', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('EA', 'Alaska paper birch', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('EP', 'paper birch', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('FDC', 'coastal Douglas-fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('FDI', 'interior Douglas-fir', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('HM', 'mountain hemlock', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('HW', 'western hemlock', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('LA', 'alpine larch', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('LS', 'Siberian larch', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('LT', 'tamarack', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('LW', 'western larch', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('M', 'Maple', '1905-01-01', '2010-06-13', '2023-08-09 15:17:52'),
+  ('MB', 'bigleaf maple', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PA', 'whitebark pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PF', 'limber pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PJ', 'jack pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PLC', 'shore pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PLI', 'lodgepole pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PR', 'red pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PW', 'western white pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('PY', 'ponderosa pine', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('QG', 'Garry oak', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SA', 'Norway spruce (code replaced by Sn)', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('SB', 'black spruce', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SE', 'Engelmann spruce', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SN', 'Norway spruce', '2006-07-25', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SS', 'Sitka spruce', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SW', 'white spruce', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SX', 'spruce hybrid', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SXB', 'white x black spruce', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('SXE', 'engelmann x sitka spruce', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('SXL', 'Sitka x white', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SXS', 'Sitka x unknown hybrid', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SXW', 'Engelmann x white', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('SXX', 'white x engelmann x sitka spruce', '1905-01-01', '2006-07-25', '2023-08-09 15:17:52'),
+  ('TW', 'western yew', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('VB', 'bitter cherry', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('W', 'Willow', '1905-01-01', '2010-06-13', '2023-08-09 15:17:52'),
+  ('YC', 'yellow-cedar', '1905-01-01', '9999-12-31', '2023-08-09 15:17:52'),
+  ('OC', 'coast redwood', '1999-01-14', '9999-12-31', '2023-08-09 15:17:52'),
+  ('OB', 'giant sequoia', '2023-06-29', '9999-12-31', '2023-08-09 15:17:52');
+
+-- biogeoclimatic_catalogue / site_series_catalogue seed, sourced from real BC BEC zone/subzone/site-series
+-- combinations (BC MOF WFP ecosystem mapping crosswalk tables) for BEC validation testing.
+INSERT INTO silva.biogeoclimatic_catalogue (
+  biogeoclimatic_catalogue_id, bec_zone_code, subzone, variant, phase, bec_natural_disturbance_code,
+  zone_name, subzone_name, variant_name, phase_name, notes, effective_date, expiry_date, update_timestamp, update_userid
+) VALUES
+  (1, 'CWH', 'wh', '1', NULL, 'NDT1', 'Coastal Western Hemlock', 'Wet Hypermaritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (2, 'CWH', 'vh', '2', NULL, 'NDT1', 'Coastal Western Hemlock', 'Very Wet Hypermaritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (3, 'CWH', 'xm', NULL, NULL, 'NDT2', 'Coastal Western Hemlock', 'Dry Maritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD');
+
+INSERT INTO silva.site_series_catalogue (
+  site_series_catalogue_id, bec_region_code, biogeoclimatic_catalogue_id, site_series, site_series_phase,
+  site_series_variation, seral, description, effective_date, expiry_date, update_timestamp, update_userid
+) VALUES
+  (1, 'CST', 1, '01', NULL, NULL, NULL, 'HwSs - Lanky moss', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (2, 'CST', 1, '02', NULL, NULL, NULL, 'CwSs - Salal', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (3, 'CST', 1, '03', NULL, NULL, NULL, 'CwSs - Sword fern', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (4, 'CST', 2, '01', NULL, NULL, NULL, 'CwHw - Salal', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (5, 'CST', 2, '04', NULL, NULL, NULL, 'HwSs - Lanky moss', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (6, 'CST', 2, '05', NULL, NULL, NULL, 'CwSs - Sword fern', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (7, 'CST', 3, '01', NULL, NULL, NULL, 'HwFd - Kindbergia', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD');
