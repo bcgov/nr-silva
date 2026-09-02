@@ -108,10 +108,11 @@ runs:
           "$FLYWAY_CMD" \
             -schemas="silva" \
             -defaultSchema="silva" \
+            -table="flyway_test_schema_history" \
             -baselineOnMigrate=true \
             -validateOnMigrate=false \
             -connectRetries=10 \
-            -locations="filesystem:${GITHUB_WORKSPACE}/backend/src/main/resources/db/migration,filesystem:${GITHUB_WORKSPACE}/backend/src/main/resources/db/migration-dev,filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/default,filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/dev" \
+            -locations="filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/default,filesystem:${GITHUB_WORKSPACE}/backend/src/test/resources/migration/postgres/dev" \
             migrate
 
           echo "Flyway dev test data migration completed successfully."
