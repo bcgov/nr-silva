@@ -22,6 +22,39 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class OpeningEndpointService {
     /**
+     * @param openingId
+     * @param filter
+     * @param all
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns OpeningDetailsTenuresDto OK
+     * @throws ApiError
+     */
+    public static getTenures(
+        openingId: number,
+        filter?: string,
+        all: boolean = false,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<OpeningDetailsTenuresDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/tenures',
+            path: {
+                'openingId': openingId,
+            },
+            query: {
+                'filter': filter,
+                'all': all,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
      * @param id
      * @returns boolean OK
      * @throws ApiError
@@ -82,36 +115,6 @@ export class OpeningEndpointService {
             url: '/api/openings/{openingId}/tombstone',
             path: {
                 'openingId': openingId,
-            },
-        });
-    }
-    /**
-     * @param openingId
-     * @param filter
-     * @param page Zero-based page index (0..N)
-     * @param size The size of the page to be returned
-     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @returns OpeningDetailsTenuresDto OK
-     * @throws ApiError
-     */
-    public static getTenures(
-        openingId: number,
-        filter?: string,
-        page?: number,
-        size: number = 20,
-        sort?: Array<string>,
-    ): CancelablePromise<OpeningDetailsTenuresDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/openings/{openingId}/tenures',
-            path: {
-                'openingId': openingId,
-            },
-            query: {
-                'filter': filter,
-                'page': page,
-                'size': size,
-                'sort': sort,
             },
         });
     }

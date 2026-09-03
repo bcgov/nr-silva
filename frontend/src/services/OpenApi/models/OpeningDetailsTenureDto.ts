@@ -4,7 +4,8 @@
 /* eslint-disable */
 import type { CodeDescriptionDto } from './CodeDescriptionDto';
 export type OpeningDetailsTenureDto = {
-    id: number;
+    cboaId: number;
+    revisionCount: number;
     primaryTenure: boolean;
     fileId: string | null;
     cutBlock: string | null;

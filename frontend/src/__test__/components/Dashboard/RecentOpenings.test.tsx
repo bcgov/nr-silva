@@ -5,7 +5,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import RecentOpenings from "../../../components/RecentOpenings";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import API from "../../../services/API";
-import { NotificationProvider } from "../../../contexts/NotificationProvider";
 import { openingA, openingB } from "../../fixtures/openings";
 
 vi.mock("../../../services/API", () => {
@@ -23,9 +22,7 @@ const renderWithProviders = () => {
   return render(
     <MemoryRouter>
       <QueryClientProvider client={queryClient}>
-        <NotificationProvider>
-          <RecentOpenings />
-        </NotificationProvider>
+        <RecentOpenings />
       </QueryClientProvider>
     </MemoryRouter>
   );

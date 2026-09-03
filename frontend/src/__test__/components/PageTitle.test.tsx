@@ -21,6 +21,16 @@ describe("PageTitle Component", () => {
     expect(titleElement).toBeInTheDocument();
   });
 
+  it('renders a React-node subtitle without wrapping it as plain text', () => {
+    render(
+      <MemoryRouter>
+        <PageTitle title="Test Title" subtitle={<span data-testid="opening-tag">Opening ID #123</span>} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('opening-tag')).toHaveTextContent('Opening ID #123');
+  });
+
   it("renders the breadcrumb correctly", () => {
     render(
       <MemoryRouter>

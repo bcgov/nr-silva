@@ -1,21 +1,24 @@
 import { Button, Column, Grid, Modal, Stack } from '@carbon/react';
 import ModalHead from '@/components/Modals/ModalHead';
 
+import './styles.scss';
+
 interface LeavePageModalProps {
   open: boolean;
+  helperTop: string;
   onRequestClose: () => void;
   onLeave: () => void;
   onStay: () => void;
 }
 
-const LeavePageModal = ({ open, onRequestClose, onLeave, onStay }: LeavePageModalProps) => (
+const LeavePageModal = ({ open, helperTop, onRequestClose, onLeave, onStay }: LeavePageModalProps) => (
   <Modal
     passiveModal
     danger
     open={open}
-    modalHeading={<ModalHead title="Unsaved changes" helperTop="Create new opening" />}
+    modalHeading={<ModalHead title="Unsaved changes" helperTop={helperTop} />}
     onRequestClose={onRequestClose}
-    className="default-modal"
+    className="default-modal leave-page-modal"
     preventCloseOnClickOutside
     size="sm"
   >

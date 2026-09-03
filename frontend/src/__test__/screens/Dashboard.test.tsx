@@ -4,7 +4,6 @@ import { MemoryRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { NotificationProvider } from "../../contexts/NotificationProvider";
 import Dashboard from "../../screens/Dashboard";
 
 // Mock components
@@ -41,11 +40,9 @@ const renderWithProviders = () => {
   const queryClient = new QueryClient();
   return render(
     <MemoryRouter>
-      <NotificationProvider>
-        <QueryClientProvider client={queryClient}>
-          <Dashboard />
-        </QueryClientProvider>
-      </NotificationProvider>
+      <QueryClientProvider client={queryClient}>
+        <Dashboard />
+      </QueryClientProvider>
     </MemoryRouter>
   );
 };

@@ -4,6 +4,8 @@ public interface OpeningTenureProjection {
 
   long getId();
 
+  int getRevisionCount();
+
   boolean getPrimaryTenure();
 
   String getFileId();

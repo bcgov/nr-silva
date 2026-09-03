@@ -4,7 +4,8 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record OpeningDetailsTenureDto(
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED) long id,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED) long cboaId,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED) int revisionCount,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean primaryTenure,
     @Schema(
             types = {"string", "null"},

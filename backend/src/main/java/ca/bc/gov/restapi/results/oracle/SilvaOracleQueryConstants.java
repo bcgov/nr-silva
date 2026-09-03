@@ -914,6 +914,7 @@ public class SilvaOracleQueryConstants {
       """
       SELECT
         cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+        cboa.REVISION_COUNT AS revision_count,
         CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
         cboa.FOREST_FILE_ID AS file_id,
         cboa.CUT_BLOCK_ID AS cut_block,
@@ -966,6 +967,7 @@ public class SilvaOracleQueryConstants {
       """
           SELECT
             cboa.CUT_BLOCK_OPEN_ADMIN_ID AS id,
+            cboa.REVISION_COUNT AS revision_count,
             CASE WHEN NVL(cboa.OPENING_PRIME_LICENCE_IND, 'N') = 'Y' THEN 'true' ELSE 'false' END AS primary_tenure,
                cboa.FOREST_FILE_ID AS file_id,
                cboa.CUT_BLOCK_ID AS cut_block,
