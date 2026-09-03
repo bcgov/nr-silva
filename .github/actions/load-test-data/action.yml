@@ -14,8 +14,8 @@ inputs:
   pr_number:
     description: 'PR number'
     required: true
-  pr_branch:
-    description: 'PR branch (head ref)'
+  pr_commit:
+    description: 'PR commit SHA to checkout'
     required: true
   flyway_version:
     description: 'Flyway CLI version to use'
@@ -52,10 +52,10 @@ runs:
         oc_namespace: ${{ inputs.oc_namespace }}
         oc_server: ${{ inputs.oc_server }}
         oc_token: ${{ inputs.oc_token }}
-        ref: ${{ inputs.pr_branch }}
+        ref: ${{ inputs.pr_commit }}
         commands: |
           echo "Starting Flyway dev test data load for PR $PR_NUMBER (PostgreSQL)"
-          echo "Git branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'detached') ($(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'))"
+          echo "Git commit: $(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
 
           TARGET_ZONE="${PR_NUMBER}-postgres"
           SECRET_NAME="nr-silva-${TARGET_ZONE}-database"
