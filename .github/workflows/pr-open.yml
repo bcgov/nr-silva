@@ -135,6 +135,26 @@ jobs:
               echo "Removed postgres route $POSTGRES_ROUTE reservation"
             fi
 
+  load_test_data:
+    name: Load Dev Test Data (${{ github.event.number }})
+    needs: [deploys]
+    if: success()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Seed PostgreSQL with dev test data
+        uses: ./.github/actions/load-test-data
+        with:
+          oc_namespace: ${{ vars.OC_NAMESPACE }}
+          oc_server: ${{ vars.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          pr_number: ${{ github.event.number }}
+          pr_commit: ${{ github.event.pull_request.head.sha }}
+
   # ==========================================================================
   # WARNING: This job acts as the required merge gate for this workflow.
   # If you add a new job to this workflow, you MUST add its ID to the 'needs'
@@ -142,7 +162,7 @@ jobs:
   # ==========================================================================
   results:
     name: PR Results
-    needs: [builds, fam_routes, deploys]
+    needs: [builds, fam_routes, deploys, load_test_data]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 1

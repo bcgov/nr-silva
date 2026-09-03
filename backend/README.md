@@ -65,6 +65,7 @@ Flyway migrations are determined by the `PRIMARY_DB` variable that determines th
 - **Shared/Baseline Migrations**: Located in `src/main/resources/db/migration/`. These migrations are applied for both hybrid and postgres deployment models.
 - **Postgres-Only Migrations**: Located in `src/main/resources/db/migration-dev/`. For `PRIMARY_DB=postgres`, Flyway loads migrations from **both** `db/migration/` and `db/migration-dev/`.
 - **Production Environment**: When `PRIMARY_DB=oracle`, only the shared/baseline migrations in `src/main/resources/db/migration/` are applied.
+- **PR Preview Environments (Postgres)**: In GitHub Actions PR preview deployments (`deployment_model: postgres`), dev test data migrations (`src/test/resources/migration/postgres/default` and `src/test/resources/migration/postgres/dev`, versioned `V999.*`) are automatically applied by the `load_test_data` workflow job via Flyway CLI. This provides reviewers with realistic test data without baking it into the application runtime image.
 
 ---
 
