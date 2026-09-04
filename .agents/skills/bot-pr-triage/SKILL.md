@@ -13,23 +13,22 @@ This skill guides the agent through fetching, assessing risk, locally testing, a
 
 ---
 
-## 1. GitHub Tooling Check: MCP First, CLI Fallback
+## 1. GitHub Tooling: CLI First, MCP Optional
 
-Always check which GitHub interface is available before taking action:
+Use the standard GitHub CLI (`gh`) for querying and managing PRs:
 
-### Option A: GitHub MCP Server (Preferred in IDE)
-Check if `github-mcp-server-nr-silva` (or an active `github-mcp-server`) is registered.
-Use the MCP tools:
-- `search_pull_requests(query="repo:bcgov/nr-silva is:pr is:open author:app/renovate")`
-- `list_pull_requests(owner="bcgov", repo="nr-silva", state="open")`
-- `pull_request_read(owner="bcgov", repo="nr-silva", pullNumber=..., method="get")`
-- `merge_pull_request(owner="bcgov", repo="nr-silva", pullNumber=..., method="squash")`
-
-### Option B: GitHub CLI (`gh`) (Fallback)
-If MCP is unavailable or errors, execute via shell:
+### GitHub CLI (`gh`) (Standard)
+Execute via shell:
 ```bash
 gh pr list --repo bcgov/nr-silva --state open --json number,title,author,headRefName,statusCheckRollup,url
 ```
+
+### GitHub MCP Server (Optional if configured in environment)
+If an agent has a GitHub MCP server configured in their local environment, tools may include:
+- `search_pull_requests(query="repo:bcgov/nr-silva is:pr is:open author:app/renovate")` — Search for open bot PRs
+- `list_pull_requests(owner="bcgov", repo="nr-silva", state="open")` — List active PRs in the repository
+- `pull_request_read(owner="bcgov", repo="nr-silva", pullNumber=..., method="get")` — Inspect PR details, diffs, or review comments
+- `merge_pull_request(owner="bcgov", repo="nr-silva", pullNumber=..., method="squash")` — Merge approved PRs *(requires write/merge permissions on the configured MCP server; if unavailable or read-only, use `gh pr merge` or the GitHub Web UI)*
 
 ---
 
@@ -120,13 +119,13 @@ When multiple bot PRs modify `package-lock.json` or `pom.xml`, testing them indi
    ```bash
    git merge origin/<bot-branch-1> --no-edit
    git merge origin/<bot-branch-2> --no-edit
-   # If package-lock.json has merge conflicts, run `npm install` to regenerate cleanly:
-   npm install
-   git add package-lock.json && git commit -m "chore: resolve lockfile convergence"
+   # If package-lock.json has merge conflicts, run npm install in frontend/ to regenerate cleanly:
+   cd frontend && npm install && cd ..
+   git add frontend/package-lock.json && git commit -m "chore: resolve lockfile convergence"
    ```
 3. **Run the test suite on the combined state:**
    ```bash
-   npm run prebuild && npm run test:unit && npm run build
+   cd frontend && npm run prebuild && npm run test:unit && npm run build && cd ..
    ```
 4. **Report Results:**
    If all pass, all tested PRs are mutually compatible and can be merged sequentially (or rebased cleanly via Renovate's rebase checkbox).
@@ -140,7 +139,7 @@ When multiple bot PRs modify `package-lock.json` or `pom.xml`, testing them indi
 
 ## 5. Reporting Output
 
-Format the triage findings using [bot-triage-report-template.md](file://resources/bot-triage-report-template.md):
+Format the triage findings using [bot-triage-report-template.md](resources/bot-triage-report-template.md):
 - List PR number, title, author, tier badge (`🟢 Tier 1`, `🟡 Tier 2`, `🔴 Tier 3`).
 - Include CI and local test status.
 - State a clear, actionable recommendation:

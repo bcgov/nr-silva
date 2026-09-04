@@ -1,6 +1,6 @@
 name: Fix-it Friday Report
 description: Weekly dependency triage, security audit, and repository health report.
-title: "[Fix-it Friday] Weekly Dependency Triage & Repo Health Report — "
+title: "[Fix-it Friday] Weekly Dependency Triage & Repo Health Report — YYYY-MM-DD"
 labels: ["Tech Debt", "Reports"]
 body:
   - type: markdown

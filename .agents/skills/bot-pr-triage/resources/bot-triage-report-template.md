@@ -7,6 +7,6 @@
 #### 🚂 Batch Verification Summary (if applicable)
 - **Batch Branch:** `test/bot-batch-verify`
 - **Candidate PRs included:** {{PR_LIST}}
-- **Frontend Verification:** `npm run prebuild && npm run test:unit && npm run build` -> {{FRONTEND_STATUS}}
-- **Backend Verification:** `mvn test-compile && mvn test` -> {{BACKEND_STATUS}}
+- **Frontend Verification:** `cd frontend && npm run prebuild && npm run test:unit && npm run build` -> {{FRONTEND_STATUS}}
+- **Backend Verification:** `cd backend && ./mvnw test-compile && ./mvnw test` -> {{BACKEND_STATUS}}
 - **Combined Verdict:** {{BATCH_VERDICT}}

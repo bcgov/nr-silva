@@ -94,18 +94,21 @@ This skill guides the agent through performing a routine health, security, and m
      Silva runs integration tests twice to validate both primary databases:
      ```bash
      cd backend
+     mkdir -p ~/.m2
+     if [ -f settings.xml ]; then cp settings.xml ~/.m2/settings.xml; fi
      # 1. Oracle Primary DB Run:
-     ./mvnw clean test -Dserver.primary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
+     ./mvnw -s ~/.m2/settings.xml clean install -Dserver.primary-db=oracle --no-transfer-progress checkstyle:checkstyle -P all-tests
 
      # 2. Postgres Primary DB Run:
-     ./mvnw clean test -Dflyway-environment=dev -Dserver.primary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
+     ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=dev -Dserver.primary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
+     cd ..
      ```
 
 ---
 
 ## 2. Generating the Audit Report
 
-Populate the findings into [repo-audit-template.md](file://resources/repo-audit-template.md):
+Populate the findings into [repo-audit-template.md](resources/repo-audit-template.md):
 1. Categorize vulnerabilities by severity.
 2. Highlight high-priority outdated packages.
 3. List 2–4 concrete, actionable remediation tasks with estimated difficulty (Low/Medium/High).
