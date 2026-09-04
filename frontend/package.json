@@ -95,7 +95,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^7.0.0",
     "jsdom": "^30.0.0",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "playwright": "1.62.1",
     "sass": "^1.62.1",
     "sass-loader": "^16.0.0",
