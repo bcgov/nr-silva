@@ -13,7 +13,11 @@ body:
     id: bot_prs
     attributes:
       label: 🤖 Automated Bot PRs (Renovate / Dependabot)
-      description: Table of open bot PRs with risk tier (Tier 1/2/3) and recommendations.
+      description: |
+        Table of open bot PRs categorized by Risk Tier:
+        - 🟢 Tier 1: Patch / Lockfile only (safe to merge once CI passes)
+        - 🟡 Tier 2: Minor bump / DevTool / Override (verified locally)
+        - 🔴 Tier 3: Major SemVer / Breaking change (manual review required)
       placeholder: |
         | PR # | Title | Risk Tier | Status / Recommendation |
         | :--- | :--- | :---: | :--- |

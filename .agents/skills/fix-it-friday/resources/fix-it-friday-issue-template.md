@@ -5,6 +5,14 @@
 | :---: | :--- | :---: | :---: | :---: | :--- |
 {{BOT_PR_TABLE_ROWS}}
 
+<details>
+<summary><strong>📖 Risk Tier Legend & Merge Policy</strong></summary>
+
+- 🟢 **Tier 1 (Patch / Lockfile only):** Patch-level bump (`x.y.Z`) or transitive dependency update in `package-lock.json`. Zero breaking changes expected. Safe to merge once CI passes.
+- 🟡 **Tier 2 (Minor / Non-runtime DevTool):** Minor bump (`x.Y.z`), transitive override, or devDependency tool bump. Requires local verification (`tsc`, unit tests, build).
+- 🔴 **Tier 3 (Major / Runtime Breaking):** Major SemVer bump (`X.y.z`) to direct runtime dependencies or breaking CVE fix. Do not auto-merge; requires changelog review, migration check, and explicit developer sign-off.
+</details>
+
 **Batch Verification Verdict:**
 {{BATCH_TEST_VERDICT}}
 
