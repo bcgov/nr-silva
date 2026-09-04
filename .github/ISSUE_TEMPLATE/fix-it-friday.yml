@@ -1,0 +1,53 @@
+name: Fix-it Friday Report
+description: Weekly dependency triage, security audit, and repository health report.
+title: "[Fix-it Friday] Weekly Dependency Triage & Repo Health Report — "
+labels: ["Tech Debt", "Reports"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🛠️ Fix-it Friday Weekly Maintenance Report
+        Use this issue to track weekly dependency triage, security findings, and tech debt cleanup items.
+
+  - type: textarea
+    id: bot_prs
+    attributes:
+      label: 🤖 Automated Bot PRs (Renovate / Dependabot)
+      description: Table of open bot PRs with risk tier (Tier 1/2/3) and recommendations.
+      placeholder: |
+        | PR # | Title | Risk Tier | Status / Recommendation |
+        | :--- | :--- | :---: | :--- |
+        | #1430 | `chore(deps): update dependency qs to v6.16.0` | 🟢 Tier 1 (Patch) | ✅ Verified locally, safe to merge |
+    validations:
+      required: true
+
+  - type: textarea
+    id: security_audit
+    attributes:
+      label: 🛡️ Security Vulnerabilities Audit
+      description: Findings from npm audit and backend security scans.
+      placeholder: |
+        - Frontend (npm audit): 0 High/Critical, 1 Moderate (@humanfs/node).
+        - Backend: 0 High/Critical.
+    validations:
+      required: true
+
+  - type: textarea
+    id: code_hygiene
+    attributes:
+      label: 🧹 Repository Hygiene & Tech Debt Spotlight
+      description: Outdated dependencies, lint/tooling warnings, or configuration issues noticed.
+      placeholder: |
+        - [ ] ESLint: resolve trailing comma in .eslintrc.json:96
+        - [ ] Stale branches cleanup
+
+  - type: checkboxes
+    id: action_items
+    attributes:
+      label: 📋 Today's Action Checklist
+      description: Checklist for engineers during today's session.
+      options:
+        - label: Merge verified Tier 1 (Patch) bot PRs
+        - label: Review breaking changes for Tier 2/3 PRs
+        - label: Close or rebase conflicted PRs
+        - label: Confirm CI is green on main after merges
