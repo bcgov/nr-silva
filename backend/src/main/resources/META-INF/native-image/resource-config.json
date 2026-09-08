@@ -12,6 +12,9 @@
       },
       {
         "pattern": "static/BC_BOUNDARY_EPSG3005\\.geojson"
+      },
+      {
+        "pattern": "spatial_ref_sys\\.txt"
       }
     ]
   }

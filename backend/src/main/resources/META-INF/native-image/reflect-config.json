@@ -19,6 +19,18 @@
     "allDeclaredMethods": true
   },
   {
+    "name": "org.geolatte.geom.codec.PostgisWkbEncoder",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.geolatte.geom.codec.PostgisWkbV2Encoder",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.geolatte.geom.codec.PostgisWkbDecoder",
+    "allDeclaredConstructors": true
+  },
+  {
     "name": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true,
