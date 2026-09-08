@@ -16,6 +16,7 @@
 #### 3. Code Hygiene & Configuration Anomalies
 - [ ] **Lint / Formatter:** {{LINT_STATUS}}
 - [ ] **Checkstyle / Google Style:** {{STYLE_STATUS}}
+- [ ] **Overrides & Resolutions Hygiene:** {{OVERRIDES_STATUS}}
 - [ ] **Deprecations:** {{DEPRECATION_NOTES}}
 
 #### 4. Branch & Test Suite Health

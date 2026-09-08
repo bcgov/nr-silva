@@ -73,6 +73,14 @@ This skill guides the agent through performing a routine health, security, and m
    cd backend
    ./mvnw checkstyle:checkstyle
    ```
+3. **Overrides & Resolutions Hygiene (The "Overrides Trap"):**
+   Inspect `frontend/package.json` -> `"overrides"`.
+   - Overrides should be temporary hotfixes, not permanent fixtures. For each entry, run:
+     ```bash
+     cd frontend && npm ls <package-name>
+     ```
+   - Check if the consumer package now natively satisfies the version requirement. If so, recommend **removing the override**.
+   - If the override must stay, ensure it is pinned to the consumer package's major version (e.g. `"^7.x"`), preventing Renovate/Dependabot from proposing incompatible major version bumps across coupled packages.
 
 ---
 

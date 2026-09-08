@@ -57,9 +57,15 @@ Before running heavy test suites, apply these 4 intelligent triage heuristics:
   - **Verdict:** Do NOT merge upgrades for dead code.
   - **Action:** Recommend **closing the PR** and running `npm uninstall <package-name>` to eliminate maintenance overhead.
 
-### Heuristic 2: Inspect `dependencies` vs. `overrides`
-- **Check:** Inspect the diff in `package.json`. Did Renovate bump a top-level package in `"dependencies"` / `"devDependencies"`, or merely a transitive entry in `"overrides"` / `"resolutions"`?
-- **Rule:** A PR titled *"Major update to X to v8"* that only alters an entry inside `"overrides"` while the app remains on `^7.0.0` does NOT introduce breaking API changes to application code. Downgrade its risk tier if unit tests and build pass cleanly.
+### Heuristic 2: Coupled Dependencies & The Overrides Trap
+- **Check:** Did Renovate bump an entry in `"overrides"` (npm) or `<dependencyManagement>` (Maven)?
+  1. Identify which package consumes it: run `npm ls <package-name>` (e.g. `npm ls react-router`).
+  2. Check if the consumer package (e.g. `react-router-dom@7.12.0`) is tightly coupled to this dependency.
+- **Rule:**
+  - **Never blindly downgrade major bumps in overrides.** An override forcibly replaces the nested dependency inside the consumer package.
+  - If the consumer package is on a different major version than the override (e.g. `react-router-dom` on `v7`, but override on `v8`), this is a **Coupled Dependency Mismatch**.
+  - **Verdict:** Classify as **🔴 Tier 3 (Coupled Override Mismatch)**.
+  - **Action:** **Hold / Do NOT Merge**. Recommend pinning the override to match the consumer's major version (e.g. `"^7.x"`), removing the override if the parent package now natively resolves the issue, or executing a coordinated migration of both packages together.
 
 ### Heuristic 3: Targeted Subsystem Verification
 - **Check:** If a bumped devDependency is tied to a specific script in `package.json` (e.g. `nyc` in `postcoverage`):
@@ -87,6 +93,8 @@ When asked to test a specific bot branch (e.g. `renovate/npm-qs-vulnerability`):
    npm run test:unit   # Runs Vitest unit tests
    npm run build       # Verifies Vite production bundling
    ```
+   > ⚠️ **Verification Limits of In-Memory Unit Tests:**
+   > Unit tests in Vitest run with `<MemoryRouter>` and mock environments. They verify syntax and isolated components, but do **not** catch runtime browser navigation, URL handling, or engine incompatibilities caused by major version bumps (`X.y.z`). Never treat green unit tests as sufficient proof to auto-merge a 🔴 Tier 3 major bump.
 3. **If Backend:**
    - **Quick / Patch check:**
      ```bash

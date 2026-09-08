@@ -71,6 +71,7 @@ Execute the checks from the `repo-audit` skill:
    - Backend: `cd backend && ./mvnw versions:display-dependency-updates && ./mvnw versions:display-property-updates`
 3. **Configuration & Hygiene Check:**
    - Check `.eslintrc.json` syntax and ESLint flat config compatibility.
+   - Audit `frontend/package.json:overrides` for stale entries or unpinned major versions.
    - Run `cd frontend && npm run prebuild && cd ..` (TypeScript compiler check).
    - Run `cd backend && ./mvnw checkstyle:checkstyle && cd ..`
 4. **Backend Dual-Database Tests (matches `analysis.yml` workflow):**

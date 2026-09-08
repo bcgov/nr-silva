@@ -26,6 +26,7 @@
 ### 3. 🧹 Repository Hygiene & Tech Debt
 - [ ] **Lint / Build Configuration:** {{LINT_SUMMARY}}
 - [ ] **Outdated Packages Spotlight:** {{OUTDATED_PACKAGES_SUMMARY}}
+- [ ] **Overrides & Resolutions Hygiene:** {{OVERRIDES_SUMMARY}}
 - [ ] **Stale Branches:** {{STALE_BRANCHES_SUMMARY}}
 
 ---
