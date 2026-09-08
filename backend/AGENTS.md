@@ -30,6 +30,10 @@ Example: `POST /api/openings` (create opening) only works in Postgres-only; retu
 
 Implementation detail: Every DB-specific class uses `@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle|postgres")` to conditionally enable/disable based on startup config.
 
+### PR Preview Environments (Postgres Test Data)
+
+Postgres preview deployments in PRs (`deployment_model: postgres` in `.github/workflows/pr-open.yml`) are automatically seeded with dev test data from `backend/src/test/resources/migration/postgres/dev` and `backend/src/test/resources/migration/postgres/default` (`V999.*`) via the `load_test_data` GitHub Actions job using Flyway CLI and `oc port-forward`. This keeps the GraalVM native container image clean of test data while ensuring reviewers have realistic data to test with.
+
 ## Folder Structure
 
 ```
