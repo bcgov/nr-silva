@@ -93,6 +93,10 @@ public class ClamAvClient {
 
   // --- internal helpers ---
 
+  Socket createSocket() {
+    return new Socket();
+  }
+
   /**
    * Open and connect a raw TCP socket to clamd.
    *
@@ -100,7 +104,7 @@ public class ClamAvClient {
    * @throws IOException if connection fails (ensuring the socket is closed)
    */
   private Socket openSocket() throws IOException {
-    Socket socket = new Socket();
+    Socket socket = createSocket();
     try {
       socket.connect(
           new InetSocketAddress(properties.getHost(), properties.getPort()),
