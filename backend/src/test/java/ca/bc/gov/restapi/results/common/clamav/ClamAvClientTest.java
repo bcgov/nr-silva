@@ -74,6 +74,7 @@ class ClamAvClientTest {
                 try (java.net.Socket s = server.accept()) {
                   // Close immediately without replying
                 } catch (java.io.IOException ignored) {
+                  // expected
                 }
               });
       t.setDaemon(true);
@@ -103,6 +104,7 @@ class ClamAvClientTest {
                 try (java.net.Socket s = server.accept()) {
                   // Close immediately without replying
                 } catch (java.io.IOException ignored) {
+                  // expected
                 }
               });
       t.setDaemon(true);
@@ -285,7 +287,7 @@ class ClamAvClientTest {
 
   @Test
   @DisplayName("parseReply handles FOUND with spaces in signature")
-  void parseReply_multipleSpacesFOUND() {
+  void parseReply_multipleSpacesFound() {
     // This still ends with " FOUND" so it's valid
     ClamAvVerdict v = ClamAvClient.parseReply("stream: Virus.Name  With.Spaces FOUND");
     assertEquals(ClamAvVerdict.Status.INFECTED, v.status());
