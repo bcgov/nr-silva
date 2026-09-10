@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
-public class StockingStandardCreateEndpoint {
+public class StockingStandardEndpoint {
 
   private final CreateStockingStandardService createStockingStandardService;
 
