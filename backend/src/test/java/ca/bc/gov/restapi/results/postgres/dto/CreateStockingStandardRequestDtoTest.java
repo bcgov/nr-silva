@@ -57,7 +57,6 @@ class CreateStockingStandardRequestDtoTest {
         StockingLayerType.SINGLE,
         new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
         null,
-        null,
         null);
   }
 
@@ -93,15 +92,14 @@ class CreateStockingStandardRequestDtoTest {
             request.layerType(),
             request.singleLayer(),
             request.multiLayers(),
-            request.alternateInfo(),
             request.additionalStandards());
 
     assertThat(validator.validate(invalid)).isNotEmpty();
   }
 
   @Test
-  @DisplayName("Empty species list is rejected")
-  void emptySpeciesList_isRejected() {
+  @DisplayName("Empty species list is allowed")
+  void emptySpeciesList_isAllowed() {
     CreateStockingStandardRequestDto request = validRequest();
     CreateStockingStandardRequestDto invalid =
         new CreateStockingStandardRequestDto(
@@ -123,10 +121,9 @@ class CreateStockingStandardRequestDtoTest {
             request.layerType(),
             request.singleLayer(),
             request.multiLayers(),
-            request.alternateInfo(),
             request.additionalStandards());
 
-    assertThat(validator.validate(invalid)).isNotEmpty();
+    assertThat(validator.validate(invalid)).isEmpty();
   }
 
   @Test
@@ -153,7 +150,6 @@ class CreateStockingStandardRequestDtoTest {
             request.layerType(),
             request.singleLayer(),
             request.multiLayers(),
-            request.alternateInfo(),
             request.additionalStandards());
 
     assertThat(validator.validate(invalid)).isNotEmpty();

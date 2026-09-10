@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.enums.Role;
@@ -72,6 +72,7 @@ class StockingStandardValidationServiceTest {
             siteSeriesCatalogueRepository.findMatchingBecCombo(
                 anyString(), anyString(), any(), any(), anyString()))
         .thenReturn(List.of(SiteSeriesCatalogueEntity.builder().id(1L).build()));
+    allow(Role.SUBMITTER, "00012797");
   }
 
   private CreateStockingStandardRequestDto operationalPlanRequest(
@@ -86,7 +87,7 @@ class StockingStandardValidationServiceTest {
         "Location",
         StockingStandardAuthorityType.OPERATIONAL_PLAN,
         orgUnitCodes,
-        clientNumbers,
+        clientNumbers == null ? null : clientNumbers.isEmpty() ? List.of("00012797") : clientNumbers,
         becInfoSelected,
         altMethodSelected,
         becData,
@@ -99,12 +100,11 @@ class StockingStandardValidationServiceTest {
         StockingLayerType.SINGLE,
         VALID_SINGLE_LAYER,
         null,
-        null,
         null);
   }
 
   @Test
-  @DisplayName("Ministry Default resolves the HFP org unit and skips client checks")
+  @DisplayName("Ministry Default resolves the HFP org unit for an authorized user")
   void ministryDefault_resolvesHfpOrgUnit() {
     when(orgUnitRepository.findByOrgUnitCode("HFP"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(90L).orgUnitCode("HFP").build()));
@@ -129,7 +129,6 @@ class StockingStandardValidationServiceTest {
             StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER,
             null,
-            null,
             null);
 
     List<Long> orgUnitNos = service.validate(request);
@@ -146,7 +145,7 @@ class StockingStandardValidationServiceTest {
         new CreateStockingStandardRequestDto(
             "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT, null, null,
             false, true, null, List.of(VALID_SPECIES), StockingType.REGEN_OBLIGATION, 1, 20,
-            null, null, StockingLayerType.SINGLE, VALID_SINGLE_LAYER, null, null, null);
+            null, null, StockingLayerType.SINGLE, VALID_SINGLE_LAYER, null, null);
 
     assertRejected(request, HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -171,11 +170,11 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Client without the ADMIN role for the client number is forbidden")
-  void client_withoutAdminRole_isForbidden() {
+  @DisplayName("Client without an allowed role for the client number is forbidden")
+  void client_withoutAllowedRole_isForbidden() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
-    when(loggedUserHelper.hasAbstractRole(eq(Role.ADMIN), eq("00012797"))).thenReturn(false);
+    denyAll("00012797");
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, true, null);
 
@@ -187,11 +186,67 @@ class StockingStandardValidationServiceTest {
   void client_withAdminRole_passes() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
-    when(loggedUserHelper.hasAbstractRole(eq(Role.ADMIN), eq("00012797"))).thenReturn(true);
+    allow(Role.ADMIN, "00012797");
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, true, null);
 
     assertThat(service.validate(request)).containsExactly(1L);
+  }
+
+  @Test
+  @DisplayName("Client with the APPROVER role for the client number passes")
+  void client_withApproverRole_passes() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    allow(Role.APPROVER, "00012797");
+
+    assertThat(service.validate(operationalPlanRequest(
+        List.of("DAS"), List.of("00012797"), false, true, null))).containsExactly(1L);
+  }
+
+  @Test
+  @DisplayName("Operational Plan without a client is rejected")
+  void operationalPlan_withoutClient_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    assertRejected(operationalPlanRequest(List.of("DAS"), null, false, true, null), HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Ministry Default with a supplied client is rejected")
+  void ministryDefault_withClient_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("HFP"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(90L).orgUnitCode("HFP").build()));
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT, null,
+            List.of("00012797"), false, true, null, List.of(VALID_SPECIES),
+            StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.SINGLE,
+            VALID_SINGLE_LAYER, null, null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Operational Plan rejects an unauthorized associated client")
+  void operationalPlan_unauthorizedAssociatedClient_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    assertRejected(operationalPlanRequest(
+        List.of("DAS"), List.of("00012797", "00000001"), false, true, null), HttpStatus.FORBIDDEN);
+  }
+
+  private void denyAll(String clientNumber) {
+    for (Role role : List.of(Role.SUBMITTER, Role.APPROVER, Role.ADMIN)) {
+      lenient().doReturn(false).when(loggedUserHelper).hasAbstractRole(role, clientNumber);
+    }
+  }
+
+  private void allow(Role role, String clientNumber) {
+    denyAll(clientNumber);
+    doReturn(true).when(loggedUserHelper).hasAbstractRole(role, clientNumber);
   }
 
   @Test
@@ -200,7 +255,7 @@ class StockingStandardValidationServiceTest {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     CreateStockingStandardRequestDto request =
-        operationalPlanRequest(List.of("DAS"), List.of(), false, false, null);
+        operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, false, null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
   }
@@ -211,7 +266,7 @@ class StockingStandardValidationServiceTest {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     CreateStockingStandardRequestDto request =
-        operationalPlanRequest(List.of("DAS"), List.of(), true, false, List.of());
+        operationalPlanRequest(List.of("DAS"), List.of("00012797"), true, false, List.of());
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
   }
@@ -224,7 +279,7 @@ class StockingStandardValidationServiceTest {
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             List.of(new BecDataDto("CWH", "wh1", null, null, "01", null)));
@@ -243,7 +298,7 @@ class StockingStandardValidationServiceTest {
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             true,
             false,
             List.of(new BecDataDto("ZZZ", "zz", null, null, "99", null)));
@@ -264,7 +319,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -276,7 +331,6 @@ class StockingStandardValidationServiceTest {
             null,
             StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER,
-            null,
             null,
             null);
 
@@ -295,7 +349,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -307,7 +361,6 @@ class StockingStandardValidationServiceTest {
             null,
             StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER,
-            null,
             null,
             null);
 
@@ -326,7 +379,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -338,7 +391,6 @@ class StockingStandardValidationServiceTest {
             5,
             StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER,
-            null,
             null,
             null);
 
@@ -357,7 +409,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -370,7 +422,6 @@ class StockingStandardValidationServiceTest {
             StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER,
             List.of(VALID_SINGLE_LAYER),
-            null,
             null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
@@ -388,7 +439,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -403,7 +454,6 @@ class StockingStandardValidationServiceTest {
             List.of(
                 new StockingLayerDto("4", null, null, null, null, null, null, null, null, null, null),
                 new StockingLayerDto("3", null, null, null, null, null, null, null, null, null, null)),
-            null,
             null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
@@ -415,7 +465,7 @@ class StockingStandardValidationServiceTest {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     CreateStockingStandardRequestDto request =
-        operationalPlanRequest(List.of("DAS"), List.of(), false, true, null);
+        operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, true, null);
     request =
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
@@ -423,8 +473,7 @@ class StockingStandardValidationServiceTest {
             request.alternativeMethodSelected(), request.becData(), request.species(),
             request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
             request.earlyYears(), request.lateYears(), StockingLayerType.MULTI, VALID_SINGLE_LAYER,
-            List.of(VALID_SINGLE_LAYER, VALID_SINGLE_LAYER, VALID_SINGLE_LAYER, VALID_SINGLE_LAYER),
-            request.alternateInfo(), request.additionalStandards());
+            List.of(VALID_SINGLE_LAYER, VALID_SINGLE_LAYER, VALID_SINGLE_LAYER, VALID_SINGLE_LAYER), request.additionalStandards());
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
   }
@@ -444,7 +493,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -461,7 +510,6 @@ class StockingStandardValidationServiceTest {
                 new StockingLayerDto("4", null, null, null, null, null, null, null, null, null, null),
                 new StockingLayerDto("2", null, null, null, null, null, null, null, null, null, null),
                 new StockingLayerDto("1", null, null, null, null, null, null, null, null, null, null)),
-            null,
             null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
@@ -481,7 +529,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -493,7 +541,6 @@ class StockingStandardValidationServiceTest {
             null,
             StockingLayerType.SINGLE,
             layer,
-            null,
             null,
             null);
 
@@ -514,7 +561,7 @@ class StockingStandardValidationServiceTest {
             "Location",
             StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"),
-            List.of(),
+            List.of("00012797"),
             false,
             true,
             null,
@@ -526,7 +573,6 @@ class StockingStandardValidationServiceTest {
             null,
             StockingLayerType.SINGLE,
             layer,
-            null,
             null,
             null);
 
@@ -541,7 +587,7 @@ class StockingStandardValidationServiceTest {
     StockingLayerDto layer =
         new StockingLayerDto("I", null, null, null, null, null, null, null, null, 15, "M");
     CreateStockingStandardRequestDto request =
-        operationalPlanRequest(List.of("DAS"), List.of(), false, true, null);
+        operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, true, null);
     request =
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
@@ -549,7 +595,7 @@ class StockingStandardValidationServiceTest {
             request.alternativeMethodSelected(), request.becData(), request.species(),
             request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
             request.earlyYears(), request.lateYears(), request.layerType(), layer,
-            request.multiLayers(), request.alternateInfo(), request.additionalStandards());
+            request.multiLayers(), request.additionalStandards());
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
   }

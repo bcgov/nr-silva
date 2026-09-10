@@ -5,7 +5,6 @@ import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
  * @param becInfoSelected whether BEC information applies to this standard
  * @param alternativeMethodSelected whether an alternative method applies to this standard
  * @param becData BEC entries; required (min 1) if becInfoSelected is true, otherwise must be empty
- * @param species species entries, minimum 1
+ * @param species species entries, optional
  * @param stockingType whether this standard is a Regen Obligation or a Stocking Requirement
  * @param regenDelayYears regen delay years; required if stockingType is REGEN_OBLIGATION
  * @param freeGrowingYears free growing years; required if stockingType is REGEN_OBLIGATION
@@ -37,7 +36,6 @@ import java.util.List;
  * @param singleLayer Tree Stocking Criteria for the single layer; required if layerType is SINGLE
  * @param multiLayers Tree Stocking Criteria for each of the four layers; required if layerType is
  *     MULTI
- * @param alternateInfo general Stocking-progression note, optional
  * @param additionalStandards free-format additional standards text, optional
  */
 public record CreateStockingStandardRequestDto(
@@ -50,7 +48,7 @@ public record CreateStockingStandardRequestDto(
     @NotNull Boolean becInfoSelected,
     @NotNull Boolean alternativeMethodSelected,
     @Valid List<BecDataDto> becData,
-    @NotEmpty @Valid List<StockingSpeciesDto> species,
+    @Valid List<StockingSpeciesDto> species,
     @NotNull StockingType stockingType,
     Integer regenDelayYears,
     Integer freeGrowingYears,
@@ -59,5 +57,4 @@ public record CreateStockingStandardRequestDto(
     @NotNull StockingLayerType layerType,
     @Valid StockingLayerDto singleLayer,
     @Valid List<StockingLayerDto> multiLayers,
-    @Size(max = 4000) String alternateInfo,
     @Size(max = 4000) String additionalStandards) {}

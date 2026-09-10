@@ -85,9 +85,6 @@ public class StandardsRegimeEntity {
   @Column(name = "additional_standards", length = 4000)
   private String additionalStandards;
 
-  @Column(name = "alternate_info", length = 4000)
-  private String alternateInfo;
-
   @Column(name = "reject_note", length = 2000)
   private String rejectNote;
 
@@ -106,4 +103,3 @@ public class StandardsRegimeEntity {
   @Column(name = "revision_count", nullable = false)
   private Integer revisionCount;
 }
-

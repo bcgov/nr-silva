@@ -1,5 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants.MINISTRY_OF_FORESTS_CLIENT_NUMBER;
+
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.BecDataDto;
@@ -38,6 +40,8 @@ public class StockingStandardValidationService {
   private static final Set<String> MULTI_LAYER_CODES = Set.of("4", "3", "2", "1");
   private static final Set<String> LAYER_1_2_ONLY_CODES = Set.of("2", "1");
   private static final Set<String> LAYER_3_4_ONLY_CODES = Set.of("4", "3");
+  private static final Set<Role> CREATE_STOCKING_STANDARD_ROLES =
+      Set.of(Role.SUBMITTER, Role.APPROVER, Role.ADMIN);
 
   private final OrgUnitPostgresRepository orgUnitRepository;
   private final SilvTreeSpeciesCodePostgresRepository speciesCodeRepository;
@@ -99,18 +103,33 @@ public class StockingStandardValidationService {
   }
 
   private void validateClients(CreateStockingStandardRequestDto dto) {
-    if (dto.authorityType() != StockingStandardAuthorityType.OPERATIONAL_PLAN) {
+    List<String> clientNumbers = dto.clientNumbers();
+    if (dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT) {
+      if (clientNumbers != null && !clientNumbers.isEmpty()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "clientNumbers must not be supplied for Ministry Default authority");
+      }
+      validateCreateRole(MINISTRY_OF_FORESTS_CLIENT_NUMBER);
       return;
     }
-    List<String> clientNumbers = dto.clientNumbers();
-    if (clientNumbers == null) {
-      return;
+    if (clientNumbers == null || clientNumbers.isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "At least one client is required for Operational Plan authority");
     }
     for (String clientNumber : clientNumbers) {
-      if (!loggedUserHelper.hasAbstractRole(Role.ADMIN, clientNumber.trim())) {
-        throw new ResponseStatusException(
-            HttpStatus.FORBIDDEN, "Not authorised for client number " + clientNumber);
-      }
+      validateCreateRole(clientNumber.trim());
+    }
+  }
+
+  private void validateCreateRole(String clientNumber) {
+    boolean authorized =
+        CREATE_STOCKING_STANDARD_ROLES.stream()
+            .anyMatch(role -> loggedUserHelper.hasAbstractRole(role, clientNumber));
+    if (!authorized) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "Not authorised to create a stocking standard for " + clientNumber);
     }
   }
 
@@ -163,6 +182,9 @@ public class StockingStandardValidationService {
   }
 
   private void validateSpecies(CreateStockingStandardRequestDto dto) {
+    if (dto.species() == null) {
+      return;
+    }
     List<String> notFound = new ArrayList<>();
     for (StockingSpeciesDto species : dto.species()) {
       if (!speciesCodeRepository.existsById(species.speciesCode().trim())) {

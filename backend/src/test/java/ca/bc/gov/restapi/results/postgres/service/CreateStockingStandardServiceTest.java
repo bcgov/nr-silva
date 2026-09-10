@@ -165,6 +165,27 @@ class CreateStockingStandardServiceTest {
     verify(clientLinkRepository, org.mockito.Mockito.never()).save(any());
   }
 
+  @Test
+  @DisplayName("No layer-species links are created when species are omitted")
+  void create_withoutSpecies_doesNotPersistLayerSpecies() {
+    CreateStockingStandardRequestDto base = operationalPlanRequest();
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            base.objective(), base.name(), base.location(), base.authorityType(), base.orgUnitCodes(),
+            base.clientNumbers(), base.becInfoSelected(), base.alternativeMethodSelected(), base.becData(),
+            null, base.stockingType(), base.regenDelayYears(), base.freeGrowingYears(), base.earlyYears(),
+            base.lateYears(), base.layerType(), base.singleLayer(), base.multiLayers(),
+            base.additionalStandards());
+    when(validationService.validate(request)).thenReturn(List.of(11L, 12L));
+    when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
+    when(jdbcTemplate.queryForObject(anyString(), eq(Long.class)))
+        .thenReturn(100L, 200L, 301L, 302L, 303L, 304L);
+
+    service.create(request);
+
+    verify(layerSpeciesRepository, org.mockito.Mockito.never()).save(any());
+  }
+
   private CreateStockingStandardRequestDto operationalPlanRequest() {
     List<StockingLayerDto> layers =
         List.of(
@@ -204,7 +225,6 @@ class CreateStockingStandardServiceTest {
         StockingLayerType.MULTI,
         null,
         layers,
-        null,
         null);
   }
 
@@ -215,7 +235,7 @@ class CreateStockingStandardServiceTest {
         null,
         StockingStandardAuthorityType.MINISTRY_DEFAULT,
         null,
-        List.of("00012797"),
+        null,
         false,
         true,
         null,
@@ -229,7 +249,6 @@ class CreateStockingStandardServiceTest {
         2,
         StockingLayerType.SINGLE,
         new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
-        null,
         null,
         null);
   }

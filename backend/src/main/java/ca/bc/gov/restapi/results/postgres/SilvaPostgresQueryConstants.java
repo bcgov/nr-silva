@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SilvaPostgresQueryConstants {
 
+  public static final String MINISTRY_OF_FORESTS_CLIENT_NUMBER = "00012797";
+
   public static final String SILVICULTURE_SEARCH_SELECT =
 	"""
 	SELECT DISTINCT op.opening_id

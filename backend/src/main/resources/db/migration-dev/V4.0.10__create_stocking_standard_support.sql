@@ -1,11 +1,6 @@
--- Support for POST /api/stocking-standards (create stocking standard, postgres-only).
-
 -- silva.standards_regime new columns
 ALTER TABLE silva.standards_regime ADD COLUMN IF NOT EXISTS alternative_method_ind varchar(1) DEFAULT 'N' NOT NULL;
 COMMENT ON COLUMN silva.standards_regime.alternative_method_ind IS 'A yes/no indicator whether an alternative method (rather than BEC information) is used to define ecology for this standard.';
-
-ALTER TABLE silva.standards_regime ADD COLUMN IF NOT EXISTS alternate_info varchar(4000) NULL;
-COMMENT ON COLUMN silva.standards_regime.alternate_info IS 'Optional free-format note recorded under Stocking Progression when no layer-level detail is supplied.';
 
 -- silva.standards_regime_layer_species: replace preferred_ind (Y/N) with a 3-way species_type_code
 ALTER TABLE silva.standards_regime_layer_species RENAME COLUMN preferred_ind TO species_type_code;

@@ -82,7 +82,6 @@ public class CreateStockingStandardService {
             .noRegenLateOffsetYrs(dto.lateYears())
             .additionalStandards(
                 dto.additionalStandards() != null ? dto.additionalStandards().trim() : null)
-            .alternateInfo(dto.alternateInfo() != null ? dto.alternateInfo().trim() : null)
             .entryUserid(auditUserId)
             .entryTimestamp(now)
             .updateUserid(auditUserId)
@@ -178,24 +177,26 @@ public class CreateStockingStandardService {
       layerRepository.save(layerEntity);
 
       int order = 1;
-      for (StockingSpeciesDto species : dto.species()) {
-        layerSpeciesRepository.save(
-            StandardsRegimeLayerSpeciesEntity.builder()
-                .standardsRegimeLayerId(layerId)
-                .silvTreeSpeciesCode(species.speciesCode().trim())
-                .speciesOrder(order++)
-                .speciesTypeCode(species.speciesType().getCode())
-                .minHeight(species.minHeight())
-                .regenMilestoneInd(
-                    species.milestone() == StockingSpeciesMilestone.FREE_GROWING ? "N" : "Y")
-                .freeGrowingMilestoneInd(
-                    species.milestone() == StockingSpeciesMilestone.REGEN ? "N" : "Y")
-                .entryUserid(auditUserId)
-                .entryTimestamp(now)
-                .updateUserid(auditUserId)
-                .updateTimestamp(now)
-                .revisionCount(1)
-                .build());
+      if (dto.species() != null) {
+        for (StockingSpeciesDto species : dto.species()) {
+          layerSpeciesRepository.save(
+              StandardsRegimeLayerSpeciesEntity.builder()
+                  .standardsRegimeLayerId(layerId)
+                  .silvTreeSpeciesCode(species.speciesCode().trim())
+                  .speciesOrder(order++)
+                  .speciesTypeCode(species.speciesType().getCode())
+                  .minHeight(species.minHeight())
+                  .regenMilestoneInd(
+                      species.milestone() == StockingSpeciesMilestone.FREE_GROWING ? "N" : "Y")
+                  .freeGrowingMilestoneInd(
+                      species.milestone() == StockingSpeciesMilestone.REGEN ? "N" : "Y")
+                  .entryUserid(auditUserId)
+                  .entryTimestamp(now)
+                  .updateUserid(auditUserId)
+                  .updateTimestamp(now)
+                  .revisionCount(1)
+                  .build());
+        }
       }
     }
 
