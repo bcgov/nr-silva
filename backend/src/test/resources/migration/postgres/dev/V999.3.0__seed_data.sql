@@ -145,3 +145,7 @@ INSERT INTO silva.site_series_catalogue (
   (5, 'CST', 2, '04', NULL, NULL, NULL, 'HwSs - Lanky moss', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
   (6, 'CST', 2, '05', NULL, NULL, NULL, 'CwSs - Sword fern', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
   (7, 'CST', 3, '01', NULL, NULL, NULL, 'HwFd - Kindbergia', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD');
+
+-- Ministry Default authority org unit, required by CreateStockingStandardService/StockingStandardValidationService.
+INSERT INTO silva.org_unit (org_unit_no, org_unit_code, org_unit_name, location_code, area_code, telephone_no, org_level_code, office_name_code, rollup_region_no, rollup_region_code, rollup_dist_no, rollup_dist_code, effective_date, expiry_date, update_timestamp) VALUES
+  (90, 'HFP', 'Headquarters Forest Practices', '090', '250', '9999', 'H', 'FP', 90, '90Code', 90, '90Code', TIMESTAMP '1905-01-01 00:00:00', TIMESTAMP '9999-12-31 00:00:00', TIMESTAMP '2025-01-01 00:00:00');
