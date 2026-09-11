@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,6 +68,7 @@ class ClamAvClientTest {
     assertEquals(ClamAvVerdict.Status.CLEAN, v.status());
   }
 
+  @Test
   @DisplayName("scan() returns ERROR when server closes without a clamd reply — never throws")
   void scan_returnsErrorWhenNoReply() throws Exception {
     try (java.net.ServerSocket server = new java.net.ServerSocket(0)) {
@@ -74,6 +79,7 @@ class ClamAvClientTest {
                 try (java.net.Socket s = server.accept()) {
                   // Close immediately without replying
                 } catch (java.io.IOException ignored) {
+                  // expected
                 }
               });
       t.setDaemon(true);
@@ -93,6 +99,7 @@ class ClamAvClientTest {
     }
   }
 
+  @Test
   @DisplayName("ping() returns false when server closes without replying PONG — never throws")
   void ping_returnsFalseWhenNoPong() throws Exception {
     try (java.net.ServerSocket server = new java.net.ServerSocket(0)) {
@@ -103,6 +110,7 @@ class ClamAvClientTest {
                 try (java.net.Socket s = server.accept()) {
                   // Close immediately without replying
                 } catch (java.io.IOException ignored) {
+                  // expected
                 }
               });
       t.setDaemon(true);
@@ -285,7 +293,7 @@ class ClamAvClientTest {
 
   @Test
   @DisplayName("parseReply handles FOUND with spaces in signature")
-  void parseReply_multipleSpacesFOUND() {
+  void parseReply_multipleSpacesFound() {
     // This still ends with " FOUND" so it's valid
     ClamAvVerdict v = ClamAvClient.parseReply("stream: Virus.Name  With.Spaces FOUND");
     assertEquals(ClamAvVerdict.Status.INFECTED, v.status());
@@ -397,5 +405,77 @@ class ClamAvClientTest {
     }
     ClamAvVerdict result = client.scan(data, "multi-chunk.bin");
     assertEquals(ClamAvVerdict.Status.ERROR, result.status());
+  }
+
+  @Test
+  @DisplayName("openSocket() closes socket when connection fails")
+  void openSocket_closesSocketWhenConnectionFails() {
+    AtomicBoolean closed = new AtomicBoolean(false);
+    ClamAvProperties props =
+        ClamAvProperties.builder()
+            .host("localhost")
+            .port(3310)
+            .connectTimeout(Duration.ofMillis(100))
+            .readTimeout(Duration.ofMillis(100))
+            .failOpen(false)
+            .build();
+
+    ClamAvClient client =
+        new ClamAvClient(props) {
+          @Override
+          Socket createSocket() {
+            return new Socket() {
+              @Override
+              public void connect(SocketAddress endpoint, int timeout) throws IOException {
+                throw new IOException("Simulated connection failure");
+              }
+
+              @Override
+              public void close() throws IOException {
+                closed.set(true);
+                super.close();
+              }
+            };
+          }
+        };
+
+    boolean result = client.ping();
+    assertEquals(false, result);
+    assertTrue(closed.get(), "Socket must be closed when connect fails");
+  }
+
+  @Test
+  @DisplayName("openSocket() suppresses exception if socket.close() also fails")
+  void openSocket_suppressesCloseExceptionWhenConnectFails() {
+    ClamAvProperties props =
+        ClamAvProperties.builder()
+            .host("localhost")
+            .port(3310)
+            .connectTimeout(Duration.ofMillis(100))
+            .readTimeout(Duration.ofMillis(100))
+            .failOpen(false)
+            .build();
+
+    ClamAvClient client =
+        new ClamAvClient(props) {
+          @Override
+          Socket createSocket() {
+            return new Socket() {
+              @Override
+              public void connect(SocketAddress endpoint, int timeout) throws IOException {
+                throw new IOException("Simulated connection failure");
+              }
+
+              @Override
+              public void close() throws IOException {
+                throw new IOException("Simulated close failure");
+              }
+            };
+          }
+        };
+
+    ClamAvVerdict verdict = client.scan(new byte[] {1, 2, 3}, "test.bin");
+    assertEquals(ClamAvVerdict.Status.ERROR, verdict.status());
+    assertEquals("Simulated connection failure", verdict.detail());
   }
 }
