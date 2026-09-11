@@ -22,6 +22,7 @@ public interface SiteSeriesCataloguePostgresRepository
    * @param variant BGC variant (nullable)
    * @param phase BGC phase (nullable)
    * @param siteSeries site series number
+   * @param siteSeriesPhase site-series phase (nullable)
    * @return matching rows, if any
    */
   @Query(
@@ -31,11 +32,14 @@ public interface SiteSeriesCataloguePostgresRepository
           + " AND bc.subzone = :bgcSubzoneCode"
           + " AND (bc.variant = :variant OR (bc.variant IS NULL AND :variant IS NULL))"
           + " AND (bc.phase = :phase OR (bc.phase IS NULL AND :phase IS NULL))"
-          + " AND ssc.siteSeries = :siteSeries")
+          + " AND ssc.siteSeries = :siteSeries"
+          + " AND (ssc.siteSeriesPhase = :siteSeriesPhase"
+          + " OR (ssc.siteSeriesPhase IS NULL AND :siteSeriesPhase IS NULL))")
   List<SiteSeriesCatalogueEntity> findMatchingBecCombo(
       @Param("bgcZoneCode") String bgcZoneCode,
       @Param("bgcSubzoneCode") String bgcSubzoneCode,
       @Param("variant") String variant,
       @Param("phase") String phase,
-      @Param("siteSeries") String siteSeries);
+      @Param("siteSeries") String siteSeries,
+      @Param("siteSeriesPhase") String siteSeriesPhase);
 }

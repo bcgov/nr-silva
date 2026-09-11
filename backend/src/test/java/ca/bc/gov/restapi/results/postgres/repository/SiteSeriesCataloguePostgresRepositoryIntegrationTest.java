@@ -18,18 +18,24 @@ class SiteSeriesCataloguePostgresRepositoryIntegrationTest
   @Test
   @DisplayName("Finds an exact BEC combination including a variant")
   void findMatchingBecCombo_exactVariant_returnsMatch() {
-    assertThat(repository.findMatchingBecCombo("CWH", "wh", "1", null, "01")).hasSize(1);
+    assertThat(repository.findMatchingBecCombo("CWH", "wh", "1", null, "01", null)).hasSize(1);
   }
 
   @Test
   @DisplayName("Matches nullable variant and phase values")
   void findMatchingBecCombo_nullVariantAndPhase_returnsMatch() {
-    assertThat(repository.findMatchingBecCombo("CWH", "xm", null, null, "01")).hasSize(1);
+    assertThat(repository.findMatchingBecCombo("CWH", "xm", null, null, "01", null)).hasSize(1);
+  }
+
+  @Test
+  @DisplayName("Rejects an unmatched site-series phase")
+  void findMatchingBecCombo_unmatchedSiteSeriesPhase_returnsEmpty() {
+    assertThat(repository.findMatchingBecCombo("CWH", "xm", null, null, "01", "A")).isEmpty();
   }
 
   @Test
   @DisplayName("Rejects an unknown site series combination")
   void findMatchingBecCombo_unknownSiteSeries_returnsEmpty() {
-    assertThat(repository.findMatchingBecCombo("CWH", "wh", "1", null, "99")).isEmpty();
+    assertThat(repository.findMatchingBecCombo("CWH", "wh", "1", null, "99", null)).isEmpty();
   }
 }

@@ -16,6 +16,7 @@ import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgresRepository;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,7 @@ public class StockingStandardValidationService {
    * @throws ResponseStatusException with 400/403 on any validation failure
    */
   public List<Long> validate(CreateStockingStandardRequestDto dto) {
+    validateDuplicateValues(dto);
     List<Long> orgUnitNos = validateAuthority(dto);
     validateClients(dto);
     validateBec(dto);
@@ -63,6 +65,28 @@ public class StockingStandardValidationService {
     validateStockingType(dto);
     validateLayers(dto);
     return orgUnitNos;
+  }
+
+  private void validateDuplicateValues(CreateStockingStandardRequestDto dto) {
+    rejectDuplicateValues(dto.orgUnitCodes(), "orgUnitCodes");
+    rejectDuplicateValues(dto.clientNumbers(), "clientNumbers");
+    if (dto.species() != null) {
+      rejectDuplicateValues(
+          dto.species().stream().map(StockingSpeciesDto::speciesCode).toList(), "species");
+    }
+  }
+
+  private void rejectDuplicateValues(List<String> values, String fieldName) {
+    if (values == null) {
+      return;
+    }
+    Set<String> normalizedValues = new HashSet<>();
+    for (String value : values) {
+      if (!normalizedValues.add(value.trim())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, fieldName + " must not contain duplicate values");
+      }
+    }
   }
 
   private List<Long> validateAuthority(CreateStockingStandardRequestDto dto) {
@@ -156,7 +180,8 @@ public class StockingStandardValidationService {
                     bec.bgcSubzoneCode(),
                     bec.variant(),
                     bec.phase(),
-                    bec.siteSeries())
+                    bec.siteSeries(),
+                    bec.sitePhase())
                 .isEmpty();
         if (!exists) {
           invalidCombos.add(

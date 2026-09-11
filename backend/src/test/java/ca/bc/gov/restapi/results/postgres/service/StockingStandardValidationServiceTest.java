@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.enums.Role;
@@ -70,7 +71,7 @@ class StockingStandardValidationServiceTest {
     lenient()
         .when(
             siteSeriesCatalogueRepository.findMatchingBecCombo(
-                anyString(), anyString(), any(), any(), anyString()))
+                anyString(), anyString(), any(), any(), anyString(), any()))
         .thenReturn(List.of(SiteSeriesCatalogueEntity.builder().id(1L).build()));
     allow(Role.SUBMITTER, "00012797");
   }
@@ -238,6 +239,49 @@ class StockingStandardValidationServiceTest {
         List.of("DAS"), List.of("00012797", "00000001"), false, true, null), HttpStatus.FORBIDDEN);
   }
 
+  @Test
+  @DisplayName("Duplicate normalized client numbers are rejected")
+  void duplicateClientNumbers_areRejected() {
+    assertRejected(
+        operationalPlanRequest(
+            List.of("DAS"), List.of("00012797", " 00012797 "), false, true, null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Duplicate org unit codes are rejected")
+  void duplicateOrgUnitCodes_areRejected() {
+    assertRejected(
+        operationalPlanRequest(List.of("DAS", " DAS "), List.of("00012797"), false, true, null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Duplicate species codes are rejected")
+  void duplicateSpeciesCodes_areRejected() {
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"), List.of("00012797"), false, true, null,
+            List.of(VALID_SPECIES, VALID_SPECIES), StockingType.REGEN_OBLIGATION, 1, 20, null,
+            null, StockingLayerType.SINGLE, VALID_SINGLE_LAYER, null, null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("BEC site phase is included in catalogue validation")
+  void becSitePhase_isValidated() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    BecDataDto bec = new BecDataDto("CWH", "wh", "1", null, "01", "A");
+
+    service.validate(operationalPlanRequest(List.of("DAS"), List.of("00012797"), true, false, List.of(bec)));
+
+    verify(siteSeriesCatalogueRepository)
+        .findMatchingBecCombo("CWH", "wh", "1", null, "01", "A");
+  }
+
   private void denyAll(String clientNumber) {
     for (Role role : List.of(Role.SUBMITTER, Role.APPROVER, Role.ADMIN)) {
       lenient().doReturn(false).when(loggedUserHelper).hasAbstractRole(role, clientNumber);
@@ -293,7 +337,7 @@ class StockingStandardValidationServiceTest {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     when(siteSeriesCatalogueRepository.findMatchingBecCombo(
-            "ZZZ", "zz", null, null, "99"))
+            "ZZZ", "zz", null, null, "99", null))
         .thenReturn(List.of());
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(
