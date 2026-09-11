@@ -93,12 +93,31 @@ public class ClamAvClient {
 
   // --- internal helpers ---
 
+  Socket createSocket() {
+    return new Socket();
+  }
+
+  /**
+   * Open and connect a raw TCP socket to clamd.
+   *
+   * @return connected socket
+   * @throws IOException if connection fails (ensuring the socket is closed)
+   */
   private Socket openSocket() throws IOException {
-    Socket socket = new Socket();
-    socket.connect(
-        new InetSocketAddress(properties.getHost(), properties.getPort()),
-        (int) properties.getConnectTimeout().toMillis());
-    return socket;
+    Socket socket = createSocket();
+    try {
+      socket.connect(
+          new InetSocketAddress(properties.getHost(), properties.getPort()),
+          (int) properties.getConnectTimeout().toMillis());
+      return socket;
+    } catch (Exception e) {
+      try {
+        socket.close();
+      } catch (IOException ce) {
+        e.addSuppressed(ce);
+      }
+      throw e;
+    }
   }
 
   private static void writeChunkLength(OutputStream out, int length) throws IOException {
