@@ -1,3 +1,15 @@
+-- FK dependency (storage_files.group_name_cd) for feature_classes seed below.
+INSERT INTO silva.storage_files (
+  group_name_cd, name, local_directory, tile_size, data_maturity_cd, steward_org_unit_cd, update_responsibility, entry_timestamp, entry_userid, update_timestamp, update_userid, description, special_concerns, data_availability
+) VALUES
+  ('SIL', 'Silviculture', 'N/A', 'N/A', 'F', 'HRI', NULL, '2000-05-16 14:57:51', 'SILVA_LOAD', '2000-05-16 14:57:51', 'SILVA_LOAD', 'Silviculture spatial data group.', NULL, NULL);
+
+-- Required for silva.opening_geometry.feature_class_skey (hardcoded to 2409 in CreateOpeningService).
+INSERT INTO silva.feature_classes (
+  feature_class_skey, group_name_cd, name, feature_type_cd, data_maturity_cd, overlapping_feature_ind, span_tile_ind, derived_data_ind, mandatory_metadata_ind, custodian_org_unit_cd, data_standards_manager, steward_org_unit_cd, extended_org_unit_cd, extended_data_contact, discipline_standard_cd, collection_process, entry_timestamp, entry_userid, update_timestamp, update_userid, description, comments
+) VALUES
+  (2409, 'SIL', 'Opening', 'Polygon', 'F', 'Y', 'Y', 'N', 'Y', 'HFP', NULL, 'HRI', NULL, NULL, NULL, NULL, '2000-05-16 14:57:51', 'SILVA_LOAD', '2000-05-16 14:57:51', 'SILVA_LOAD', 'Any area of land on which harvesting or a disturbance has either occurred or is planned, and on which one or more silviculture activities are planned or completed.', NULL);
+
 INSERT INTO silva.cut_block (
   cb_skey, hva_skey, forest_file_id, cutting_permit_id, timber_mark, cut_block_id, sp_exempt_ind, block_status_date, cut_block_description, cut_regulation_code, block_status_st, reforest_declare_type_code, revision_count, entry_userid, entry_timestamp, update_userid, update_timestamp, is_waste_assessment_required, cut_block_guid, fire_harvesting_reason_code, is_under_partition_order, reported_fire_date
 ) VALUES
