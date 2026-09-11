@@ -81,7 +81,7 @@
     "@types/testing-library__jest-dom": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^5.0.0",
     "bcgov-typescript-codegen": "^1.0.9",
     "dotenv": "^17.0.0",
     "eslint": "^9.0.0",
