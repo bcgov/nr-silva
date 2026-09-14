@@ -275,7 +275,24 @@ function renderStatusTerminal(statusResults) {
       continue;
     }
 
-    const gateBadge = res.gateStatus === 'OK' ? '🟢 PASSED (OK)' : '🔴 FAILED (ERROR)';
+    let gateBadge;
+    switch (res.gateStatus) {
+      case 'OK':
+        gateBadge = '🟢 PASSED (OK)';
+        break;
+      case 'WARN':
+        gateBadge = '🟡 WARNING (WARN)';
+        break;
+      case 'ERROR':
+        gateBadge = '🔴 FAILED (ERROR)';
+        break;
+      case 'NONE':
+        gateBadge = '⚪ NONE (NOT EVALUATED)';
+        break;
+      default:
+        gateBadge = `⚪ ${res.gateStatus || 'UNKNOWN'}`;
+        break;
+    }
     console.log(`   Gate Status: ${gateBadge}`);
     console.log(`   Dashboard:   ${SONAR_HOST}/summary/new_code?id=${res.projectKey}`);
     console.log('   Conditions:');
@@ -286,7 +303,21 @@ function renderStatusTerminal(statusResults) {
     }
 
     for (const c of res.conditions) {
-      const icon = c.status === 'OK' ? '✅' : '❌';
+      let icon;
+      switch (c.status) {
+        case 'OK':
+          icon = '✅';
+          break;
+        case 'WARN':
+          icon = '⚠️';
+          break;
+        case 'ERROR':
+          icon = '❌';
+          break;
+        default:
+          icon = 'ℹ️';
+          break;
+      }
       const compStr = c.comparator === 'LT' ? '>=' : '<=';
       console.log(`      ${icon} ${c.metricLabel.padEnd(24)} : Actual ${c.displayActual.padEnd(8)} (Threshold ${compStr} ${c.displayThreshold})`);
     }
