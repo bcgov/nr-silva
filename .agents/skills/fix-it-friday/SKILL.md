@@ -86,7 +86,15 @@ Execute the checks from the `repo-audit` skill:
    ./mvnw -s ~/.m2/settings.xml clean install -Dflyway-environment=dev -Dserver.primary-db=postgres --no-transfer-progress checkstyle:checkstyle -P all-tests
    cd ..
    ```
-5. **Stale Remote Branches:**
+5. **SonarCloud Quality Gate Audit:**
+   Run the lightweight, zero-token audit CLI:
+   ```bash
+   node .agents/skills/sonar-audit/scripts/sonar-api.mjs --status
+   node .agents/skills/sonar-audit/scripts/sonar-api.mjs --blockers
+   ```
+   - Record gate status (`OK` / `ERROR`) for `nr-silva-backend` and `nr-silva-frontend`.
+   - Note: This is an informational gate check. Do NOT dump hundreds of minor code smells into Fix-it Friday; only flag gate status and any Blocker/Critical regressions.
+6. **Stale Remote Branches:**
    ```bash
    git for-each-ref --sort=-committerdate refs/remotes/origin --format='%(committerdate:short) %(refname:short)' | grep -v 'origin/main' | head -n 5
    ```
@@ -109,6 +117,7 @@ Before creating a new issue, verify whether a Fix-it Friday issue has already be
 1. Fill out [fix-it-friday-issue-template.md](resources/fix-it-friday-issue-template.md) with the collected findings:
    - Bot PR triage table with recommendations.
    - Security audit summary (`npm audit` counts).
+   - SonarCloud quality gates status and blocker summary.
    - Tech debt and code hygiene action items with checkboxes.
 2. **Issue Title:**
    ```
