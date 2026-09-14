@@ -273,6 +273,10 @@ public class StockingStandardValidationService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "multiLayers must not be supplied when layerType is SINGLE");
       }
+      if (!"I".equals(dto.singleLayer().layerCode())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "singleLayer must use layer code I when layerType is SINGLE");
+      }
       validateLayerFields(dto.singleLayer(), false);
     } else {
       if (dto.singleLayer() != null) {
