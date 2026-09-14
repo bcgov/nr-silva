@@ -69,8 +69,8 @@ When an agent is tasked with fixing SonarCloud issues or preparing a PR for merg
    • Apply fix following backend/AGENTS.md or frontend/AGENTS.md guidelines
         │
 4. Verify Locally
-   • Backend: ./mvnw test checkstyle:checkstyle
-   • Frontend: npm run test:unit && npm run prebuild
+   • Backend: cd backend && ./mvnw test checkstyle:checkstyle
+   • Frontend: cd frontend && npm run test:unit && npm run prebuild
         │
 5. Push & Confirm PR Gate
    • Open / update PR
