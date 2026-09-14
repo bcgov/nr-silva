@@ -38,7 +38,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class StockingStandardValidationService {
 
   private static final String MINISTRY_DEFAULT_ORG_UNIT_CODE = "HFP";
-  private static final Set<String> VALID_HEIGHT_RELATIVE_UNIT_CODES = Set.of("CM", "%");
+  private static final Set<String> VALID_HEIGHT_RELATIVE_UNIT_CODES = Set.of("CM", "PCT");
   private static final Set<String> MULTI_LAYER_CODES = Set.of("4", "3", "2", "1");
   private static final Set<String> LAYER_1_2_ONLY_CODES = Set.of("2", "1");
   private static final Set<String> LAYER_3_4_ONLY_CODES = Set.of("4", "3");

@@ -211,7 +211,7 @@ class CreateStockingStandardServiceTest {
             new StockingLayerDto(
                 "4", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 15, "CM"),
             new StockingLayerDto(
-                "3", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 16, "%"),
+                "3", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 16, "PCT"),
             new StockingLayerDto(
                 "2", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null),
             new StockingLayerDto(

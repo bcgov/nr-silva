@@ -705,12 +705,12 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("heightRelativeToComp with a valid CM unit code passes")
-  void heightRelativeToComp_withValidUnitCode_passes() {
+  @DisplayName("heightRelativeToComp with a valid PCT unit code passes")
+  void heightRelativeToComp_withPCTUnitCode_passes() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     StockingLayerDto layer =
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, 15, "CM");
+        new StockingLayerDto("I", null, null, null, null, null, null, null, null, 15, "PCT");
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
             "Objective",
@@ -737,12 +737,12 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("heightRelativeToComp with an unsupported unit code is rejected")
-  void heightRelativeToComp_withUnsupportedUnitCode_isRejected() {
+  @DisplayName("heightRelativeToComp with percent symbol unit code is rejected")
+  void heightRelativeToComp_withPercentSymbolUnitCode_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     StockingLayerDto layer =
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, 15, "M");
+        new StockingLayerDto("I", null, null, null, null, null, null, null, null, 15, "%");
     CreateStockingStandardRequestDto request =
         operationalPlanRequest(List.of("DAS"), List.of("00012797"), false, true, null);
     request =
