@@ -86,7 +86,7 @@ When triaging SonarCloud findings, prioritize issues using this 4-tier hierarchy
 ### Tier 1: Blocker Bugs & Gate Breakers (P0 — Immediate)
 *Issues that automatically fail the Reliability Rating (Grade A threshold $\le 1$):*
 - **Resource Leaks (`java:S2095`):** Unclosed `Socket`, `InputStream`, `OutputStream`, or database connections. Must use try-with-resources or null-safe finally blocks.
-- **Null Safety & Exceptions:** Unhandled `NullPointerException` risks or uncatched checked exceptions in critical flows.
+- **Null Safety & Exceptions:** Unhandled `NullPointerException` risks or uncaught checked exceptions in critical flows.
 
 ### Tier 2: Test Integrity & False Pass Prevention (P1 — High)
 *Issues that compromise the reliability of automated test suites:*
