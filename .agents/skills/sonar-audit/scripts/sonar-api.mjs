@@ -364,6 +364,8 @@ async function main() {
   }
 
   const projects = resolveProjects(options.project);
+  const jsonOutput = {};
+  const activeOps = [options.status, options.pr, options.blockers, options.rule].filter(Boolean).length;
 
   // 1. Status Check
   if (options.status) {
@@ -374,7 +376,10 @@ async function main() {
     }
 
     if (options.json) {
-      console.log(JSON.stringify({ statusResults }, null, 2));
+      jsonOutput.status = statusResults;
+      if (activeOps === 1) {
+        jsonOutput.statusResults = statusResults;
+      }
     } else {
       renderStatusTerminal(statusResults);
     }
@@ -394,7 +399,11 @@ async function main() {
     });
 
     if (options.json) {
-      console.log(JSON.stringify({ pr: options.pr, statusResults, issues: prIssuesResult }, null, 2));
+      const prData = { pr: options.pr, statusResults, issues: prIssuesResult };
+      jsonOutput.pullRequest = prData;
+      if (activeOps === 1) {
+        Object.assign(jsonOutput, prData);
+      }
     } else {
       renderStatusTerminal(statusResults);
       renderIssuesTerminal(`PR #${options.pr} Issues`, prIssuesResult.issues, prIssuesResult.total);
@@ -409,7 +418,10 @@ async function main() {
     });
 
     if (options.json) {
-      console.log(JSON.stringify(blockersResult, null, 2));
+      jsonOutput.blockers = blockersResult;
+      if (activeOps === 1) {
+        Object.assign(jsonOutput, blockersResult);
+      }
     } else {
       renderIssuesTerminal('Blocker & Critical Issues', blockersResult.issues, blockersResult.total);
     }
@@ -429,10 +441,18 @@ async function main() {
     });
 
     if (options.json) {
-      console.log(JSON.stringify({ rule: ruleArg, ...ruleResult }, null, 2));
+      const ruleData = { rule: ruleArg, ...ruleResult };
+      jsonOutput.rule = ruleData;
+      if (activeOps === 1) {
+        Object.assign(jsonOutput, ruleData);
+      }
     } else {
       renderIssuesTerminal(`Rule Issues (${ruleArg})`, ruleResult.issues, ruleResult.total);
     }
+  }
+
+  if (options.json) {
+    console.log(JSON.stringify(jsonOutput, null, 2));
   }
 }
 
