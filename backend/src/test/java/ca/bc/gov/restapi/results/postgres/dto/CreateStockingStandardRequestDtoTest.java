@@ -11,6 +11,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
@@ -153,5 +154,30 @@ class CreateStockingStandardRequestDtoTest {
             request.additionalStandards());
 
     assertThat(validator.validate(invalid)).isNotEmpty();
+  }
+
+  @Test
+  @DisplayName("Null BEC and species elements are rejected")
+  void nullCollectionElements_areRejected() {
+    CreateStockingStandardRequestDto request = validRequest();
+    CreateStockingStandardRequestDto nullBecData =
+        new CreateStockingStandardRequestDto(
+            request.objective(), request.name(), request.location(), request.authorityType(),
+            request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
+            request.alternativeMethodSelected(), Collections.singletonList(null), request.species(),
+            request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
+            request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
+            request.multiLayers(), request.additionalStandards());
+    CreateStockingStandardRequestDto nullSpecies =
+        new CreateStockingStandardRequestDto(
+            request.objective(), request.name(), request.location(), request.authorityType(),
+            request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
+            request.alternativeMethodSelected(), request.becData(), Collections.singletonList(null),
+            request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
+            request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
+            request.multiLayers(), request.additionalStandards());
+
+    assertThat(validator.validate(nullBecData)).isNotEmpty();
+    assertThat(validator.validate(nullSpecies)).isNotEmpty();
   }
 }

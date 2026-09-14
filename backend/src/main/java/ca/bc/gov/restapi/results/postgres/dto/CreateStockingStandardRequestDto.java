@@ -50,8 +50,8 @@ public record CreateStockingStandardRequestDto(
     List<@NotBlank @Size(max = 8) String> clientNumbers,
     @NotNull Boolean becInfoSelected,
     @NotNull Boolean alternativeMethodSelected,
-    @Valid List<BecDataDto> becData,
-    @Valid List<StockingSpeciesDto> species,
+    List<@NotNull @Valid BecDataDto> becData,
+    List<@NotNull @Valid StockingSpeciesDto> species,
     @NotNull StockingType stockingType,
     Integer regenDelayYears,
     Integer freeGrowingYears,
@@ -59,5 +59,5 @@ public record CreateStockingStandardRequestDto(
     Integer lateYears,
     @NotNull StockingLayerType layerType,
     @Valid StockingLayerDto singleLayer,
-    @Valid List<StockingLayerDto> multiLayers,
+    List<@NotNull @Valid StockingLayerDto> multiLayers,
     @Size(max = 4000) String additionalStandards) {}
