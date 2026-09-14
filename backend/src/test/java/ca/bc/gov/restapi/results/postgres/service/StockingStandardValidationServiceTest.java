@@ -430,7 +430,7 @@ class StockingStandardValidationServiceTest {
 
   @Test
   @DisplayName("Single layer with a non-I code is rejected")
-  void singleLayer_withNonICode_isRejected() {
+  void singleLayer_withUnexpectedCode_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     CreateStockingStandardRequestDto request =
@@ -733,7 +733,7 @@ class StockingStandardValidationServiceTest {
 
   @Test
   @DisplayName("heightRelativeToComp with a valid PCT unit code passes")
-  void heightRelativeToComp_withPCTUnitCode_passes() {
+  void heightRelativeToComp_withPercentageUnitCode_passes() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
     StockingLayerDto layer =
