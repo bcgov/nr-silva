@@ -105,8 +105,8 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Ministry Default resolves the HFP org unit for an authorized user")
-  void ministryDefault_resolvesHfpOrgUnit() {
+  @DisplayName("Provincial Ministry Default resolves the HFP org unit for an authorized user")
+  void ministryDefaultProvincial_resolvesHfpOrgUnit() {
     when(orgUnitRepository.findByOrgUnitCode("HFP"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(90L).orgUnitCode("HFP").build()));
 
@@ -115,8 +115,8 @@ class StockingStandardValidationServiceTest {
             "Objective",
             null,
             null,
-            StockingStandardAuthorityType.MINISTRY_DEFAULT,
-            null,
+            StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL,
+            List.of("DAS"),
             null,
             false,
             true,
@@ -138,13 +138,13 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Ministry Default without the configured HFP org unit fails as a server error")
-  void ministryDefault_withoutHfpOrgUnit_isRejected() {
+  @DisplayName("Provincial Ministry Default without the configured HFP org unit fails as a server error")
+  void ministryDefaultProvincial_withoutHfpOrgUnit_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("HFP")).thenReturn(Optional.empty());
 
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
-            "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT, null, null,
+            "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL, null, null,
             false, true, null, List.of(VALID_SPECIES), StockingType.REGEN_OBLIGATION, 1, 20,
             null, null, StockingLayerType.SINGLE, VALID_SINGLE_LAYER, null, null);
 
@@ -215,18 +215,100 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Ministry Default with a supplied client is rejected")
-  void ministryDefault_withClient_isRejected() {
+  @DisplayName("Provincial Ministry Default with a supplied client is rejected")
+  void ministryDefaultProvincial_withClient_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("HFP"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(90L).orgUnitCode("HFP").build()));
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
-            "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT, null,
+            "Objective", null, null, StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL, null,
             List.of("00012797"), false, true, null, List.of(VALID_SPECIES),
             StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.SINGLE,
             VALID_SINGLE_LAYER, null, null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default resolves valid non-HFP org units")
+  void ministryDefaultOthers_resolvesNonHfpOrgUnits() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    CreateStockingStandardRequestDto request = ministryDefaultOthersRequest(List.of("DAS"), null);
+
+    assertThat(service.validate(request)).containsExactly(1L);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default without org units is rejected")
+  void ministryDefaultOthers_withoutOrgUnits_isRejected() {
+    assertRejected(ministryDefaultOthersRequest(null, null), HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default rejects HFP")
+  void ministryDefaultOthers_withHfp_isRejected() {
+    assertRejected(ministryDefaultOthersRequest(List.of(" hfp "), null), HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default rejects unknown org units")
+  void ministryDefaultOthers_withUnknownOrgUnit_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("ZZZ")).thenReturn(Optional.empty());
+
+    assertRejected(ministryDefaultOthersRequest(List.of("ZZZ"), null), HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default rejects supplied clients")
+  void ministryDefaultOthers_withClient_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    assertRejected(
+        ministryDefaultOthersRequest(List.of("DAS"), List.of("00012797")), HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Ministry Default is forbidden without a Ministry of Forests role")
+  void ministryDefault_withoutMinistryRole_isForbidden() {
+    when(orgUnitRepository.findByOrgUnitCode("HFP"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(90L).orgUnitCode("HFP").build()));
+    denyAll("00012797");
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective",
+            null,
+            null,
+            StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL,
+            null,
+            null,
+            false,
+            true,
+            null,
+            List.of(VALID_SPECIES),
+            StockingType.REGEN_OBLIGATION,
+            1,
+            20,
+            null,
+            null,
+            StockingLayerType.SINGLE,
+            VALID_SINGLE_LAYER,
+            null,
+            null);
+
+    assertRejected(request, HttpStatus.FORBIDDEN);
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default is forbidden without a Ministry of Forests role")
+  void ministryDefaultOthers_withoutMinistryRole_isForbidden() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    denyAll("00012797");
+
+    assertRejected(ministryDefaultOthersRequest(List.of("DAS"), null), HttpStatus.FORBIDDEN);
   }
 
   @Test
@@ -257,16 +339,47 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Duplicate species codes are rejected")
+  @DisplayName("Duplicate normalized species codes are rejected")
   void duplicateSpeciesCodes_areRejected() {
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
             "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
             List.of("DAS"), List.of("00012797"), false, true, null,
-            List.of(VALID_SPECIES, VALID_SPECIES), StockingType.REGEN_OBLIGATION, 1, 20, null,
+            List.of(
+                VALID_SPECIES,
+                new StockingSpeciesDto(
+                    " cw ",
+                    StockingSpeciesType.ACCEPTABLE,
+                    null,
+                    StockingSpeciesMilestone.REGEN)),
+            StockingType.REGEN_OBLIGATION, 1, 20, null,
             null, StockingLayerType.SINGLE, VALID_SINGLE_LAYER, null, null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  private CreateStockingStandardRequestDto ministryDefaultOthersRequest(
+      List<String> orgUnitCodes, List<String> clientNumbers) {
+    return new CreateStockingStandardRequestDto(
+        "Objective",
+        null,
+        null,
+        StockingStandardAuthorityType.MINISTRY_DEFAULT_OTHERS,
+        orgUnitCodes,
+        clientNumbers,
+        false,
+        true,
+        null,
+        List.of(VALID_SPECIES),
+        StockingType.REGEN_OBLIGATION,
+        1,
+        20,
+        null,
+        null,
+        StockingLayerType.SINGLE,
+        VALID_SINGLE_LAYER,
+        null,
+        null);
   }
 
   @Test

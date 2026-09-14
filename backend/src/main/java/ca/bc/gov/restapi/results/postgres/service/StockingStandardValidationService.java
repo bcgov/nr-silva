@@ -18,6 +18,7 @@ import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgres
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -70,10 +71,7 @@ public class StockingStandardValidationService {
   private void validateDuplicateValues(CreateStockingStandardRequestDto dto) {
     rejectDuplicateValues(dto.orgUnitCodes(), "orgUnitCodes");
     rejectDuplicateValues(dto.clientNumbers(), "clientNumbers");
-    if (dto.species() != null) {
-      rejectDuplicateValues(
-          dto.species().stream().map(StockingSpeciesDto::speciesCode).toList(), "species");
-    }
+    rejectDuplicateSpeciesCodes(dto.species());
   }
 
   private void rejectDuplicateValues(List<String> values, String fieldName) {
@@ -89,8 +87,22 @@ public class StockingStandardValidationService {
     }
   }
 
+  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species) {
+    if (species == null) {
+      return;
+    }
+    Set<String> normalizedCodes = new HashSet<>();
+    for (StockingSpeciesDto speciesDto : species) {
+      String normalizedCode = speciesDto.speciesCode().trim().toUpperCase(Locale.ROOT);
+      if (!normalizedCodes.add(normalizedCode)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "species must not contain duplicate species codes");
+      }
+    }
+  }
+
   private List<Long> validateAuthority(CreateStockingStandardRequestDto dto) {
-    if (dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT) {
+    if (dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL) {
       // Ministry Default forces the HFP org unit server-side; any client-supplied org units are
       // ignored (this is a Silva-only rule, not inherited from legacy RESULTS).
       OrgUnitEntity hfp =
@@ -105,15 +117,24 @@ public class StockingStandardValidationService {
       return List.of(hfp.getOrgUnitNo());
     }
 
-    // OPERATIONAL_PLAN: at least one org unit is required, and every code must exist.
+    boolean ministryDefaultOthers =
+        dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT_OTHERS;
     List<String> orgUnitCodes = dto.orgUnitCodes();
     if (orgUnitCodes == null || orgUnitCodes.isEmpty()) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "At least one org unit is required for Operational Plan authority");
+          HttpStatus.BAD_REQUEST,
+          "At least one org unit is required for "
+              + (ministryDefaultOthers ? "Ministry Default Others" : "Operational Plan")
+              + " authority");
     }
     List<Long> orgUnitNos = new ArrayList<>();
     List<String> notFound = new ArrayList<>();
     for (String code : orgUnitCodes) {
+      if (ministryDefaultOthers && MINISTRY_DEFAULT_ORG_UNIT_CODE.equalsIgnoreCase(code.trim())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "HFP must not be supplied for Ministry Default Others authority");
+      }
       orgUnitRepository
           .findByOrgUnitCode(code.trim())
           .ifPresentOrElse(
@@ -128,7 +149,7 @@ public class StockingStandardValidationService {
 
   private void validateClients(CreateStockingStandardRequestDto dto) {
     List<String> clientNumbers = dto.clientNumbers();
-    if (dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT) {
+    if (dto.authorityType().isMinistryDefault()) {
       if (clientNumbers != null && !clientNumbers.isEmpty()) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,

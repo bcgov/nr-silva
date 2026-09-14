@@ -73,7 +73,7 @@ public class CreateStockingStandardService {
             .standardsObjective(dto.objective().trim())
             .geographicDescription(dto.location() != null ? dto.location().trim() : null)
             .mofDefaultStandardInd(
-                dto.authorityType() == StockingStandardAuthorityType.MINISTRY_DEFAULT ? "Y" : "N")
+                dto.authorityType().isMinistryDefault() ? "Y" : "N")
             .alternativeMethodInd(Boolean.TRUE.equals(dto.alternativeMethodSelected()) ? "Y" : "N")
             .regenObligationInd(dto.stockingType() == StockingType.REGEN_OBLIGATION ? "Y" : "N")
             .regenDelayOffsetYrs(dto.regenDelayYears())

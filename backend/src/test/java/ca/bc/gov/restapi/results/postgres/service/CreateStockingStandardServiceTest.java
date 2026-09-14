@@ -144,9 +144,10 @@ class CreateStockingStandardServiceTest {
   }
 
   @Test
-  @DisplayName("Ministry Default maps its flags and does not persist client links")
-  void create_ministryDefault_mapsAuthorityFlagsWithoutClients() {
-    CreateStockingStandardRequestDto request = ministryDefaultRequest();
+  @DisplayName("Provincial Ministry Default maps its flags and does not persist client links")
+  void create_ministryDefaultProvincial_mapsAuthorityFlagsWithoutClients() {
+    CreateStockingStandardRequestDto request =
+        ministryDefaultRequest(StockingStandardAuthorityType.MINISTRY_DEFAULT_PROVINCIAL);
     when(validationService.validate(request)).thenReturn(List.of(90L));
     when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
     when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(101L, 401L);
@@ -162,6 +163,24 @@ class CreateStockingStandardServiceTest {
             StandardsRegimeEntity::getAlternativeMethodInd,
             StandardsRegimeEntity::getRegenObligationInd)
         .containsExactly("Y", "Y", "N");
+    verify(clientLinkRepository, org.mockito.Mockito.never()).save(any());
+  }
+
+  @Test
+  @DisplayName("Other Ministry Default maps its flags and does not persist client links")
+  void create_ministryDefaultOthers_mapsAuthorityFlagsWithoutClients() {
+    CreateStockingStandardRequestDto request =
+        ministryDefaultRequest(StockingStandardAuthorityType.MINISTRY_DEFAULT_OTHERS);
+    when(validationService.validate(request)).thenReturn(List.of(11L));
+    when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
+    when(jdbcTemplate.queryForObject(anyString(), eq(Long.class))).thenReturn(102L, 402L);
+
+    service.create(request);
+
+    ArgumentCaptor<StandardsRegimeEntity> standard =
+        ArgumentCaptor.forClass(StandardsRegimeEntity.class);
+    verify(standardsRegimeRepository).save(standard.capture());
+    assertThat(standard.getValue().getMofDefaultStandardInd()).isEqualTo("Y");
     verify(clientLinkRepository, org.mockito.Mockito.never()).save(any());
   }
 
@@ -228,12 +247,13 @@ class CreateStockingStandardServiceTest {
         null);
   }
 
-  private CreateStockingStandardRequestDto ministryDefaultRequest() {
+  private CreateStockingStandardRequestDto ministryDefaultRequest(
+      StockingStandardAuthorityType authorityType) {
     return new CreateStockingStandardRequestDto(
         "Objective",
         null,
         null,
-        StockingStandardAuthorityType.MINISTRY_DEFAULT,
+        authorityType,
         null,
         null,
         false,

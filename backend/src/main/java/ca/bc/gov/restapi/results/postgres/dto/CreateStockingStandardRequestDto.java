@@ -20,9 +20,12 @@ import java.util.List;
  * @param objective the objective of the Stocking Standard
  * @param name a descriptive name for the Stocking Standard, optional
  * @param location a description of the geographic area, optional
- * @param authorityType whether this is an Operational Plan or Ministry Default standard
- * @param orgUnitCodes org unit codes for Operational Plan authority; ignored for Ministry Default
- * @param clientNumbers client numbers for Operational Plan authority, optional
+ * @param authorityType whether this is an Operational Plan, provincial Ministry Default, or other
+ *     Ministry Default standard
+ * @param orgUnitCodes org unit codes for Operational Plan and other Ministry Default authority;
+ *     ignored for provincial Ministry Default, which uses HFP
+ * @param clientNumbers client numbers for Operational Plan authority; not allowed for Ministry
+ *     Default authority
  * @param becInfoSelected whether BEC information applies to this standard
  * @param alternativeMethodSelected whether an alternative method applies to this standard
  * @param becData BEC entries; required (min 1) if becInfoSelected is true, otherwise must be empty
