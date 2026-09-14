@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -26,7 +27,7 @@ public record StockingLayerDto(
     @NotBlank @Size(max = 2) String layerCode,
     Integer minWellSpacedTrees,
     Integer minPreferredWellSpacedTrees,
-    java.math.BigDecimal minHorizontalDistance,
+    @Digits(integer = 2, fraction = 1) java.math.BigDecimal minHorizontalDistance,
     Integer targetWellSpacedTrees,
     Integer minResidualBasalArea,
     Integer minPostSpacingDensity,
