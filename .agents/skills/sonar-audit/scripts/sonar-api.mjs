@@ -201,40 +201,55 @@ async function getProjectStatus(projectKey, pullRequest = null) {
 }
 
 async function getIssues({ projects, severities, rules, pullRequest }) {
-  let url = `${SONAR_HOST}/api/issues/search?resolved=false&ps=100`;
-  if (projects && projects.length > 0) {
-    url += `&projects=${encodeURIComponent(projects.join(','))}`;
-  }
-  if (severities && severities.length > 0) {
-    url += `&severities=${encodeURIComponent(severities.join(','))}`;
-  }
-  if (rules && rules.length > 0) {
-    url += `&rules=${encodeURIComponent(rules.join(','))}`;
-  }
-  if (pullRequest) {
-    url += `&pullRequest=${encodeURIComponent(pullRequest)}`;
-  }
+  const allIssues = [];
+  const pageSize = 100;
+  let page = 1;
+  let total = 0;
 
-  const data = await fetchJson(url);
-  if (data.error) {
-    return { error: data.error, status: data.status, issues: [], total: 0 };
-  }
+  while (true) {
+    let url = `${SONAR_HOST}/api/issues/search?resolved=false&ps=${pageSize}&p=${page}`;
+    if (projects && projects.length > 0) {
+      url += `&projects=${encodeURIComponent(projects.join(','))}`;
+    }
+    if (severities && severities.length > 0) {
+      url += `&severities=${encodeURIComponent(severities.join(','))}`;
+    }
+    if (rules && rules.length > 0) {
+      url += `&rules=${encodeURIComponent(rules.join(','))}`;
+    }
+    if (pullRequest) {
+      url += `&pullRequest=${encodeURIComponent(pullRequest)}`;
+    }
 
-  const issues = (data.issues || []).map((iss) => ({
-    key: iss.key,
-    rule: iss.rule,
-    severity: iss.severity,
-    type: iss.type,
-    project: iss.project,
-    file: cleanComponentPath(iss.component, iss.project),
-    line: iss.line || (iss.textRange ? iss.textRange.startLine : null),
-    message: iss.message,
-    url: `${SONAR_HOST}/project/issues?id=${encodeURIComponent(iss.project)}&open=${encodeURIComponent(iss.key)}`
-  }));
+    const data = await fetchJson(url);
+    if (data.error) {
+      return { error: data.error, status: data.status, issues: allIssues, total };
+    }
+
+    total = data.total ?? total;
+    const issues = (data.issues || []).map((iss) => ({
+      key: iss.key,
+      rule: iss.rule,
+      severity: iss.severity,
+      type: iss.type,
+      project: iss.project,
+      file: cleanComponentPath(iss.component, iss.project),
+      line: iss.line || (iss.textRange ? iss.textRange.startLine : null),
+      message: iss.message,
+      url: `${SONAR_HOST}/project/issues?id=${encodeURIComponent(iss.project)}&open=${encodeURIComponent(iss.key)}`
+    }));
+
+    allIssues.push(...issues);
+
+    if (allIssues.length >= total || issues.length === 0 || page * pageSize >= 10000) {
+      break;
+    }
+    page++;
+  }
 
   return {
-    total: data.total || issues.length,
-    issues
+    total: total || allIssues.length,
+    issues: allIssues
   };
 }
 
