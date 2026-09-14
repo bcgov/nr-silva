@@ -144,7 +144,8 @@ INSERT INTO silva.biogeoclimatic_catalogue (
 ) VALUES
   (1, 'CWH', 'wh', '1', NULL, 'NDT1', 'Coastal Western Hemlock', 'Wet Hypermaritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
   (2, 'CWH', 'vh', '2', NULL, 'NDT1', 'Coastal Western Hemlock', 'Very Wet Hypermaritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
-  (3, 'CWH', 'xm', NULL, NULL, 'NDT2', 'Coastal Western Hemlock', 'Dry Maritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD');
+  (3, 'CWH', 'xm', NULL, NULL, 'NDT2', 'Coastal Western Hemlock', 'Dry Maritime', NULL, NULL, NULL, '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (4, 'CWH', 'ex', NULL, NULL, 'NDT2', 'Coastal Western Hemlock', 'Expired', NULL, NULL, NULL, '1905-01-01', '2025-01-01', '2025-01-01 00:00:00', 'SILVA_LOAD');
 
 INSERT INTO silva.site_series_catalogue (
   site_series_catalogue_id, bec_region_code, biogeoclimatic_catalogue_id, site_series, site_series_phase,
@@ -156,7 +157,8 @@ INSERT INTO silva.site_series_catalogue (
   (4, 'CST', 2, '01', NULL, NULL, NULL, 'CwHw - Salal', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
   (5, 'CST', 2, '04', NULL, NULL, NULL, 'HwSs - Lanky moss', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
   (6, 'CST', 2, '05', NULL, NULL, NULL, 'CwSs - Sword fern', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
-  (7, 'CST', 3, '01', NULL, NULL, NULL, 'HwFd - Kindbergia', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD');
+  (7, 'CST', 3, '01', NULL, NULL, NULL, 'HwFd - Kindbergia', '1905-01-01', '9999-12-31', '2025-01-01 00:00:00', 'SILVA_LOAD'),
+  (8, 'CST', 4, '01', NULL, NULL, NULL, 'Expired site series', '1905-01-01', '2025-01-01', '2025-01-01 00:00:00', 'SILVA_LOAD');
 
 -- Ministry Default authority org unit, required by CreateStockingStandardService/StockingStandardValidationService.
 INSERT INTO silva.org_unit (org_unit_no, org_unit_code, org_unit_name, location_code, area_code, telephone_no, org_level_code, office_name_code, rollup_region_no, rollup_region_code, rollup_dist_no, rollup_dist_code, effective_date, expiry_date, update_timestamp) VALUES

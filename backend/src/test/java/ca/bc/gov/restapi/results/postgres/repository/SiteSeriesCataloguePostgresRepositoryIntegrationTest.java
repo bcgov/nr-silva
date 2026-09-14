@@ -38,4 +38,10 @@ class SiteSeriesCataloguePostgresRepositoryIntegrationTest
   void findMatchingBecCombo_unknownSiteSeries_returnsEmpty() {
     assertThat(repository.findMatchingBecCombo("CWH", "wh", "1", null, "99", null)).isEmpty();
   }
+
+  @Test
+  @DisplayName("Rejects an expired BEC combination")
+  void findMatchingBecCombo_expiredCombination_returnsEmpty() {
+    assertThat(repository.findMatchingBecCombo("CWH", "ex", null, null, "01", null)).isEmpty();
+  }
 }
