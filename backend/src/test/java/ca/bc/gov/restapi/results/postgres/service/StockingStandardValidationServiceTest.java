@@ -418,6 +418,33 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
+  @DisplayName("BEC info and alternative method selected together is rejected")
+  void becInfoAndAltMethodSelected_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    assertRejected(
+        operationalPlanRequest(List.of("DAS"), List.of("00012797"), true, true, List.of()),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Single layer with a non-I code is rejected")
+  void singleLayer_withNonICode_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"), List.of("00012797"), false, true, null, List.of(VALID_SPECIES),
+            StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.SINGLE,
+            new StockingLayerDto("4", null, null, null, null, null, null, null, null, null, null),
+            null, null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
   @DisplayName("BEC info selected with no BEC entries is rejected")
   void becInfoSelected_noBecData_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))

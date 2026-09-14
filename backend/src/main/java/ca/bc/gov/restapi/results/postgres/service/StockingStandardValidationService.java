@@ -181,9 +181,9 @@ public class StockingStandardValidationService {
   private void validateBec(CreateStockingStandardRequestDto dto) {
     boolean becInfo = Boolean.TRUE.equals(dto.becInfoSelected());
     boolean altMethod = Boolean.TRUE.equals(dto.alternativeMethodSelected());
-    if (!becInfo && !altMethod) {
+    if (becInfo == altMethod) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Select at least one of BEC information or Alternative method");
+          HttpStatus.BAD_REQUEST, "Select exactly one of BEC information or Alternative method");
     }
 
     List<BecDataDto> becData = dto.becData();
