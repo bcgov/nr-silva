@@ -92,7 +92,7 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 
 - Never add DB-specific logic to endpoints (use service layer)
 - Never hardcode Oracle/Postgres; use `@ConditionalOnProperty`
-- Always register new DTOs/entities in `@RegisterReflectionForBinding` (Spring AOT)
+- Register new DTOs and other API-bound types in `@RegisterReflectionForBinding` (Spring AOT); JPA entities and composite IDs are discovered through Hibernate's AOT processing and do not belong in this binding registry unless they are also serialized directly
 - Query results → projection interfaces (not entities)
 - Query logic (postgres-only): prefer proper JPA (JPQL `@Query` or derived methods) over native SQL; ask user for DDL upfront instead of searching the codebase
 - Query logic (oracle or dual-DB): native SQL required on concrete repository classes (no `@Query`)
@@ -112,7 +112,7 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 
 - [ ] Package placement: common/oracle/postgres correct
 - [ ] @ConditionalOnProperty on all DB-specific beans
-- [ ] Entities registered in @RegisterReflectionForBinding
+- [ ] API DTOs and other directly serialized types registered in @RegisterReflectionForBinding; JPA entities rely on Hibernate AOT metadata unless directly serialized
 - [ ] DTOs use @Getter/@NoArgsConstructor, not records
 - [ ] Repositories: interface in common, impl in oracle/postgres
 - [ ] Services: abstract in common, concrete in oracle/postgres
