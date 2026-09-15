@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SilvaPostgresQueryConstants {
 
+  public static final String MINISTRY_OF_FORESTS_CLIENT_NUMBER = "00012797";
+
   public static final String SILVICULTURE_SEARCH_SELECT =
 	"""
 	SELECT DISTINCT op.opening_id
@@ -2499,7 +2501,7 @@ public class SilvaPostgresQueryConstants {
 								JOIN standards_regime_layer_species srls
 									ON srls.standards_regime_layer_id = srl.standards_regime_layer_id
 								WHERE srl.standards_regime_id = sr.standards_regime_id
-								AND srls.preferred_ind = 'Y'
+								AND srls.species_type_code = 'PRF'
 								AND UPPER(srls.silv_tree_species_code) IN (:#{#filter.preferredSpecies})
 							)
 						)
@@ -2598,7 +2600,7 @@ public class SilvaPostgresQueryConstants {
 					ON srls.standards_regime_layer_id = srl.standards_regime_layer_id
 				LEFT JOIN silv_tree_species_code stsc
 					ON stsc.silv_tree_species_code = srls.silv_tree_species_code
-				WHERE srls.preferred_ind = 'Y'
+				WHERE srls.species_type_code = 'PRF'
 			),
 			species_agg AS (
 				SELECT
