@@ -35,6 +35,7 @@ silv_technique_code
 tenure_file_status_code
 tree_cover_pattern_code
 age_class_code
+biogeoclimatic_catalogue
 block_status_code
 crew_contract_hire_code
 cut_block_client_type_code
@@ -102,6 +103,7 @@ standards_regime_layer
 stocking_layer
 opening_land_status
 results_audit_detail
+site_series_catalogue
 standards_regime_site_series
 stocking_standard_unit_amd
 activity_tu_comment_link

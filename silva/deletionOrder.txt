@@ -35,6 +35,7 @@ open_viewable_category
 activity_tu_comment_link
 stocking_standard_unit_amd
 standards_regime_site_series
+site_series_catalogue
 results_audit_detail
 opening_land_status
 stocking_layer
@@ -102,6 +103,7 @@ cut_regulation_code
 cut_block_client_type_code
 crew_contract_hire_code
 block_status_code
+biogeoclimatic_catalogue
 age_class_code
 tree_cover_pattern_code
 tenure_file_status_code

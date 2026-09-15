@@ -2,6 +2,9 @@
    <sequences>
       <sequence increment="1" name="cut_block_open_admin_id_seq" startValue="1"/>
       <sequence increment="1" name="opening_id_seq" startValue="1"/>
+      <sequence increment="1" name="standard_regime_site_series_id_seq" startValue="1"/>
+      <sequence increment="1" name="standards_regime_id_seq" startValue="1"/>
+      <sequence increment="1" name="standards_regime_layer_id_seq" startValue="1"/>
    </sequences>
    <tables>
       <table name="activity_treatment_unit" remarks="An Activity Treatment Unit is a Silvicultural treatment that is performed on a mappable area which deliniates a specific area of land. ATUs may not span opening boundaries but an opening may have more than one ATU associated with it." schema="silva" type="TABLE">
@@ -175,6 +178,29 @@
             <column ascending="true" name="age_class_code"/>
          </index>
       </table>
+      <table name="biogeoclimatic_catalogue" remarks="The complete set of unique valid combinations of biogeoclimatic Zone, Subzone, Variant and Phase. Any other combinations are not valid." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="biogeoclimatic_catalogue_id" nullable="false" remarks="Assigned numeric identifier for a biogeoclimatic catalog entry unique within a biogeoclimatic unit." size="19" type="int8" typeCode="-5">
+            <child column="biogeoclimatic_catalogue_id" foreignKey="ssc_bc_fk" implied="false" onDeleteCascade="false" schema="silva" table="site_series_catalogue"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="bec_zone_code" nullable="false" remarks="A code uniquely identifying a Biogeoclimatic Zone of interest to MOF." size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="subzone" nullable="false" remarks="A code uniquely identifying a Biogeoclimatic SubZone; only meaningful in conjunction with a Zone." size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="variant" nullable="true" remarks="A one digit number used to denote a division of a specific biogeoclimatic subzone; only meaningful within a Zone and Subzone." size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="phase" nullable="true" remarks="A one character code denoting an atypical area, resulting from local relief, in the regional climate of the subzones and variants." size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="bec_natural_disturbance_code" nullable="false" remarks="The Natural Disturbance code of interest to MOF (NDT1-NDT5)." size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="zone_name" nullable="false" remarks="Descriptive name given to a large geographic area with similar macroclimate; zone names describe the major vegetation contained within the zone." size="35" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="subzone_name" nullable="false" remarks="Descriptive name given to a division of the biogeoclimatic zone." size="35" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="variant_name" nullable="true" remarks="Descriptive name given to a division of the biogeoclimatic subzone." size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="phase_name" nullable="true" remarks="Descriptive name given to an atypical area, resulting from local relief, in the regional climate of the subzones and variants." size="15" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="notes" nullable="true" remarks="A comment on the Zone, Subzone, Variant, Phase." size="72" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="effective_date" nullable="false" remarks="The date that this entry is effective." size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="expiry_date" nullable="false" remarks="The date that this entry is/becomes expired." size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="update_timestamp" nullable="false" remarks="The date and time that this entry was last updated." size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="update_userid" nullable="false" remarks="The userid of the person who last updated the entry." size="30" type="varchar" typeCode="12"/>
+         <primaryKey column="biogeoclimatic_catalogue_id" sequenceNumberInPK="1"/>
+         <index name="biogeoclimatic_catalogue_pkey" unique="true">
+            <column ascending="true" name="biogeoclimatic_catalogue_id"/>
+         </index>
+      </table>
       <table name="block_status_code" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="block_status_code" nullable="false" remarks="The before status image of the Cut Block. The status indicates the point the Cut Block is at in it&quot;s lifecycle. Examples are: PP - Planning, HA - Harvesting, LC - Logging Complete, and S - Silviculture." size="3" type="varchar" typeCode="12">
             <child column="block_status_st" foreignKey="cblk_bscd_fk" implied="false" onDeleteCascade="false" schema="silva" table="cut_block"/>
@@ -317,8 +343,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="forest_file_id" nullable="false" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="cutting_permit_id" nullable="true" remarks="Identifier for a cutting permit associated with a harvesting tenure." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12">
-            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
             <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
+            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cut_block_id" nullable="false" remarks="Identifier for a cut block of a harvesting tenure (within a cutting permit for tenures with cp&quot;s)." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="6" name="sp_exempt_ind" nullable="false" remarks="Only set to &quot;Y&quot; for &quot;Exemption for silviculture Prescriptions&quot; under sec. 30 of the Forest Practices Code of British Columbia Act, eg cut blocks under one hectare, or the use of the land will be incompatible with the establishment of a free growing stand." size="1" type="varchar" typeCode="12"/>
@@ -2990,6 +3016,29 @@
             <column ascending="true" name="site_index_source_code"/>
          </index>
       </table>
+      <table name="site_series_catalogue" remarks="Within the BEC system, all sites capable of producing the same mature or climax plant communities within a biogeoclimatic subzone or variant." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="site_series_catalogue_id" nullable="false" remarks="Assigned numeric identifier for a site series unique within a biogeoclimatic unit." size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="bec_region_code" nullable="false" remarks="A code uniquely identifying a BEC Region." size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="biogeoclimatic_catalogue_id" nullable="false" remarks="Assigned numeric identifier for the biogeoclimatic catalog entry (Zone/Subzone/Variant/Phase) this site series belongs to." size="19" type="int8" typeCode="-5">
+            <parent column="biogeoclimatic_catalogue_id" foreignKey="ssc_bc_fk" implied="false" onDeleteCascade="false" schema="silva" table="biogeoclimatic_catalogue"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="site_series" nullable="false" remarks="A number from 01 to 99 representing the soil moisture regime and soil nutrient regime of a site series, relative to other site series within a subzone or variant." size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="site_series_phase" nullable="true" remarks="A subdivision of a site series used when site or soil properties differ sufficiently to affect management prescriptions." size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="site_series_variation" nullable="true" remarks="Site variation describes divergent vegetative trends or floristic features, usually related to short-term successional factors and recent stand history." size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="seral" nullable="true" remarks="Seral code; may be seral association (4 lower case alphabetic) or seral developmental/structural stage (2 upper case alphabetic)." size="4" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="description" nullable="false" remarks="A connotative label, made up of the names of the potentially dominant plant species for a site series." size="80" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="effective_date" nullable="false" remarks="The date that this entry is effective." size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="expiry_date" nullable="false" remarks="The date that this entry is/becomes expired." size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="update_timestamp" nullable="false" remarks="The date and time that this entry was last updated." size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="update_userid" nullable="false" remarks="The userid of the person who last updated this entry." size="30" type="varchar" typeCode="12"/>
+         <primaryKey column="site_series_catalogue_id" sequenceNumberInPK="1"/>
+         <index name="site_series_catalogue_pkey" unique="true">
+            <column ascending="true" name="site_series_catalogue_id"/>
+         </index>
+         <index name="ssc_bc_fk_i" unique="false">
+            <column ascending="true" name="biogeoclimatic_catalogue_id"/>
+         </index>
+      </table>
       <table name="spar_request" remarks="A request for silviculture services from the Seed Planning and Registry (SPAR) system." schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="request_skey" nullable="false" remarks="" size="19" type="int8" typeCode="-5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_type_code" nullable="false" remarks="" size="3" type="varchar" typeCode="12"/>
@@ -3144,6 +3193,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="update_userid" nullable="false" remarks="The USERID of the individual who last updated the information." size="30" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="update_timestamp" nullable="false" remarks="The date and time of the last update." size="22" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="revision_count" nullable="false" remarks="Internal counter used by the system to avoid conflicting updates to the record." size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="26" name="alternative_method_ind" nullable="false" remarks="A yes/no indicator whether an alternative method (rather than BEC information) is used to define ecology for this standard." size="1" type="varchar" typeCode="12"/>
          <primaryKey column="standards_regime_id" sequenceNumberInPK="1"/>
          <index name="standards_regime_pkey" unique="true">
             <column ascending="true" name="standards_regime_id"/>
@@ -3223,13 +3273,15 @@
             <parent column="silv_tree_species_code" foreignKey="srls_stsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_tree_species_code"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="species_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="preferred_ind" nullable="false" remarks="" size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="species_type_code" nullable="false" remarks="Replaces the legacy Y/N preferred_ind indicator. Species classification: PRF = Preferred, ACC = Acceptable, ECO = Ecologically Suitable." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="1" id="4" name="min_height" nullable="true" remarks="" size="3" type="numeric" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="'Y'::character varying" digits="0" id="10" name="regen_milestone_ind" nullable="false" remarks="A yes/no indicator whether this species counts toward the Regeneration milestone." size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'Y'::character varying" digits="0" id="11" name="free_growing_milestone_ind" nullable="false" remarks="A yes/no indicator whether this species counts toward the Free Growing milestone." size="1" type="varchar" typeCode="12"/>
          <primaryKey column="standards_regime_layer_id" sequenceNumberInPK="1"/>
          <primaryKey column="silv_tree_species_code" sequenceNumberInPK="2"/>
          <index name="standards_regime_layer_species_pkey" unique="true">

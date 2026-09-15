@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>opening_tenure_association_history - default.silva</title>
+        <title>site_series_catalogue - default.silva</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -73,7 +73,20 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>opening_tenure_association_history</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <h1>site_series_catalogue</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Within the BEC system, all sites capable of producing the same mature or climax plant communities within a biogeoclimatic subzone or variant.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -109,11 +122,11 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="opening_tenure_association_history_id">opening_tenure_association_history_id</span></td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="site_series_catalogue_id">site_series_catalogue_id</span></td>
                                     <td>int8</td>
                                     <td>19</td>
                                     <td title=''></td>
-                                    <td title='Automatically updated by the database'>√</td>
+                                    <td title=''></td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
@@ -123,10 +136,27 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Assigned numeric identifier for a site series unique within a biogeoclimatic unit.</p></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="cut_block_open_admin_id">cut_block_open_admin_id</span></td>
+                                    <td><span id="bec_region_code">bec_region_code</span></td>
+                                    <td>varchar</td>
+                                    <td>3</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>A code uniquely identifying a BEC Region.</p></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="biogeoclimatic_catalogue_id">biogeoclimatic_catalogue_id</span></td>
                                     <td>int8</td>
                                     <td>19</td>
                                     <td title=''></td>
@@ -139,40 +169,18 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="opening_tenure_association_history.cut_block_open_admin_id references cut_block_open_admin.cut_block_open_admin_id via opening_tenure_association_history_cut_block_open_admin_id_fkey"><a href='cut_block_open_admin.html'>cut_block_open_admin</a><span class='relatedKey'>.cut_block_open_admin_id</span></td>
-                                                <td class="constraint detail">opening_tenure_association_history_cut_block_open_admin_id_fkey</td>
+                                                <td title="site_series_catalogue.biogeoclimatic_catalogue_id references biogeoclimatic_catalogue.biogeoclimatic_catalogue_id via ssc_bc_fk"><a href='biogeoclimatic_catalogue.html'>biogeoclimatic_catalogue</a><span class='relatedKey'>.biogeoclimatic_catalogue_id</span></td>
+                                                <td class="constraint detail">ssc_bc_fk</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Assigned numeric identifier for the biogeoclimatic catalog entry (Zone/Subzone/Variant/Phase) this site series belongs to.</p></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="opening_id">opening_id</span></td>
-                                    <td>int8</td>
-                                    <td>19</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="opening_tenure_association_history.opening_id references opening.opening_id via opening_tenure_association_history_opening_id_fkey"><a href='opening.html'>opening</a><span class='relatedKey'>.opening_id</span></td>
-                                                <td class="constraint detail">opening_tenure_association_history_opening_id_fkey</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="action">action</span></td>
+                                    <td><span id="site_series">site_series</span></td>
                                     <td>varchar</td>
-                                    <td>12</td>
+                                    <td>4</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -184,27 +192,10 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>A number from 01 to 99 representing the soil moisture regime and soil nutrient regime of a site series, relative to other site series within a subzone or variant.</p></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="forest_file_id">forest_file_id</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="cutting_permit_id">cutting_permit_id</span></td>
+                                    <td><span id="site_series_phase">site_series_phase</span></td>
                                     <td>varchar</td>
                                     <td>3</td>
                                     <td title='nullable'>√</td>
@@ -218,12 +209,12 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>A subdivision of a site series used when site or soil properties differ sufficiently to affect management prescriptions.</p></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="cut_block_id">cut_block_id</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
+                                    <td><span id="site_series_variation">site_series_variation</span></td>
+                                    <td>int2</td>
+                                    <td>5</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -235,12 +226,12 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Site variation describes divergent vegetative trends or floristic features, usually related to short-term successional factors and recent stand history.</p></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="timber_mark">timber_mark</span></td>
+                                    <td><span id="seral">seral</span></td>
                                     <td>varchar</td>
-                                    <td>10</td>
+                                    <td>4</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -252,29 +243,12 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Seral code; may be seral association (4 lower case alphabetic) or seral developmental/structural stage (2 upper case alphabetic).</p></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="opening_prime_licence_ind">opening_prime_licence_ind</span></td>
+                                    <td><span id="description">description</span></td>
                                     <td>varchar</td>
-                                    <td>1</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="cboa_revision_count">cboa_revision_count</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td>80</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -286,12 +260,12 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>A connotative label, made up of the names of the potentially dominant plant species for a site series.</p></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="event_userid">event_userid</span></td>
-                                    <td>varchar</td>
-                                    <td>30</td>
+                                    <td><span id="effective_date">effective_date</span></td>
+                                    <td>date</td>
+                                    <td>13</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -303,10 +277,27 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The date that this entry is effective.</p></td>
                                 </tr>
                                 <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="event_timestamp">event_timestamp</span></td>
+                                    <td><span id="expiry_date">expiry_date</span></td>
+                                    <td>date</td>
+                                    <td>13</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The date that this entry is/becomes expired.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_timestamp">update_timestamp</span></td>
                                     <td>timestamp</td>
                                     <td>22</td>
                                     <td title=''></td>
@@ -320,7 +311,24 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The date and time that this entry was last updated.</p></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="update_userid">update_userid</span></td>
+                                    <td>varchar</td>
+                                    <td>30</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The userid of the person who last updated this entry.</p></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -353,56 +361,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> opening_tenure_association_history_pkey</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> site_series_catalogue_pkey</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>opening_tenure_association_history_id</td>
+                                    <td>site_series_catalogue_id</td>
                                 </tr>
                                 <tr>
-                                    <td title='Indexed'>opening_tenure_association_history_opening_i</td>
+                                    <td title='Indexed'>ssc_bc_fk_i</td>
                                     <td>Performance</td>
-                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
-                                    <td>opening_id + event_timestamp</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>biogeoclimatic_catalogue_id</td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.box-body -->
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <i class="fa fa-sitemap"></i>
-                            <h3 class="box-title">Check Constraints</h3>
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <table
-                                    id="check_table"
-                                    class="table table-bordered table-striped dataTable"
-                                    role="grid"
-                                    data-paging="true"
-                                    data-page-length="10"
-                                    data-length-change="false">
-                                <thead align='left'>
-                                <tr>
-                                    <th>Constraint Name</th>
-                                    <th>Constraint</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>opening_tenure_association_history_action_check</td>
-                                    <td>((action)::text &#61; ANY ((ARRAY[&#39;ASSOCIATED&#39;::character varying, &#39;UNASSOCIATED&#39;::character varying])::text[]))</td>
-                                </tr>
-                                <tr>
-                                    <td>opening_tenure_association_hist_opening_prime_licence_ind_check</td>
-                                    <td>((opening_prime_licence_ind)::text &#61; ANY ((ARRAY[&#39;Y&#39;::character varying, &#39;N&#39;::character varying])::text[]))</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -418,51 +390,14 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="339,5,600,269">
-<area shape="rect" id="node2" href="opening.html" target="_top" title="opening" alt="" coords="5,184,295,976">
-<area shape="rect" id="node3" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="644,80,1115,501">
+<area shape="rect" id="node1" href="site_series_catalogue.html" target="_top" title="site_series_catalogue" alt="" coords="339,5,725,427">
+<area shape="rect" id="node2" href="biogeoclimatic_catalogue.html" target="_top" title="biogeoclimatic_catalogue" alt="" coords="5,67,295,184">
 </map>
-                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/opening_tenure_association_history.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
-                                    </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1212,1420,1480,1508">
-<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="781,1333,1040,1421">
-<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="561,803,705,891">
-<area shape="rect" id="node4" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1135,151,1223">
-<area shape="rect" id="node5" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,1216,512,1304">
-<area shape="rect" id="node6" href="cut_block.html" target="_top" title="cut_block" alt="" coords="556,1331,711,1419">
-<area shape="rect" id="node8" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="254,111,453,199">
-<area shape="rect" id="node9" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="221,216,485,304">
-<area shape="rect" id="node10" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="235,321,471,409">
-<area shape="rect" id="node12" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="229,5,477,93">
-<area shape="rect" id="node13" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="243,427,464,515">
-<area shape="rect" id="node15" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="249,848,457,936">
-<area shape="rect" id="node16" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="233,953,473,1041">
-<area shape="rect" id="node17" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="231,1059,475,1147">
-<area shape="rect" id="node18" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="255,532,452,620">
-<area shape="rect" id="node19" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="243,637,463,725">
-<area shape="rect" id="node20" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="244,743,463,831">
-<area shape="rect" id="node7" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1257,184,1435,272">
-<area shape="rect" id="node11" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="778,311,1043,399">
-<area shape="rect" id="node14" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="817,416,1005,504">
-<area shape="rect" id="node21" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="755,1192,1067,1280">
-<area shape="rect" id="node22" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="788,521,1033,609">
-<area shape="rect" id="node23" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="779,627,1043,715">
-<area shape="rect" id="node24" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="797,732,1024,820">
-<area shape="rect" id="node25" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="789,945,1032,1033">
-<area shape="rect" id="node26" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="1111,808,1581,1229">
-<area shape="rect" id="node27" href="spar_request.html" target="_top" title="spar_request" alt="" coords="819,1051,1002,1139">
-<area shape="rect" id="node28" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1239,383,1453,471">
-<area shape="rect" id="node29" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1215,1247,1477,1335">
-<area shape="rect" id="node30" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1249,631,1443,719">
-</map>
-                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/opening_tenure_association_history.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/site_series_catalogue.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
