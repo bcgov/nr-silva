@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -163,7 +164,7 @@ class CreateStockingStandardServiceTest {
             StandardsRegimeEntity::getAlternativeMethodInd,
             StandardsRegimeEntity::getRegenObligationInd)
         .containsExactly("Y", "Y", "N");
-    verify(clientLinkRepository, org.mockito.Mockito.never()).save(any());
+    verify(clientLinkRepository, never()).save(any());
   }
 
   @Test
@@ -181,7 +182,7 @@ class CreateStockingStandardServiceTest {
         ArgumentCaptor.forClass(StandardsRegimeEntity.class);
     verify(standardsRegimeRepository).save(standard.capture());
     assertThat(standard.getValue().getMofDefaultStandardInd()).isEqualTo("Y");
-    verify(clientLinkRepository, org.mockito.Mockito.never()).save(any());
+    verify(clientLinkRepository, never()).save(any());
   }
 
   @Test
@@ -202,7 +203,7 @@ class CreateStockingStandardServiceTest {
 
     service.create(request);
 
-    verify(layerSpeciesRepository, org.mockito.Mockito.never()).save(any());
+    verify(layerSpeciesRepository, never()).save(any());
   }
 
   private CreateStockingStandardRequestDto operationalPlanRequest() {
