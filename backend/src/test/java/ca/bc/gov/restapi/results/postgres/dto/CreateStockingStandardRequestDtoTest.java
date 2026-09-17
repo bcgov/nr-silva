@@ -11,6 +11,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -47,16 +48,30 @@ class CreateStockingStandardRequestDtoTest {
         false,
         true,
         null,
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, null, StockingSpeciesMilestone.BOTH)),
         StockingType.REGEN_OBLIGATION,
         1,
         20,
         null,
         null,
         StockingLayerType.SINGLE,
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
+        new StockingLayerDto(
+            "I",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            List.of(
+                new StockingSpeciesDto(
+                    "CW",
+                    StockingSpeciesType.PREFERRED,
+                    BigDecimal.ONE,
+                    StockingSpeciesMilestone.BOTH))),
         null,
         null);
   }
@@ -84,7 +99,6 @@ class CreateStockingStandardRequestDtoTest {
             request.becInfoSelected(),
             request.alternativeMethodSelected(),
             request.becData(),
-            request.species(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
@@ -99,8 +113,8 @@ class CreateStockingStandardRequestDtoTest {
   }
 
   @Test
-  @DisplayName("Empty species list is allowed")
-  void emptySpeciesList_isAllowed() {
+  @DisplayName("Empty layer species list is allowed")
+  void emptyLayerSpeciesList_isAllowed() {
     CreateStockingStandardRequestDto request = validRequest();
     CreateStockingStandardRequestDto invalid =
         new CreateStockingStandardRequestDto(
@@ -113,14 +127,14 @@ class CreateStockingStandardRequestDtoTest {
             request.becInfoSelected(),
             request.alternativeMethodSelected(),
             request.becData(),
-            List.of(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
             request.earlyYears(),
             request.lateYears(),
             request.layerType(),
-            request.singleLayer(),
+            new StockingLayerDto(
+                "I", null, null, null, null, null, null, null, null, null, null, List.of()),
             request.multiLayers(),
             request.additionalStandards());
 
@@ -142,7 +156,6 @@ class CreateStockingStandardRequestDtoTest {
             true,
             request.alternativeMethodSelected(),
             List.of(new BecDataDto("", "wh1", null, null, "01", null)),
-            request.species(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
@@ -157,27 +170,53 @@ class CreateStockingStandardRequestDtoTest {
   }
 
   @Test
-  @DisplayName("Null BEC and species elements are rejected")
+  @DisplayName("Null BEC and layer-species elements are rejected")
   void nullCollectionElements_areRejected() {
     CreateStockingStandardRequestDto request = validRequest();
     CreateStockingStandardRequestDto nullBecData =
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
             request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
-            request.alternativeMethodSelected(), Collections.singletonList(null), request.species(),
+            request.alternativeMethodSelected(), Collections.singletonList(null),
             request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
             request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
             request.multiLayers(), request.additionalStandards());
-    CreateStockingStandardRequestDto nullSpecies =
+    CreateStockingStandardRequestDto nullLayerSpecies =
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
             request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
-            request.alternativeMethodSelected(), request.becData(), Collections.singletonList(null),
-            request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
-            request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
+            request.alternativeMethodSelected(), request.becData(), request.stockingType(),
+            request.regenDelayYears(), request.freeGrowingYears(), request.earlyYears(),
+            request.lateYears(), request.layerType(),
+            new StockingLayerDto(
+                "I", null, null, null, null, null, null, null, null, null, null,
+                Collections.singletonList(null)),
             request.multiLayers(), request.additionalStandards());
 
     assertThat(validator.validate(nullBecData)).isNotEmpty();
-    assertThat(validator.validate(nullSpecies)).isNotEmpty();
+    assertThat(validator.validate(nullLayerSpecies)).isNotEmpty();
+  }
+
+  @Test
+  @DisplayName("Species type, milestone, and height bounds are validated")
+  void speciesFields_areValidated() {
+    assertThat(
+            validator.validate(
+                new StockingSpeciesDto(
+                    "CW", null, BigDecimal.ONE, StockingSpeciesMilestone.BOTH)))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                new StockingSpeciesDto(
+                    "CW", StockingSpeciesType.PREFERRED, BigDecimal.ONE, null)))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                new StockingSpeciesDto(
+                    "CW",
+                    StockingSpeciesType.PREFERRED,
+                    new BigDecimal("100.0"),
+                    StockingSpeciesMilestone.BOTH)))
+        .isNotEmpty();
   }
 }

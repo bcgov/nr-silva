@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -129,19 +129,19 @@ class CreateStockingStandardServiceTest {
             org.assertj.core.groups.Tuple.tuple(304L, "1"));
     ArgumentCaptor<StandardsRegimeLayerSpeciesEntity> species =
         ArgumentCaptor.forClass(StandardsRegimeLayerSpeciesEntity.class);
-    verify(layerSpeciesRepository, times(12)).save(species.capture());
+    verify(layerSpeciesRepository, times(3)).save(species.capture());
     assertThat(species.getAllValues())
-        .allSatisfy(
-            value -> assertThat(value.getStandardsRegimeLayerId()).isIn(301L, 302L, 303L, 304L));
-    assertThat(species.getAllValues())
-        .filteredOn(value -> value.getSilvTreeSpeciesCode().equals("CW"))
-        .allSatisfy(
-            value ->
-                assertThat(value)
-                    .extracting(
-                        StandardsRegimeLayerSpeciesEntity::getRegenMilestoneInd,
-                        StandardsRegimeLayerSpeciesEntity::getFreeGrowingMilestoneInd)
-                    .containsExactly("Y", "Y"));
+        .extracting(
+            StandardsRegimeLayerSpeciesEntity::getStandardsRegimeLayerId,
+            StandardsRegimeLayerSpeciesEntity::getSilvTreeSpeciesCode,
+            StandardsRegimeLayerSpeciesEntity::getSpeciesTypeCode,
+            StandardsRegimeLayerSpeciesEntity::getSpeciesOrder,
+            StandardsRegimeLayerSpeciesEntity::getRegenMilestoneInd,
+            StandardsRegimeLayerSpeciesEntity::getFreeGrowingMilestoneInd)
+        .containsExactly(
+            org.assertj.core.groups.Tuple.tuple(301L, "CW", "PRF", 1, "Y", "Y"),
+            org.assertj.core.groups.Tuple.tuple(301L, "HW", "ACC", 2, "Y", "N"),
+            org.assertj.core.groups.Tuple.tuple(302L, "BA", "ECO", 1, "N", "Y"));
   }
 
   @Test
@@ -193,8 +193,9 @@ class CreateStockingStandardServiceTest {
         new CreateStockingStandardRequestDto(
             base.objective(), base.name(), base.location(), base.authorityType(), base.orgUnitCodes(),
             base.clientNumbers(), base.becInfoSelected(), base.alternativeMethodSelected(), base.becData(),
-            null, base.stockingType(), base.regenDelayYears(), base.freeGrowingYears(), base.earlyYears(),
-            base.lateYears(), base.layerType(), base.singleLayer(), base.multiLayers(),
+            base.stockingType(), base.regenDelayYears(), base.freeGrowingYears(), base.earlyYears(),
+            base.lateYears(), base.layerType(), base.singleLayer(),
+            base.multiLayers().stream().map(this::withoutSpecies).toList(),
             base.additionalStandards());
     when(validationService.validate(request)).thenReturn(List.of(11L, 12L));
     when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
@@ -210,13 +211,50 @@ class CreateStockingStandardServiceTest {
     List<StockingLayerDto> layers =
         List.of(
             new StockingLayerDto(
-                "4", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 15, "CM"),
+                "4",
+                1000,
+                800,
+                BigDecimal.ONE,
+                1200,
+                null,
+                null,
+                null,
+                null,
+                15,
+                "CM",
+                List.of(
+                    new StockingSpeciesDto(
+                        "CW",
+                        StockingSpeciesType.PREFERRED,
+                        BigDecimal.ONE,
+                        StockingSpeciesMilestone.BOTH),
+                    new StockingSpeciesDto(
+                        "HW",
+                        StockingSpeciesType.ACCEPTABLE,
+                        new BigDecimal("1.5"),
+                        StockingSpeciesMilestone.REGEN))),
             new StockingLayerDto(
-                "3", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 16, "PCT"),
+                "3",
+                1000,
+                800,
+                BigDecimal.ONE,
+                1200,
+                null,
+                null,
+                null,
+                null,
+                16,
+                "PCT",
+                List.of(
+                    new StockingSpeciesDto(
+                        "BA",
+                        StockingSpeciesType.ECOLOGICALLY_SUITABLE,
+                        null,
+                        StockingSpeciesMilestone.FREE_GROWING))),
             new StockingLayerDto(
-                "2", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null),
+                "2", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null, null),
             new StockingLayerDto(
-                "1", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null));
+                "1", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null, null));
     return new CreateStockingStandardRequestDto(
         "Objective",
         " Standard name ",
@@ -227,16 +265,6 @@ class CreateStockingStandardServiceTest {
         true,
         false,
         List.of(new BecDataDto("CWH", "wh", "1", null, "01", null)),
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, BigDecimal.ONE, StockingSpeciesMilestone.BOTH),
-            new StockingSpeciesDto(
-                "HW", StockingSpeciesType.ACCEPTABLE, null, StockingSpeciesMilestone.REGEN),
-            new StockingSpeciesDto(
-                "BA",
-                StockingSpeciesType.ECOLOGICALLY_SUITABLE,
-                null,
-                StockingSpeciesMilestone.FREE_GROWING)),
         StockingType.REGEN_OBLIGATION,
         1,
         20,
@@ -260,17 +288,47 @@ class CreateStockingStandardServiceTest {
         false,
         true,
         null,
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, null, StockingSpeciesMilestone.BOTH)),
         StockingType.STOCKING_REQUIREMENT,
         null,
         null,
         1,
         2,
         StockingLayerType.SINGLE,
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
+        new StockingLayerDto(
+            "I",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            List.of(
+                new StockingSpeciesDto(
+                    "CW",
+                    StockingSpeciesType.PREFERRED,
+                    BigDecimal.ONE,
+                    StockingSpeciesMilestone.BOTH))),
         null,
+        null);
+  }
+
+  private StockingLayerDto withoutSpecies(StockingLayerDto layer) {
+    return new StockingLayerDto(
+        layer.layerCode(),
+        layer.minWellSpacedTrees(),
+        layer.minPreferredWellSpacedTrees(),
+        layer.minHorizontalDistance(),
+        layer.targetWellSpacedTrees(),
+        layer.minResidualBasalArea(),
+        layer.minPostSpacingDensity(),
+        layer.maxPostSpacingDensity(),
+        layer.maxConiferous(),
+        layer.heightRelativeToComp(),
+        layer.heightRelativeToCompUnitCode(),
         null);
   }
 }

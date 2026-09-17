@@ -16,7 +16,7 @@ class StockingLayerDtoTest {
   void minHorizontalDistance_exceedingColumnPrecision_isRejected() {
     StockingLayerDto layer =
         new StockingLayerDto(
-            "I", null, null, new BigDecimal("100"), null, null, null, null, null, null, null);
+            "I", null, null, new BigDecimal("100"), null, null, null, null, null, null, null, null);
 
     try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
       assertThat(factory.getValidator().validate(layer)).isNotEmpty();

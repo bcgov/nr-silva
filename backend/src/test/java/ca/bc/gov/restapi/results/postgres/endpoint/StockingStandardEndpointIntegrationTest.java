@@ -39,7 +39,17 @@ class StockingStandardEndpointIntegrationTest extends AbstractTestContainerInteg
         "regenDelayYears": 1,
         "freeGrowingYears": 20,
         "layerType": "SINGLE",
-        "singleLayer": {"layerCode": "I"}
+        "singleLayer": {
+          "layerCode": "I",
+          "species": [
+            {
+              "speciesCode": "CW",
+              "speciesType": "PREFERRED",
+              "minHeight": 1.0,
+              "milestone": "BOTH"
+            }
+          ]
+        }
       }
       """;
 
