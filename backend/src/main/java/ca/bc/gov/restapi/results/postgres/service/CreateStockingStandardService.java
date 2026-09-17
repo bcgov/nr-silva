@@ -177,8 +177,8 @@ public class CreateStockingStandardService {
       layerRepository.save(layerEntity);
 
       int order = 1;
-      if (dto.species() != null) {
-        for (StockingSpeciesDto species : dto.species()) {
+      if (layer.species() != null) {
+        for (StockingSpeciesDto species : layer.species()) {
           layerSpeciesRepository.save(
               StandardsRegimeLayerSpeciesEntity.builder()
                   .standardsRegimeLayerId(layerId)
