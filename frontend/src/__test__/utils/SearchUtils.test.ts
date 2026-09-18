@@ -7,7 +7,10 @@ import {
   getStringParam,
   handleMultiSelectChangeHelper,
   hasActiveSearchFilters,
+  ParamConfig,
+  readUrlParamsWithConfig,
   replaceWindowUrl,
+  updateUrlParamsWithConfig,
 } from '@/utils/SearchUtils';
 import { formatDatePickerDate } from '@/utils/DateUtils';
 
@@ -128,6 +131,73 @@ describe('SearchUtils', () => {
     it('formats valid Date to API_DATE_FORMAT (YYYY-MM-DD)', () => {
       const date = new Date(2024, 0, 15);
       expect(formatDatePickerDate([date])).toBe('2024-01-15');
+    });
+  });
+
+  describe('readUrlParamsWithConfig and updateUrlParamsWithConfig', () => {
+    interface TestParams {
+      term?: string;
+      page?: number;
+      active?: boolean;
+      tags?: string[];
+    }
+
+    const config: ParamConfig<TestParams> = {
+      strings: ['term'],
+      numbers: ['page'],
+      booleans: ['active'],
+      arrays: ['tags'],
+    };
+
+    it('reads URL query string into typed object based on config', () => {
+      const qs = '?term=silva&page=2&active=true&tags=t1&tags=t2';
+      const result = readUrlParamsWithConfig<TestParams>(qs, config);
+
+      expect(result).toEqual({
+        term: 'silva',
+        page: 2,
+        active: true,
+        tags: ['t1', 't2'],
+      });
+    });
+
+    it('returns empty object when query string has no matching params', () => {
+      expect(readUrlParamsWithConfig<TestParams>('', config)).toEqual({});
+    });
+
+    it('updates window URL based on config', () => {
+      const replaceSpy = vi.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+
+      updateUrlParamsWithConfig<TestParams>(
+        { term: 'trees', page: 0, active: false, tags: ['a', 'b'] },
+        config
+      );
+
+      expect(replaceSpy).toHaveBeenCalledWith(
+        {},
+        '',
+        expect.stringContaining('term=trees')
+      );
+      expect(replaceSpy).toHaveBeenCalledWith(
+        {},
+        '',
+        expect.stringContaining('page=0')
+      );
+      expect(replaceSpy).toHaveBeenCalledWith(
+        {},
+        '',
+        expect.stringContaining('active=false')
+      );
+      expect(replaceSpy).toHaveBeenCalledWith(
+        {},
+        '',
+        expect.stringContaining('tags=a')
+      );
+
+      updateUrlParamsWithConfig<TestParams>(undefined, config);
+      expect(replaceSpy).toHaveBeenCalledWith({}, '', window.location.pathname);
+
+      replaceSpy.mockRestore();
     });
   });
 });
