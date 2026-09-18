@@ -224,7 +224,7 @@ src/components/common/SearchInput/
    ```typescript
    export const handleMultiSelectChangeHelper = <T extends Record<string, unknown>>(
      field: keyof T,
-     onChange: (field: keyof T, value: string) => void
+     onChange: (field: keyof T, value: unknown) => void
    ) => (data: { selectedItems: unknown[] }) => { ... };
    ```
 4. **Parent Components Focus on Composition**:
