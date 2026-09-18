@@ -23,7 +23,15 @@
 
 ---
 
-### 3. 🧹 Repository Hygiene & Tech Debt
+### 3. 📊 SonarCloud Quality Gates & Health
+| Project | Gate Status | Line Coverage (≥ 80%) | Duplication (≤ 3.0%) | Blockers / Criticals | Dashboard |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **`nr-silva-backend`** | {{BACKEND_SONAR_GATE}} | {{BACKEND_COVERAGE}} | {{BACKEND_DUPLICATION}} | {{BACKEND_BLOCKERS}} | [View](https://sonarcloud.io/summary/new_code?id=nr-silva-backend) |
+| **`nr-silva-frontend`** | {{FRONTEND_SONAR_GATE}} | {{FRONTEND_COVERAGE}} | {{FRONTEND_DUPLICATION}} | {{FRONTEND_BLOCKERS}} | [View](https://sonarcloud.io/summary/new_code?id=nr-silva-frontend) |
+
+---
+
+### 4. 🧹 Repository Hygiene & Tech Debt
 - [ ] **Lint / Build Configuration:** {{LINT_SUMMARY}}
 - [ ] **Outdated Packages Spotlight:** {{OUTDATED_PACKAGES_SUMMARY}}
 - [ ] **Overrides & Resolutions Hygiene:** {{OVERRIDES_SUMMARY}}
@@ -31,5 +39,6 @@
 
 ---
 
-### 4. 📋 Today's Action Items
+### 5. 📋 Today's Action Items
 {{ACTION_ITEMS_CHECKLIST}}
+

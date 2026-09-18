@@ -142,9 +142,13 @@ test.describe('Dashboard', () => {
     expect(await dashboardPage.isOpeningFavouritedOnFavouriteSection(openingId)).toBe(true);
   });
 
-  test('opening trend fields should be okay to fill', async () => {
+  test('opening trend fields should be okay to fill', async ({ page }) => {
     await dashboardPage.chooseDistrict('DAS - Development Unit');
     await dashboardPage.chooseStatus('AMD - Amended');
     await dashboardPage.chooseSubmissionYear('2023');
+
+    await expect(page.locator('.submission-trend-container')).toBeVisible();
+    await expect(page.locator('.trend-year-selection-combobox input')).toHaveValue('2023');
   });
 });
+

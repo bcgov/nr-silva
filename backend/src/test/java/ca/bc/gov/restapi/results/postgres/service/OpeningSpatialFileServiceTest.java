@@ -218,7 +218,7 @@ class OpeningSpatialFileServiceTest {
     m.setAccessible(true);
 
     // Should not throw
-    m.invoke(service, geojson, "4326");
+    Assertions.assertDoesNotThrow(() -> m.invoke(service, geojson, "4326"));
   }
 
   @Test
@@ -530,7 +530,7 @@ class OpeningSpatialFileServiceTest {
         OpeningSpatialFileService.class.getDeclaredMethod(
             "validateNonZeroArea", Geometry.class, String.class, int.class);
     m.setAccessible(true);
-    m.invoke(service, poly, "3005", 1); // should not throw
+    Assertions.assertDoesNotThrow(() -> m.invoke(service, poly, "3005", 1));
   }
 
   // === Additional coverage tests ===
