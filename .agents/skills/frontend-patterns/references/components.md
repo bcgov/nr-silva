@@ -192,6 +192,46 @@ const MyScreen = () => (
 
 ---
 
+### Pattern C: Shared Primitives & Component Deduplication (`src/components/common/`)
+
+**Avoid copy-pasting UI elements and form controls across screens or sections.** Duplicated inputs, forms, and table components inflate codebase size, cause SonarCloud duplication Quality Gate failures, and lead to maintenance bugs.
+
+#### The "Rule of Three" (or Two in Silva)
+If an input cluster, dropdown, filter bar, or form layout is repeated across **2 or more screens or sections** (such as across search tabs or edit forms), **extract it into `src/components/common/`**.
+
+**Example Structure (`src/components/common/SearchInput/`):**
+```
+src/components/common/SearchInput/
+├── index.ts                           # Barrel export
+├── SearchDateRange.tsx                # Reusable DatePicker with start/end bounds
+├── BgcSearchInputs.tsx                # 6 Biogeoclimatic code inputs with uppercase transforms
+├── OrgUnitMultiSelect.tsx             # Org Unit selector with district filtering option
+├── OpeningCategoriesMultiSelect.tsx   # Category multi-select with TanStack Query
+├── OpeningStatusMultiSelect.tsx       # Opening status multi-select
+├── FileIdSearchInput.tsx              # Forest File ID input with validation & uppercase
+└── MoreFiltersToggle.tsx              # Expand/collapse toggle button with chevron icons
+```
+
+#### Guidelines for Shared Primitives:
+1. **Configurable via Props**: Provide sensible defaults but allow consumers to pass custom IDs, labels, refs, test IDs, or change handlers.
+2. **Encapsulate Common Behavior**:
+   - Auto-capitalization (e.g., `.toUpperCase()` on text inputs)
+   - Date range constraints (`getStartMaxDate`, `getEndMinDate`)
+   - Internal data fetching where appropriate (e.g., loading dropdown codes via TanStack Query)
+3. **Extract Shared Form State Helpers to `src/utils/`**:
+   - Rather than duplicating state sync functions (such as multi-select event handlers, URL query parameter syncing, or placeholder generators) in every section's `utils.ts`, place generic, typed functions in `src/utils/SearchUtils.ts` or `src/utils/FormUtils.ts`.
+   - Use TypeScript generics (e.g., `<T>`) so helper functions work seamlessly across different search parameter types:
+   ```typescript
+   export const handleMultiSelectChangeHelper = <T extends Record<string, unknown>>(
+     field: keyof T,
+     onChange: (field: keyof T, value: string) => void
+   ) => (data: { selectedItems: unknown[] }) => { ... };
+   ```
+4. **Parent Components Focus on Composition**:
+   - Section or screen-level input components should compose these shared primitives into responsive Grid rows rather than re-declaring raw Carbon components and boilerplate handlers.
+
+---
+
 ## Responsive Design
 
 **Always implement with responsiveness in mind.** Silva is used across different devices and screen sizes, so all components and screens must adapt gracefully.
