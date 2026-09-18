@@ -22,6 +22,35 @@ import {
 
 import './styles.scss';
 
+interface ActivityStatusDropdownItem {
+  id: string;
+  label: string;
+}
+
+const renderActivityStatusItem = (item: ActivityStatusDropdownItem) =>
+  item.id === '' ? (
+    <span className="empty-dropdown-option">Clear selected</span>
+  ) : (
+    <ActivityStatusTag isComplete={item.id === 'complete'} />
+  );
+
+const renderActivityStatusSelectedItem = (item: ActivityStatusDropdownItem) =>
+  item.id === '' ? (
+    <span className="empty-dropdown-option">Choose an option</span>
+  ) : (
+    <ActivityStatusTag isComplete={item.id === 'complete'} />
+  );
+
+const getActivityStatusSelectedItem = (isComplete?: boolean): ActivityStatusDropdownItem => {
+  if (isComplete === true) {
+    return { id: 'complete', label: 'Complete' };
+  }
+  if (isComplete === false) {
+    return { id: 'planned', label: 'Planned' };
+  }
+  return { id: '', label: '' };
+};
+
 type props = {
   searchParams?: ActivitySearchParams;
   handleSearchFieldChange: (field: keyof ActivitySearchParams, value: unknown) => void;
@@ -139,33 +168,15 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
             { id: 'complete', label: 'Complete' },
             { id: 'planned', label: 'Planned' },
           ]}
-          itemToElement={(item) =>
-            item.id === '' ? (
-              <span className="empty-dropdown-option">Clear selected</span>
-            ) : (
-              <ActivityStatusTag isComplete={item.id === 'complete'} />
-            )
-          }
-          renderSelectedItem={(item) =>
-            item.id === '' ? (
-              <span className="empty-dropdown-option">Choose an option</span>
-            ) : (
-              <ActivityStatusTag isComplete={item.id === 'complete'} />
-            )
-          }
+          itemToElement={renderActivityStatusItem}
+          renderSelectedItem={renderActivityStatusSelectedItem}
           onChange={({ selectedItem }) =>
             handleSearchFieldChange(
               'isComplete',
               !selectedItem || selectedItem.id === '' ? undefined : selectedItem.id === 'complete'
             )
           }
-          selectedItem={
-            searchParams?.isComplete === true
-              ? { id: 'complete', label: 'Complete' }
-              : searchParams?.isComplete === false
-                ? { id: 'planned', label: 'Planned' }
-                : { id: '', label: '' }
-          }
+          selectedItem={getActivityStatusSelectedItem(searchParams?.isComplete)}
         />
       </Column>
 

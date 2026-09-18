@@ -3,7 +3,6 @@ import { Column, Grid, TextInput } from '@carbon/react';
 import { useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 import { ForestCoverSearchParams } from '@/types/ApiType';
-import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
 import { enforceNumberInputOnKeyDown, enforceNumberInputOnPaste, getMultiSelectedCodes } from '@/utils/InputUtils';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
 import { getMultiSelectPlaceholderHelper, handleMultiSelectChangeHelper } from '@/utils/SearchUtils';
