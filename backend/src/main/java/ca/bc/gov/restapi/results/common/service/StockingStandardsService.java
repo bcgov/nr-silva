@@ -2,8 +2,10 @@ package ca.bc.gov.restapi.results.common.service;
 
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.StockingStandardsSearchResponseDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardDetailsDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchResponseDto;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,4 +15,6 @@ public interface StockingStandardsService {
 
   Page<StockingStandardsCommentSearchResponseDto> searchStockingStandardsComments(
       StockingStandardsCommentSearchFilterDto filters, Pageable pagination);
+
+  Optional<StockingStandardDetailsDto> getStockingStandardDetails(Long stockingStandardId);
 }

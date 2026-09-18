@@ -2,11 +2,15 @@ package ca.bc.gov.restapi.results.postgres.repository;
 
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeOrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeOrgUnitEntityId;
+import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/** JPA access to stocking standard organization-unit assignments. */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public interface StandardsRegimeOrgUnitPostgresRepository
-    extends JpaRepository<StandardsRegimeOrgUnitEntity, StandardsRegimeOrgUnitEntityId> {}
+    extends JpaRepository<StandardsRegimeOrgUnitEntity, StandardsRegimeOrgUnitEntityId> {
+  List<StandardsRegimeOrgUnitEntity> findByStandardsRegimeId(Long standardsRegimeId);
+}

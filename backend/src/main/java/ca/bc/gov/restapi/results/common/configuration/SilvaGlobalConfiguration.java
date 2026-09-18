@@ -27,6 +27,9 @@ import ca.bc.gov.restapi.results.common.dto.comment.CommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.cover.ForestCoverSearchResponseDto;
 import ca.bc.gov.restapi.results.common.dto.opening.*;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardDetailsDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardDetailsLayerDto;
+import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardDetailsSpeciesDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchFilterDto;
 import ca.bc.gov.restapi.results.common.dto.stockingstandards.StockingStandardsCommentSearchResponseDto;
 import ca.bc.gov.restapi.results.common.enums.AuditActionCodeEnum;
@@ -50,6 +53,11 @@ import ca.bc.gov.restapi.results.common.projection.opening.OpeningTenureProjecti
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewMilestoneProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneOverviewOpeningProjection;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningTombstoneProjection;
+import ca.bc.gov.restapi.results.common.projection.stockingstandards.StockingStandardBecProjection;
+import ca.bc.gov.restapi.results.common.projection.stockingstandards.StockingStandardDetailsProjection;
+import ca.bc.gov.restapi.results.common.projection.stockingstandards.StockingStandardLayerProjection;
+import ca.bc.gov.restapi.results.common.projection.stockingstandards.StockingStandardOrgUnitProjection;
+import ca.bc.gov.restapi.results.common.projection.stockingstandards.StockingStandardSpeciesProjection;
 import ca.bc.gov.restapi.results.oracle.entity.ClientAcronymEntity;
 import ca.bc.gov.restapi.results.oracle.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.oracle.entity.OrgUnitEntity;
@@ -207,6 +215,14 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   StockingStandardsSearchResponseDto.class,
   StockingStandardsCommentSearchFilterDto.class,
   StockingStandardsCommentSearchResponseDto.class,
+  StockingStandardDetailsDto.class,
+  StockingStandardDetailsLayerDto.class,
+  StockingStandardDetailsSpeciesDto.class,
+  StockingStandardBecProjection.class,
+  StockingStandardDetailsProjection.class,
+  StockingStandardLayerProjection.class,
+  StockingStandardOrgUnitProjection.class,
+  StockingStandardSpeciesProjection.class,
   CreateOpeningRequestDto.class,
   CreateOpeningResponseDto.class,
   ExtractedGeoDataDto.class,

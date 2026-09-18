@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/** PostgreSQL-backed stocking standards queries. */
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public interface StockingStandardsPostgresRepository
@@ -32,4 +33,5 @@ public interface StockingStandardsPostgresRepository
       @Param("filter") StockingStandardsCommentSearchFilterDto filters,
       @Param("page") long offset,
       @Param("size") long size);
+
 }

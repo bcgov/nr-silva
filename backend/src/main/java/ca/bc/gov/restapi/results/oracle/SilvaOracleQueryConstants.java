@@ -2837,4 +2837,92 @@ public class SilvaOracleQueryConstants {
       LEFT JOIN fsp_agg fa ON fa.STANDARDS_REGIME_ID = sr.STANDARDS_REGIME_ID
       ORDER BY pi.UPDATE_TIMESTAMP DESC NULLS LAST
       """;
+
+  public static final String STOCKING_STANDARD_DETAILS =
+      """
+      SELECT sr.STANDARDS_REGIME_ID AS stockingStandardId,
+          sr.STANDARDS_REGIME_STATUS_CODE AS statusCode,
+          sr.ENTRY_TIMESTAMP AS createdDate,
+          sr.EFFECTIVE_DATE AS effectiveDate,
+          sr.EXPIRY_DATE AS expiryDate,
+          sr.STANDARDS_OBJECTIVE AS objective,
+          sr.STANDARDS_REGIME_NAME AS name,
+          sr.GEOGRAPHIC_DESCRIPTION AS location,
+          sr.MOF_DEFAULT_STANDARD_IND AS ministryDefaultInd,
+          CAST(NULL AS VARCHAR2(1)) AS alternativeMethodSelected,
+          sr.REGEN_OBLIGATION_IND AS regenObligationInd,
+          sr.REGEN_DELAY_OFFSET_YRS AS regenDelayYears,
+          sr.FREE_GROWING_EARLY_OFFSET_YRS AS freeGrowingEarlyYears,
+          sr.FREE_GROWING_LATE_OFFSET_YRS AS freeGrowingLateYears,
+          sr.NO_REGEN_EARLY_OFFSET_YRS AS earlyYears,
+          sr.NO_REGEN_LATE_OFFSET_YRS AS lateYears,
+          sr.ADDITIONAL_STANDARDS AS additionalStandards
+      FROM STANDARDS_REGIME sr
+      WHERE sr.STANDARDS_REGIME_ID = :stockingStandardId
+      """;
+
+  public static final String STOCKING_STANDARD_ORG_UNITS =
+      """
+      SELECT ou.ORG_UNIT_CODE AS orgUnitCode, ou.ORG_UNIT_NAME AS orgUnitName
+      FROM STANDARDS_REGIME_ORG_UNIT srou
+      JOIN ORG_UNIT ou ON ou.ORG_UNIT_NO = srou.ORG_UNIT_NO
+      WHERE srou.STANDARDS_REGIME_ID = :stockingStandardId
+      ORDER BY ou.ORG_UNIT_CODE
+      """;
+
+  public static final String STOCKING_STANDARD_CLIENT_NUMBERS =
+      """
+      SELECT src.CLIENT_NUMBER
+      FROM STANDARDS_REGIME_CLIENT src
+      WHERE src.STANDARDS_REGIME_ID = :stockingStandardId
+      ORDER BY src.CLIENT_NUMBER
+      """;
+
+  public static final String STOCKING_STANDARD_BEC_DATA =
+      """
+      SELECT srss.BGC_ZONE_CODE AS becZoneCode,
+          srss.BGC_SUBZONE_CODE AS becSubzoneCode,
+          srss.BGC_VARIANT AS becVariant,
+          srss.BGC_PHASE AS becPhase,
+          srss.BEC_SITE_SERIES AS becSiteSeries,
+          srss.BEC_SITE_TYPE AS becSiteType,
+          srss.BEC_SERAL AS becSeral
+      FROM STANDARDS_REGIME_SITE_SERIES srss
+      WHERE srss.STANDARDS_REGIME_ID = :stockingStandardId
+      ORDER BY srss.STANDARD_REGIME_SITE_SERIES_ID
+      """;
+
+  public static final String STOCKING_STANDARD_LAYERS =
+      """
+      SELECT srl.STANDARDS_REGIME_LAYER_ID AS layerId,
+          srl.STOCKING_LAYER_CODE AS layerCode,
+          srl.MIN_STOCKING_STANDARD AS minWellSpacedTrees,
+          srl.MIN_PREF_STOCKING_STANDARD AS minPreferredWellSpacedTrees,
+          srl.MIN_HORIZONTAL_DISTANCE AS minHorizontalDistanceWellSpacedTrees,
+          srl.TARGET_STOCKING AS targetWellSpacedTrees,
+          srl.RESIDUAL_BASAL_AREA AS minResidualBasalArea,
+          srl.MIN_POST_SPACING AS minPostSpacingDensity,
+          srl.MAX_POST_SPACING AS maxPostSpacingDensity,
+          srl.MAX_CONIFER AS maxConiferous,
+          srl.HGHT_RELATIVE_TO_COMP AS heightRelativeToComp,
+          srl.TREE_SIZE_UNIT_CODE AS heightRelativeToCompUnitCode
+      FROM STANDARDS_REGIME_LAYER srl
+      WHERE srl.STANDARDS_REGIME_ID = :stockingStandardId
+      ORDER BY srl.STOCKING_LAYER_CODE
+      """;
+
+  public static final String STOCKING_STANDARD_SPECIES =
+      """
+      SELECT srls.STANDARDS_REGIME_LAYER_ID AS layerId,
+          srls.SILV_TREE_SPECIES_CODE AS speciesCode,
+          CASE srls.PREFERRED_IND WHEN 'Y' THEN 'PRF' ELSE 'ACC' END AS speciesTypeCode,
+          srls.MIN_HEIGHT AS minHeight,
+          CAST(NULL AS VARCHAR2(1)) AS regenMilestoneInd,
+          CAST(NULL AS VARCHAR2(1)) AS freeGrowingMilestoneInd
+      FROM STANDARDS_REGIME_LAYER_SPECIES srls
+      JOIN STANDARDS_REGIME_LAYER srl
+          ON srl.STANDARDS_REGIME_LAYER_ID = srls.STANDARDS_REGIME_LAYER_ID
+      WHERE srl.STANDARDS_REGIME_ID = :stockingStandardId
+      ORDER BY srl.STOCKING_LAYER_CODE, srls.PREFERRED_IND DESC, srls.SPECIES_ORDER
+      """;
 }
