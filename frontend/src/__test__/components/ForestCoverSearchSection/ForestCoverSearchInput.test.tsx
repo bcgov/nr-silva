@@ -70,6 +70,7 @@ vi.mock('../../../utils/DateUtils', () => ({
   getDatePickerValue: vi.fn((date) => (date ? '2024-01-15' : '')),
   getStartMaxDate: vi.fn(() => undefined),
   getEndMinDate: vi.fn(() => undefined),
+  formatDatePickerDate: vi.fn((dates) => (dates?.[0] ? '2024-01-15' : undefined)),
 }));
 
 // Mock input utilities

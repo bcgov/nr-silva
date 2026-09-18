@@ -28,13 +28,15 @@ Load: `styling.md`
 ### 2. **React/Component/Screen/Hooks Tasks**
 Load: `components.md`
 - Screen convention (folder structure, naming)
-- Component patterns (simple vs. composite)
+- Component patterns (simple, composite, shared primitives)
+- Deduplication & "Rule of Three" (extract repeated UI controls to `src/components/common/`)
+- Generic state helper extraction to `src/utils/`
 - Barrel export pattern
 - TypeScript component props
 - Responsive Grid/Subgrid usage
 - Carbon component usage basics
 
-**Use when task involves:** "New component", "new screen", "fix component", "hook logic", "component structure", "Grid layout", "responsive design"
+**Use when task involves:** "New component", "new screen", "fix component", "hook logic", "component structure", "Grid layout", "responsive design", "deduplication", "refactor duplicated UI"
 
 ---
 
