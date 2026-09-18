@@ -9,6 +9,7 @@ import {
   hasActiveSearchFilters,
   replaceWindowUrl,
 } from '@/utils/SearchUtils';
+import { formatDatePickerDate } from '@/utils/DateUtils';
 
 describe('SearchUtils', () => {
   describe('hasActiveSearchFilters', () => {
@@ -114,6 +115,19 @@ describe('SearchUtils', () => {
       expect(replaceSpy).toHaveBeenCalledWith({}, '', window.location.pathname);
 
       replaceSpy.mockRestore();
+    });
+  });
+
+  describe('formatDatePickerDate', () => {
+    it('returns undefined when dates array is undefined, empty, or has no valid first element', () => {
+      expect(formatDatePickerDate(undefined)).toBeUndefined();
+      expect(formatDatePickerDate([])).toBeUndefined();
+      expect(formatDatePickerDate([undefined as any])).toBeUndefined();
+    });
+
+    it('formats valid Date to API_DATE_FORMAT (YYYY-MM-DD)', () => {
+      const date = new Date(2024, 0, 15);
+      expect(formatDatePickerDate([date])).toBe('2024-01-15');
     });
   });
 });

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Column, DatePicker, DatePickerInput, Grid } from '@carbon/react';
 import { DateTime } from 'luxon';
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT } from '@/constants';
-import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
+import { DATE_PICKER_FORMAT } from '@/constants';
+import { formatDatePickerDate, getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
 
 export type SearchDateRangeProps = {
   label?: string;
@@ -17,11 +17,6 @@ export type SearchDateRangeProps = {
   children?: React.ReactNode;
 };
 
-const parseDate = (dates?: Date[]): string | undefined => {
-  if (!dates || !dates.length || !dates[0]) return undefined;
-  return DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT);
-};
-
 export const SearchDateRange = ({
   label = 'Last updated date range',
   startDate,
@@ -31,24 +26,24 @@ export const SearchDateRange = ({
   handleDateChange,
   startInputId = 'start-date-picker-input-id',
   endInputId = 'end-date-picker-input-id',
-  labelHtmlFor = 'last-updated-date-range',
+  labelHtmlFor,
   children,
 }: SearchDateRangeProps) => {
   const onStartChange = handleDateChange
     ? handleDateChange(true)
     : (dates?: Date[]) => {
-      onStartDateChange?.(parseDate(dates));
+      onStartDateChange?.(formatDatePickerDate(dates));
     };
 
   const onEndChange = handleDateChange
     ? handleDateChange(false)
     : (dates?: Date[]) => {
-      onEndDateChange?.(parseDate(dates));
+      onEndDateChange?.(formatDatePickerDate(dates));
     };
 
   return (
     <Column sm={4} md={8} lg={16} className="default-search-date-col">
-      <label className="date-label" htmlFor={labelHtmlFor}>
+      <label className="date-label" htmlFor={labelHtmlFor || startInputId}>
         {label}
       </label>
 

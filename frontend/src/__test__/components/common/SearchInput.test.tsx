@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -26,6 +26,38 @@ vi.mock('@/services/API', () => ({
   },
 }));
 
+vi.mock('@carbon/react', async () => {
+  const actual = await vi.importActual<typeof import('@carbon/react')>('@carbon/react');
+  return {
+    ...actual,
+    DatePicker: ({
+      id,
+      onChange,
+      children,
+      datePickerType,
+      dateFormat,
+      allowInput,
+      maxDate,
+      minDate,
+      ...rest
+    }: any) => (
+      <div data-testid={`mock-date-picker-${id || ''}`} {...rest}>
+        <button
+          type="button"
+          data-testid="mock-trigger-change"
+          onClick={() => onChange?.([new Date(2024, 4, 15)])}
+        />
+        <button
+          type="button"
+          data-testid="mock-trigger-clear"
+          onClick={() => onChange?.([])}
+        />
+        {children}
+      </div>
+    ),
+  };
+});
+
 describe('Common SearchInput Components', () => {
   describe('SearchDateRange', () => {
     it('renders label and DatePickers with default and custom props', () => {
@@ -41,6 +73,66 @@ describe('Common SearchInput Components', () => {
       expect(screen.getByText('Custom date range')).toBeInTheDocument();
       expect(screen.getByLabelText('Start Date')).toBeInTheDocument();
       expect(screen.getByLabelText('End Date')).toBeInTheDocument();
+    });
+
+    it('defaults label htmlFor to startInputId for accessibility when labelHtmlFor is omitted', () => {
+      render(
+        <SearchDateRange
+          startInputId="test-start-id"
+        />
+      );
+
+      const label = screen.getByText('Last updated date range');
+      expect(label).toHaveAttribute('for', 'test-start-id');
+    });
+
+    it('invokes onStartDateChange and onEndDateChange with API-formatted string on select and undefined on clear', () => {
+      const mockStartChange = vi.fn();
+      const mockEndChange = vi.fn();
+
+      render(
+        <SearchDateRange
+          onStartDateChange={mockStartChange}
+          onEndDateChange={mockEndChange}
+        />
+      );
+
+      const changeButtons = screen.getAllByTestId('mock-trigger-change');
+      const clearButtons = screen.getAllByTestId('mock-trigger-clear');
+
+      // Trigger start date select
+      fireEvent.click(changeButtons[0]);
+      expect(mockStartChange).toHaveBeenCalledWith('2024-05-15');
+
+      // Trigger start date clear
+      fireEvent.click(clearButtons[0]);
+      expect(mockStartChange).toHaveBeenCalledWith(undefined);
+
+      // Trigger end date select
+      fireEvent.click(changeButtons[1]);
+      expect(mockEndChange).toHaveBeenCalledWith('2024-05-15');
+
+      // Trigger end date clear
+      fireEvent.click(clearButtons[1]);
+      expect(mockEndChange).toHaveBeenCalledWith(undefined);
+    });
+
+    it('uses custom handleDateChange handler if provided', () => {
+      const mockInner = vi.fn();
+      const mockHandleDateChange = vi.fn(() => mockInner);
+
+      render(
+        <SearchDateRange
+          handleDateChange={mockHandleDateChange}
+        />
+      );
+
+      expect(mockHandleDateChange).toHaveBeenCalledWith(true);
+      expect(mockHandleDateChange).toHaveBeenCalledWith(false);
+
+      const changeButtons = screen.getAllByTestId('mock-trigger-change');
+      fireEvent.click(changeButtons[0]);
+      expect(mockInner).toHaveBeenCalledWith([new Date(2024, 4, 15)]);
     });
 
     it('renders children slot when provided', () => {
