@@ -91,3 +91,100 @@ export const replaceWindowUrl = (searchParams?: URLSearchParams): void => {
   const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
   window.history.replaceState({}, '', newUrl);
 };
+
+export interface ParamConfig<T> {
+  strings?: (keyof T)[];
+  numbers?: (keyof T)[];
+  booleans?: (keyof T)[];
+  arrays?: (keyof T)[];
+}
+
+/**
+ * Parses URL search parameters into a typed partial parameter object based on configuration.
+ */
+export const readUrlParamsWithConfig = <T extends Record<string, unknown>>(
+  search: string,
+  config: ParamConfig<T>
+): Partial<T> => {
+  const searchParams = new URLSearchParams(search);
+  const result: Partial<T> = {};
+
+  config.strings?.forEach((key) => {
+    const val = getStringParam(searchParams, String(key));
+    if (val !== undefined) {
+      result[key] = val as any;
+    }
+  });
+
+  config.numbers?.forEach((key) => {
+    const val = getNumericParam(searchParams, String(key));
+    if (val !== undefined) {
+      result[key] = val as any;
+    }
+  });
+
+  config.booleans?.forEach((key) => {
+    const val = getBooleanParam(searchParams, String(key));
+    if (val !== undefined) {
+      result[key] = val as any;
+    }
+  });
+
+  config.arrays?.forEach((key) => {
+    const val = getArrayParam(searchParams, String(key));
+    if (val !== undefined) {
+      result[key] = val as any;
+    }
+  });
+
+  return result;
+};
+
+/**
+ * Serializes a typed partial parameter object into URL search parameters and updates window URL.
+ */
+export const updateUrlParamsWithConfig = <T extends Record<string, unknown>>(
+  params: Partial<T> | undefined,
+  config: ParamConfig<T>
+): void => {
+  if (!params) {
+    replaceWindowUrl();
+    return;
+  }
+
+  const searchParams = new URLSearchParams();
+
+  config.strings?.forEach((key) => {
+    const val = params[key];
+    if (typeof val === 'string' && val.length > 0) {
+      searchParams.append(String(key), val);
+    }
+  });
+
+  config.numbers?.forEach((key) => {
+    const val = params[key];
+    if (typeof val === 'number') {
+      searchParams.append(String(key), String(val));
+    }
+  });
+
+  config.booleans?.forEach((key) => {
+    const val = params[key];
+    if (typeof val === 'boolean') {
+      searchParams.append(String(key), String(val));
+    }
+  });
+
+  config.arrays?.forEach((key) => {
+    const val = params[key];
+    if (Array.isArray(val)) {
+      val.forEach((item) => {
+        if (item !== undefined && item !== null && String(item).length > 0) {
+          searchParams.append(String(key), String(item));
+        }
+      });
+    }
+  });
+
+  replaceWindowUrl(searchParams);
+};
