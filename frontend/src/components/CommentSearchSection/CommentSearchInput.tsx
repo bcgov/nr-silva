@@ -2,11 +2,10 @@ import { useRef } from 'react';
 import { Column, Grid, TextInput } from '@carbon/react';
 import { CommentSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
-import { CodeDescriptionDto } from '@/services/OpenApi';
-import { getMultiSelectedCodes } from '@/utils/InputUtils';
 import CustomMultiSelect from '@/components/CustomMultiSelect';
 import ForestClientMultiSelect from '@/components/ForestClientMultiSelect';
 import { OrgUnitMultiSelect, SearchDateRange } from '@/components/common/SearchInput';
+import { handleMultiSelectChangeHelper } from '@/utils/SearchUtils';
 import { COMMENT_KEYWORD_MAX_LENGTH, COMMENT_KEYWORD_MIN_LENGTH, COMMENT_LOCATION_LIST } from './constants';
 
 import './styles.scss';
@@ -30,10 +29,8 @@ const CommentSearchInput = ({ searchParams, handleSearchFieldChange, showValidat
         : null
     : null;
 
-  const handleMultiSelectChange = (field: keyof CommentSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
-    const codes = getMultiSelectedCodes(selected);
-    handleSearchFieldChange(field, codes.length > 0 ? codes : undefined);
-  };
+  const handleMultiSelectChange = (field: keyof CommentSearchParams) =>
+    handleMultiSelectChangeHelper<CommentSearchParams>(field, handleSearchFieldChange);
 
   return (
     <Grid className="default-search-input-grid">

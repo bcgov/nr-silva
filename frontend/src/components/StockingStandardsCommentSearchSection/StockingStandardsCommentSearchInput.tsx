@@ -2,11 +2,10 @@ import { useRef } from 'react';
 import { Column, Grid, TextInput } from '@carbon/react';
 import { StockingStandardsCommentSearchParams } from '@/types/ApiType';
 import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
-import { CodeDescriptionDto } from '@/services/OpenApi';
-import { getMultiSelectedCodes } from '@/utils/InputUtils';
 import CustomMultiSelect from '@/components/CustomMultiSelect';
 import ForestClientMultiSelect from '@/components/ForestClientMultiSelect';
 import { OrgUnitMultiSelect, SearchDateRange } from '@/components/common/SearchInput';
+import { handleMultiSelectChangeHelper } from '@/utils/SearchUtils';
 import { STOCKING_COMMENT_KEYWORD_MAX_LENGTH, STOCKING_COMMENT_KEYWORD_MIN_LENGTH, STOCKING_COMMENT_LOCATION_LIST } from './constants';
 
 import './styles.scss';
@@ -30,10 +29,8 @@ const StockingStandardsCommentSearchInput = ({ searchParams, handleSearchFieldCh
         : null
     : null;
 
-  const handleMultiSelectChange = (field: keyof StockingStandardsCommentSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
-    const codes = getMultiSelectedCodes(selected);
-    handleSearchFieldChange(field, codes.length > 0 ? codes : undefined);
-  };
+  const handleMultiSelectChange = (field: keyof StockingStandardsCommentSearchParams) =>
+    handleMultiSelectChangeHelper<StockingStandardsCommentSearchParams>(field, handleSearchFieldChange);
 
   return (
     <Grid className="default-search-input-grid">
