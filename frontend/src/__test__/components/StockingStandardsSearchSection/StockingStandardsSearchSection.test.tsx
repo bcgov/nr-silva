@@ -39,6 +39,7 @@ vi.mock('@/components/TableSkeleton', () => ({
 vi.mock('@/services/API', () => ({
   default: {
     SearchEndpointService: {
+      searchStockingStandards: vi.fn(),
       stockingStandardsSearch: vi.fn(),
     },
   },
@@ -119,11 +120,12 @@ describe('StockingStandardsSearchSection', () => {
   it('should render table and results when search filters exist', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
     API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
-    const { rerender } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <StockingStandardsSearchSection />
       </QueryClientProvider>
@@ -133,22 +135,20 @@ describe('StockingStandardsSearchSection', () => {
     fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
     await waitFor(() => {
-      rerender(
-        <QueryClientProvider client={queryClient}>
-          <StockingStandardsSearchSection />
-        </QueryClientProvider>
-      );
+      expect(screen.getByRole('table')).toBeInTheDocument();
+      expect(screen.getByTestId('table-row-SR-001')).toBeInTheDocument();
     });
   });
 
   it('should display search results message with total count', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiResponse);
     const API = await import('@/services/API');
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
     API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
 
-    const { rerender } = render(
+    const { container } = render(
       <QueryClientProvider client={queryClient}>
         <StockingStandardsSearchSection />
       </QueryClientProvider>
@@ -157,11 +157,11 @@ describe('StockingStandardsSearchSection', () => {
     fireEvent.click(screen.getByRole('button', { name: /Search/i }));
 
     await waitFor(() => {
-      rerender(
-        <QueryClientProvider client={queryClient}>
-          <StockingStandardsSearchSection />
-        </QueryClientProvider>
-      );
+      expect(screen.getByText('Search results')).toBeInTheDocument();
+      expect(screen.getByText('Total search results:')).toBeInTheDocument();
+      const subtitleSection = container.querySelector('.search-result-sub-title-section');
+      expect(subtitleSection).not.toBeNull();
+      expect(within(subtitleSection!).getByText('1')).toBeInTheDocument();
     });
   });
 
@@ -202,6 +202,7 @@ describe('StockingStandardsSearchSection', () => {
 
     const mockApi = vi.fn().mockResolvedValue(emptyResponse);
     const API = await import('@/services/API');
+    API.default.SearchEndpointService.searchStockingStandards = mockApi;
     API.default.SearchEndpointService.stockingStandardsSearch = mockApi;
 
     vi.spyOn(urlUtils, 'hasStockingStandardsSearchFilters').mockReturnValue(true);
