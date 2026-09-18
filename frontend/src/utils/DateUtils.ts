@@ -126,3 +126,13 @@ export const getDatePickerValue = (date?: string) => {
   }
   return undefined;
 };
+
+/**
+ * Extracts and formats the first selected date from a DatePicker event into API_DATE_FORMAT.
+ * Returns undefined if no dates are selected.
+ */
+export const formatDatePickerDate = (dates?: Date[]): string | undefined => {
+  if (!dates || !dates.length || !dates[0]) return undefined;
+  return DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT);
+};
+
