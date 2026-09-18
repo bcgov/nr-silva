@@ -1,21 +1,18 @@
 import { StockingStandardsSearchParams } from "@/types/ApiType";
+import {
+  getArrayParam,
+  getBooleanParam,
+  getNumericParam,
+  getStringParam,
+  hasActiveSearchFilters,
+  replaceWindowUrl,
+} from "@/utils/SearchUtils";
 
 /**
  * Check if there are any active filters in the search params
  */
 export const hasStockingStandardsSearchFilters = (params: Partial<StockingStandardsSearchParams> | undefined): boolean => {
-  if (!params) return false;
-
-  const excludeKeys = new Set(['page', 'size', 'sort']);
-
-  return Object.entries(params).some(([key, value]) => {
-    if (excludeKeys.has(key)) return false;
-
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== undefined && value !== null && value !== '';
-  });
+  return hasActiveSearchFilters(params);
 };
 
 /**
@@ -25,69 +22,53 @@ export const readStockingStandardsSearchUrlParams = (): Partial<StockingStandard
   const searchParams = new URLSearchParams(window.location.search);
   const params: Partial<StockingStandardsSearchParams> = {};
 
-  const standardsRegimeId = searchParams.get('standardsRegimeId');
-  if (standardsRegimeId) {
-    const num = Number.parseInt(standardsRegimeId, 10);
-    if (Number.isFinite(num)) {
-      params.standardsRegimeId = num;
-    }
-  }
+  const standardsRegimeId = getNumericParam(searchParams, 'standardsRegimeId');
+  if (standardsRegimeId !== undefined) params.standardsRegimeId = standardsRegimeId;
 
-  const preferredSpecies = searchParams.getAll('preferredSpecies');
-  if (preferredSpecies.length > 0) params.preferredSpecies = preferredSpecies;
+  const preferredSpecies = getArrayParam(searchParams, 'preferredSpecies');
+  if (preferredSpecies) params.preferredSpecies = preferredSpecies;
 
-  const orgUnits = searchParams.getAll('orgUnits');
-  if (orgUnits.length > 0) params.orgUnits = orgUnits;
+  const orgUnits = getArrayParam(searchParams, 'orgUnits');
+  if (orgUnits) params.orgUnits = orgUnits;
 
-  const clientNumbers = searchParams.getAll('clientNumbers');
-  if (clientNumbers.length > 0) params.clientNumbers = clientNumbers;
+  const clientNumbers = getArrayParam(searchParams, 'clientNumbers');
+  if (clientNumbers) params.clientNumbers = clientNumbers;
 
-  const fspId = searchParams.get('fspId');
+  const fspId = getStringParam(searchParams, 'fspId');
   if (fspId) params.fspId = fspId;
 
-  const bgcZone = searchParams.get('bgcZone');
+  const bgcZone = getStringParam(searchParams, 'bgcZone');
   if (bgcZone) params.bgcZone = bgcZone;
 
-  const bgcSubZone = searchParams.get('bgcSubZone');
+  const bgcSubZone = getStringParam(searchParams, 'bgcSubZone');
   if (bgcSubZone) params.bgcSubZone = bgcSubZone;
 
-  const bgcVariant = searchParams.get('bgcVariant');
+  const bgcVariant = getStringParam(searchParams, 'bgcVariant');
   if (bgcVariant) params.bgcVariant = bgcVariant;
 
-  const bgcPhase = searchParams.get('bgcPhase');
+  const bgcPhase = getStringParam(searchParams, 'bgcPhase');
   if (bgcPhase) params.bgcPhase = bgcPhase;
 
-  const becSiteSeries = searchParams.get('becSiteSeries');
+  const becSiteSeries = getStringParam(searchParams, 'becSiteSeries');
   if (becSiteSeries) params.becSiteSeries = becSiteSeries;
 
-  const becSiteType = searchParams.get('becSiteType');
+  const becSiteType = getStringParam(searchParams, 'becSiteType');
   if (becSiteType) params.becSiteType = becSiteType;
 
-  const approvedDateStart = searchParams.get('approvedDateStart');
+  const approvedDateStart = getStringParam(searchParams, 'approvedDateStart');
   if (approvedDateStart) params.approvedDateStart = approvedDateStart;
 
-  const approvedDateEnd = searchParams.get('approvedDateEnd');
+  const approvedDateEnd = getStringParam(searchParams, 'approvedDateEnd');
   if (approvedDateEnd) params.approvedDateEnd = approvedDateEnd;
 
-  const defaultStandardsInd = searchParams.get('defaultStandardsInd');
-  if (defaultStandardsInd === 'true') params.defaultStandardsInd = true;
-  else if (defaultStandardsInd === 'false') params.defaultStandardsInd = false;
+  const defaultStandardsInd = getBooleanParam(searchParams, 'defaultStandardsInd');
+  if (defaultStandardsInd !== undefined) params.defaultStandardsInd = defaultStandardsInd;
 
-  const page = searchParams.get('page');
-  if (page) {
-    const pageNum = Number.parseInt(page, 10);
-    if (Number.isFinite(pageNum)) {
-      params.page = pageNum;
-    }
-  }
+  const page = getNumericParam(searchParams, 'page');
+  if (page !== undefined) params.page = page;
 
-  const size = searchParams.get('size');
-  if (size) {
-    const sizeNum = Number.parseInt(size, 10);
-    if (Number.isFinite(sizeNum)) {
-      params.size = sizeNum;
-    }
-  }
+  const size = getNumericParam(searchParams, 'size');
+  if (size !== undefined) params.size = size;
 
   return params;
 };
@@ -96,78 +77,37 @@ export const readStockingStandardsSearchUrlParams = (): Partial<StockingStandard
  * Update stocking standards search params in the URL query string
  */
 export const updateStockingStandardsSearchUrlParams = (params?: Partial<StockingStandardsSearchParams>): void => {
-  const searchParams = new URLSearchParams();
-
   if (!params) {
-    window.history.replaceState({}, '', window.location.pathname);
+    replaceWindowUrl();
     return;
   }
+
+  const searchParams = new URLSearchParams();
 
   if (params.standardsRegimeId !== undefined) {
     searchParams.append('standardsRegimeId', String(params.standardsRegimeId));
   }
 
-  if (params.preferredSpecies && Array.isArray(params.preferredSpecies)) {
-    params.preferredSpecies.forEach((v: string) => searchParams.append('preferredSpecies', v));
-  }
+  params.preferredSpecies?.forEach((v: string) => searchParams.append('preferredSpecies', v));
+  params.orgUnits?.forEach((v: string) => searchParams.append('orgUnits', v));
+  params.clientNumbers?.forEach((v: string) => searchParams.append('clientNumbers', v));
 
-  if (params.orgUnits && Array.isArray(params.orgUnits)) {
-    params.orgUnits.forEach((v: string) => searchParams.append('orgUnits', v));
-  }
-
-  if (params.clientNumbers && Array.isArray(params.clientNumbers)) {
-    params.clientNumbers.forEach((v: string) => searchParams.append('clientNumbers', v));
-  }
-
-  if (params.fspId) {
-    searchParams.append('fspId', params.fspId);
-  }
-
-  if (params.bgcZone) {
-    searchParams.append('bgcZone', params.bgcZone);
-  }
-
-  if (params.bgcSubZone) {
-    searchParams.append('bgcSubZone', params.bgcSubZone);
-  }
-
-  if (params.bgcVariant) {
-    searchParams.append('bgcVariant', params.bgcVariant);
-  }
-
-  if (params.bgcPhase) {
-    searchParams.append('bgcPhase', params.bgcPhase);
-  }
-
-  if (params.becSiteSeries) {
-    searchParams.append('becSiteSeries', params.becSiteSeries);
-  }
-
-  if (params.becSiteType) {
-    searchParams.append('becSiteType', params.becSiteType);
-  }
-
-  if (params.approvedDateStart) {
-    searchParams.append('approvedDateStart', params.approvedDateStart);
-  }
-
-  if (params.approvedDateEnd) {
-    searchParams.append('approvedDateEnd', params.approvedDateEnd);
-  }
+  if (params.fspId) searchParams.append('fspId', params.fspId);
+  if (params.bgcZone) searchParams.append('bgcZone', params.bgcZone);
+  if (params.bgcSubZone) searchParams.append('bgcSubZone', params.bgcSubZone);
+  if (params.bgcVariant) searchParams.append('bgcVariant', params.bgcVariant);
+  if (params.bgcPhase) searchParams.append('bgcPhase', params.bgcPhase);
+  if (params.becSiteSeries) searchParams.append('becSiteSeries', params.becSiteSeries);
+  if (params.becSiteType) searchParams.append('becSiteType', params.becSiteType);
+  if (params.approvedDateStart) searchParams.append('approvedDateStart', params.approvedDateStart);
+  if (params.approvedDateEnd) searchParams.append('approvedDateEnd', params.approvedDateEnd);
 
   if (params.defaultStandardsInd !== undefined) {
     searchParams.append('defaultStandardsInd', String(params.defaultStandardsInd));
   }
 
-  if (params.page !== undefined) {
-    searchParams.append('page', String(params.page));
-  }
+  if (params.page !== undefined) searchParams.append('page', String(params.page));
+  if (params.size !== undefined) searchParams.append('size', String(params.size));
 
-  if (params.size !== undefined) {
-    searchParams.append('size', String(params.size));
-  }
-
-  const queryString = searchParams.toString();
-  const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
-  window.history.replaceState({}, '', newUrl);
+  replaceWindowUrl(searchParams);
 };

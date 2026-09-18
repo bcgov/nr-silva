@@ -1,95 +1,65 @@
 import { CommentSearchParams } from '@/types/ApiType';
+import {
+  getArrayParam,
+  getNumericParam,
+  getStringParam,
+  hasActiveSearchFilters,
+  replaceWindowUrl,
+} from '@/utils/SearchUtils';
 
 export const hasCommentSearchFilters = (params: CommentSearchParams | undefined): boolean => {
-  if (!params) return false;
-
-  const excludeKeys = new Set(['page', 'size']);
-
-  return Object.entries(params).some(([key, value]) => {
-    if (excludeKeys.has(key)) return false;
-    if (Array.isArray(value)) return value.length > 0;
-    return value !== undefined && value !== null && value !== '';
-  });
+  return hasActiveSearchFilters(params, ['page', 'size']);
 };
 
 export const readCommentSearchUrlParams = (): Partial<CommentSearchParams> => {
   const searchParams = new URLSearchParams(window.location.search);
   const params: Partial<CommentSearchParams> = {};
 
-  const searchTerm = searchParams.get('searchTerm');
+  const searchTerm = getStringParam(searchParams, 'searchTerm');
   if (searchTerm) params.searchTerm = searchTerm;
 
-  const commentLocation = searchParams.getAll('commentLocation');
-  if (commentLocation.length > 0) params.commentLocation = commentLocation;
+  const commentLocation = getArrayParam(searchParams, 'commentLocation');
+  if (commentLocation) params.commentLocation = commentLocation;
 
-  const clientNumbers = searchParams.getAll('clientNumbers');
-  if (clientNumbers.length > 0) params.clientNumbers = clientNumbers;
+  const clientNumbers = getArrayParam(searchParams, 'clientNumbers');
+  if (clientNumbers) params.clientNumbers = clientNumbers;
 
-  const orgUnits = searchParams.getAll('orgUnits');
-  if (orgUnits.length > 0) params.orgUnits = orgUnits;
+  const orgUnits = getArrayParam(searchParams, 'orgUnits');
+  if (orgUnits) params.orgUnits = orgUnits;
 
-  const updateDateStart = searchParams.get('updateDateStart');
+  const updateDateStart = getStringParam(searchParams, 'updateDateStart');
   if (updateDateStart) params.updateDateStart = updateDateStart;
 
-  const updateDateEnd = searchParams.get('updateDateEnd');
+  const updateDateEnd = getStringParam(searchParams, 'updateDateEnd');
   if (updateDateEnd) params.updateDateEnd = updateDateEnd;
 
-  const page = searchParams.get('page');
-  if (page) {
-    const pageNum = Number.parseInt(page, 10);
-    if (Number.isFinite(pageNum)) params.page = pageNum;
-  }
+  const page = getNumericParam(searchParams, 'page');
+  if (page !== undefined) params.page = page;
 
-  const size = searchParams.get('size');
-  if (size) {
-    const sizeNum = Number.parseInt(size, 10);
-    if (Number.isFinite(sizeNum)) params.size = sizeNum;
-  }
+  const size = getNumericParam(searchParams, 'size');
+  if (size !== undefined) params.size = size;
 
   return params;
 };
 
 export const updateCommentSearchUrlParams = (params?: Partial<CommentSearchParams>): void => {
-  const searchParams = new URLSearchParams();
-
   if (!params) {
-    window.history.replaceState({}, '', window.location.pathname);
+    replaceWindowUrl();
     return;
   }
 
-  if (params.searchTerm) {
-    searchParams.append('searchTerm', params.searchTerm);
-  }
+  const searchParams = new URLSearchParams();
 
-  if (params.commentLocation && Array.isArray(params.commentLocation)) {
-    params.commentLocation.forEach((v) => searchParams.append('commentLocation', v));
-  }
+  if (params.searchTerm) searchParams.append('searchTerm', params.searchTerm);
+  params.commentLocation?.forEach((v) => searchParams.append('commentLocation', v));
+  params.clientNumbers?.forEach((v) => searchParams.append('clientNumbers', v));
+  params.orgUnits?.forEach((v) => searchParams.append('orgUnits', v));
 
-  if (params.clientNumbers && Array.isArray(params.clientNumbers)) {
-    params.clientNumbers.forEach((v) => searchParams.append('clientNumbers', v));
-  }
+  if (params.updateDateStart) searchParams.append('updateDateStart', params.updateDateStart);
+  if (params.updateDateEnd) searchParams.append('updateDateEnd', params.updateDateEnd);
 
-  if (params.orgUnits && Array.isArray(params.orgUnits)) {
-    params.orgUnits.forEach((v) => searchParams.append('orgUnits', v));
-  }
+  if (params.page !== undefined) searchParams.append('page', String(params.page));
+  if (params.size !== undefined) searchParams.append('size', String(params.size));
 
-  if (params.updateDateStart) {
-    searchParams.append('updateDateStart', params.updateDateStart);
-  }
-
-  if (params.updateDateEnd) {
-    searchParams.append('updateDateEnd', params.updateDateEnd);
-  }
-
-  if (params.page !== undefined) {
-    searchParams.append('page', String(params.page));
-  }
-
-  if (params.size !== undefined) {
-    searchParams.append('size', String(params.size));
-  }
-
-  const queryString = searchParams.toString();
-  const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
-  window.history.replaceState({}, '', newUrl);
+  replaceWindowUrl(searchParams);
 };

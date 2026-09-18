@@ -1,25 +1,25 @@
-
-import { useRef, useEffect, useState } from 'react';
-import { DateTime } from 'luxon';
-import { getDatePickerValue, getEndMinDate, getStartMaxDate } from '@/utils/DateUtils';
-import { ChevronDown, ChevronUp } from '@carbon/icons-react';
-import { Button, Column, DatePicker, DatePickerInput, Grid, TextInput } from '@carbon/react';
+import { useEffect, useRef, useState } from 'react';
+import { Column, Grid } from '@carbon/react';
+import { useQuery } from '@tanstack/react-query';
 import API from '@/services/API';
 import { DisturbanceSearchParams } from '@/types/ApiType';
-import useRefWithSearchParam from '@/hooks/useRefWithSearchParam';
-import { getMultiSelectedCodes, handleAutoUpperInput, handleAutoUpperPaste } from '@/utils/InputUtils';
-import { CodeDescriptionDto } from '@/services/OpenApi';
 import { codeDescriptionToDisplayText } from '@/utils/multiSelectUtils';
-import { useQuery } from '@tanstack/react-query';
-import { API_DATE_FORMAT, DATE_PICKER_FORMAT, OPENING_STATUS_LIST, FILE_ID_MAX_LENGTH } from '@/constants';
+import { getMultiSelectPlaceholderHelper, handleMultiSelectChangeHelper } from '@/utils/SearchUtils';
 import CustomMultiSelect from '../CustomMultiSelect';
 import ForestClientMultiSelect from '../ForestClientMultiSelect';
-
+import {
+  FileIdSearchInput,
+  MoreFiltersToggle,
+  OpeningCategoriesMultiSelect,
+  OpeningStatusMultiSelect,
+  OrgUnitMultiSelect,
+  SearchDateRange,
+} from '@/components/common/SearchInput';
 
 type props = {
   searchParams?: DisturbanceSearchParams;
   handleSearchFieldChange: (field: keyof DisturbanceSearchParams, value: unknown) => void;
-}
+};
 
 const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props) => {
   const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
@@ -38,9 +38,6 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
     }
   }, [searchParams]);
 
-  const fileIdInputRef = useRef<HTMLInputElement>(null); // VARCHAR2(10)
-  useRefWithSearchParam(fileIdInputRef, searchParams?.fileId);
-
   const disturbanceCodeQuery = useQuery({
     queryKey: ['codes', 'disturbance'],
     queryFn: API.CodesEndpointService.getDisturbanceCodes,
@@ -48,52 +45,21 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
 
   const silvSystemCodeQuery = useQuery({
     queryKey: ['codes', 'silv-system'],
-    queryFn: API.CodesEndpointService.getSilvSystemCodes
+    queryFn: API.CodesEndpointService.getSilvSystemCodes,
   });
 
   const silvVariantCodeQuery = useQuery({
     queryKey: ['codes', 'silv-system-variant'],
-    queryFn: API.CodesEndpointService.getSilvSystemVariantCodes
+    queryFn: API.CodesEndpointService.getSilvSystemVariantCodes,
   });
 
   const silvCutPhaseQuery = useQuery({
     queryKey: ['codes', 'silv-cut-phase'],
-    queryFn: API.CodesEndpointService.getSilvCutPhaseCodes
+    queryFn: API.CodesEndpointService.getSilvCutPhaseCodes,
   });
 
-  const orgUnitQuery = useQuery({
-    queryKey: ["codes", "org-units", { type: 'district' }],
-    queryFn: () => API.CodesEndpointService.getOpeningOrgUnits('district'),
-  });
-
-  const categoryQuery = useQuery({
-    queryKey: ["codes", "opening-categories"],
-    queryFn: () => API.CodesEndpointService.getOpeningCategories(),
-  });
-
-  const handleMultiSelectChange = (field: keyof DisturbanceSearchParams) => (selected: { selectedItems: CodeDescriptionDto[] }) => {
-    const selectedCodes = getMultiSelectedCodes(selected);
-    handleSearchFieldChange(field, selectedCodes.length > 0 ? selectedCodes : undefined);
-  };
-
-  const getMultiSelectPlaceholder = (field: keyof DisturbanceSearchParams, defaultText = 'Choose one or more options') => {
-    const values = searchParams?.[field] as unknown as string[] | undefined;
-    return values && values.length > 0 ? values.join(', ') : defaultText;
-  };
-
-  const handleDateChange = (isStartDate: boolean) => (dates?: Date[]) => {
-    if (!dates) return;
-
-    const formattedDate =
-      dates.length && dates[0]
-        ? DateTime.fromJSDate(dates[0]).toFormat(API_DATE_FORMAT)
-        : undefined;
-
-    handleSearchFieldChange(
-      isStartDate ? "updateDateStart" : "updateDateEnd",
-      formattedDate
-    );
-  };
+  const handleMultiSelectChange = (field: keyof DisturbanceSearchParams) =>
+    handleMultiSelectChangeHelper<DisturbanceSearchParams>(field, handleSearchFieldChange);
 
   return (
     <Grid className="default-search-input-grid">
@@ -103,11 +69,13 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
           id="disturbance-multiselect"
           className="default-search-multi-select"
           titleText="Disturbance code"
-          placeholder={getMultiSelectPlaceholder('disturbances')}
+          placeholder={getMultiSelectPlaceholderHelper(searchParams?.disturbances)}
           items={disturbanceCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('disturbances')}
-          selectedItems={(disturbanceCodeQuery.data ?? []).filter(data => searchParams?.disturbances?.includes(data.code ?? ''))}
+          selectedItems={(disturbanceCodeQuery.data ?? []).filter((data) =>
+            searchParams?.disturbances?.includes(data.code ?? '')
+          )}
         />
       </Column>
 
@@ -117,11 +85,13 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
           id="silv-system-multiselect"
           className="default-search-multi-select"
           titleText="Silviculture system"
-          placeholder={getMultiSelectPlaceholder('silvSystems')}
+          placeholder={getMultiSelectPlaceholderHelper(searchParams?.silvSystems)}
           items={silvSystemCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('silvSystems')}
-          selectedItems={(silvSystemCodeQuery.data ?? []).filter(data => searchParams?.silvSystems?.includes(data.code ?? ''))}
+          selectedItems={(silvSystemCodeQuery.data ?? []).filter((data) =>
+            searchParams?.silvSystems?.includes(data.code ?? '')
+          )}
         />
       </Column>
 
@@ -131,11 +101,13 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
           id="silv-system-variant-multiselect"
           className="default-search-multi-select"
           titleText="Variant"
-          placeholder={getMultiSelectPlaceholder('variants')}
+          placeholder={getMultiSelectPlaceholderHelper(searchParams?.variants)}
           items={silvVariantCodeQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('variants')}
-          selectedItems={(silvVariantCodeQuery.data ?? []).filter(data => searchParams?.variants?.includes(data.code ?? ''))}
+          selectedItems={(silvVariantCodeQuery.data ?? []).filter((data) =>
+            searchParams?.variants?.includes(data.code ?? '')
+          )}
         />
       </Column>
 
@@ -145,148 +117,66 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
           id="cut-phase-multiselect"
           className="default-search-multi-select"
           titleText="Cut phase"
-          placeholder={getMultiSelectPlaceholder('cutPhases')}
+          placeholder={getMultiSelectPlaceholderHelper(searchParams?.cutPhases)}
           items={silvCutPhaseQuery.data ?? []}
           itemToString={codeDescriptionToDisplayText}
           onChange={handleMultiSelectChange('cutPhases')}
-          selectedItems={(silvCutPhaseQuery.data ?? []).filter(data => searchParams?.cutPhases?.includes(data.code ?? ''))}
+          selectedItems={(silvCutPhaseQuery.data ?? []).filter((data) =>
+            searchParams?.cutPhases?.includes(data.code ?? '')
+          )}
         />
       </Column>
 
       {/* Org Unit */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <CustomMultiSelect
-          id="org-unit-multiselect"
-          className="default-search-multi-select"
-          titleText="Org unit"
-          placeholder={getMultiSelectPlaceholder('orgUnits')}
-          items={orgUnitQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('orgUnits')}
-          selectedItems={(orgUnitQuery.data ?? []).filter(data => searchParams?.orgUnits?.includes(data.code ?? ''))}
-        />
-      </Column>
+      <OrgUnitMultiSelect
+        type="district"
+        selectedOrgUnits={searchParams?.orgUnits}
+        onChange={(orgUnits) => handleSearchFieldChange('orgUnits', orgUnits)}
+      />
 
       {/* Opening Categories */}
-      <Column sm={4} md={4} lg={6} max={4}>
-        <CustomMultiSelect
-          placeholder={getMultiSelectPlaceholder('openingCategories')}
-          titleText="Opening category"
-          id="category-multi-select"
-          className="default-search-multi-select"
-          items={categoryQuery.data ?? []}
-          itemToString={codeDescriptionToDisplayText}
-          onChange={handleMultiSelectChange('openingCategories')}
-          selectedItems={categoryQuery.data?.filter(data => searchParams?.openingCategories?.includes(data.code ?? '')) ?? []}
-        />
-      </Column>
+      <OpeningCategoriesMultiSelect
+        selectedCategories={searchParams?.openingCategories}
+        onChange={(cats) => handleSearchFieldChange('openingCategories', cats)}
+      />
 
       {/* Updated on date range */}
-      <Column sm={4} md={8} lg={16} className="default-search-date-col">
-        <label className="date-label" htmlFor="last-updated-date-range">Last updated date range</label>
+      <SearchDateRange
+        startDate={searchParams?.updateDateStart}
+        endDate={searchParams?.updateDateEnd}
+        onStartDateChange={(date) => handleSearchFieldChange('updateDateStart', date)}
+        onEndDateChange={(date) => handleSearchFieldChange('updateDateEnd', date)}
+      >
+        <MoreFiltersToggle
+          isExpanded={showMoreFilters}
+          onToggle={setShowMoreFilters}
+        />
 
-        <Grid className="date-sub-grid">
-          {/* Start date */}
-          <Column sm={4} md={4} lg={6} max={4}>
-            <DatePicker
-              className="advanced-date-picker"
-              datePickerType="single"
-              dateFormat="Y/m/d"
-              allowInput
-              maxDate={getStartMaxDate(searchParams?.updateDateEnd)}
-              onChange={handleDateChange(true)}
-              value={getDatePickerValue(searchParams?.updateDateStart)}
-            >
-              <DatePickerInput
-                id="start-date-picker-input-id"
-                size="md"
-                labelText="Start Date"
-                placeholder="yyyy/mm/dd"
+        {/* More filters */}
+        {showMoreFilters ? (
+          <>
+            {/* File ID */}
+            <FileIdSearchInput
+              value={searchParams?.fileId}
+              onChange={(fileId) => handleSearchFieldChange('fileId', fileId)}
+            />
+
+            {/* Client */}
+            <Column sm={4} md={4} lg={6} max={4}>
+              <ForestClientMultiSelect
+                selectedClientNumbers={searchParams?.clientNumbers}
+                onChange={(clientNumbers) => handleSearchFieldChange('clientNumbers', clientNumbers)}
               />
-            </DatePicker>
-          </Column>
+            </Column>
 
-          {/* End date */}
-          <Column sm={4} md={4} lg={6} max={4}>
-            <DatePicker
-              className="advanced-date-picker"
-              datePickerType="single"
-              dateFormat="Y/m/d"
-              allowInput
-              minDate={getEndMinDate(searchParams?.updateDateStart)}
-              maxDate={DateTime.now().toFormat(DATE_PICKER_FORMAT)}
-              onChange={handleDateChange(false)}
-              value={getDatePickerValue(searchParams?.updateDateEnd)}
-            >
-              <DatePickerInput
-                id="end-date-picker-input-id"
-                size="md"
-                labelText="End Date"
-                placeholder="yyyy/mm/dd"
-              />
-            </DatePicker>
-          </Column>
-
-          <Column sm={4} md={8} lg={16}>
-            <Button
-              type="button"
-              renderIcon={showMoreFilters ? ChevronUp : ChevronDown}
-              title={`${showMoreFilters ? 'Fewer' : 'More'} filters`}
-              kind="tertiary"
-              onClick={() => setShowMoreFilters(prev => !prev)}
-            >
-              {showMoreFilters ? 'Fewer filters' : 'More filters'}
-            </Button>
-          </Column>
-
-          {/* More filters */}
-          {
-            showMoreFilters
-              ? (
-                <>
-                  {/* File ID */}
-                  <Column sm={4} md={4} lg={6} max={4}>
-                    <TextInput
-                      ref={fileIdInputRef}
-                      id="file-id-input"
-                      name="file-id"
-                      labelText="File ID"
-                      placeholder="Enter file ID"
-                      defaultValue={searchParams?.fileId ?? ''}
-                      onInput={(e) => handleAutoUpperInput(e, FILE_ID_MAX_LENGTH)}
-                      onPaste={(e) => handleAutoUpperPaste(e, FILE_ID_MAX_LENGTH)}
-                      onBlur={(e) => handleSearchFieldChange('fileId', e.target.value ? e.target.value : undefined)}
-                    />
-                  </Column>
-
-                  {/* Client */}
-                  <Column sm={4} md={4} lg={6} max={4}>
-                    <ForestClientMultiSelect
-                      selectedClientNumbers={searchParams?.clientNumbers}
-                      onChange={(clientNumbers) => handleSearchFieldChange('clientNumbers', clientNumbers)}
-                    />
-                  </Column>
-
-                  {/* Opening status */}
-                  <Column sm={4} md={4} lg={6} max={4}>
-                    <CustomMultiSelect
-                      id="status-multiselect"
-                      className="default-search-multi-select"
-                      titleText="Opening status"
-                      placeholder={getMultiSelectPlaceholder('openingStatuses')}
-                      items={OPENING_STATUS_LIST}
-                      itemToString={codeDescriptionToDisplayText}
-                      onChange={handleMultiSelectChange('openingStatuses')}
-                      selectedItems={OPENING_STATUS_LIST.filter(data => searchParams?.openingStatuses?.includes(data.code ?? '')) ?? []}
-                    />
-                  </Column>
-
-                </>
-              )
-              : null
-          }
-        </Grid>
-      </Column>
+            {/* Opening status */}
+            <OpeningStatusMultiSelect
+              selectedStatuses={searchParams?.openingStatuses}
+              onChange={(statuses) => handleSearchFieldChange('openingStatuses', statuses)}
+            />
+          </>
+        ) : null}
+      </SearchDateRange>
     </Grid>
   );
 };

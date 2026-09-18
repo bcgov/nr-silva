@@ -1,21 +1,18 @@
 import { ActivitySearchParams } from "@/types/ApiType";
+import {
+  getArrayParam,
+  getBooleanParam,
+  getNumericParam,
+  getStringParam,
+  hasActiveSearchFilters,
+  replaceWindowUrl,
+} from "@/utils/SearchUtils";
 
 /**
  * Check if there are any active filters in the search params
  */
 export const hasActivitySearchFilters = (params: ActivitySearchParams | undefined): boolean => {
-  if (!params) return false;
-
-  const excludeKeys = new Set(['page', 'size']);
-
-  return Object.entries(params).some(([key, value]) => {
-    if (excludeKeys.has(key)) return false;
-
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== undefined && value !== null && value !== '';
-  });
+  return hasActiveSearchFilters(params, ['page', 'size']);
 };
 
 /**
@@ -25,63 +22,53 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
   const searchParams = new URLSearchParams(window.location.search);
   const params: Partial<ActivitySearchParams> = {};
 
-  const bases = searchParams.getAll('bases');
-  if (bases.length > 0) params.bases = bases;
+  const bases = getArrayParam(searchParams, 'bases');
+  if (bases) params.bases = bases;
 
-  const techniques = searchParams.getAll('techniques');
-  if (techniques.length > 0) params.techniques = techniques;
+  const techniques = getArrayParam(searchParams, 'techniques');
+  if (techniques) params.techniques = techniques;
 
-  const methods = searchParams.getAll('methods');
-  if (methods.length > 0) params.methods = methods;
+  const methods = getArrayParam(searchParams, 'methods');
+  if (methods) params.methods = methods;
 
-  const isComplete = searchParams.get('isComplete');
-  if (isComplete) params.isComplete = isComplete === 'true';
+  const isComplete = getBooleanParam(searchParams, 'isComplete');
+  if (isComplete !== undefined) params.isComplete = isComplete;
 
-  const objectives = searchParams.getAll('objectives');
-  if (objectives.length > 0) params.objectives = objectives;
+  const objectives = getArrayParam(searchParams, 'objectives');
+  if (objectives) params.objectives = objectives;
 
-  const fundingSources = searchParams.getAll('fundingSources');
-  if (fundingSources.length > 0) params.fundingSources = fundingSources;
+  const fundingSources = getArrayParam(searchParams, 'fundingSources');
+  if (fundingSources) params.fundingSources = fundingSources;
 
-  const orgUnits = searchParams.getAll('orgUnits');
-  if (orgUnits.length > 0) params.orgUnits = orgUnits;
+  const orgUnits = getArrayParam(searchParams, 'orgUnits');
+  if (orgUnits) params.orgUnits = orgUnits;
 
-  const openingCategories = searchParams.getAll('openingCategories');
-  if (openingCategories.length > 0) params.openingCategories = openingCategories;
+  const openingCategories = getArrayParam(searchParams, 'openingCategories');
+  if (openingCategories) params.openingCategories = openingCategories;
 
-  const fileId = searchParams.get('fileId');
+  const fileId = getStringParam(searchParams, 'fileId');
   if (fileId) params.fileId = fileId;
 
-  const intraAgencyNumber = searchParams.get('intraAgencyNumber');
+  const intraAgencyNumber = getStringParam(searchParams, 'intraAgencyNumber');
   if (intraAgencyNumber) params.intraAgencyNumber = intraAgencyNumber;
 
-  const clientNumbers = searchParams.getAll('clientNumbers');
-  if (clientNumbers.length > 0) params.clientNumbers = clientNumbers;
+  const clientNumbers = getArrayParam(searchParams, 'clientNumbers');
+  if (clientNumbers) params.clientNumbers = clientNumbers;
 
-  const openingStatuses = searchParams.getAll('openingStatuses');
-  if (openingStatuses.length > 0) params.openingStatuses = openingStatuses;
+  const openingStatuses = getArrayParam(searchParams, 'openingStatuses');
+  if (openingStatuses) params.openingStatuses = openingStatuses;
 
-  const updateDateStart = searchParams.get('updateDateStart');
+  const updateDateStart = getStringParam(searchParams, 'updateDateStart');
   if (updateDateStart) params.updateDateStart = updateDateStart;
 
-  const updateDateEnd = searchParams.get('updateDateEnd');
+  const updateDateEnd = getStringParam(searchParams, 'updateDateEnd');
   if (updateDateEnd) params.updateDateEnd = updateDateEnd;
 
-  const page = searchParams.get('page');
-  if (page) {
-    const pageNum = Number.parseInt(page, 10);
-    if (Number.isFinite(pageNum)) {
-      params.page = pageNum;
-    }
-  }
+  const page = getNumericParam(searchParams, 'page');
+  if (page !== undefined) params.page = page;
 
-  const size = searchParams.get('size');
-  if (size) {
-    const sizeNum = Number.parseInt(size, 10);
-    if (Number.isFinite(sizeNum)) {
-      params.size = sizeNum;
-    }
-  }
+  const size = getNumericParam(searchParams, 'size');
+  if (size !== undefined) params.size = size;
 
   return params;
 };
@@ -90,78 +77,37 @@ export const readActivitySearchUrlParams = (): Partial<ActivitySearchParams> => 
  * Update activity search params in the URL query string
  */
 export const updateActivitySearchUrlParams = (params?: Partial<ActivitySearchParams>): void => {
-  const searchParams = new URLSearchParams();
-
   if (!params) {
-    window.history.replaceState({}, '', window.location.pathname);
+    replaceWindowUrl();
     return;
   }
 
-  if (params.bases && Array.isArray(params.bases)) {
-    params.bases.forEach((v: string) => searchParams.append('bases', v));
-  }
+  const searchParams = new URLSearchParams();
 
-  if (params.techniques && Array.isArray(params.techniques)) {
-    params.techniques.forEach((v: string) => searchParams.append('techniques', v));
-  }
-
-  if (params.methods && Array.isArray(params.methods)) {
-    params.methods.forEach((v: string) => searchParams.append('methods', v));
-  }
+  params.bases?.forEach((v: string) => searchParams.append('bases', v));
+  params.techniques?.forEach((v: string) => searchParams.append('techniques', v));
+  params.methods?.forEach((v: string) => searchParams.append('methods', v));
 
   if (params.isComplete !== undefined) {
     searchParams.append('isComplete', String(params.isComplete));
   }
 
-  if (params.objectives && Array.isArray(params.objectives)) {
-    params.objectives.forEach((v: string) => searchParams.append('objectives', v));
-  }
+  params.objectives?.forEach((v: string) => searchParams.append('objectives', v));
+  params.fundingSources?.forEach((v: string) => searchParams.append('fundingSources', v));
+  params.orgUnits?.forEach((v: string) => searchParams.append('orgUnits', v));
+  params.openingCategories?.forEach((v: string) => searchParams.append('openingCategories', v));
 
-  if (params.fundingSources && Array.isArray(params.fundingSources)) {
-    params.fundingSources.forEach((v: string) => searchParams.append('fundingSources', v));
-  }
+  if (params.fileId) searchParams.append('fileId', params.fileId);
+  if (params.intraAgencyNumber) searchParams.append('intraAgencyNumber', params.intraAgencyNumber);
 
-  if (params.orgUnits && Array.isArray(params.orgUnits)) {
-    params.orgUnits.forEach((v: string) => searchParams.append('orgUnits', v));
-  }
+  params.clientNumbers?.forEach((v: string) => searchParams.append('clientNumbers', v));
+  params.openingStatuses?.forEach((v: string) => searchParams.append('openingStatuses', v));
 
-  if (params.openingCategories && Array.isArray(params.openingCategories)) {
-    params.openingCategories.forEach((v: string) => searchParams.append('openingCategories', v));
-  }
+  if (params.updateDateStart) searchParams.append('updateDateStart', params.updateDateStart);
+  if (params.updateDateEnd) searchParams.append('updateDateEnd', params.updateDateEnd);
 
-  if (params.fileId) {
-    searchParams.append('fileId', params.fileId);
-  }
+  if (params.page !== undefined) searchParams.append('page', String(params.page));
+  if (params.size !== undefined) searchParams.append('size', String(params.size));
 
-  if (params.intraAgencyNumber) {
-    searchParams.append('intraAgencyNumber', params.intraAgencyNumber);
-  }
-
-  if (params.clientNumbers && Array.isArray(params.clientNumbers)) {
-    params.clientNumbers.forEach((v: string) => searchParams.append('clientNumbers', v));
-  }
-
-  if (params.openingStatuses && Array.isArray(params.openingStatuses)) {
-    params.openingStatuses.forEach((v: string) => searchParams.append('openingStatuses', v));
-  }
-
-  if (params.updateDateStart) {
-    searchParams.append('updateDateStart', params.updateDateStart);
-  }
-
-  if (params.updateDateEnd) {
-    searchParams.append('updateDateEnd', params.updateDateEnd);
-  }
-
-  if (params.page !== undefined) {
-    searchParams.append('page', String(params.page));
-  }
-
-  if (params.size !== undefined) {
-    searchParams.append('size', String(params.size));
-  }
-
-  const queryString = searchParams.toString();
-  const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
-  window.history.replaceState({}, '', newUrl);
+  replaceWindowUrl(searchParams);
 };
