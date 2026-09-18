@@ -1,8 +1,12 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.exception.UserFavoriteNotFoundException;
 import ca.bc.gov.restapi.results.common.projection.opening.OpeningBaseProjection;
@@ -48,7 +52,8 @@ class UserOpeningSearchServiceTest {
     when(openingRepository.findProjectionById(any()))
         .thenReturn(Optional.of(openingBaseProjection));
     when(userOpeningRepository.saveAndFlush(any())).thenReturn(new UserOpeningEntity());
-    userOpeningService.addUserFavoriteOpening(112233L);
+    assertThatNoException().isThrownBy(() -> userOpeningService.addUserFavoriteOpening(112233L));
+    verify(userOpeningRepository).saveAndFlush(any());
   }
 
   @Test
@@ -62,7 +67,8 @@ class UserOpeningSearchServiceTest {
     doNothing().when(userOpeningRepository).delete(any());
     doNothing().when(userOpeningRepository).flush();
 
-    userOpeningService.removeUserFavoriteOpening(112233L);
+    assertThatNoException().isThrownBy(() -> userOpeningService.removeUserFavoriteOpening(112233L));
+    verify(userOpeningRepository).delete(any());
   }
 
   @Test
@@ -83,8 +89,9 @@ class UserOpeningSearchServiceTest {
   void listUserFavoriteOpenings_happyPath_shouldSucceed() {
     when(loggedUserHelper.getLoggedUserId()).thenReturn(USER_ID);
     when(userOpeningRepository.findAllByUserId(any(), any()))
-        .thenReturn(List.of(new UserOpeningEntity()));
-    userOpeningService.listUserFavoriteOpenings();
+        .thenReturn(List.of(new UserOpeningEntity(USER_ID, 112233L)));
+    List<Long> result = userOpeningService.listUserFavoriteOpenings();
+    assertThat(result).isNotNull().containsExactly(112233L);
   }
 
   @Test
