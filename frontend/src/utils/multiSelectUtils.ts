@@ -41,8 +41,8 @@ const codeDescriptionToDisplayText = (codeDescriptionDto?: CodeDescriptionDto | 
  * @param {CodeDescriptionDto[]} arr - An array of objects containing `code` and `description` properties.
  * @returns {string[]} An array of extracted `code` strings.
  */
-const extractCodesFromCodeDescriptionArr = (arr: CodeDescriptionDto[]): string[] => (
-  arr.map((item) => item.code!)
+const extractCodesFromCodeDescriptionArr = (arr: (CodeDescriptionDto | null | undefined)[]): string[] => (
+  arr.filter((item): item is CodeDescriptionDto => item != null && item.code != null).map((item) => item.code!)
 );
 
 interface SelectableCodeDescriptionDto extends CodeDescriptionDto {

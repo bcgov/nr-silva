@@ -25,11 +25,13 @@ export const formatActivityObjective = (
 
   const objectives = [data.objective1, data.objective2, data.objective3];
 
-  const tooltipDefinition: string[] = objectives
-    .filter((obj) => codeDescriptionToDisplayText(obj) !== PLACE_HOLDER)
-    .map((obj) => codeDescriptionToDisplayText(obj));
+  const validObjectives = objectives.filter(
+    (obj): obj is NonNullable<typeof obj> => obj != null && codeDescriptionToDisplayText(obj) !== PLACE_HOLDER
+  );
 
-  let displayText = extractCodesFromCodeDescriptionArr(objectives)
+  const tooltipDefinition: string[] = validObjectives.map((obj) => codeDescriptionToDisplayText(obj));
+
+  let displayText = extractCodesFromCodeDescriptionArr(validObjectives)
     .filter((code) => code != null && code !== '')
     .join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
 
