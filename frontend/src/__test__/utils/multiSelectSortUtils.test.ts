@@ -35,6 +35,17 @@ describe("multiSelectUtils", () => {
     it("should return an empty array for an empty input array", () => {
       expect(extractCodesFromCodeDescriptionArr([])).toEqual([]);
     });
+
+    it("should filter out null, undefined, and items with missing code", () => {
+      const input = [
+        { code: "A1", description: "First" },
+        null,
+        undefined,
+        { description: "Missing code" } as any,
+        { code: "B2", description: "Second" },
+      ];
+      expect(extractCodesFromCodeDescriptionArr(input as any)).toEqual(["A1", "B2"]);
+    });
   });
 
   describe("filterCodeDescriptionItems", () => {
