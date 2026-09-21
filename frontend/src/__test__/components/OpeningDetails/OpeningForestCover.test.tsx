@@ -37,8 +37,13 @@ vi.mock("@carbon/react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@carbon/react")>();
   return {
     ...actual,
-    DefinitionTooltip: ({ children, definition }: any) => (
-      <span title={typeof definition === "string" ? definition : undefined}>
+    Tooltip: ({ children, label, ...props }: any) => (
+      <div data-testid="tooltip" title={typeof label === "string" ? label : undefined} {...props}>
+        {children}
+      </div>
+    ),
+    DefinitionTooltip: ({ children, definition, openOnHover, ...props }: any) => (
+      <span title={typeof definition === "string" ? definition : undefined} {...props}>
         {children}
       </span>
     ),

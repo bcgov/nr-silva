@@ -31,6 +31,23 @@ vi.mock("@/hooks/usePolygonAvailability", () => ({
   default: (...args: any[]) => mockUsePolygonAvailability(...args),
 }));
 
+vi.mock("@carbon/react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@carbon/react")>();
+  return {
+    ...actual,
+    Tooltip: ({ children, label, ...props }: any) => (
+      <div data-testid="tooltip" title={typeof label === "string" ? label : undefined} {...props}>
+        {children}
+      </div>
+    ),
+    DefinitionTooltip: ({ children, definition, openOnHover, ...props }: any) => (
+      <span title={typeof definition === "string" ? definition : undefined} {...props}>
+        {children}
+      </span>
+    ),
+  };
+});
+
 describe("OpeningActivities", () => {
   let queryClient: QueryClient;
   const setSelectedSilvicultureActivityIds = vi.fn();
