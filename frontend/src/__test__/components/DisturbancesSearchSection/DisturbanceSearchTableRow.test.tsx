@@ -269,4 +269,70 @@ describe('DisturbanceSearchTableRow', () => {
 
     windowOpenSpy.mockRestore();
   });
+
+  it('renders openingId, openingCategory, orgUnit, client, and updateTimestamp columns', () => {
+    const fullHeaders = [
+      { key: 'openingId' as const, header: 'Opening ID', selected: true },
+      { key: 'openingCategory' as const, header: 'Category', selected: true },
+      { key: 'orgUnit' as const, header: 'District', selected: true },
+      { key: 'openingClient' as const, header: 'Client', selected: true },
+      { key: 'updateTimestamp' as const, header: 'Updated', selected: true },
+    ];
+
+    const { wrapper } = renderWithProviders();
+    render(
+      <table>
+        <tbody>
+          <DisturbanceSearchTableRow
+            headers={fullHeaders}
+            rowData={mockDisturbanceData}
+            showMap={false}
+            selectedRows={[]}
+            handleRowSelection={mockHandleRowSelection}
+          />
+        </tbody>
+      </table>,
+      { wrapper }
+    );
+
+    expect(screen.getByText('100')).toBeInTheDocument();
+    expect(screen.getByText('ORG-001')).toBeInTheDocument();
+    expect(screen.getByText('CAT-001')).toBeInTheDocument();
+    expect(screen.getByText('00000005')).toBeInTheDocument();
+    expect(screen.getByText('Formatted: 2024-01-15T10:30:00')).toBeInTheDocument();
+  });
+
+  it('renders placeholders when fields are null or empty', () => {
+    const emptyData: DisturbanceSearchResponseDto = {
+      activityId: 2,
+      openingId: 101,
+    };
+
+    const fullHeaders = [
+      { key: 'disturbance' as const, header: 'Disturbance', selected: true },
+      { key: 'silvSystem' as const, header: 'SilvSystem', selected: true },
+      { key: 'variant' as const, header: 'Variant', selected: true },
+      { key: 'cutPhase' as const, header: 'CutPhase', selected: true },
+      { key: 'client' as const, header: 'Client', selected: true },
+    ];
+
+    const { wrapper } = renderWithProviders();
+    render(
+      <table>
+        <tbody>
+          <DisturbanceSearchTableRow
+            headers={fullHeaders}
+            rowData={emptyData}
+            showMap={false}
+            selectedRows={[]}
+            handleRowSelection={mockHandleRowSelection}
+          />
+        </tbody>
+      </table>,
+      { wrapper }
+    );
+
+    const placeholders = screen.getAllByText('--');
+    expect(placeholders.length).toBe(5);
+  });
 });
