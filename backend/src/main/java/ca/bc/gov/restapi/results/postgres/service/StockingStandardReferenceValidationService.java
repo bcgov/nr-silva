@@ -38,15 +38,16 @@ public class StockingStandardReferenceValidationService {
   public record SpeciesValidationOutcome(boolean exists, String minimumHeightError) {}
 
   public BecValidationOutcome validateBec(BecDataDto bec) {
+    BecDataDto normalizedBec = normalizeBecForLookup(bec);
     boolean exists =
         !siteSeriesCatalogueRepository
             .findMatchingBecCombo(
-                bec.bgcZoneCode(),
-                bec.bgcSubzoneCode(),
-                bec.variant(),
-                bec.phase(),
-                bec.siteSeries(),
-                bec.sitePhase())
+                normalizedBec.bgcZoneCode(),
+                normalizedBec.bgcSubzoneCode(),
+                normalizedBec.variant(),
+                normalizedBec.phase(),
+                normalizedBec.siteSeries(),
+                normalizedBec.sitePhase())
             .isEmpty();
     return new BecValidationOutcome(exists);
   }
@@ -93,6 +94,16 @@ public class StockingStandardReferenceValidationService {
         normalizeBecValue(bec.phase()),
         normalizeBecValue(bec.siteSeries()),
         normalizeBecValue(bec.sitePhase()));
+  }
+
+  private BecDataDto normalizeBecForLookup(BecDataDto bec) {
+    return new BecDataDto(
+        StringUtils.trim(bec.bgcZoneCode()),
+        StringUtils.trim(bec.bgcSubzoneCode()),
+        StringUtils.trimToNull(bec.variant()),
+        StringUtils.trimToNull(bec.phase()),
+        StringUtils.trim(bec.siteSeries()),
+        StringUtils.trimToNull(bec.sitePhase()));
   }
 
   public String normalizeSpeciesCode(String speciesCode) {

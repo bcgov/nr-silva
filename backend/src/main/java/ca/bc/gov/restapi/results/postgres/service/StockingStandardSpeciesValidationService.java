@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Provides layer-aware species validation feedback before stocking-standard submission. */
 @Service
@@ -40,7 +42,11 @@ public class StockingStandardSpeciesValidationService {
    */
   public StockingSpeciesValidationResponseDto validate(
       List<StockingSpeciesLayerValidationRequestDto> layers) {
-    if (layers == null || layers.isEmpty()) {
+    if (layers == null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "species validation payload must not be null");
+    }
+    if (layers.isEmpty()) {
       return new StockingSpeciesValidationResponseDto(List.of(), List.of(), true);
     }
 

@@ -58,6 +58,18 @@ class StockingStandardBecValidationServiceTest {
   }
 
   @Test
+  @DisplayName("BEC lookup normalizes valid whitespace before validating the active combination")
+  void becCombination_normalizesWhitespaceBeforeLookup() {
+    BecDataDto bec = new BecDataDto("CWH", "wh", "1", " ", " 01 ", " ");
+    when(siteSeriesCatalogueRepository.findMatchingBecCombo("CWH", "wh", "1", null, "01", null))
+        .thenReturn(List.of(SiteSeriesCatalogueEntity.builder().id(1L).build()));
+
+    BecValidationResponseDto result = service.validate(List.of(bec));
+
+    assertThat(result.isValid()).isTrue();
+  }
+
+  @Test
   @DisplayName("Unknown BEC combination is returned as a per-entry error")
   void unknownBecCombination_returnsPerEntryError() {
     BecDataDto bec = new BecDataDto("ZZZ", "zz", null, null, "99", null);

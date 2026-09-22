@@ -65,4 +65,17 @@ class StockingStandardSpeciesValidationEndpointIntegrationTest
             jsonPath("$.validationResults[0].speciesValidationResults[0].errorMessage")
                 .value("Unknown or inactive species code(s): ZZ"));
   }
+
+  @Test
+  @WithMockJwt
+  @DisplayName("Null species payload returns 400")
+  void validateSpecies_nullPayload_returns400() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/stocking-standards/validate/species")
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("null"))
+        .andExpect(status().isBadRequest());
+  }
 }

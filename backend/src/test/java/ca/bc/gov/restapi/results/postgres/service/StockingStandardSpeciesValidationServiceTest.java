@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit Test | StockingStandardSpeciesValidationService")
@@ -186,5 +189,18 @@ class StockingStandardSpeciesValidationServiceTest {
     verify(speciesCodeRepository, never())
         .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
             anyString(), any(), any());
+  }
+
+  @Test
+  @DisplayName("Null species payload is rejected while an empty list remains valid")
+  void nullSpeciesPayload_isRejected() {
+    assertThatThrownBy(() -> service.validate(null))
+        .isInstanceOf(ResponseStatusException.class)
+        .satisfies(
+            exception ->
+                assertThat(((ResponseStatusException) exception).getStatusCode())
+                    .isEqualTo(HttpStatus.BAD_REQUEST));
+
+    assertThat(service.validate(List.of()).isValid()).isTrue();
   }
 }
