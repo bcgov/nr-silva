@@ -73,8 +73,13 @@ import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.MyRecentActionsRequestsDto;
 import ca.bc.gov.restapi.results.postgres.dto.OpeningsPerYearDto;
+import ca.bc.gov.restapi.results.postgres.dto.SpeciesDuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.StockingLayerDto;
 import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesDto;
+import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesLayerValidationRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesLayerValidationResultDto;
+import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesValidationResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRemovalValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
@@ -87,6 +92,7 @@ import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.BecValidationErrorCode;
+import ca.bc.gov.restapi.results.postgres.enums.SpeciesValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
@@ -233,6 +239,12 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   BecValidationResponseDto.class,
   BecValidationErrorCode.class,
   StockingSpeciesDto.class,
+  StockingSpeciesLayerValidationRequestDto.class,
+  StockingSpeciesValidationResultDto.class,
+  StockingSpeciesLayerValidationResultDto.class,
+  SpeciesDuplicateConflictDto.class,
+  StockingSpeciesValidationResponseDto.class,
+  SpeciesValidationErrorCode.class,
   StockingLayerDto.class,
   StockingStandardAuthorityType.class,
   StockingSpeciesType.class,
