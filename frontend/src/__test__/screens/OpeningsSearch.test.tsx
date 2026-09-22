@@ -30,6 +30,7 @@ vi.mock('@/services/API', () => ({
   default: {
     CodesEndpointService: {
       getOpeningOrgUnits: vi.fn().mockResolvedValue([]),
+      getOpeningCategories: vi.fn().mockResolvedValue([]),
       getOpeningCategoryCodes: vi.fn().mockResolvedValue([]),
       getOpeningStatusCodes: vi.fn().mockResolvedValue([]),
     },
