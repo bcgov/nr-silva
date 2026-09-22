@@ -14,14 +14,9 @@ import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgresRepository;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +36,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class StockingStandardValidationService {
 
   private static final String MINISTRY_DEFAULT_ORG_UNIT_CODE = "HFP";
-  private static final BigDecimal MAX_SPECIES_MIN_HEIGHT = new BigDecimal("99.9");
   private static final Set<String> VALID_HEIGHT_RELATIVE_UNIT_CODES = Set.of("CM", "PCT");
   private static final Set<String> MULTI_LAYER_CODES = Set.of("4", "3", "2", "1");
   private static final Set<String> LAYER_1_2_ONLY_CODES = Set.of("2", "1");
@@ -50,8 +44,7 @@ public class StockingStandardValidationService {
       Set.of(Role.SUBMITTER, Role.APPROVER, Role.ADMIN);
 
   private final OrgUnitPostgresRepository orgUnitRepository;
-  private final SilvTreeSpeciesCodePostgresRepository speciesCodeRepository;
-  private final SiteSeriesCataloguePostgresRepository siteSeriesCatalogueRepository;
+  private final StockingStandardReferenceValidationService referenceValidationService;
   private final LoggedUserHelper loggedUserHelper;
 
   /**
@@ -86,21 +79,6 @@ public class StockingStandardValidationService {
       if (!normalizedValues.add(value.trim())) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, fieldName + " must not contain duplicate values");
-      }
-    }
-  }
-
-  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species, String layerCode) {
-    if (species == null) {
-      return;
-    }
-    Set<String> normalizedCodes = new HashSet<>();
-    for (StockingSpeciesDto speciesDto : species) {
-      String normalizedCode = speciesDto.speciesCode().trim().toUpperCase(Locale.ROOT);
-      if (!normalizedCodes.add(normalizedCode)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "species must not contain duplicate species codes in layer " + layerCode);
       }
     }
   }
@@ -196,20 +174,13 @@ public class StockingStandardValidationService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "At least one BEC entry is required when BEC information is selected");
       }
-      rejectDuplicateBecCombinations(becData);
+      if (referenceValidationService.hasDuplicateBecCombinations(becData)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
+      }
       List<String> invalidCombos = new ArrayList<>();
       for (BecDataDto bec : becData) {
-        boolean exists =
-            !siteSeriesCatalogueRepository
-                .findMatchingBecCombo(
-                    bec.bgcZoneCode(),
-                    bec.bgcSubzoneCode(),
-                    bec.variant(),
-                    bec.phase(),
-                    bec.siteSeries(),
-                    bec.sitePhase())
-                .isEmpty();
-        if (!exists) {
+        if (!referenceValidationService.validateBec(bec).exists()) {
           invalidCombos.add(
               bec.bgcZoneCode()
                   + "/"
@@ -232,42 +203,25 @@ public class StockingStandardValidationService {
     }
   }
 
-  private void rejectDuplicateBecCombinations(List<BecDataDto> becData) {
-    Set<String> normalizedCombinations = new HashSet<>();
-    for (BecDataDto bec : becData) {
-      String normalizedCombination =
-          String.join(
-              "|",
-              normalizeBecValue(bec.bgcZoneCode()),
-              normalizeBecValue(bec.bgcSubzoneCode()),
-              normalizeBecValue(bec.variant()),
-              normalizeBecValue(bec.phase()),
-              normalizeBecValue(bec.siteSeries()),
-              normalizeBecValue(bec.sitePhase()));
-      if (!normalizedCombinations.add(normalizedCombination)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
-      }
-    }
-  }
-
-  private String normalizeBecValue(String value) {
-    return StringUtils.trimToEmpty(value).toUpperCase(Locale.ROOT);
-  }
-
   private void validateSpecies(CreateStockingStandardRequestDto dto) {
     List<String> notFound = new ArrayList<>();
     LocalDate submissionDate = DateUtil.todayInVancouver();
     for (StockingLayerDto layer : getLayers(dto)) {
-      rejectDuplicateSpeciesCodes(layer.species(), layer.layerCode());
+      if (layer.species() != null
+          && referenceValidationService.hasDuplicateSpeciesCodes(layer.species())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "species must not contain duplicate species codes in layer " + layer.layerCode());
+      }
       if (layer.species() == null) {
         continue;
       }
       for (StockingSpeciesDto species : layer.species()) {
-        validateSpeciesMinimumHeight(layer.layerCode(), species);
-        if (!speciesCodeRepository
-            .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
-                species.speciesCode().trim(), submissionDate, submissionDate)) {
+        var outcome = referenceValidationService.validateSpecies(layer.layerCode(), species);
+        if (outcome.minimumHeightError() != null) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, outcome.minimumHeightError());
+        }
+        if (!outcome.exists()) {
           notFound.add(species.speciesCode());
         }
       }
@@ -276,22 +230,6 @@ public class StockingStandardValidationService {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Unknown or inactive species code(s): " + String.join(", ", notFound));
-    }
-  }
-
-  private void validateSpeciesMinimumHeight(String layerCode, StockingSpeciesDto species) {
-    if (("I".equals(layerCode) || "4".equals(layerCode)) && species.minHeight() == null) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST,
-          "minHeight is required for species in layer " + layerCode);
-    }
-    if (species.minHeight() != null
-        && (species.minHeight().compareTo(BigDecimal.ZERO) < 0
-            || species.minHeight().compareTo(MAX_SPECIES_MIN_HEIGHT) > 0
-            || species.minHeight().scale() > 1)) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST,
-          "minHeight must be between 0.0 and 99.9 metres with at most one decimal place");
     }
   }
 

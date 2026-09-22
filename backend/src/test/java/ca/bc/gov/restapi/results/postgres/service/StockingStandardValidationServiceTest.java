@@ -49,6 +49,7 @@ class StockingStandardValidationServiceTest {
   @Mock private LoggedUserHelper loggedUserHelper;
 
   private StockingStandardValidationService service;
+  private StockingStandardReferenceValidationService referenceValidationService;
 
   private static final StockingSpeciesDto VALID_SPECIES =
       new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, new BigDecimal("1.0"));
@@ -65,9 +66,12 @@ class StockingStandardValidationServiceTest {
 
   @BeforeEach
   void setUp() {
+    referenceValidationService =
+        new StockingStandardReferenceValidationService(
+            speciesCodeRepository, siteSeriesCatalogueRepository);
     service =
         new StockingStandardValidationService(
-            orgUnitRepository, speciesCodeRepository, siteSeriesCatalogueRepository, loggedUserHelper);
+            orgUnitRepository, referenceValidationService, loggedUserHelper);
     lenient()
         .when(
             speciesCodeRepository
