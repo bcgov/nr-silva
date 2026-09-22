@@ -43,13 +43,16 @@ describe('FileUtils', () => {
 
   describe('downloadCSV and downloadXLSX', () => {
     let createObjectURLSpy: ReturnType<typeof vi.fn>;
+    let revokeObjectURLSpy: ReturnType<typeof vi.fn>;
     let clickSpy: ReturnType<typeof vi.fn>;
     let appendChildSpy: ReturnType<typeof vi.spyOn>;
     let removeChildSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
       createObjectURLSpy = vi.fn().mockReturnValue('blob:mock-url');
+      revokeObjectURLSpy = vi.fn();
       window.URL.createObjectURL = createObjectURLSpy;
+      window.URL.revokeObjectURL = revokeObjectURLSpy;
       clickSpy = vi.fn();
       vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
         const el = document.createElementNS('http://www.w3.org/1999/xhtml', tagName);
@@ -73,6 +76,7 @@ describe('FileUtils', () => {
       expect(clickSpy).toHaveBeenCalled();
       expect(appendChildSpy).toHaveBeenCalled();
       expect(removeChildSpy).toHaveBeenCalled();
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:mock-url');
     });
 
     it('downloadXLSX converts to CSV and triggers download', () => {
@@ -83,6 +87,7 @@ describe('FileUtils', () => {
 
       expect(createObjectURLSpy).toHaveBeenCalled();
       expect(clickSpy).toHaveBeenCalled();
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:mock-url');
     });
   });
 
