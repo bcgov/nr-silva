@@ -24,6 +24,7 @@ import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgresRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,7 @@ class StockingStandardValidationServiceTest {
   private StockingStandardValidationService service;
 
   private static final StockingSpeciesDto VALID_SPECIES =
-      new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null);
+      new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, new BigDecimal("1.0"));
   private static final StockingLayerDto VALID_SINGLE_LAYER =
       new StockingLayerDto(
           "I", null, null, null, null, null, null, null, null, null, null, List.of(VALID_SPECIES));
@@ -67,7 +68,12 @@ class StockingStandardValidationServiceTest {
     service =
         new StockingStandardValidationService(
             orgUnitRepository, speciesCodeRepository, siteSeriesCatalogueRepository, loggedUserHelper);
-    lenient().when(speciesCodeRepository.existsById(anyString())).thenReturn(true);
+    lenient()
+        .when(
+            speciesCodeRepository
+                .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
+                    anyString(), any(), any()))
+        .thenReturn(true);
     lenient()
         .when(
             siteSeriesCatalogueRepository.findMatchingBecCombo(
@@ -423,14 +429,20 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("BEC info and alternative method selected together is rejected")
-  void becInfoAndAltMethodSelected_isRejected() {
+  @DisplayName("BEC information and alternative method selected together are accepted")
+  void becInfoAndAltMethodSelected_passes() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
 
-    assertRejected(
-        operationalPlanRequest(List.of("DAS"), List.of("00012797"), true, true, List.of()),
-        HttpStatus.BAD_REQUEST);
+    assertThat(
+            service.validate(
+                operationalPlanRequest(
+                    List.of("DAS"),
+                    List.of("00012797"),
+                    true,
+                    true,
+                    List.of(new BecDataDto("CWH", "wh", "1", null, "01", null)))))
+        .containsExactly(1L);
   }
 
   @Test
@@ -496,11 +508,15 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Unknown species code is rejected")
-  void unknownSpeciesCode_isRejected() {
+  @DisplayName("Inactive species code is rejected")
+  void inactiveSpeciesCode_isRejected() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))
         .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
-    when(speciesCodeRepository.existsById("ZZ")).thenReturn(false);
+    when(
+            speciesCodeRepository
+                .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
+                    org.mockito.ArgumentMatchers.eq("ZZ"), any(), any()))
+        .thenReturn(false);
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
             "Objective",
@@ -530,9 +546,111 @@ class StockingStandardValidationServiceTest {
                 null,
                 null,
                 null,
-                List.of(new StockingSpeciesDto("ZZ", StockingSpeciesType.PREFERRED, null))),
+                List.of(
+                    new StockingSpeciesDto(
+                        "ZZ", StockingSpeciesType.PREFERRED, new BigDecimal("1.0")))),
             null,
             null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Duplicate normalized BEC combinations are rejected")
+  void duplicateBecCombinations_areRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+
+    assertRejected(
+        operationalPlanRequest(
+            List.of("DAS"),
+            List.of("00012797"),
+            true,
+            false,
+            List.of(
+                new BecDataDto("CWH", "wh", "1", null, "01", "A"),
+                new BecDataDto(" cwh ", " WH ", " 1 ", null, " 01 ", " a "))),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Species minimum height is required for the single layer")
+  void singleLayerSpecies_withoutMinimumHeight_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    StockingLayerDto layer =
+        new StockingLayerDto(
+            "I",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null)));
+
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"), List.of("00012797"), false, true, null,
+            StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.SINGLE, layer,
+            null, null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Species can repeat across layers and minimum height is optional for layers 3, 2, and 1")
+  void speciesAcrossLayers_withOptionalMinimumHeights_passes() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    List<StockingLayerDto> layers =
+        List.of(
+            new StockingLayerDto(
+                "4", null, null, null, null, null, null, null, null, null, null,
+                List.of(VALID_SPECIES)),
+            new StockingLayerDto(
+                "3", null, null, null, null, null, null, null, null, null, null,
+                List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))),
+            new StockingLayerDto(
+                "2", null, null, null, null, null, null, null, null, null, null,
+                List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))),
+            new StockingLayerDto(
+                "1", null, null, null, null, null, null, null, null, null, null,
+                List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))));
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"), List.of("00012797"), false, true, null,
+            StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.MULTI, null,
+            layers, null);
+
+    assertThat(service.validate(request)).containsExactly(1L);
+  }
+
+  @Test
+  @DisplayName("Species minimum height is required for layer 4")
+  void layerFourSpecies_withoutMinimumHeight_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    List<StockingLayerDto> layers =
+        List.of(
+            new StockingLayerDto(
+                "4", null, null, null, null, null, null, null, null, null, null,
+                List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))),
+            new StockingLayerDto("3", null, null, null, null, null, null, null, null, null, null, null),
+            new StockingLayerDto("2", null, null, null, null, null, null, null, null, null, null, null),
+            new StockingLayerDto("1", null, null, null, null, null, null, null, null, null, null, null));
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective", "Name", "Location", StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"), List.of("00012797"), false, true, null,
+            StockingType.REGEN_OBLIGATION, 1, 20, null, null, StockingLayerType.MULTI, null,
+            layers, null);
 
     assertRejected(request, HttpStatus.BAD_REQUEST);
   }

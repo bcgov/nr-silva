@@ -10,6 +10,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -210,5 +211,40 @@ class CreateStockingStandardRequestDtoTest {
 
     assertThat(validator.validate(nullBecData)).isNotEmpty();
     assertThat(validator.validate(nullSpecies)).isNotEmpty();
+  }
+
+  @Test
+  @DisplayName("Species minimum height outside the documented range or precision is rejected")
+  void speciesMinimumHeight_outsideRangeOrPrecision_isRejected() {
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("-0.1"))))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("100.0"))))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("1.11"))))
+        .isNotEmpty();
+  }
+
+  private CreateStockingStandardRequestDto speciesRequest(BigDecimal minHeight) {
+    CreateStockingStandardRequestDto request = validRequest();
+    StockingLayerDto layer = request.singleLayer();
+    return new CreateStockingStandardRequestDto(
+        request.objective(), request.name(), request.location(), request.authorityType(),
+        request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
+        request.alternativeMethodSelected(), request.becData(), request.stockingType(),
+        request.regenDelayYears(), request.freeGrowingYears(), request.earlyYears(),
+        request.lateYears(), request.layerType(),
+        new StockingLayerDto(
+            layer.layerCode(), layer.minWellSpacedTrees(), layer.minPreferredWellSpacedTrees(),
+            layer.minHorizontalDistance(), layer.targetWellSpacedTrees(),
+            layer.minResidualBasalArea(), layer.minPostSpacingDensity(), layer.maxPostSpacingDensity(),
+            layer.maxConiferous(), layer.heightRelativeToComp(), layer.heightRelativeToCompUnitCode(),
+            List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, minHeight))),
+        request.multiLayers(), request.additionalStandards());
   }
 }

@@ -1,6 +1,8 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,4 +19,5 @@ import java.math.BigDecimal;
 public record StockingSpeciesDto(
     @NotBlank @Size(max = 8) String speciesCode,
     @NotNull StockingSpeciesType speciesType,
-    @Digits(integer = 2, fraction = 1) BigDecimal minHeight) {}
+    @DecimalMin("0.0") @DecimalMax("99.9") @Digits(integer = 2, fraction = 1)
+        BigDecimal minHeight) {}
