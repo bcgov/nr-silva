@@ -148,36 +148,32 @@ describe('ErrorHandling', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('handles chunk error when message includes "Importing a module script failed"', async () => {
+  it('handles chunk error when message includes "Importing a module script failed"', () => {
     const chunkError = new Error('Importing a module script failed');
     (useRouteError as vi.Mock).mockReturnValue(chunkError);
     (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
 
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <ErrorHandling />
-        </MemoryRouter>
-      );
-    });
+    render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
 
     expect(reloadSpy).toHaveBeenCalledOnce();
     expect(sessionStorage.getItem('silva_chunk_reload_attempted')).toBe('1');
   });
 
-  it('handles chunk error when err.name is "ChunkLoadError"', async () => {
+  it('handles chunk error when err.name is "ChunkLoadError"', () => {
     const chunkError = new Error('Loading chunk 5 failed');
     chunkError.name = 'ChunkLoadError';
     (useRouteError as vi.Mock).mockReturnValue(chunkError);
     (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
 
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <ErrorHandling />
-        </MemoryRouter>
-      );
-    });
+    render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
 
     expect(reloadSpy).toHaveBeenCalledOnce();
   });

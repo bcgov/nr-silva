@@ -89,7 +89,7 @@ describe("SpatialUtils", () => {
         [0, 0],
       ];
       const closed = ensureClosedRing(ring);
-      expect(closed.length).toBe(4);
+      expect(closed).toHaveLength(4);
       expect(closed[0]).toEqual(closed[closed.length - 1]);
     });
   });
@@ -104,7 +104,7 @@ describe("SpatialUtils", () => {
         [1200000, 400000],
       ];
       const transformed = transformRingToWgs84(ring, "EPSG:3005");
-      expect(transformed.length).toBe(4);
+      expect(transformed).toHaveLength(4);
       // Longitude for BC is negative (around -120 to -125), Latitude is positive (around 48 to 55)
       expect(transformed[0][0]).toBeLessThan(0);
       expect(transformed[0][1]).toBeGreaterThan(45);
@@ -143,11 +143,11 @@ describe("SpatialUtils", () => {
       `;
       const result = esfXmlToGeoJSON(xml);
       expect(result.type).toBe("FeatureCollection");
-      expect(result.features.length).toBe(1);
+      expect(result.features).toHaveLength(1);
       const feature = result.features[0];
       expect(feature.geometry.type).toBe("Polygon");
       const polyGeom = feature.geometry as GeoJSON.Polygon;
-      expect(polyGeom.coordinates.length).toBe(2); // 1 outer ring + 1 hole
+      expect(polyGeom.coordinates).toHaveLength(2); // 1 outer ring + 1 hole
     });
 
     it("parses GML2 coordinates in outerBoundaryIs / innerBoundaryIs and single Polygon fallback", () => {
@@ -171,9 +171,9 @@ describe("SpatialUtils", () => {
       `;
       const result = esfXmlToGeoJSON(xml);
       expect(result.type).toBe("FeatureCollection");
-      expect(result.features.length).toBe(1);
+      expect(result.features).toHaveLength(1);
       const polyGeom = result.features[0].geometry as GeoJSON.Polygon;
-      expect(polyGeom.coordinates.length).toBe(2);
+      expect(polyGeom.coordinates).toHaveLength(2);
     });
 
     it("parses fallback LinearRing without outerBoundaryIs wrapper", () => {
@@ -189,7 +189,7 @@ describe("SpatialUtils", () => {
         </OpeningDefinition>
       `;
       const result = esfXmlToGeoJSON(xml);
-      expect(result.features.length).toBe(1);
+      expect(result.features).toHaveLength(1);
     });
 
     it("skips polygon if no coordinates are found", () => {
@@ -205,7 +205,7 @@ describe("SpatialUtils", () => {
         </OpeningDefinition>
       `;
       const result = esfXmlToGeoJSON(xml);
-      expect(result.features.length).toBe(0);
+      expect(result.features).toHaveLength(0);
     });
   });
 
@@ -263,7 +263,7 @@ describe("SpatialUtils", () => {
       `;
       const fc = gmlToGeoJSON(xml);
       expect(fc.type).toBe("FeatureCollection");
-      expect(fc.features.length).toBe(1);
+      expect(fc.features).toHaveLength(1);
     });
 
     it("parses naked MultiPolygon directly", () => {
@@ -282,7 +282,7 @@ describe("SpatialUtils", () => {
       `;
       const fc = gmlToGeoJSON(xml);
       expect(fc.type).toBe("FeatureCollection");
-      expect(fc.features.length).toBe(1);
+      expect(fc.features).toHaveLength(1);
     });
 
     it("throws error when no features can be extracted", () => {

@@ -333,6 +333,6 @@ describe('DisturbanceSearchTableRow', () => {
     );
 
     const placeholders = screen.getAllByText('--');
-    expect(placeholders.length).toBe(5);
+    expect(placeholders).toHaveLength(5);
   });
 });
