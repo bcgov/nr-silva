@@ -59,6 +59,10 @@ import ca.bc.gov.restapi.results.oracle.entity.code.OpeningStatusCodeOracleEntit
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningAttachmentEntity;
 import ca.bc.gov.restapi.results.oracle.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.dto.BecDataDto;
+import ca.bc.gov.restapi.results.postgres.dto.BecDuplicateConflictDto;
+import ca.bc.gov.restapi.results.postgres.dto.BecValidationErrorDto;
+import ca.bc.gov.restapi.results.postgres.dto.BecValidationResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.BecValidationResultDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateStockingStandardRequestDto;
@@ -82,6 +86,7 @@ import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
+import ca.bc.gov.restapi.results.postgres.enums.BecValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
@@ -222,6 +227,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   CreateStockingStandardRequestDto.class,
   CreateStockingStandardResponseDto.class,
   BecDataDto.class,
+  BecValidationResultDto.class,
+  BecDuplicateConflictDto.class,
+  BecValidationErrorDto.class,
+  BecValidationResponseDto.class,
+  BecValidationErrorCode.class,
   StockingSpeciesDto.class,
   StockingLayerDto.class,
   StockingStandardAuthorityType.class,
