@@ -294,8 +294,26 @@ describe("SpatialUtils", () => {
 
     it("detectsGmlEpsg handles xml parsing error gracefully and logs warning", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-      // Malformed XML with no features will trigger error fallback
-      expect(() => gmlToGeoJSON("<<<invalid xml>>>")).toThrow();
+      const originalParse = DOMParser.prototype.parseFromString;
+      let callCount = 0;
+      const parseSpy = vi
+        .spyOn(DOMParser.prototype, "parseFromString")
+        .mockImplementation(function (this: DOMParser, str: string, type: SupportedType) {
+          callCount++;
+          if (callCount === 2) {
+            throw new Error("XML parse error");
+          }
+          return originalParse.call(this, str, type);
+        });
+
+      expect(() => gmlToGeoJSON("<empty>gml</empty>")).toThrow();
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Failed to parse GML for EPSG detection:",
+        expect.any(Error),
+        expect.objectContaining({ xmlText: "<empty>gml</empty>" })
+      );
+
+      parseSpy.mockRestore();
       warnSpy.mockRestore();
     });
   });
