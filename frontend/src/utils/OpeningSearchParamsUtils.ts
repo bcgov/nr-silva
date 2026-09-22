@@ -8,7 +8,12 @@ export const hasActiveFilters = (params: OpeningSearchParamsType | undefined): b
   // Exclude page and size from active filters check
   return Object.entries(params)
     .filter(([key]) => key !== 'page' && key !== 'size')
-    .some(([, v]) => v !== undefined && v !== null && v !== '');
+    .some(([, v]) => {
+      if (Array.isArray(v)) {
+        return v.length > 0;
+      }
+      return v !== undefined && v !== null && v !== '';
+    });
 };
 
 /**

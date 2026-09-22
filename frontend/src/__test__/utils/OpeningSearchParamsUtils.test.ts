@@ -36,6 +36,10 @@ describe('OpeningSearchParamsUtils', () => {
       expect(hasActiveFilters({ categories: ['CAT1'] })).toBe(true);
       expect(hasActiveFilters({ isCreatedByUser: true })).toBe(true);
     });
+
+    it('returns false when array filters are empty', () => {
+      expect(hasActiveFilters({ categories: [], openingStatuses: [], orgUnits: [] })).toBe(false);
+    });
   });
 
   describe('serializeOpeningSearchParams', () => {
@@ -136,18 +140,14 @@ describe('OpeningSearchParamsUtils', () => {
     });
 
     it('readOpeningSearchUrlParams reads and deserializes search params from window.location.search', () => {
-      delete (window as any).location;
-      window.location = {
-        ...originalLocation,
-        pathname: '/openings',
-        search: '?openingId=555&licenseNumber=TEST',
-      } as any;
+      const originalUrl = window.location.href;
+      window.history.pushState({}, '', '/openings?openingId=555&licenseNumber=TEST');
 
       const params = readOpeningSearchUrlParams();
       expect(params.openingId).toBe(555);
       expect(params.licenseNumber).toBe('TEST');
 
-      window.location = originalLocation;
+      window.history.pushState({}, '', originalUrl);
     });
   });
 });
