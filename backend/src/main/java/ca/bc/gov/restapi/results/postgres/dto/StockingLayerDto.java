@@ -1,8 +1,11 @@
 package ca.bc.gov.restapi.results.postgres.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Tree Stocking Criteria for a single layer. The same shape is used for the single-layer case
@@ -22,6 +25,7 @@ import jakarta.validation.constraints.Size;
  *     single layer)
  * @param heightRelativeToCompUnitCode unit for {@code heightRelativeToComp} ("CM" or "PCT"),
  *     required whenever {@code heightRelativeToComp} is supplied
+ * @param species optional species entries for this layer
  */
 public record StockingLayerDto(
     @NotBlank @Size(max = 2) String layerCode,
@@ -34,4 +38,33 @@ public record StockingLayerDto(
     Integer maxPostSpacingDensity,
     Integer maxConiferous,
     Integer heightRelativeToComp,
-    @Size(max = 3) String heightRelativeToCompUnitCode) {}
+    @Size(max = 3) String heightRelativeToCompUnitCode,
+    List<@NotNull @Valid StockingSpeciesDto> species) {
+
+  public StockingLayerDto(
+      String layerCode,
+      Integer minWellSpacedTrees,
+      Integer minPreferredWellSpacedTrees,
+      java.math.BigDecimal minHorizontalDistance,
+      Integer targetWellSpacedTrees,
+      Integer minResidualBasalArea,
+      Integer minPostSpacingDensity,
+      Integer maxPostSpacingDensity,
+      Integer maxConiferous,
+      Integer heightRelativeToComp,
+      String heightRelativeToCompUnitCode) {
+    this(
+        layerCode,
+        minWellSpacedTrees,
+        minPreferredWellSpacedTrees,
+        minHorizontalDistance,
+        targetWellSpacedTrees,
+        minResidualBasalArea,
+        minPostSpacingDensity,
+        maxPostSpacingDensity,
+        maxConiferous,
+        heightRelativeToComp,
+        heightRelativeToCompUnitCode,
+        null);
+  }
+}

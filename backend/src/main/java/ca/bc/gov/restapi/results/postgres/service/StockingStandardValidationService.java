@@ -62,16 +62,15 @@ public class StockingStandardValidationService {
     List<Long> orgUnitNos = validateAuthority(dto);
     validateClients(dto);
     validateBec(dto);
-    validateSpecies(dto);
     validateStockingType(dto);
     validateLayers(dto);
+    validateSpecies(dto);
     return orgUnitNos;
   }
 
   private void validateDuplicateValues(CreateStockingStandardRequestDto dto) {
     rejectDuplicateValues(dto.orgUnitCodes(), "orgUnitCodes");
     rejectDuplicateValues(dto.clientNumbers(), "clientNumbers");
-    rejectDuplicateSpeciesCodes(dto.species());
   }
 
   private void rejectDuplicateValues(List<String> values, String fieldName) {
@@ -87,7 +86,7 @@ public class StockingStandardValidationService {
     }
   }
 
-  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species) {
+  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species, String layerCode) {
     if (species == null) {
       return;
     }
@@ -96,7 +95,8 @@ public class StockingStandardValidationService {
       String normalizedCode = speciesDto.speciesCode().trim().toUpperCase(Locale.ROOT);
       if (!normalizedCodes.add(normalizedCode)) {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "species must not contain duplicate species codes");
+            HttpStatus.BAD_REQUEST,
+            "species must not contain duplicate species codes in layer " + layerCode);
       }
     }
   }
@@ -228,19 +228,28 @@ public class StockingStandardValidationService {
   }
 
   private void validateSpecies(CreateStockingStandardRequestDto dto) {
-    if (dto.species() == null) {
-      return;
-    }
     List<String> notFound = new ArrayList<>();
-    for (StockingSpeciesDto species : dto.species()) {
-      if (!speciesCodeRepository.existsById(species.speciesCode().trim())) {
-        notFound.add(species.speciesCode());
+    for (StockingLayerDto layer : getLayers(dto)) {
+      rejectDuplicateSpeciesCodes(layer.species(), layer.layerCode());
+      if (layer.species() == null) {
+        continue;
+      }
+      for (StockingSpeciesDto species : layer.species()) {
+        if (!speciesCodeRepository.existsById(species.speciesCode().trim())) {
+          notFound.add(species.speciesCode());
+        }
       }
     }
     if (!notFound.isEmpty()) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unknown species code(s): " + String.join(", ", notFound));
     }
+  }
+
+  private List<StockingLayerDto> getLayers(CreateStockingStandardRequestDto dto) {
+    return dto.layerType() == StockingLayerType.SINGLE
+        ? List.of(dto.singleLayer())
+        : dto.multiLayers();
   }
 
   private void validateStockingType(CreateStockingStandardRequestDto dto) {

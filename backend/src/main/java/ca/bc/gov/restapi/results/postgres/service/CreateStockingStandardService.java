@@ -13,7 +13,6 @@ import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeLayerSpeciesEnti
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeOrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeSiteSeriesEntity;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
-import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesMilestone;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeClientPostgresRepository;
@@ -177,8 +176,8 @@ public class CreateStockingStandardService {
       layerRepository.save(layerEntity);
 
       int order = 1;
-      if (dto.species() != null) {
-        for (StockingSpeciesDto species : dto.species()) {
+      if (layer.species() != null) {
+        for (StockingSpeciesDto species : layer.species()) {
           layerSpeciesRepository.save(
               StandardsRegimeLayerSpeciesEntity.builder()
                   .standardsRegimeLayerId(layerId)
@@ -186,10 +185,6 @@ public class CreateStockingStandardService {
                   .speciesOrder(order++)
                   .speciesTypeCode(species.speciesType().getCode())
                   .minHeight(species.minHeight())
-                  .regenMilestoneInd(
-                      species.milestone() == StockingSpeciesMilestone.FREE_GROWING ? "N" : "Y")
-                  .freeGrowingMilestoneInd(
-                      species.milestone() == StockingSpeciesMilestone.REGEN ? "N" : "Y")
                   .entryUserid(auditUserId)
                   .entryTimestamp(now)
                   .updateUserid(auditUserId)

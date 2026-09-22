@@ -29,7 +29,6 @@ import java.util.List;
  * @param becInfoSelected whether BEC information applies to this standard
  * @param alternativeMethodSelected whether an alternative method applies to this standard
  * @param becData BEC entries; required (min 1) if becInfoSelected is true, otherwise must be empty
- * @param species species entries, optional
  * @param stockingType whether this standard is a Regen Obligation or a Stocking Requirement
  * @param regenDelayYears regen delay years; required if stockingType is REGEN_OBLIGATION
  * @param freeGrowingYears free growing years; required if stockingType is REGEN_OBLIGATION
@@ -51,7 +50,6 @@ public record CreateStockingStandardRequestDto(
     @NotNull Boolean becInfoSelected,
     @NotNull Boolean alternativeMethodSelected,
     List<@NotNull @Valid BecDataDto> becData,
-    List<@NotNull @Valid StockingSpeciesDto> species,
     @NotNull StockingType stockingType,
     Integer regenDelayYears,
     Integer freeGrowingYears,
