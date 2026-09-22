@@ -229,4 +229,19 @@ describe('StockingStandardsSearchSection', () => {
 
     expect(container.querySelector('.stocking-standards-search-section')).toBeInTheDocument();
   });
+
+  it('should reset params when Clear all is clicked', async () => {
+    const updateUrlSpy = vi.spyOn(urlUtils, 'updateStockingStandardsSearchUrlParams');
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <StockingStandardsSearchSection />
+      </QueryClientProvider>
+    );
+
+    const clearButton = screen.getByRole('button', { name: /Clear all/i });
+    fireEvent.click(clearButton);
+
+    expect(updateUrlSpy).toHaveBeenCalledWith(undefined);
+  });
 });

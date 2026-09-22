@@ -7,29 +7,34 @@ import { renderWithProviders } from '../../utils/testAuthProvider';
 import * as forestCoverUtils from '../../../components/ForestCoverSearchSection/utils';
 import API from '../../../services/API';
 
+const { mockSearchResponse } = vi.hoisted(() => ({
+  mockSearchResponse: {
+    content: [
+      {
+        forestCoverId: 1,
+        polygonId: 'POLY-001',
+        standardUnitId: 'STD-001',
+        openingId: 100,
+        stockingType: { code: 'PL', description: 'Planted' },
+        stockingStatus: { code: 'STS', description: 'Satisfactorily Stocked' },
+        damageAgents: [{ code: 'IBM', description: 'Mountain Pine Beetle' }],
+        orgUnit: { code: 'DCS', description: 'Cariboo Forest Region' },
+        openingCategory: { code: 'FTML', description: 'Forest Tenure - Misc. Licence' },
+        updateTimestamp: '2024-01-15T10:30:00',
+        regenDueDate: '2026-01-15',
+        freeGrowingDueDate: '2030-01-15',
+      },
+    ],
+    page: { totalElements: 1, size: 20, page: 0, totalPages: 1 },
+  },
+}));
+
 // Mock API service
 vi.mock('../../../services/API', () => ({
   default: {
     SearchEndpointService: {
-      forestCoverSearch: vi.fn().mockResolvedValue({
-        content: [
-          {
-            forestCoverId: 1,
-            polygonId: 'POLY-001',
-            standardUnitId: 'STD-001',
-            openingId: 100,
-            stockingType: { code: 'PL', description: 'Planted' },
-            stockingStatus: { code: 'STS', description: 'Satisfactorily Stocked' },
-            damageAgents: [{ code: 'IBM', description: 'Mountain Pine Beetle' }],
-            orgUnit: { code: 'DCS', description: 'Cariboo Forest Region' },
-            openingCategory: { code: 'FTML', description: 'Forest Tenure - Misc. Licence' },
-            updateTimestamp: '2024-01-15T10:30:00',
-            regenDueDate: '2026-01-15',
-            freeGrowingDueDate: '2030-01-15',
-          },
-        ],
-        page: { totalElements: 1, size: 20, page: 0, totalPages: 1 },
-      }),
+      forestCoverSearch: vi.fn().mockResolvedValue(mockSearchResponse),
+      searchForestCover: vi.fn().mockResolvedValue(mockSearchResponse),
     },
     CodesEndpointService: {
       getStockingTypeCodes: vi.fn().mockResolvedValue([
@@ -225,6 +230,24 @@ describe('ForestCoverSearchSection', () => {
 
     await waitFor(() => {
       expect(screen.queryByText('Search results')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows map when a row is selected', async () => {
+    const { wrapper } = renderWithProviders();
+    const user = userEvent.setup();
+    vi.mocked(forestCoverUtils.readForestCoverSearchUrlParams).mockReturnValue({ openingId: 100 } as any);
+    vi.mocked(forestCoverUtils.hasForestCoverSearchFilters).mockReturnValue(true);
+
+    render(<ForestCoverSearchSection />, { wrapper });
+
+    const selectBtn = await screen.findByRole('button', { name: /Select/i });
+    await user.click(selectBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('openings-map')).toBeInTheDocument();
+      expect(screen.getByTestId('map-opening-ids')).toHaveTextContent('100');
+      expect(screen.getByTestId('map-forest-cover-ids')).toHaveTextContent('1-POLY-001');
     });
   });
 });
