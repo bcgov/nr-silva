@@ -90,7 +90,9 @@ class CreateStockingStandardServiceTest {
             StandardsRegimeEntity::getMofDefaultStandardInd,
             StandardsRegimeEntity::getAlternativeMethodInd,
             StandardsRegimeEntity::getRegenObligationInd)
-        .containsExactly(100L, "Standard name", "DFT", "N", "N", "Y");
+        .containsExactly(100L, "Standard name", "SUB", "N", "N", "Y");
+    assertThat(standard.getValue().getSubmittedByUserid()).isNull();
+    assertThat(standard.getValue().getSubmittedDate()).isNull();
 
     ArgumentCaptor<StandardsRegimeOrgUnitEntity> orgUnits =
         ArgumentCaptor.forClass(StandardsRegimeOrgUnitEntity.class);

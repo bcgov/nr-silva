@@ -68,7 +68,7 @@ public class CreateStockingStandardService {
         StandardsRegimeEntity.builder()
             .id(standardsRegimeId)
             .standardsRegimeName(dto.name() != null ? dto.name().trim() : null)
-            .standardsRegimeStatusCode("DFT")
+            .standardsRegimeStatusCode("SUB")
             .standardsObjective(dto.objective().trim())
             .geographicDescription(dto.location() != null ? dto.location().trim() : null)
             .mofDefaultStandardInd(
