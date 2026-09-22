@@ -860,6 +860,37 @@ class StockingStandardValidationServiceTest {
   }
 
   @Test
+  @DisplayName("heightRelativeToComp unit code without a value is rejected")
+  void heightRelativeToCompUnitCode_withoutValue_isRejected() {
+    when(orgUnitRepository.findByOrgUnitCode("DAS"))
+        .thenReturn(Optional.of(OrgUnitEntity.builder().orgUnitNo(1L).orgUnitCode("DAS").build()));
+    StockingLayerDto layer =
+        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, "CM");
+    CreateStockingStandardRequestDto request =
+        new CreateStockingStandardRequestDto(
+            "Objective",
+            "Name",
+            "Location",
+            StockingStandardAuthorityType.OPERATIONAL_PLAN,
+            List.of("DAS"),
+            List.of("00012797"),
+            false,
+            true,
+            null,
+            StockingType.REGEN_OBLIGATION,
+            1,
+            20,
+            null,
+            null,
+            StockingLayerType.SINGLE,
+            layer,
+            null,
+            null);
+
+    assertRejected(request, HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
   @DisplayName("heightRelativeToComp with a valid PCT unit code passes")
   void heightRelativeToComp_withPercentageUnitCode_passes() {
     when(orgUnitRepository.findByOrgUnitCode("DAS"))

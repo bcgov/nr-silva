@@ -22,6 +22,7 @@ import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeOrgUnitPostg
 import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeSiteSeriesPostgresRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -181,7 +182,7 @@ public class CreateStockingStandardService {
           layerSpeciesRepository.save(
               StandardsRegimeLayerSpeciesEntity.builder()
                   .standardsRegimeLayerId(layerId)
-                  .silvTreeSpeciesCode(species.speciesCode().trim())
+                  .silvTreeSpeciesCode(species.speciesCode().trim().toUpperCase(Locale.ROOT))
                   .speciesOrder(order++)
                   .speciesTypeCode(species.speciesType().getCode())
                   .minHeight(species.minHeight())

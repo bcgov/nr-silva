@@ -360,6 +360,14 @@ public class StockingStandardValidationService {
   private void validateLayerFields(StockingLayerDto layer, boolean multi) {
     String code = layer.layerCode();
 
+    if ((layer.heightRelativeToComp() == null) != (layer.heightRelativeToCompUnitCode() == null)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "heightRelativeToComp and heightRelativeToCompUnitCode must be supplied together (layer "
+              + code
+              + ")");
+    }
+
     if (multi && !LAYER_1_2_ONLY_CODES.contains(code)) {
       if (layer.minResidualBasalArea() != null) {
         rejectLayerField(code, "minResidualBasalArea");
@@ -374,18 +382,16 @@ public class StockingStandardValidationService {
         rejectLayerField(code, "maxConiferous");
       }
     }
-    if (multi && !LAYER_3_4_ONLY_CODES.contains(code) && layer.heightRelativeToComp() != null) {
-      rejectLayerField(code, "heightRelativeToComp");
+    if (multi && !LAYER_3_4_ONLY_CODES.contains(code)) {
+      if (layer.heightRelativeToComp() != null) {
+        rejectLayerField(code, "heightRelativeToComp");
+      }
+      if (layer.heightRelativeToCompUnitCode() != null) {
+        rejectLayerField(code, "heightRelativeToCompUnitCode");
+      }
     }
 
     if (layer.heightRelativeToComp() != null) {
-      if (StringUtils.isBlank(layer.heightRelativeToCompUnitCode())) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "heightRelativeToCompUnitCode is required when heightRelativeToComp is supplied (layer "
-                + code
-                + ")");
-      }
       if (!VALID_HEIGHT_RELATIVE_UNIT_CODES.contains(layer.heightRelativeToCompUnitCode())) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,

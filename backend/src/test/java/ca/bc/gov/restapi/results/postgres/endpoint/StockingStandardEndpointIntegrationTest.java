@@ -53,7 +53,7 @@ class StockingStandardEndpointIntegrationTest extends AbstractTestContainerInteg
           {
             "layerCode": "4",
             "species": [
-              {"speciesCode": "CW", "speciesType": "PREFERRED", "minHeight": 1.0},
+              {"speciesCode": " cw ", "speciesType": "PREFERRED", "minHeight": 1.0},
               {"speciesCode": "HW", "speciesType": "ACCEPTABLE", "minHeight": 1.2}
             ]
           },

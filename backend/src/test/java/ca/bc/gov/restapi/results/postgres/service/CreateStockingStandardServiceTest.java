@@ -239,7 +239,7 @@ class CreateStockingStandardServiceTest {
                 15,
                 "CM",
                 List.of(
-                    new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, BigDecimal.ONE),
+                    new StockingSpeciesDto(" cw ", StockingSpeciesType.PREFERRED, BigDecimal.ONE),
                     new StockingSpeciesDto("HW", StockingSpeciesType.ACCEPTABLE, null),
                     new StockingSpeciesDto("BA", StockingSpeciesType.ECOLOGICALLY_SUITABLE, null))),
             new StockingLayerDto(
