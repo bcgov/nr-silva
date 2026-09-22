@@ -49,8 +49,8 @@ describe('useDeepLinkScroll', () => {
   it('polls layout drift and corrects scroll position', () => {
     const el = document.createElement('div');
     el.id = 'target-el';
-    // SCROLL_OFFSET_PX is 120, drift threshold is 30.
-    // If top is 200, |200 - 120| = 80 > 30, so window.scrollTo should be called.
+    // SCROLL_OFFSET_PX is 48, drift threshold is 30.
+    // If top is 200, |200 - 48| = 152 > 30, so window.scrollTo should be called.
     el.getBoundingClientRect = () => ({ top: 200 } as any);
     document.body.appendChild(el);
 
@@ -135,7 +135,7 @@ describe('useDeepLinkScroll', () => {
   it('re-starts layout watch if already scrolled on re-render/Strict-Mode remount', () => {
     const el = document.createElement('div');
     el.id = 'target-el';
-    el.getBoundingClientRect = () => ({ top: 120 } as any);
+    el.getBoundingClientRect = () => ({ top: 200 } as any);
     document.body.appendChild(el);
 
     const { rerender } = renderHook(
@@ -143,8 +143,21 @@ describe('useDeepLinkScroll', () => {
       { initialProps: { id: 'target-el', ready: true } }
     );
 
-    // Re-render
-    rerender({ id: 'target-el', ready: true });
     expect(scrollToTargetSpy).toHaveBeenCalledTimes(1);
+
+    // Simulate dependency change (or StrictMode remount) after initial scroll has already fired
+    rerender({ id: 'target-el', ready: false });
+    rerender({ id: 'target-el', ready: true });
+
+    // Initial scrollToTarget should not be called again because hasScrolled.current is true
+    expect(scrollToTargetSpy).toHaveBeenCalledTimes(1);
+
+    scrollToSpy.mockClear();
+    // Advance timers by LAYOUT_POLL_MS (150ms) to ensure startLayoutWatch is running
+    act(() => {
+      vi.advanceTimersByTime(160);
+    });
+
+    expect(scrollToSpy).toHaveBeenCalled();
   });
 });
