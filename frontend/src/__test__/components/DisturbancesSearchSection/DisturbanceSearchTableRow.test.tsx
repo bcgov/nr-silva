@@ -313,7 +313,7 @@ describe('DisturbanceSearchTableRow', () => {
       { key: 'silvSystem' as const, header: 'SilvSystem', selected: true },
       { key: 'variant' as const, header: 'Variant', selected: true },
       { key: 'cutPhase' as const, header: 'CutPhase', selected: true },
-      { key: 'client' as const, header: 'Client', selected: true },
+      { key: 'openingClient' as const, header: 'Client', selected: true },
     ];
 
     const { wrapper } = renderWithProviders();
