@@ -132,10 +132,16 @@ describe('Openings Screen', () => {
     expect(myTabContent).toBeInTheDocument();
   });
 
-  it('changes active tab when tab is clicked', () => {
+  it('changes active tab when tab is clicked', async () => {
     renderComponent();
+
+    expect(screen.getByTestId('recent-openings')).toBeInTheDocument();
+    expect(screen.queryByTestId('my-openings')).toBeNull();
 
     const myOpeningsTab = screen.getByRole('tab', { name: 'My openings' });
     fireEvent.click(myOpeningsTab);
+
+    expect(await screen.findByTestId('my-openings')).toBeInTheDocument();
+    expect(screen.queryByTestId('recent-openings')).toBeNull();
   });
 });
