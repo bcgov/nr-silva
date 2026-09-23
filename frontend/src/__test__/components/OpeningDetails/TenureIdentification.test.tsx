@@ -32,7 +32,7 @@ vi.mock('@carbon/react', async (importOriginal) => {
         {definition}
       </span>
     ),
-    Pagination: ({ onChange, page, pageSize, ...props }: any) => (
+    Pagination: ({ onChange }: any) => (
       <div data-testid="pagination">
         <button
           data-testid="pagination-change"
@@ -73,12 +73,16 @@ const secondaryTenure = {
   plannedNetArea: null,
 };
 
+let latestQueryKey: any[] = [];
+
 describe('TenureIdentification', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(false);
+    latestQueryKey = [];
 
-    mockUseQuery.mockImplementation(({ queryFn }) => {
+    mockUseQuery.mockImplementation(({ queryKey, queryFn }: any) => {
+      latestQueryKey = queryKey;
       // Execute queryFn to cover its sorting and parameter logic
       queryFn();
 
@@ -164,17 +168,25 @@ describe('TenureIdentification', () => {
     // Submit by clicking Search button
     const searchBtn = screen.getByRole('button', { name: 'Search' });
     fireEvent.click(searchBtn);
+    expect(latestQueryKey[3].filter).toBe('CP1');
 
     // Press Enter in search input
+    fireEvent.change(searchInput, { target: { value: 'CP2' } });
     fireEvent.keyDown(searchInput, { key: 'Enter' });
+    expect(latestQueryKey[3].filter).toBe('CP2');
 
     // Clear search with empty string
     fireEvent.change(searchInput, { target: { value: '' } });
     fireEvent.click(searchBtn);
+    expect(latestQueryKey[3].filter).toBeUndefined();
 
     // Clear search via clear button
+    fireEvent.change(searchInput, { target: { value: 'CP3' } });
+    fireEvent.click(searchBtn);
+    expect(latestQueryKey[3].filter).toBe('CP3');
     const clearBtn = screen.getByRole('button', { name: 'Clear search input' });
     fireEvent.click(clearBtn);
+    expect(latestQueryKey[3].filter).toBeUndefined();
   });
 
   it('handles sorting when sort button is clicked', () => {
@@ -183,8 +195,16 @@ describe('TenureIdentification', () => {
     // In Carbon TableHeader, the sort button is inside the th
     const sortBtn = screen.getByRole('button', { name: /File ID/i });
     fireEvent.click(sortBtn); // ASC
+    expect(latestQueryKey[3].sortField).toBe('fileId');
+    expect(latestQueryKey[3].sortDirection).toBe('ASC');
+
     fireEvent.click(sortBtn); // DESC
+    expect(latestQueryKey[3].sortField).toBe('fileId');
+    expect(latestQueryKey[3].sortDirection).toBe('DESC');
+
     fireEvent.click(sortBtn); // NONE
+    expect(latestQueryKey[3].sortField).toBeUndefined();
+    expect(latestQueryKey[3].sortDirection).toBeUndefined();
   });
 
   it('renders OpeningTenureTooltip component details', () => {
@@ -198,6 +218,8 @@ describe('TenureIdentification', () => {
 
     const paginationBtn = screen.getByTestId('pagination-change');
     fireEvent.click(paginationBtn);
+    expect(latestQueryKey[3].page).toBe(1);
+    expect(latestQueryKey[3].size).toBe(15);
   });
 
   it('renders empty search results section when totalElements is 0 and filtered', () => {
