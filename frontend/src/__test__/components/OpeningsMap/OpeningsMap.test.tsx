@@ -70,24 +70,36 @@ vi.mock("@/components/OpeningsMapEntry", () => ({
     setHoveredFeature,
     selectedFeature,
     setSelectedFeature,
-  }: any) => (
-    <div data-testid="openings-map-entry" data-polygon-count={polygons?.length ?? 0}>
-      <button
-        data-testid="entry-hover-btn"
-        onClick={() => setHoveredFeature(polygons[0]?.features?.[0] ?? null)}
+  }: any) => {
+    const renderedFeatureIds =
+      polygons
+        ?.flatMap((fc: any) => fc.features ?? [])
+        .map((f: any) => String(f.id))
+        .join(",") ?? "";
+
+    return (
+      <div
+        data-testid="openings-map-entry"
+        data-polygon-count={polygons?.length ?? 0}
+        data-rendered-features={renderedFeatureIds}
       >
-        Hover Feature
-      </button>
-      <button
-        data-testid="entry-select-btn"
-        onClick={() => setSelectedFeature(polygons[0]?.features?.[0] ?? null)}
-      >
-        Select Feature
-      </button>
-      <span data-testid="entry-hovered-id">{hoveredFeature ? String(hoveredFeature.id) : "none"}</span>
-      <span data-testid="entry-selected-id">{selectedFeature ? String(selectedFeature.id) : "none"}</span>
-    </div>
-  ),
+        <button
+          data-testid="entry-hover-btn"
+          onClick={() => setHoveredFeature(polygons[0]?.features?.[0] ?? null)}
+        >
+          Hover Feature
+        </button>
+        <button
+          data-testid="entry-select-btn"
+          onClick={() => setSelectedFeature(polygons[0]?.features?.[0] ?? null)}
+        >
+          Select Feature
+        </button>
+        <span data-testid="entry-hovered-id">{hoveredFeature ? String(hoveredFeature.id) : "none"}</span>
+        <span data-testid="entry-selected-id">{selectedFeature ? String(selectedFeature.id) : "none"}</span>
+      </div>
+    );
+  },
 }));
 
 describe("OpeningsMap", () => {
@@ -228,6 +240,10 @@ describe("OpeningsMap", () => {
         "No forest cover polygon is selected and displayed. Select from the table to show on map."
       )
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      ""
+    );
 
     rerender(
       <OpeningsMap
@@ -241,6 +257,10 @@ describe("OpeningsMap", () => {
     expect(
       screen.getByText("Showing selected forest cover polygons")
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101"
+    );
   });
 
   it("renders standards unit banners according to selection", () => {
@@ -258,6 +278,10 @@ describe("OpeningsMap", () => {
         "No standards unit polygon is selected and displayed. Select from the table to show on map."
       )
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      ""
+    );
 
     rerender(
       <OpeningsMap
@@ -271,6 +295,10 @@ describe("OpeningsMap", () => {
     expect(
       screen.getByText("Showing selected standards unit polygon")
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101"
+    );
   });
 
   it("renders activities map banners according to activity and disturbance selections", () => {
@@ -289,6 +317,10 @@ describe("OpeningsMap", () => {
         "No activities or disturbances are selected and displayed. Select from the table to show on map."
       )
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      ""
+    );
 
     rerender(
       <OpeningsMap
@@ -300,6 +332,10 @@ describe("OpeningsMap", () => {
       />
     );
     expect(screen.getByText("Showing selected activities")).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101"
+    );
 
     rerender(
       <OpeningsMap
@@ -311,6 +347,10 @@ describe("OpeningsMap", () => {
       />
     );
     expect(screen.getByText("Showing selected disturbances")).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-102"
+    );
 
     rerender(
       <OpeningsMap
@@ -324,6 +364,10 @@ describe("OpeningsMap", () => {
     expect(
       screen.getByText("Showing selected activities and disturbances")
     ).toBeInTheDocument();
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101,feat-102"
+    );
   });
 
   it("shows and interacts with popup on feature hover and select", () => {
@@ -401,7 +445,7 @@ describe("OpeningsMap", () => {
     expect(params.CQL_FILTER).toBe("OPENING_ID=101;OPENING_ID=102");
   });
 
-  it("restores selected feature on details page when previously selected", () => {
+  it("restores selected feature on details page when openings data updates", async () => {
     const { rerender } = render(
       <OpeningsMap
         openingIds={[101]}
@@ -414,7 +458,28 @@ describe("OpeningsMap", () => {
     fireEvent.click(screen.getByTestId("entry-select-btn"));
     expect(screen.getByTestId("entry-selected-id")).toHaveTextContent("feat-101");
 
-    // Rerender with details page true
+    // Change openings query data (simulating a refetch/update)
+    const updatedFeatureCollection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          ...mockFeatureCollection.features[0]!,
+          properties: {
+            ...mockFeatureCollection.features[0]!.properties,
+            UPDATED: true,
+          },
+        },
+      ],
+    };
+
+    vi.mocked(getMapQueries).mockReturnValue([
+      {
+        status: "success",
+        data: updatedFeatureCollection,
+      } as any,
+    ]);
+
+    // Rerender with new data triggers restoration effect in details page
     rerender(
       <OpeningsMap
         openingIds={[101]}
@@ -424,5 +489,19 @@ describe("OpeningsMap", () => {
     );
 
     expect(screen.getByTestId("entry-selected-id")).toHaveTextContent("feat-101");
+
+    // When openings data becomes empty, effect clears selected feature
+    vi.mocked(getMapQueries).mockReturnValue([]);
+    await act(async () => {
+      rerender(
+        <OpeningsMap
+          openingIds={[]}
+          setOpeningPolygonNotFound={mockSetOpeningPolygonNotFound}
+          isDetailsPage={true}
+        />
+      );
+    });
+
+    expect(screen.getByTestId("entry-selected-id")).toHaveTextContent("none");
   });
 });
