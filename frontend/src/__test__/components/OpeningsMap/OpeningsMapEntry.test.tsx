@@ -1,9 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import L from "leaflet";
 import OpeningsMapEntry from "@/components/OpeningsMapEntry";
-import { FeatureCollection, Feature, Geometry } from "geojson";
+import { FeatureCollection } from "geojson";
 
 const mockFlyToBounds = vi.fn();
 const mockEachLayer = vi.fn();
