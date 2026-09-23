@@ -20,8 +20,9 @@ vi.mock('@/services/API', () => ({
   },
 }));
 
+const mockUseDeepLinkScroll = vi.fn();
 vi.mock('@/hooks/useDeepLinkScroll', () => ({
-  default: vi.fn(),
+  default: (...args: any[]) => mockUseDeepLinkScroll(...args),
 }));
 
 vi.mock('@carbon/react', async (importOriginal) => {
@@ -345,18 +346,26 @@ describe('OpeningStandardUnits', () => {
   });
 
   it('handles deep linking for ssuComment', async () => {
-    renderComponent(123, '/openings/123?tab=standards-units&ssuId=1&section=ssuComment');
+    renderComponent(123, '/openings/123?tab=standards-units&ssuId=1&section=ssu-comment');
 
     await waitFor(() => {
-      expect(screen.getByText(/1 standards unit in the opening area/i)).toBeInTheDocument();
+      expect(mockUseDeepLinkScroll).toHaveBeenCalledWith('ssu-comment-1', true);
     });
   });
 
   it('handles deep linking for milestoneComment', async () => {
-    renderComponent(123, '/openings/123?tab=standards-units&ssuId=1&section=milestoneComment');
+    renderComponent(123, '/openings/123?tab=standards-units&ssuId=1&section=milestone-comment');
 
     await waitFor(() => {
-      expect(screen.getByText(/1 standards unit in the opening area/i)).toBeInTheDocument();
+      expect(mockUseDeepLinkScroll).toHaveBeenCalledWith('milestone-comment-1', true);
+    });
+  });
+
+  it('handles deep linking for ssu accordion default when section is not provided', async () => {
+    renderComponent(123, '/openings/123?tab=standards-units&ssuId=1');
+
+    await waitFor(() => {
+      expect(mockUseDeepLinkScroll).toHaveBeenCalledWith('ssu-accordion-1', true);
     });
   });
 });
