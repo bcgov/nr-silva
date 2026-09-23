@@ -124,4 +124,11 @@ class DateUtilTest {
         LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID)).plusYears(1).atStartOfDay();
     assertFalse(DateUtil.isExpired(futureDate));
   }
+
+  @Test
+  @DisplayName("todayInVancouver | returns current date in Vancouver zone")
+  void todayInVancouver_returnsCurrentDateInVancouverZone() {
+    LocalDate expected = LocalDate.now(ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID));
+    assertEquals(expected, DateUtil.todayInVancouver());
+  }
 }
