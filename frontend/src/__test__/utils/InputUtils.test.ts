@@ -12,6 +12,7 @@ import {
   handleAutoUpperPaste,
   comboBoxStringFilter,
   isValidDecimalInput,
+  scrollToSection,
 } from '@/utils/InputUtils';
 
 describe('InputUtils', () => {
@@ -297,5 +298,140 @@ describe('InputUtils', () => {
 
     const opt3 = { item: 'X', inputValue: 'x', itemToString: (s: string) => s } as any;
     expect(comboBoxStringFilter(opt3)).toBe(true);
+  });
+
+  describe('scrollToSection', () => {
+    it('does nothing when id is undefined or empty', () => {
+      expect(() => scrollToSection(undefined)).not.toThrow();
+      expect(() => scrollToSection('')).not.toThrow();
+    });
+
+    it('scrolls to element when element exists', () => {
+      const scrollIntoView = vi.fn();
+      const div = document.createElement('div');
+      div.id = 'target-section';
+      div.scrollIntoView = scrollIntoView;
+      document.body.appendChild(div);
+
+      scrollToSection('target-section');
+      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+
+      document.body.removeChild(div);
+    });
+
+    it('does nothing when element is not found', () => {
+      expect(() => scrollToSection('non-existent')).not.toThrow();
+    });
+  });
+
+  describe('handleAutoUpperInput and handleAutoUpperPaste with allowWhitespace', () => {
+    it('preserves spaces when allowWhitespace is true in handleAutoUpperInput', () => {
+      const input = document.createElement('input');
+      input.value = 'hello world';
+      input.selectionStart = 11;
+      input.selectionEnd = 11;
+
+      handleAutoUpperInput({ currentTarget: input } as any, undefined, true);
+      expect(input.value).toBe('HELLO WORLD');
+    });
+
+    it('preserves spaces when allowWhitespace is true in handleAutoUpperPaste', () => {
+      const input = document.createElement('input');
+      input.value = 'A ';
+      input.selectionStart = 2;
+      input.selectionEnd = 2;
+
+      const clipboard = { getData: () => 'b c' };
+      const ev: any = { clipboardData: clipboard, preventDefault: vi.fn(), currentTarget: input };
+
+      handleAutoUpperPaste(ev, undefined, true);
+      expect(input.value).toBe('A B C');
+    });
+  });
+
+  describe('enforceNumberInputOnPaste edge cases', () => {
+    it('returns early when pasted text has no digits', () => {
+      const input = document.createElement('input');
+      input.value = '123';
+      const ev: any = {
+        clipboardData: { getData: () => 'abc' },
+        preventDefault: vi.fn(),
+      };
+
+      enforceNumberInputOnPaste(input, ev);
+      expect(ev.preventDefault).toHaveBeenCalled();
+      expect(input.value).toBe('123');
+    });
+
+    it('returns early when input element is null', () => {
+      const ev: any = {
+        clipboardData: { getData: () => '123' },
+        preventDefault: vi.fn(),
+      };
+
+      expect(() => enforceNumberInputOnPaste(null, ev)).not.toThrow();
+    });
+
+    it('returns early when availableLength <= 0 due to maxLen', () => {
+      const input = document.createElement('input');
+      input.value = '12345';
+      input.selectionStart = 5;
+      input.selectionEnd = 5;
+
+      const ev: any = {
+        clipboardData: { getData: () => '678' },
+        preventDefault: vi.fn(),
+      };
+
+      enforceNumberInputOnPaste(input, ev, 5);
+      expect(input.value).toBe('12345');
+    });
+  });
+
+  describe('enforceDecimalInputOnPaste edge cases', () => {
+    it('returns early when pasted string is empty or just a dot', () => {
+      const input = document.createElement('input');
+      input.value = '10';
+      const ev: any = {
+        clipboardData: { getData: () => '.' },
+        preventDefault: vi.fn(),
+        currentTarget: input,
+      };
+
+      enforceDecimalInputOnPaste(input, ev);
+      expect(input.value).toBe('10');
+    });
+
+    it('handles multiple decimal dots and truncates excess integer and fraction digits', () => {
+      const input = document.createElement('input');
+      input.value = '';
+      input.selectionStart = 0;
+      input.selectionEnd = 0;
+
+      const ev: any = {
+        clipboardData: { getData: () => '12345.67891' },
+        preventDefault: vi.fn(),
+        currentTarget: input,
+      };
+
+      enforceDecimalInputOnPaste(input, ev, 3, 2);
+      expect(input.value).toBe('123.67');
+    });
+
+    it('falls back to e.currentTarget when el is null', () => {
+      const input = document.createElement('input');
+      input.value = '';
+      input.selectionStart = 0;
+      input.selectionEnd = 0;
+
+      const ev: any = {
+        clipboardData: { getData: () => '50.5' },
+        preventDefault: vi.fn(),
+        currentTarget: input,
+      };
+
+      enforceDecimalInputOnPaste(null, ev);
+      expect(input.value).toBe('50.5');
+    });
   });
 });

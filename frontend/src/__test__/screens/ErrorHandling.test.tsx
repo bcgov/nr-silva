@@ -1,16 +1,18 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
+import { render, act, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Navigate } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import ErrorHandling from '../../screens/ErrorHandling';
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
 
+const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
     useRouteError: vi.fn(),
     isRouteErrorResponse: vi.fn(),
+    useNavigate: () => mockNavigate,
     Navigate: vi.fn(({ to, replace }) => <div>Navigate to {to} - {replace}</div>),
   };
 });
@@ -21,6 +23,7 @@ describe('ErrorHandling', () => {
   beforeEach(() => {
     sessionStorage.clear();
     reloadSpy = vi.fn();
+    mockNavigate.mockClear();
     vi.stubGlobal('location', { ...window.location, reload: reloadSpy });
   });
 
@@ -118,6 +121,65 @@ describe('ErrorHandling', () => {
 
     const chunkError = new TypeError('Failed to fetch dynamically imported module: https://example.com/assets/index-abc123.js');
     (useRouteError as vi.Mock).mockReturnValue(chunkError);
+    (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
+
+    const { getByText } = render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
+
+    expect(reloadSpy).not.toHaveBeenCalled();
+    expect(getByText('Oops! Something Went Wrong')).toBeDefined();
+  });
+
+  it('navigates to / when "Go to dashboard" button is clicked', () => {
+    (useRouteError as vi.Mock).mockReturnValue({ status: 404 });
+    (isRouteErrorResponse as vi.Mock).mockReturnValue(true);
+
+    const { getByRole } = render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
+
+    const btn = getByRole('button', { name: /Go to dashboard/i });
+    fireEvent.click(btn);
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('handles chunk error when message includes "Importing a module script failed"', () => {
+    const chunkError = new Error('Importing a module script failed');
+    (useRouteError as vi.Mock).mockReturnValue(chunkError);
+    (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
+
+    render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
+
+    expect(reloadSpy).toHaveBeenCalledOnce();
+    expect(sessionStorage.getItem('silva_chunk_reload_attempted')).toBe('1');
+  });
+
+  it('handles chunk error when err.name is "ChunkLoadError"', () => {
+    const chunkError = new Error('Loading chunk 5 failed');
+    chunkError.name = 'ChunkLoadError';
+    (useRouteError as vi.Mock).mockReturnValue(chunkError);
+    (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
+
+    render(
+      <MemoryRouter>
+        <ErrorHandling />
+      </MemoryRouter>
+    );
+
+    expect(reloadSpy).toHaveBeenCalledOnce();
+  });
+
+  it('handles non-Error objects gracefully without attempting reload', () => {
+    (useRouteError as vi.Mock).mockReturnValue('A raw string error');
     (isRouteErrorResponse as vi.Mock).mockReturnValue(false);
 
     const { getByText } = render(

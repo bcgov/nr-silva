@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildQueryString } from "../../utils/UrlUtils";
+import { buildQueryString, getJasperReportLink } from "../../utils/UrlUtils";
 
 describe("buildQueryString", () => {
   it("should build query string from flat key-value pairs", () => {
@@ -68,5 +68,20 @@ describe("buildQueryString", () => {
 
     const query = buildQueryString(params);
     expect(query).toBe("");
+  });
+});
+
+describe("getJasperReportLink", () => {
+  it("generates jasper report URL with openingId and orgUnitNumber", () => {
+    const url = getJasperReportLink(12345, 67);
+    expect(url).toContain("p_opening_id=12345");
+    expect(url).toContain("p_dist_num=67");
+    expect(url).toContain("opening_summary_4");
+  });
+
+  it("handles null or undefined parameters gracefully", () => {
+    const url = getJasperReportLink(null, undefined);
+    expect(url).toContain("p_opening_id=null");
+    expect(url).toContain("p_dist_num=undefined");
   });
 });

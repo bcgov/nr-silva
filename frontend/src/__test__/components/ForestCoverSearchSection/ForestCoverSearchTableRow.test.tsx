@@ -382,4 +382,73 @@ describe('ForestCoverSearchTableRow', () => {
       screen.getByTestId(`forest-cover-search-table-row-${mockRowData.forestCoverId}`)
     ).toBeInTheDocument();
   });
+
+  it('renders openingCategory column when present and placeholder when absent', () => {
+    const categoryHeader = [{ key: 'openingCategory' as const, header: 'Category', selected: true }];
+    const rowWithCategory = {
+      ...mockRowData,
+      openingCategory: {
+        code: 'FTML',
+        description: 'Forest Tenure - Misc. Licence',
+      },
+    };
+
+    const { wrapper } = renderWithProviders();
+    const { rerender } = render(
+      <table>
+        <tbody>
+          <ForestCoverSearchTableRow
+            headers={categoryHeader}
+            rowData={rowWithCategory}
+            showMap={false}
+            selectedRows={[]}
+            handleRowSelection={mockHandleRowSelection}
+          />
+        </tbody>
+      </table>,
+      { wrapper }
+    );
+
+    expect(screen.getByText('FTML')).toBeInTheDocument();
+
+    const rowWithoutCategory = { ...mockRowData, openingCategory: undefined };
+    rerender(
+      <table>
+        <tbody>
+          <ForestCoverSearchTableRow
+            headers={categoryHeader}
+            rowData={rowWithoutCategory}
+            showMap={false}
+            selectedRows={[]}
+            handleRowSelection={mockHandleRowSelection}
+          />
+        </tbody>
+      </table>
+    );
+
+    expect(screen.getByText('--')).toBeInTheDocument();
+  });
+
+  it('renders placeholder when stockingType is missing', () => {
+    const typeHeader = [{ key: 'stockingType' as const, header: 'Stocking Type', selected: true }];
+    const rowWithoutType = { ...mockRowData, stockingType: undefined };
+
+    const { wrapper } = renderWithProviders();
+    render(
+      <table>
+        <tbody>
+          <ForestCoverSearchTableRow
+            headers={typeHeader}
+            rowData={rowWithoutType}
+            showMap={false}
+            selectedRows={[]}
+            handleRowSelection={mockHandleRowSelection}
+          />
+        </tbody>
+      </table>,
+      { wrapper }
+    );
+
+    expect(screen.getByText('--')).toBeInTheDocument();
+  });
 });

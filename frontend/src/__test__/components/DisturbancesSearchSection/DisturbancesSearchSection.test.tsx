@@ -217,4 +217,42 @@ describe('DisturbancesSearchSection', () => {
       ).toBeInTheDocument();
     });
   });
+
+  it('shows map and updates selected ids when a row is selected', async () => {
+    const { wrapper } = renderWithProviders();
+    const user = userEvent.setup();
+    vi.mocked(disturbanceUtils.hasDisturbanceSearchFilters).mockReturnValue(true);
+
+    render(<DisturbancesSearchSection />, { wrapper });
+
+    const selectBtn = await screen.findByRole('button', { name: /Select/i });
+    await user.click(selectBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('openings-map')).toBeInTheDocument();
+      expect(screen.getByTestId('map-opening-ids')).toHaveTextContent('100');
+      expect(screen.getByTestId('map-disturbance-ids')).toHaveTextContent('1-DN');
+    });
+  });
+
+  it('submits search when Search button is clicked with active filters', async () => {
+    const { wrapper } = renderWithProviders();
+    const user = userEvent.setup();
+    vi.mocked(disturbanceUtils.readDisturbanceSearchUrlParams).mockReturnValue({
+      disturbanceCodes: ['DN-001'],
+    });
+    vi.mocked(disturbanceUtils.hasDisturbanceSearchFilters).mockReturnValue(true);
+
+    render(<DisturbancesSearchSection />, { wrapper });
+
+    const searchBtn = screen.getByRole('button', { name: /Search/i });
+    await user.click(searchBtn);
+
+    expect(disturbanceUtils.updateDisturbanceSearchUrlParams).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disturbanceCodes: ['DN-001'],
+        page: 0,
+      })
+    );
+  });
 });
