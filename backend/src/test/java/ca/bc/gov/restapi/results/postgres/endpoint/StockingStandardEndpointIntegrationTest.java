@@ -120,6 +120,20 @@ class StockingStandardEndpointIntegrationTest extends AbstractTestContainerInteg
         .isEqualTo("SUB");
     assertThat(
             jdbcTemplate.queryForObject(
+                "SELECT submitted_by_userid FROM silva.standards_regime "
+                    + "WHERE standards_regime_id = ?",
+                String.class,
+                standardId))
+        .isNotBlank();
+    assertThat(
+            jdbcTemplate.queryForObject(
+                "SELECT submitted_date FROM silva.standards_regime "
+                    + "WHERE standards_regime_id = ?",
+                String.class,
+                standardId))
+        .isNotNull();
+    assertThat(
+            jdbcTemplate.queryForObject(
                 "SELECT alternative_method_ind FROM silva.standards_regime "
                     + "WHERE standards_regime_id = ?",
                 String.class,

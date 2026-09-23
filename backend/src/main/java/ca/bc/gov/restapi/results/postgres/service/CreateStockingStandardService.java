@@ -82,6 +82,8 @@ public class CreateStockingStandardService {
             .noRegenLateOffsetYrs(dto.lateYears())
             .additionalStandards(
                 dto.additionalStandards() != null ? dto.additionalStandards().trim() : null)
+            .submittedByUserid(auditUserId)
+            .submittedDate(now)
             .entryUserid(auditUserId)
             .entryTimestamp(now)
             .updateUserid(auditUserId)
