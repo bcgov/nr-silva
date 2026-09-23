@@ -83,4 +83,49 @@ describe("OpeningsMapDownloader", () => {
     expect(mockRevokeObjectURL).toHaveBeenCalledTimes(2);
     expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:mock-url");
   });
+
+  it("handles projection from feature with EPSG code", () => {
+    const featureWithEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "urn:ogc:def:crs:EPSG::3005",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureWithEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+  });
+
+  it("falls back to EPSG:4326 when crs has no EPSG", () => {
+    const featureNonEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "urn:ogc:def:crs:OGC:1.3:CRS84",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureNonEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+  });
+
+  it("falls back to EPSG:4326 when crs has no digits in EPSG", () => {
+    const featureInvalidEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "EPSG:XYZ",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureInvalidEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+  });
 });
