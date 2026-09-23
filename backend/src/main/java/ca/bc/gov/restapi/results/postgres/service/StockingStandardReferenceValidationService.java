@@ -58,10 +58,11 @@ public class StockingStandardReferenceValidationService {
       return new SpeciesValidationOutcome(false, minimumHeightError);
     }
 
+LocalDate validationDate = LocalDate.now();
     boolean exists =
         speciesCodeRepository
             .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
-                species.speciesCode().trim(), LocalDate.now(), LocalDate.now());
+                species.speciesCode().trim(), validationDate, validationDate);
     return new SpeciesValidationOutcome(exists, null);
   }
 
