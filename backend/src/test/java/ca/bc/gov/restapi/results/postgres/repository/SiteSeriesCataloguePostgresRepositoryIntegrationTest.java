@@ -22,6 +22,12 @@ class SiteSeriesCataloguePostgresRepositoryIntegrationTest
   }
 
   @Test
+  @DisplayName("Finds a BEC combination case-insensitively")
+  void findMatchingBecCombo_caseInsensitive_returnsMatch() {
+    assertThat(repository.findMatchingBecCombo("cwh", "WH", "1", null, "01", null)).hasSize(1);
+  }
+
+  @Test
   @DisplayName("Matches nullable variant and phase values")
   void findMatchingBecCombo_nullVariantAndPhase_returnsMatch() {
     assertThat(repository.findMatchingBecCombo("CWH", "xm", null, null, "01", null)).hasSize(1);

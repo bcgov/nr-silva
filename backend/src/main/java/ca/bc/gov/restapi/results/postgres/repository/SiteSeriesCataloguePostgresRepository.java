@@ -28,14 +28,14 @@ public interface SiteSeriesCataloguePostgresRepository
   @Query(
       "SELECT ssc FROM SiteSeriesCatalogueEntity ssc"
           + " JOIN BiogeoclimaticCatalogueEntity bc ON bc.id = ssc.biogeoclimaticCatalogueId"
-          + " WHERE bc.becZoneCode = :bgcZoneCode"
-          + " AND bc.subzone = :bgcSubzoneCode"
+          + " WHERE UPPER(bc.becZoneCode) = UPPER(:bgcZoneCode)"
+          + " AND UPPER(bc.subzone) = UPPER(:bgcSubzoneCode)"
           + " AND bc.effectiveDate <= CURRENT_DATE AND bc.expiryDate > CURRENT_DATE"
-          + " AND (bc.variant = :variant OR (bc.variant IS NULL AND :variant IS NULL))"
-          + " AND (bc.phase = :phase OR (bc.phase IS NULL AND :phase IS NULL))"
+          + " AND (UPPER(bc.variant) = UPPER(:variant) OR (bc.variant IS NULL AND :variant IS NULL))"
+          + " AND (UPPER(bc.phase) = UPPER(:phase) OR (bc.phase IS NULL AND :phase IS NULL))"
           + " AND ssc.effectiveDate <= CURRENT_DATE AND ssc.expiryDate > CURRENT_DATE"
-          + " AND ssc.siteSeries = :siteSeries"
-          + " AND (ssc.siteSeriesPhase = :siteSeriesPhase"
+          + " AND UPPER(ssc.siteSeries) = UPPER(:siteSeries)"
+          + " AND (UPPER(ssc.siteSeriesPhase) = UPPER(:siteSeriesPhase)"
           + " OR (ssc.siteSeriesPhase IS NULL AND :siteSeriesPhase IS NULL))")
   List<SiteSeriesCatalogueEntity> findMatchingBecCombo(
       @Param("bgcZoneCode") String bgcZoneCode,
