@@ -3,12 +3,15 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import OpeningsMapDownloader from "../../components/OpeningsMapDownloader";
 
+const mockReadFeatures = vi.fn(() => []);
+const mockWriteFeatures = vi.fn(() => "<kml>mock</kml>");
+
 // Mock ol/format/GeoJSON and ol/format/KML
 vi.mock("ol/format/GeoJSON", () => ({
   __esModule: true,
   default: vi.fn(function () {
     return {
-      readFeatures: vi.fn(() => []),
+      readFeatures: mockReadFeatures,
     };
   }),
 }));
@@ -17,7 +20,7 @@ vi.mock("ol/format/KML", () => ({
   __esModule: true,
   default: vi.fn(function () {
     return {
-      writeFeatures: vi.fn(() => "<kml>mock</kml>"),
+      writeFeatures: mockWriteFeatures,
     };
   }),
 }));
@@ -82,5 +85,74 @@ describe("OpeningsMapDownloader", () => {
     unmount();
     expect(mockRevokeObjectURL).toHaveBeenCalledTimes(2);
     expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:mock-url");
+  });
+
+  it("handles projection from feature with EPSG code", () => {
+    const featureWithEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "urn:ogc:def:crs:EPSG:3005",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureWithEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+    expect(mockReadFeatures).toHaveBeenCalledWith(featureWithEpsg, {
+      dataProjection: "EPSG:3005",
+      featureProjection: "EPSG:3005",
+    });
+    expect(mockWriteFeatures).toHaveBeenCalledWith([], {
+      dataProjection: "EPSG:3005",
+      featureProjection: "EPSG:3005",
+    });
+  });
+
+  it("falls back to EPSG:4326 when crs has no EPSG", () => {
+    const featureNonEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "urn:ogc:def:crs:OGC:1.3:CRS84",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureNonEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+    expect(mockReadFeatures).toHaveBeenCalledWith(featureNonEpsg, {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:4326",
+    });
+    expect(mockWriteFeatures).toHaveBeenCalledWith([], {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:4326",
+    });
+  });
+
+  it("falls back to EPSG:4326 when crs has no digits in EPSG", () => {
+    const featureInvalidEpsg = {
+      type: "FeatureCollection",
+      crs: {
+        properties: {
+          name: "EPSG:XYZ",
+        },
+      },
+      features: [],
+    };
+
+    render(<OpeningsMapDownloader feature={featureInvalidEpsg as any} />);
+    expect(screen.getByRole("link", { name: /KML/ })).toBeInTheDocument();
+    expect(mockReadFeatures).toHaveBeenCalledWith(featureInvalidEpsg, {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:4326",
+    });
+    expect(mockWriteFeatures).toHaveBeenCalledWith([], {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:4326",
+    });
   });
 });
