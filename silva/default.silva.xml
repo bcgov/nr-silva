@@ -2933,8 +2933,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="fiscal_year" nullable="false" remarks="The fiscal year in which the project commenced, or, in the case of a planned project, is expected to commence. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
-            <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
             <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
+            <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="project_sequence" nullable="false" remarks="A one to four character identifier that is meaningful to the user and assists in distinguishing one Project from another within the same SILV BASE CODE, FISCAL YEAR, ORG UNIT CODE. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="4" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="project_location" nullable="true" remarks="A comment regarding the general location of the project." size="30" type="varchar" typeCode="12"/>
@@ -3280,8 +3280,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="'Y'::character varying" digits="0" id="10" name="regen_milestone_ind" nullable="false" remarks="A yes/no indicator whether this species counts toward the Regeneration milestone." size="1" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="'Y'::character varying" digits="0" id="11" name="free_growing_milestone_ind" nullable="false" remarks="A yes/no indicator whether this species counts toward the Free Growing milestone." size="1" type="varchar" typeCode="12"/>
          <primaryKey column="standards_regime_layer_id" sequenceNumberInPK="1"/>
          <primaryKey column="silv_tree_species_code" sequenceNumberInPK="2"/>
          <index name="standards_regime_layer_species_pkey" unique="true">
