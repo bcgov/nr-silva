@@ -4,7 +4,6 @@ import static ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants.MIN
 
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
-import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.BecDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateStockingStandardRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.StockingLayerDto;
@@ -205,7 +204,6 @@ public class StockingStandardValidationService {
 
   private void validateSpecies(CreateStockingStandardRequestDto dto) {
     List<String> notFound = new ArrayList<>();
-    LocalDate submissionDate = DateUtil.todayInVancouver();
     for (StockingLayerDto layer : getLayers(dto)) {
       if (layer.species() != null
           && referenceValidationService.hasDuplicateSpeciesCodes(layer.species())) {

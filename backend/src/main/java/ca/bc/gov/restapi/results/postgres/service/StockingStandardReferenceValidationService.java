@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.BecDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.StockingSpeciesDto;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
@@ -58,7 +59,7 @@ public class StockingStandardReferenceValidationService {
       return new SpeciesValidationOutcome(false, minimumHeightError);
     }
 
-LocalDate validationDate = LocalDate.now();
+    LocalDate validationDate = DateUtil.todayInVancouver();
     boolean exists =
         speciesCodeRepository
             .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
