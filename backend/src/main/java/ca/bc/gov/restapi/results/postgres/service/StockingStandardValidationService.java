@@ -4,6 +4,7 @@ import static ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants.MIN
 
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.BecDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateStockingStandardRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.StockingLayerDto;
@@ -15,6 +16,8 @@ import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgresRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class StockingStandardValidationService {
 
   private static final String MINISTRY_DEFAULT_ORG_UNIT_CODE = "HFP";
+  private static final BigDecimal MAX_SPECIES_MIN_HEIGHT = new BigDecimal("99.9");
   private static final Set<String> VALID_HEIGHT_RELATIVE_UNIT_CODES = Set.of("CM", "PCT");
   private static final Set<String> MULTI_LAYER_CODES = Set.of("4", "3", "2", "1");
   private static final Set<String> LAYER_1_2_ONLY_CODES = Set.of("2", "1");
@@ -62,16 +66,15 @@ public class StockingStandardValidationService {
     List<Long> orgUnitNos = validateAuthority(dto);
     validateClients(dto);
     validateBec(dto);
-    validateSpecies(dto);
     validateStockingType(dto);
     validateLayers(dto);
+    validateSpecies(dto);
     return orgUnitNos;
   }
 
   private void validateDuplicateValues(CreateStockingStandardRequestDto dto) {
     rejectDuplicateValues(dto.orgUnitCodes(), "orgUnitCodes");
     rejectDuplicateValues(dto.clientNumbers(), "clientNumbers");
-    rejectDuplicateSpeciesCodes(dto.species());
   }
 
   private void rejectDuplicateValues(List<String> values, String fieldName) {
@@ -87,7 +90,7 @@ public class StockingStandardValidationService {
     }
   }
 
-  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species) {
+  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species, String layerCode) {
     if (species == null) {
       return;
     }
@@ -96,7 +99,8 @@ public class StockingStandardValidationService {
       String normalizedCode = speciesDto.speciesCode().trim().toUpperCase(Locale.ROOT);
       if (!normalizedCodes.add(normalizedCode)) {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "species must not contain duplicate species codes");
+            HttpStatus.BAD_REQUEST,
+            "species must not contain duplicate species codes in layer " + layerCode);
       }
     }
   }
@@ -181,9 +185,9 @@ public class StockingStandardValidationService {
   private void validateBec(CreateStockingStandardRequestDto dto) {
     boolean becInfo = Boolean.TRUE.equals(dto.becInfoSelected());
     boolean altMethod = Boolean.TRUE.equals(dto.alternativeMethodSelected());
-    if (becInfo == altMethod) {
+    if (!becInfo && !altMethod) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Select exactly one of BEC information or Alternative method");
+          HttpStatus.BAD_REQUEST, "Select BEC information, Alternative method, or both");
     }
 
     List<BecDataDto> becData = dto.becData();
@@ -192,6 +196,7 @@ public class StockingStandardValidationService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "At least one BEC entry is required when BEC information is selected");
       }
+      rejectDuplicateBecCombinations(becData);
       List<String> invalidCombos = new ArrayList<>();
       for (BecDataDto bec : becData) {
         boolean exists =
@@ -227,20 +232,73 @@ public class StockingStandardValidationService {
     }
   }
 
-  private void validateSpecies(CreateStockingStandardRequestDto dto) {
-    if (dto.species() == null) {
-      return;
+  private void rejectDuplicateBecCombinations(List<BecDataDto> becData) {
+    Set<String> normalizedCombinations = new HashSet<>();
+    for (BecDataDto bec : becData) {
+      String normalizedCombination =
+          String.join(
+              "|",
+              normalizeBecValue(bec.bgcZoneCode()),
+              normalizeBecValue(bec.bgcSubzoneCode()),
+              normalizeBecValue(bec.variant()),
+              normalizeBecValue(bec.phase()),
+              normalizeBecValue(bec.siteSeries()),
+              normalizeBecValue(bec.sitePhase()));
+      if (!normalizedCombinations.add(normalizedCombination)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
+      }
     }
+  }
+
+  private String normalizeBecValue(String value) {
+    return StringUtils.trimToEmpty(value).toUpperCase(Locale.ROOT);
+  }
+
+  private void validateSpecies(CreateStockingStandardRequestDto dto) {
     List<String> notFound = new ArrayList<>();
-    for (StockingSpeciesDto species : dto.species()) {
-      if (!speciesCodeRepository.existsById(species.speciesCode().trim())) {
-        notFound.add(species.speciesCode());
+    LocalDate submissionDate = DateUtil.todayInVancouver();
+    for (StockingLayerDto layer : getLayers(dto)) {
+      rejectDuplicateSpeciesCodes(layer.species(), layer.layerCode());
+      if (layer.species() == null) {
+        continue;
+      }
+      for (StockingSpeciesDto species : layer.species()) {
+        validateSpeciesMinimumHeight(layer.layerCode(), species);
+        if (!speciesCodeRepository
+            .existsByCodeIgnoreCaseAndEffectiveDateLessThanEqualAndExpiryDateGreaterThan(
+                species.speciesCode().trim(), submissionDate, submissionDate)) {
+          notFound.add(species.speciesCode());
+        }
       }
     }
     if (!notFound.isEmpty()) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Unknown species code(s): " + String.join(", ", notFound));
+          HttpStatus.BAD_REQUEST,
+          "Unknown or inactive species code(s): " + String.join(", ", notFound));
     }
+  }
+
+  private void validateSpeciesMinimumHeight(String layerCode, StockingSpeciesDto species) {
+    if (("I".equals(layerCode) || "4".equals(layerCode)) && species.minHeight() == null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "minHeight is required for species in layer " + layerCode);
+    }
+    if (species.minHeight() != null
+        && (species.minHeight().compareTo(BigDecimal.ZERO) < 0
+            || species.minHeight().compareTo(MAX_SPECIES_MIN_HEIGHT) > 0
+            || species.minHeight().scale() > 1)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "minHeight must be between 0.0 and 99.9 metres with at most one decimal place");
+    }
+  }
+
+  private List<StockingLayerDto> getLayers(CreateStockingStandardRequestDto dto) {
+    return dto.layerType() == StockingLayerType.SINGLE
+        ? List.of(dto.singleLayer())
+        : dto.multiLayers();
   }
 
   private void validateStockingType(CreateStockingStandardRequestDto dto) {
@@ -303,6 +361,14 @@ public class StockingStandardValidationService {
   private void validateLayerFields(StockingLayerDto layer, boolean multi) {
     String code = layer.layerCode();
 
+    if ((layer.heightRelativeToComp() == null) != (layer.heightRelativeToCompUnitCode() == null)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "heightRelativeToComp and heightRelativeToCompUnitCode must be supplied together (layer "
+              + code
+              + ")");
+    }
+
     if (multi && !LAYER_1_2_ONLY_CODES.contains(code)) {
       if (layer.minResidualBasalArea() != null) {
         rejectLayerField(code, "minResidualBasalArea");
@@ -317,18 +383,16 @@ public class StockingStandardValidationService {
         rejectLayerField(code, "maxConiferous");
       }
     }
-    if (multi && !LAYER_3_4_ONLY_CODES.contains(code) && layer.heightRelativeToComp() != null) {
-      rejectLayerField(code, "heightRelativeToComp");
+    if (multi && !LAYER_3_4_ONLY_CODES.contains(code)) {
+      if (layer.heightRelativeToComp() != null) {
+        rejectLayerField(code, "heightRelativeToComp");
+      }
+      if (layer.heightRelativeToCompUnitCode() != null) {
+        rejectLayerField(code, "heightRelativeToCompUnitCode");
+      }
     }
 
     if (layer.heightRelativeToComp() != null) {
-      if (StringUtils.isBlank(layer.heightRelativeToCompUnitCode())) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "heightRelativeToCompUnitCode is required when heightRelativeToComp is supplied (layer "
-                + code
-                + ")");
-      }
       if (!VALID_HEIGHT_RELATIVE_UNIT_CODES.contains(layer.heightRelativeToCompUnitCode())) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,

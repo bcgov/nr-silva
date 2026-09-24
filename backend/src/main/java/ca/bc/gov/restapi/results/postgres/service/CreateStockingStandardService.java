@@ -13,7 +13,6 @@ import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeLayerSpeciesEnti
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeOrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeSiteSeriesEntity;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
-import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesMilestone;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeClientPostgresRepository;
@@ -23,6 +22,7 @@ import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeOrgUnitPostg
 import ca.bc.gov.restapi.results.postgres.repository.StandardsRegimeSiteSeriesPostgresRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -69,7 +69,7 @@ public class CreateStockingStandardService {
         StandardsRegimeEntity.builder()
             .id(standardsRegimeId)
             .standardsRegimeName(dto.name() != null ? dto.name().trim() : null)
-            .standardsRegimeStatusCode("DFT")
+            .standardsRegimeStatusCode("SUB")
             .standardsObjective(dto.objective().trim())
             .geographicDescription(dto.location() != null ? dto.location().trim() : null)
             .mofDefaultStandardInd(
@@ -82,6 +82,8 @@ public class CreateStockingStandardService {
             .noRegenLateOffsetYrs(dto.lateYears())
             .additionalStandards(
                 dto.additionalStandards() != null ? dto.additionalStandards().trim() : null)
+            .submittedByUserid(auditUserId)
+            .submittedDate(now)
             .entryUserid(auditUserId)
             .entryTimestamp(now)
             .updateUserid(auditUserId)
@@ -177,19 +179,15 @@ public class CreateStockingStandardService {
       layerRepository.save(layerEntity);
 
       int order = 1;
-      if (dto.species() != null) {
-        for (StockingSpeciesDto species : dto.species()) {
+      if (layer.species() != null) {
+        for (StockingSpeciesDto species : layer.species()) {
           layerSpeciesRepository.save(
               StandardsRegimeLayerSpeciesEntity.builder()
                   .standardsRegimeLayerId(layerId)
-                  .silvTreeSpeciesCode(species.speciesCode().trim())
+                  .silvTreeSpeciesCode(species.speciesCode().trim().toUpperCase(Locale.ROOT))
                   .speciesOrder(order++)
                   .speciesTypeCode(species.speciesType().getCode())
                   .minHeight(species.minHeight())
-                  .regenMilestoneInd(
-                      species.milestone() == StockingSpeciesMilestone.FREE_GROWING ? "N" : "Y")
-                  .freeGrowingMilestoneInd(
-                      species.milestone() == StockingSpeciesMilestone.REGEN ? "N" : "Y")
                   .entryUserid(auditUserId)
                   .entryTimestamp(now)
                   .updateUserid(auditUserId)

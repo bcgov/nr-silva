@@ -83,7 +83,6 @@ import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
-import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesMilestone;
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
@@ -227,7 +226,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   StockingLayerDto.class,
   StockingStandardAuthorityType.class,
   StockingSpeciesType.class,
-  StockingSpeciesMilestone.class,
   StockingType.class,
   StockingLayerType.class
 })

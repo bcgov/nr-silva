@@ -9,12 +9,6 @@ UPDATE silva.standards_regime_layer_species
 	SET species_type_code = CASE species_type_code WHEN 'Y' THEN 'PRF' WHEN 'N' THEN 'ACC' ELSE species_type_code END;
 COMMENT ON COLUMN silva.standards_regime_layer_species.species_type_code IS 'Replaces the legacy Y/N preferred_ind indicator. Species classification: PRF = Preferred, ACC = Acceptable, ECO = Ecologically Suitable.';
 
-ALTER TABLE silva.standards_regime_layer_species ADD COLUMN IF NOT EXISTS regen_milestone_ind varchar(1) DEFAULT 'Y' NOT NULL;
-COMMENT ON COLUMN silva.standards_regime_layer_species.regen_milestone_ind IS 'A yes/no indicator whether this species counts toward the Regeneration milestone.';
-
-ALTER TABLE silva.standards_regime_layer_species ADD COLUMN IF NOT EXISTS free_growing_milestone_ind varchar(1) DEFAULT 'Y' NOT NULL;
-COMMENT ON COLUMN silva.standards_regime_layer_species.free_growing_milestone_ind IS 'A yes/no indicator whether this species counts toward the Free Growing milestone.';
-
 -- silva.biogeoclimatic_catalogue definition (base table behind legacy BEC_CODE_TABLE view)
 CREATE TABLE IF NOT EXISTS silva.biogeoclimatic_catalogue (
 	biogeoclimatic_catalogue_id int8 NOT NULL,

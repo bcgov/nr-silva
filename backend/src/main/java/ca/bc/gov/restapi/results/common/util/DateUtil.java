@@ -16,6 +16,13 @@ public class DateUtil {
   private static final ZoneId VANCOUVER = ZoneId.of(SilvaConstants.VANCOUVER_ZONE_ID);
 
   /**
+   * Returns the current date in the Vancouver time zone.
+   */
+  public static LocalDate todayInVancouver() {
+    return LocalDate.now(VANCOUVER);
+  }
+
+  /**
    * Returns true if the given expiry date is in the past (relative to today in Vancouver time).
    * Returns false if the expiry date is null.
    */
@@ -23,7 +30,7 @@ public class DateUtil {
     if (expiryDate == null) {
       return false;
     }
-    return expiryDate.toLocalDate().isBefore(LocalDate.now(VANCOUVER));
+    return expiryDate.toLocalDate().isBefore(todayInVancouver());
   }
 
   /**

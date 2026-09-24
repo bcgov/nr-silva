@@ -41,12 +41,6 @@ public class StandardsRegimeLayerSpeciesEntity {
   @Column(name = "min_height")
   private BigDecimal minHeight;
 
-  @Column(name = "regen_milestone_ind", length = 1, nullable = false)
-  private String regenMilestoneInd;
-
-  @Column(name = "free_growing_milestone_ind", length = 1, nullable = false)
-  private String freeGrowingMilestoneInd;
-
   @Column(name = "entry_userid", length = 30, nullable = false)
   private String entryUserid;
 
