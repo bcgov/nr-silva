@@ -13,12 +13,9 @@ import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
 import ca.bc.gov.restapi.results.postgres.repository.OrgUnitPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.SilvTreeSpeciesCodePostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.SiteSeriesCataloguePostgresRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -46,8 +43,7 @@ public class StockingStandardValidationService {
       Set.of(Role.SUBMITTER, Role.APPROVER, Role.ADMIN);
 
   private final OrgUnitPostgresRepository orgUnitRepository;
-  private final SilvTreeSpeciesCodePostgresRepository speciesCodeRepository;
-  private final SiteSeriesCataloguePostgresRepository siteSeriesCatalogueRepository;
+  private final StockingStandardReferenceValidationService referenceValidationService;
   private final LoggedUserHelper loggedUserHelper;
 
   /**
@@ -62,16 +58,15 @@ public class StockingStandardValidationService {
     List<Long> orgUnitNos = validateAuthority(dto);
     validateClients(dto);
     validateBec(dto);
-    validateSpecies(dto);
     validateStockingType(dto);
     validateLayers(dto);
+    validateSpecies(dto);
     return orgUnitNos;
   }
 
   private void validateDuplicateValues(CreateStockingStandardRequestDto dto) {
     rejectDuplicateValues(dto.orgUnitCodes(), "orgUnitCodes");
     rejectDuplicateValues(dto.clientNumbers(), "clientNumbers");
-    rejectDuplicateSpeciesCodes(dto.species());
   }
 
   private void rejectDuplicateValues(List<String> values, String fieldName) {
@@ -83,20 +78,6 @@ public class StockingStandardValidationService {
       if (!normalizedValues.add(value.trim())) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, fieldName + " must not contain duplicate values");
-      }
-    }
-  }
-
-  private void rejectDuplicateSpeciesCodes(List<StockingSpeciesDto> species) {
-    if (species == null) {
-      return;
-    }
-    Set<String> normalizedCodes = new HashSet<>();
-    for (StockingSpeciesDto speciesDto : species) {
-      String normalizedCode = speciesDto.speciesCode().trim().toUpperCase(Locale.ROOT);
-      if (!normalizedCodes.add(normalizedCode)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "species must not contain duplicate species codes");
       }
     }
   }
@@ -181,9 +162,9 @@ public class StockingStandardValidationService {
   private void validateBec(CreateStockingStandardRequestDto dto) {
     boolean becInfo = Boolean.TRUE.equals(dto.becInfoSelected());
     boolean altMethod = Boolean.TRUE.equals(dto.alternativeMethodSelected());
-    if (becInfo == altMethod) {
+    if (!becInfo && !altMethod) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Select exactly one of BEC information or Alternative method");
+          HttpStatus.BAD_REQUEST, "Select BEC information, Alternative method, or both");
     }
 
     List<BecDataDto> becData = dto.becData();
@@ -192,19 +173,13 @@ public class StockingStandardValidationService {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "At least one BEC entry is required when BEC information is selected");
       }
+      if (referenceValidationService.hasDuplicateBecCombinations(becData)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
+      }
       List<String> invalidCombos = new ArrayList<>();
       for (BecDataDto bec : becData) {
-        boolean exists =
-            !siteSeriesCatalogueRepository
-                .findMatchingBecCombo(
-                    bec.bgcZoneCode(),
-                    bec.bgcSubzoneCode(),
-                    bec.variant(),
-                    bec.phase(),
-                    bec.siteSeries(),
-                    bec.sitePhase())
-                .isEmpty();
-        if (!exists) {
+        if (!referenceValidationService.validateBec(bec).exists()) {
           invalidCombos.add(
               bec.bgcZoneCode()
                   + "/"
@@ -228,19 +203,38 @@ public class StockingStandardValidationService {
   }
 
   private void validateSpecies(CreateStockingStandardRequestDto dto) {
-    if (dto.species() == null) {
-      return;
-    }
     List<String> notFound = new ArrayList<>();
-    for (StockingSpeciesDto species : dto.species()) {
-      if (!speciesCodeRepository.existsById(species.speciesCode().trim())) {
-        notFound.add(species.speciesCode());
+    for (StockingLayerDto layer : getLayers(dto)) {
+      if (layer.species() != null
+          && referenceValidationService.hasDuplicateSpeciesCodes(layer.species())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "species must not contain duplicate species codes in layer " + layer.layerCode());
+      }
+      if (layer.species() == null) {
+        continue;
+      }
+      for (StockingSpeciesDto species : layer.species()) {
+        var outcome = referenceValidationService.validateSpecies(layer.layerCode(), species);
+        if (outcome.minimumHeightError() != null) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, outcome.minimumHeightError());
+        }
+        if (!outcome.exists()) {
+          notFound.add(species.speciesCode());
+        }
       }
     }
     if (!notFound.isEmpty()) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Unknown species code(s): " + String.join(", ", notFound));
+          HttpStatus.BAD_REQUEST,
+          "Unknown or inactive species code(s): " + String.join(", ", notFound));
     }
+  }
+
+  private List<StockingLayerDto> getLayers(CreateStockingStandardRequestDto dto) {
+    return dto.layerType() == StockingLayerType.SINGLE
+        ? List.of(dto.singleLayer())
+        : dto.multiLayers();
   }
 
   private void validateStockingType(CreateStockingStandardRequestDto dto) {
@@ -303,6 +297,14 @@ public class StockingStandardValidationService {
   private void validateLayerFields(StockingLayerDto layer, boolean multi) {
     String code = layer.layerCode();
 
+    if ((layer.heightRelativeToComp() == null) != (layer.heightRelativeToCompUnitCode() == null)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "heightRelativeToComp and heightRelativeToCompUnitCode must be supplied together (layer "
+              + code
+              + ")");
+    }
+
     if (multi && !LAYER_1_2_ONLY_CODES.contains(code)) {
       if (layer.minResidualBasalArea() != null) {
         rejectLayerField(code, "minResidualBasalArea");
@@ -317,18 +319,16 @@ public class StockingStandardValidationService {
         rejectLayerField(code, "maxConiferous");
       }
     }
-    if (multi && !LAYER_3_4_ONLY_CODES.contains(code) && layer.heightRelativeToComp() != null) {
-      rejectLayerField(code, "heightRelativeToComp");
+    if (multi && !LAYER_3_4_ONLY_CODES.contains(code)) {
+      if (layer.heightRelativeToComp() != null) {
+        rejectLayerField(code, "heightRelativeToComp");
+      }
+      if (layer.heightRelativeToCompUnitCode() != null) {
+        rejectLayerField(code, "heightRelativeToCompUnitCode");
+      }
     }
 
     if (layer.heightRelativeToComp() != null) {
-      if (StringUtils.isBlank(layer.heightRelativeToCompUnitCode())) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "heightRelativeToCompUnitCode is required when heightRelativeToComp is supplied (layer "
-                + code
-                + ")");
-      }
       if (!VALID_HEIGHT_RELATIVE_UNIT_CODES.contains(layer.heightRelativeToCompUnitCode())) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,

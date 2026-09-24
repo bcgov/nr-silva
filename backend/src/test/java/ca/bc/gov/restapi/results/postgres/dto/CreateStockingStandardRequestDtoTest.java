@@ -3,7 +3,6 @@ package ca.bc.gov.restapi.results.postgres.dto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
-import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesMilestone;
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
@@ -11,6 +10,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -47,16 +47,25 @@ class CreateStockingStandardRequestDtoTest {
         false,
         true,
         null,
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, null, StockingSpeciesMilestone.BOTH)),
         StockingType.REGEN_OBLIGATION,
         1,
         20,
         null,
         null,
         StockingLayerType.SINGLE,
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
+        new StockingLayerDto(
+            "I",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))),
         null,
         null);
   }
@@ -84,7 +93,6 @@ class CreateStockingStandardRequestDtoTest {
             request.becInfoSelected(),
             request.alternativeMethodSelected(),
             request.becData(),
-            request.species(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
@@ -99,9 +107,10 @@ class CreateStockingStandardRequestDtoTest {
   }
 
   @Test
-  @DisplayName("Empty species list is allowed")
-  void emptySpeciesList_isAllowed() {
+  @DisplayName("Empty layer species list is allowed")
+  void emptyLayerSpeciesList_isAllowed() {
     CreateStockingStandardRequestDto request = validRequest();
+    StockingLayerDto layer = request.singleLayer();
     CreateStockingStandardRequestDto invalid =
         new CreateStockingStandardRequestDto(
             request.objective(),
@@ -113,14 +122,25 @@ class CreateStockingStandardRequestDtoTest {
             request.becInfoSelected(),
             request.alternativeMethodSelected(),
             request.becData(),
-            List.of(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
             request.earlyYears(),
             request.lateYears(),
             request.layerType(),
-            request.singleLayer(),
+            new StockingLayerDto(
+                layer.layerCode(),
+                layer.minWellSpacedTrees(),
+                layer.minPreferredWellSpacedTrees(),
+                layer.minHorizontalDistance(),
+                layer.targetWellSpacedTrees(),
+                layer.minResidualBasalArea(),
+                layer.minPostSpacingDensity(),
+                layer.maxPostSpacingDensity(),
+                layer.maxConiferous(),
+                layer.heightRelativeToComp(),
+                layer.heightRelativeToCompUnitCode(),
+                List.of()),
             request.multiLayers(),
             request.additionalStandards());
 
@@ -142,7 +162,6 @@ class CreateStockingStandardRequestDtoTest {
             true,
             request.alternativeMethodSelected(),
             List.of(new BecDataDto("", "wh1", null, null, "01", null)),
-            request.species(),
             request.stockingType(),
             request.regenDelayYears(),
             request.freeGrowingYears(),
@@ -157,14 +176,14 @@ class CreateStockingStandardRequestDtoTest {
   }
 
   @Test
-  @DisplayName("Null BEC and species elements are rejected")
+  @DisplayName("Null BEC and layer species elements are rejected")
   void nullCollectionElements_areRejected() {
     CreateStockingStandardRequestDto request = validRequest();
     CreateStockingStandardRequestDto nullBecData =
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
             request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
-            request.alternativeMethodSelected(), Collections.singletonList(null), request.species(),
+            request.alternativeMethodSelected(), Collections.singletonList(null),
             request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
             request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
             request.multiLayers(), request.additionalStandards());
@@ -172,12 +191,60 @@ class CreateStockingStandardRequestDtoTest {
         new CreateStockingStandardRequestDto(
             request.objective(), request.name(), request.location(), request.authorityType(),
             request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
-            request.alternativeMethodSelected(), request.becData(), Collections.singletonList(null),
+            request.alternativeMethodSelected(), request.becData(),
             request.stockingType(), request.regenDelayYears(), request.freeGrowingYears(),
-            request.earlyYears(), request.lateYears(), request.layerType(), request.singleLayer(),
+            request.earlyYears(), request.lateYears(), request.layerType(),
+            new StockingLayerDto(
+                request.singleLayer().layerCode(),
+                request.singleLayer().minWellSpacedTrees(),
+                request.singleLayer().minPreferredWellSpacedTrees(),
+                request.singleLayer().minHorizontalDistance(),
+                request.singleLayer().targetWellSpacedTrees(),
+                request.singleLayer().minResidualBasalArea(),
+                request.singleLayer().minPostSpacingDensity(),
+                request.singleLayer().maxPostSpacingDensity(),
+                request.singleLayer().maxConiferous(),
+                request.singleLayer().heightRelativeToComp(),
+                request.singleLayer().heightRelativeToCompUnitCode(),
+                Collections.singletonList(null)),
             request.multiLayers(), request.additionalStandards());
 
     assertThat(validator.validate(nullBecData)).isNotEmpty();
     assertThat(validator.validate(nullSpecies)).isNotEmpty();
+  }
+
+  @Test
+  @DisplayName("Species minimum height outside the documented range or precision is rejected")
+  void speciesMinimumHeight_outsideRangeOrPrecision_isRejected() {
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("-0.1"))))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("100.0"))))
+        .isNotEmpty();
+    assertThat(
+            validator.validate(
+                speciesRequest(new BigDecimal("1.11"))))
+        .isNotEmpty();
+  }
+
+  private CreateStockingStandardRequestDto speciesRequest(BigDecimal minHeight) {
+    CreateStockingStandardRequestDto request = validRequest();
+    StockingLayerDto layer = request.singleLayer();
+    return new CreateStockingStandardRequestDto(
+        request.objective(), request.name(), request.location(), request.authorityType(),
+        request.orgUnitCodes(), request.clientNumbers(), request.becInfoSelected(),
+        request.alternativeMethodSelected(), request.becData(), request.stockingType(),
+        request.regenDelayYears(), request.freeGrowingYears(), request.earlyYears(),
+        request.lateYears(), request.layerType(),
+        new StockingLayerDto(
+            layer.layerCode(), layer.minWellSpacedTrees(), layer.minPreferredWellSpacedTrees(),
+            layer.minHorizontalDistance(), layer.targetWellSpacedTrees(),
+            layer.minResidualBasalArea(), layer.minPostSpacingDensity(), layer.maxPostSpacingDensity(),
+            layer.maxConiferous(), layer.heightRelativeToComp(), layer.heightRelativeToCompUnitCode(),
+            List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, minHeight))),
+        request.multiLayers(), request.additionalStandards());
   }
 }

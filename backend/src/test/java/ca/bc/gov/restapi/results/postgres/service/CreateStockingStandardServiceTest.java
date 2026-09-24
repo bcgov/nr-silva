@@ -22,7 +22,6 @@ import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeLayerSpeciesEnti
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeOrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.StandardsRegimeSiteSeriesEntity;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
-import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesMilestone;
 import ca.bc.gov.restapi.results.postgres.enums.StockingSpeciesType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingStandardAuthorityType;
 import ca.bc.gov.restapi.results.postgres.enums.StockingType;
@@ -69,7 +68,7 @@ class CreateStockingStandardServiceTest {
   }
 
   @Test
-  @DisplayName("Operational Plan persists mapped links, BEC rows, layers and milestone species")
+  @DisplayName("Operational Plan persists mapped links, BEC rows, layers and their species")
   void create_operationalPlan_persistsCompleteGraph() {
     CreateStockingStandardRequestDto request = operationalPlanRequest();
     when(validationService.validate(request)).thenReturn(List.of(11L, 12L));
@@ -90,8 +89,10 @@ class CreateStockingStandardServiceTest {
             StandardsRegimeEntity::getStandardsRegimeStatusCode,
             StandardsRegimeEntity::getMofDefaultStandardInd,
             StandardsRegimeEntity::getAlternativeMethodInd,
-            StandardsRegimeEntity::getRegenObligationInd)
-        .containsExactly(100L, "Standard name", "DFT", "N", "N", "Y");
+            StandardsRegimeEntity::getRegenObligationInd,
+            StandardsRegimeEntity::getSubmittedByUserid)
+        .containsExactly(100L, "Standard name", "SUB", "N", "N", "Y", "IDIR\\tester");
+    assertThat(standard.getValue().getSubmittedDate()).isNotNull();
 
     ArgumentCaptor<StandardsRegimeOrgUnitEntity> orgUnits =
         ArgumentCaptor.forClass(StandardsRegimeOrgUnitEntity.class);
@@ -129,19 +130,17 @@ class CreateStockingStandardServiceTest {
             org.assertj.core.groups.Tuple.tuple(304L, "1"));
     ArgumentCaptor<StandardsRegimeLayerSpeciesEntity> species =
         ArgumentCaptor.forClass(StandardsRegimeLayerSpeciesEntity.class);
-    verify(layerSpeciesRepository, times(12)).save(species.capture());
+    verify(layerSpeciesRepository, times(4)).save(species.capture());
     assertThat(species.getAllValues())
-        .allSatisfy(
-            value -> assertThat(value.getStandardsRegimeLayerId()).isIn(301L, 302L, 303L, 304L));
-    assertThat(species.getAllValues())
-        .filteredOn(value -> value.getSilvTreeSpeciesCode().equals("CW"))
-        .allSatisfy(
-            value ->
-                assertThat(value)
-                    .extracting(
-                        StandardsRegimeLayerSpeciesEntity::getRegenMilestoneInd,
-                        StandardsRegimeLayerSpeciesEntity::getFreeGrowingMilestoneInd)
-                    .containsExactly("Y", "Y"));
+        .extracting(
+            StandardsRegimeLayerSpeciesEntity::getStandardsRegimeLayerId,
+            StandardsRegimeLayerSpeciesEntity::getSilvTreeSpeciesCode,
+            StandardsRegimeLayerSpeciesEntity::getSpeciesOrder)
+        .containsExactly(
+            org.assertj.core.groups.Tuple.tuple(301L, "CW", 1),
+            org.assertj.core.groups.Tuple.tuple(301L, "HW", 2),
+            org.assertj.core.groups.Tuple.tuple(301L, "BA", 3),
+            org.assertj.core.groups.Tuple.tuple(302L, "CW", 1));
   }
 
   @Test
@@ -189,12 +188,30 @@ class CreateStockingStandardServiceTest {
   @DisplayName("No layer-species links are created when species are omitted")
   void create_withoutSpecies_doesNotPersistLayerSpecies() {
     CreateStockingStandardRequestDto base = operationalPlanRequest();
+    List<StockingLayerDto> layersWithoutSpecies =
+        base.multiLayers().stream()
+            .map(
+                layer ->
+                    new StockingLayerDto(
+                        layer.layerCode(),
+                        layer.minWellSpacedTrees(),
+                        layer.minPreferredWellSpacedTrees(),
+                        layer.minHorizontalDistance(),
+                        layer.targetWellSpacedTrees(),
+                        layer.minResidualBasalArea(),
+                        layer.minPostSpacingDensity(),
+                        layer.maxPostSpacingDensity(),
+                        layer.maxConiferous(),
+                        layer.heightRelativeToComp(),
+                        layer.heightRelativeToCompUnitCode(),
+                        null))
+            .toList();
     CreateStockingStandardRequestDto request =
         new CreateStockingStandardRequestDto(
             base.objective(), base.name(), base.location(), base.authorityType(), base.orgUnitCodes(),
             base.clientNumbers(), base.becInfoSelected(), base.alternativeMethodSelected(), base.becData(),
-            null, base.stockingType(), base.regenDelayYears(), base.freeGrowingYears(), base.earlyYears(),
-            base.lateYears(), base.layerType(), base.singleLayer(), base.multiLayers(),
+            base.stockingType(), base.regenDelayYears(), base.freeGrowingYears(), base.earlyYears(),
+            base.lateYears(), base.layerType(), base.singleLayer(), layersWithoutSpecies,
             base.additionalStandards());
     when(validationService.validate(request)).thenReturn(List.of(11L, 12L));
     when(loggedUserHelper.getAuditUserId()).thenReturn("IDIR\\tester");
@@ -210,13 +227,38 @@ class CreateStockingStandardServiceTest {
     List<StockingLayerDto> layers =
         List.of(
             new StockingLayerDto(
-                "4", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 15, "CM"),
+                "4",
+                1000,
+                800,
+                BigDecimal.ONE,
+                1200,
+                null,
+                null,
+                null,
+                null,
+                15,
+                "CM",
+                List.of(
+                    new StockingSpeciesDto(" cw ", StockingSpeciesType.PREFERRED, BigDecimal.ONE),
+                    new StockingSpeciesDto("HW", StockingSpeciesType.ACCEPTABLE, null),
+                    new StockingSpeciesDto("BA", StockingSpeciesType.ECOLOGICALLY_SUITABLE, null))),
             new StockingLayerDto(
-                "3", 1000, 800, BigDecimal.ONE, 1200, null, null, null, null, 16, "PCT"),
+                "3",
+                1000,
+                800,
+                BigDecimal.ONE,
+                1200,
+                null,
+                null,
+                null,
+                null,
+                16,
+                "PCT",
+                List.of(new StockingSpeciesDto("CW", StockingSpeciesType.PREFERRED, null))),
             new StockingLayerDto(
-                "2", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null),
+                "2", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null, null),
             new StockingLayerDto(
-                "1", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null));
+                "1", 1000, 800, BigDecimal.ONE, 1200, 10, 100, 200, 300, null, null, null));
     return new CreateStockingStandardRequestDto(
         "Objective",
         " Standard name ",
@@ -227,16 +269,6 @@ class CreateStockingStandardServiceTest {
         true,
         false,
         List.of(new BecDataDto("CWH", "wh", "1", null, "01", null)),
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, BigDecimal.ONE, StockingSpeciesMilestone.BOTH),
-            new StockingSpeciesDto(
-                "HW", StockingSpeciesType.ACCEPTABLE, null, StockingSpeciesMilestone.REGEN),
-            new StockingSpeciesDto(
-                "BA",
-                StockingSpeciesType.ECOLOGICALLY_SUITABLE,
-                null,
-                StockingSpeciesMilestone.FREE_GROWING)),
         StockingType.REGEN_OBLIGATION,
         1,
         20,
@@ -260,16 +292,13 @@ class CreateStockingStandardServiceTest {
         false,
         true,
         null,
-        List.of(
-            new StockingSpeciesDto(
-                "CW", StockingSpeciesType.PREFERRED, null, StockingSpeciesMilestone.BOTH)),
         StockingType.STOCKING_REQUIREMENT,
         null,
         null,
         1,
         2,
         StockingLayerType.SINGLE,
-        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null),
+        new StockingLayerDto("I", null, null, null, null, null, null, null, null, null, null, null),
         null,
         null);
   }
