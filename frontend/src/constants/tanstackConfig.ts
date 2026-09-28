@@ -27,6 +27,9 @@ const setAuthRefreshInProgress = (refreshing: boolean) => {
 };
 
 export const isAuthRefreshInProgress = () => isRefreshing;
+export const setAuthRefreshInProgressForTesting = (refreshing: boolean) => {
+  setAuthRefreshInProgress(refreshing);
+};
 export const subscribeAuthRefresh = (listener: () => void) => {
   authRefreshListeners.add(listener);
   return () => authRefreshListeners.delete(listener);

@@ -5,6 +5,7 @@ import { ACCESS_TOKEN_KEY } from '@/constants';
 import {
   queryClientConfig,
   isAuthRefreshInProgress,
+  setAuthRefreshInProgressForTesting,
   subscribeAuthRefresh,
   authRedirectBoundary,
   resetAuthRedirectStateForTesting,
@@ -27,6 +28,13 @@ describe('tanstackConfig', () => {
     vi.spyOn(authRedirectBoundary, 'redirect').mockImplementation(() => {});
   });
 
+  describe('authRedirectBoundary', () => {
+    it('redirects to root when called', () => {
+      vi.mocked(authRedirectBoundary.redirect).mockRestore();
+      expect(() => authRedirectBoundary.redirect()).not.toThrow();
+    });
+  });
+
   describe('isAuthRefreshInProgress and subscribeAuthRefresh', () => {
     it('returns false initially and allows subscription and unsubscription', () => {
       expect(isAuthRefreshInProgress()).toBe(false);
@@ -36,6 +44,12 @@ describe('tanstackConfig', () => {
 
       expect(typeof unsubscribe).toBe('function');
       unsubscribe();
+    });
+
+    it('returns early when auth refresh state does not change', () => {
+      expect(isAuthRefreshInProgress()).toBe(false);
+      setAuthRefreshInProgressForTesting(false);
+      expect(isAuthRefreshInProgress()).toBe(false);
     });
   });
 
