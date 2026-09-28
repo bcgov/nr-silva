@@ -118,7 +118,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
         onChange(selectedClientNumbers.length > 0 ? selectedClientNumbers : undefined);
       }}
       onInputValueChange={(changes) => {
-        setClientSearchTerm(String(changes));
+        setClientSearchTerm(changes?.inputValue || '');
       }}
       selectedItems={matchingClients.filter((client) => selectedClientNumbers?.includes(client.id ?? '')) ?? []}
       showSkeleton={initialClientsQuery.isLoading}
