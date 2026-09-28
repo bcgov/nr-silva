@@ -10,7 +10,6 @@ import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { JWT } from "@/types/amplify";
 
 // === Refresh Token Management ===
 
@@ -126,7 +125,7 @@ function errorHandler(
           status: 'pending'
         });
       }
-    } catch (e) {
+    } catch {
       // ignore if we can't touch internal state
     }
 

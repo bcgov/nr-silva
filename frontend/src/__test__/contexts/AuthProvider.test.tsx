@@ -241,6 +241,88 @@ describe("AuthProvider", () => {
     });
   });
 
+  it("should rethrow error when login error is not UserAlreadyAuthenticatedException", async () => {
+    const authModule = await import("aws-amplify/auth");
+    (authModule.signInWithRedirect as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+      new Error("Network error")
+    );
+
+    let errorThrown: any = null;
+    const TestComponent = () => {
+      const { login } = useAuth();
+      return (
+        <button
+          onClick={async () => {
+            try {
+              await login("IDIR");
+            } catch (err) {
+              errorThrown = err;
+            }
+          }}
+        >
+          Login
+        </button>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await act(async () => {
+      getByText("Login").click();
+    });
+
+    expect(errorThrown).toBeInstanceOf(Error);
+    expect(errorThrown.message).toBe("Network error");
+  });
+
+  it("persists access token in cookie when accessToken is present", async () => {
+    const authModule = await import("aws-amplify/auth");
+    vi.spyOn(authModule, "fetchAuthSession").mockResolvedValueOnce({
+      tokens: {
+        accessToken: { toString: () => "mock-access-token" },
+        idToken: undefined,
+      },
+    } as any);
+
+    render(
+      <AuthProvider>
+        <div>Test</div>
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(document.cookie).toContain("ACCESS_TOKEN=mock-access-token");
+    });
+  });
+
+  it("handles error during session fetch by clearing user and stopping loading", async () => {
+    const authModule = await import("aws-amplify/auth");
+    vi.spyOn(authModule, "fetchAuthSession").mockRejectedValueOnce(new Error("Amplify error"));
+
+    const TestComponent = () => {
+      const { user, isLoading } = useAuth();
+      return (
+        <div>
+          <span>{isLoading ? "Loading" : "Loaded"}</span>
+          <span>{user ? "Has User" : "No User"}</span>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(getByText("Loaded")).toBeInTheDocument());
+    expect(getByText("No User")).toBeInTheDocument();
+  });
+
   describe("Silent Sign-On (idp_hint)", () => {
     beforeEach(() => {
       sessionStorage.clear();
