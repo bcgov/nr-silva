@@ -38,6 +38,16 @@ const failedQueue: {
   variables?: unknown;
 }[] = [];
 
+export const authRedirectBoundary = {
+  redirect: () => {
+    window.location.href = "/";
+  },
+};
+
+export const resetAuthRedirectStateForTesting = () => {
+  isRedirecting = false;
+};
+
 async function refreshAccessToken(): Promise<string | null> {
   try {
     // Use aws-amplify to refresh tokens via the existing session
@@ -58,7 +68,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
     if (!isRedirecting) {
       isRedirecting = true;
-      window.location.href = "/";
+      authRedirectBoundary.redirect();
     }
 
     return null;

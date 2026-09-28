@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { setCookie, deleteCookie } from '@/utils/CookieUtils';
 import { ACCESS_TOKEN_KEY } from '@/constants';
@@ -6,6 +6,8 @@ import {
   queryClientConfig,
   isAuthRefreshInProgress,
   subscribeAuthRefresh,
+  authRedirectBoundary,
+  resetAuthRedirectStateForTesting,
 } from '@/constants/tanstackConfig';
 
 vi.mock('aws-amplify/auth', () => ({
@@ -18,16 +20,11 @@ vi.mock('@/utils/CookieUtils', () => ({
 }));
 
 describe('tanstackConfig', () => {
-  const originalLocation = window.location;
-
   beforeEach(() => {
     vi.clearAllMocks();
-    delete (window as any).location;
-    window.location = { ...originalLocation, href: 'http://localhost/' } as any;
-  });
-
-  afterEach(() => {
-    window.location = originalLocation;
+    window.history.replaceState({}, '', '/');
+    resetAuthRedirectStateForTesting();
+    vi.spyOn(authRedirectBoundary, 'redirect').mockImplementation(() => {});
   });
 
   describe('isAuthRefreshInProgress and subscribeAuthRefresh', () => {
@@ -143,7 +140,8 @@ describe('tanstackConfig', () => {
 
       await vi.waitFor(() => {
         expect(deleteCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY);
-        expect(window.location.href).toBe('/');
+        expect(authRedirectBoundary.redirect).toHaveBeenCalled();
+        expect(window.location.pathname).toBe('/');
         expect(mockQuery.fetch).not.toHaveBeenCalled();
         expect(isAuthRefreshInProgress()).toBe(false);
       });
@@ -164,6 +162,7 @@ describe('tanstackConfig', () => {
 
       await vi.waitFor(() => {
         expect(deleteCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY);
+        expect(authRedirectBoundary.redirect).toHaveBeenCalled();
         expect(isAuthRefreshInProgress()).toBe(false);
       });
     });

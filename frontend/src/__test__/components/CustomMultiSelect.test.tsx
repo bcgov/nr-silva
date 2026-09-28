@@ -94,12 +94,14 @@ describe('CustomMultiSelect', () => {
       />
     );
 
-    const multiSelect = container.querySelector('.cds--multi-select') as HTMLElement;
-    if (multiSelect) {
-      const blurSpy = vi.spyOn(multiSelect, 'blur');
-      fireEvent.mouseDown(multiSelect);
-      expect(blurSpy).not.toHaveBeenCalled();
-    }
+    const multiSelect = container.querySelector(
+      '.cds--multi-select, .bx--multi-select'
+    ) as HTMLElement;
+    expect(multiSelect).not.toBeNull();
+    const blurSpy = vi.spyOn(multiSelect, 'blur');
+    fireEvent.mouseDown(multiSelect);
+    expect(blurSpy).not.toHaveBeenCalled();
+    blurSpy.mockRestore();
   });
 
   it('removes document event listener on unmount', () => {
