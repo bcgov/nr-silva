@@ -145,15 +145,35 @@ describe('ForestClientMultiSelect', () => {
     expect(screen.getByText('Client')).toBeInTheDocument();
   });
 
-  it('handles object-based input change events safely without object stringification', async () => {
+  it('calls onChange with undefined when all selected items are deselected', async () => {
+    renderComponent({ selectedClientNumbers: ['00012797'] });
+
+    await waitFor(() => {
+      expect(API.ForestClientEndpointService.searchByClientNumbers).toHaveBeenCalled();
+    });
+
+    const input = screen.getByRole('combobox');
+    fireEvent.click(input);
+
+    const option = await screen.findByText(/MINISTRY OF FORESTS/i);
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(mockOnChange).toHaveBeenCalledWith(undefined);
+    });
+  });
+
+  it('handles empty input change events safely', async () => {
     renderComponent();
 
     const input = screen.getByRole('combobox');
     fireEvent.change(input, { target: { value: 'FOREST' } });
-
     await waitFor(() => {
       expect(API.ForestClientEndpointService.searchForestClients).toHaveBeenCalledWith('FOREST');
     });
+
+    fireEvent.change(input, { target: { value: '' } });
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
   });
 });
 

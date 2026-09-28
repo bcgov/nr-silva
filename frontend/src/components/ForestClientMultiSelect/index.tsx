@@ -114,12 +114,11 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
       items={matchingClients}
       itemToString={getClientLabel}
       onChange={(selected: { selectedItems: ForestClientAutocompleteResultDto[] }) => {
-        const clientNumbers = selected.selectedItems.map((item) => item.id) as string[];
-        onChange(clientNumbers.length > 0 ? clientNumbers : undefined);
+        const selectedClientNumbers = selected.selectedItems.map((item) => item.id) as string[];
+        onChange(selectedClientNumbers.length > 0 ? selectedClientNumbers : undefined);
       }}
-      onInputValueChange={(changes: string | { inputValue?: string }) => {
-        const term = typeof changes === 'string' ? changes : (changes?.inputValue ?? '');
-        setClientSearchTerm(term);
+      onInputValueChange={(changes) => {
+        setClientSearchTerm(changes?.inputValue || '');
       }}
       selectedItems={matchingClients.filter((client) => selectedClientNumbers?.includes(client.id ?? '')) ?? []}
       showSkeleton={initialClientsQuery.isLoading}
