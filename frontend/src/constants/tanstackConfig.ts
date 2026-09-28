@@ -10,6 +10,7 @@ import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { JWT } from "@/types/amplify";
 
 // === Refresh Token Management ===
 
@@ -27,9 +28,6 @@ const setAuthRefreshInProgress = (refreshing: boolean) => {
 };
 
 export const isAuthRefreshInProgress = () => isRefreshing;
-export const setAuthRefreshInProgressForTesting = (refreshing: boolean) => {
-  setAuthRefreshInProgress(refreshing);
-};
 export const subscribeAuthRefresh = (listener: () => void) => {
   authRefreshListeners.add(listener);
   return () => authRefreshListeners.delete(listener);
@@ -40,16 +38,6 @@ const failedQueue: {
   mutation?: Mutation<unknown, unknown, unknown, unknown>;
   variables?: unknown;
 }[] = [];
-
-export const authRedirectBoundary = {
-  redirect: () => {
-    window.location.href = "/";
-  },
-};
-
-export const resetAuthRedirectStateForTesting = () => {
-  isRedirecting = false;
-};
 
 async function refreshAccessToken(): Promise<string | null> {
   try {
@@ -71,7 +59,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
     if (!isRedirecting) {
       isRedirecting = true;
-      authRedirectBoundary.redirect();
+      window.location.href = "/";
     }
 
     return null;
@@ -138,7 +126,7 @@ function errorHandler(
           status: 'pending'
         });
       }
-    } catch {
+    } catch (e) {
       // ignore if we can't touch internal state
     }
 

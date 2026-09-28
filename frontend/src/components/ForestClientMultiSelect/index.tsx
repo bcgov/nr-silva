@@ -42,7 +42,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
       0,
       initialClientNumbers!.length
     ),
-    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbers && initialClientNumbers.length > 0)
+    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbers && initialClientNumbers.length > 0),
   });
 
   // Merge prefetched clients into matchingClients
@@ -56,7 +56,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
           .map((c) => ({
             id: c.clientNumber,
             acronym: c.acronym,
-            name: c.name
+            name: c.name,
           }));
         return existing.concat(toAdd);
       });
@@ -76,7 +76,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
         const toAdd = data.filter((c) => c.id != null && !existingIds.has(c.id));
         return existing.concat(toAdd);
       });
-    }
+    },
   });
 
   /* Debounce the API call by 200ms */
