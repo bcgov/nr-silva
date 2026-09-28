@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -197,46 +197,38 @@ describe('MyOpenings Component', () => {
     expect(toggleButton).toBeEnabled();
 
     // Toggle map on
-    act(() => {
-      fireEvent.click(toggleButton);
-    });
+    fireEvent.click(toggleButton);
     expect(toggleButton).toHaveTextContent('Hide map');
     expect(screen.getByTestId('openings-map')).toBeInTheDocument();
 
     // Select row 101
-    act(() => {
-      fireEvent.click(screen.getByTestId('select-row-101'));
-    });
+    fireEvent.click(screen.getByTestId('select-row-101'));
     expect(screen.getByText('Map with 1 openings')).toBeInTheDocument();
 
     // Deselect row 101
-    act(() => {
-      fireEvent.click(screen.getByTestId('select-row-101'));
-    });
+    fireEvent.click(screen.getByTestId('select-row-101'));
     expect(screen.getByText('Map with 0 openings')).toBeInTheDocument();
 
     // Trigger map error
-    act(() => {
-      fireEvent.click(screen.getByTestId('trigger-map-error-btn'));
-    });
+    fireEvent.click(screen.getByTestId('trigger-map-error-btn'));
     expect(
       screen.getByText('No map data available for this opening ID')
     ).toBeInTheDocument();
 
     // Test pagination forward button
     const nextPageBtn = screen.getByRole('button', { name: /Next page/i });
-    act(() => {
-      fireEvent.click(nextPageBtn);
-    });
+    fireEvent.click(nextPageBtn);
 
     await waitFor(() => {
+      expect(API.OpeningEndpointService.getUserCreatedOpenings).toHaveBeenCalledWith(
+        1,
+        expect.any(Number)
+      );
       expect(toggleButton).toBeEnabled();
     });
 
     // Toggle map off
-    act(() => {
-      fireEvent.click(toggleButton);
-    });
+    fireEvent.click(toggleButton);
     expect(toggleButton).toHaveTextContent('Show map');
   });
 });

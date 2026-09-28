@@ -1,6 +1,6 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import RecentOpenings from "../../../components/RecentOpenings";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -144,9 +144,7 @@ describe("RecentOpenings Component", () => {
     expect(toggleButton).toBeEnabled();
 
     // Click to open map
-    act(() => {
-      fireEvent.click(toggleButton);
-    });
+    fireEvent.click(toggleButton);
     expect(toggleButton).toHaveTextContent("Hide map");
     expect(screen.getByTestId("openings-map")).toBeInTheDocument();
 
@@ -157,29 +155,21 @@ describe("RecentOpenings Component", () => {
     expect(spatialButtons.length).toBeGreaterThan(0);
 
     // Select row
-    act(() => {
-      fireEvent.click(spatialButtons[0]!);
-    });
+    fireEvent.click(spatialButtons[0]!);
     expect(screen.getByText("Map with 1 openings")).toBeInTheDocument();
 
     // Deselect row
-    act(() => {
-      fireEvent.click(spatialButtons[0]!);
-    });
+    fireEvent.click(spatialButtons[0]!);
     expect(screen.getByText("Map with 0 openings")).toBeInTheDocument();
 
     // Trigger map error
-    act(() => {
-      fireEvent.click(screen.getByTestId("trigger-map-error-btn"));
-    });
+    fireEvent.click(screen.getByTestId("trigger-map-error-btn"));
     expect(
       screen.getByText("No map data available for this opening ID")
     ).toBeInTheDocument();
 
     // Hide map
-    act(() => {
-      fireEvent.click(toggleButton);
-    });
+    fireEvent.click(toggleButton);
     expect(toggleButton).toHaveTextContent("Show map");
   });
 });

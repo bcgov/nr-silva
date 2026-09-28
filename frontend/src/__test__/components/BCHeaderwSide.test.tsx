@@ -147,29 +147,21 @@ describe("BCHeader", () => {
   it("opens and closes the My Profile panel via profile button", async () => {
     await renderComponent();
     const userSettingsButton = screen.getByTestId("header-button__user");
-    act(() => {
-      fireEvent.click(userSettingsButton);
-    });
+    fireEvent.click(userSettingsButton);
     expect(screen.getByText("My Profile")).toBeInTheDocument();
 
-    act(() => {
-      fireEvent.click(userSettingsButton);
-    });
+    fireEvent.click(userSettingsButton);
   });
 
   it("closes the My Profile panel when clicking outside", async () => {
     await renderComponent();
     const userSettingsButton = screen.getByTestId("header-button__user");
-    act(() => {
-      fireEvent.click(userSettingsButton);
-    });
+    fireEvent.click(userSettingsButton);
     expect(screen.getByLabelText("User Profile Tab")).toHaveClass(
       "cds--header-panel--expanded"
     );
 
-    act(() => {
-      fireEvent.mouseDown(document.body);
-    });
+    fireEvent.mouseDown(document.body);
     expect(screen.getByLabelText("User Profile Tab")).not.toHaveClass(
       "cds--header-panel--expanded"
     );
@@ -178,17 +170,13 @@ describe("BCHeader", () => {
   it("closes the My Profile panel using the close button on RightPanelTitle", async () => {
     await renderComponent();
     const userSettingsButton = screen.getByTestId("header-button__user");
-    act(() => {
-      fireEvent.click(userSettingsButton);
-    });
+    fireEvent.click(userSettingsButton);
     expect(screen.getByLabelText("User Profile Tab")).toHaveClass(
       "cds--header-panel--expanded"
     );
 
     const closeButton = screen.getByRole("button", { name: "Close" });
-    act(() => {
-      fireEvent.click(closeButton);
-    });
+    fireEvent.click(closeButton);
     expect(screen.getByLabelText("User Profile Tab")).not.toHaveClass(
       "cds--header-panel--expanded"
     );
@@ -207,18 +195,14 @@ describe("BCHeader", () => {
     const subOption1 = screen.getByTestId("side-nav-item-sub-1");
     expect(subOption1).toBeInTheDocument();
 
-    act(() => {
-      fireEvent.click(subOption1);
-    });
+    fireEvent.click(subOption1);
     expect(mockNavigate).toHaveBeenCalledWith("/nested/sub-1");
   });
 
   it("navigates when clicking a standard side nav link", async () => {
     await renderComponent();
     const openingsLink = screen.getByTestId("side-nav-link-openings");
-    act(() => {
-      fireEvent.click(openingsLink);
-    });
+    fireEvent.click(openingsLink);
     expect(mockNavigate).toHaveBeenCalledWith("/openings");
   });
 
@@ -231,9 +215,7 @@ describe("BCHeader", () => {
   it("toggles side navigation via HeaderMenuButton", async () => {
     await renderComponent();
     const menuButton = screen.getByLabelText("Open menu");
-    act(() => {
-      fireEvent.click(menuButton);
-    });
+    fireEvent.click(menuButton);
     expect(menuButton).toBeInTheDocument();
   });
 });
