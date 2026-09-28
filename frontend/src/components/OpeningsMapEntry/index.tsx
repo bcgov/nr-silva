@@ -139,57 +139,63 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
         polygons.filter(Boolean).map((featureCollection, collectionIndex) =>
           featureCollection.features
             .filter((feature) => feature.geometry)
-            .map((feature, featureIndex) => (
-              <GeoJSON
-                data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
-                key={`geojson-${collectionIndex}-${feature.id ?? featureIndex}`}
-                data={feature}
-                style={() =>
-                  getStyleForFeature(
-                    feature,
-                    selectedFeature,
-                    hoveredFeature,
-                    featureIndex,
-                    featureCollection.features.length
-                  )
-                }
-                onEachFeature={onEachFeature}
-              />
-            ))
+            .map((feature, featureIndex) => {
+              const layerKey = `geojson-${collectionIndex}-${feature.id ?? featureIndex}`;
+              return (
+                <GeoJSON
+                  data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                  key={layerKey}
+                  data={feature}
+                  style={() =>
+                    getStyleForFeature(
+                      feature,
+                      selectedFeature,
+                      hoveredFeature,
+                      featureIndex,
+                      featureCollection.features.length
+                    )
+                  }
+                  onEachFeature={onEachFeature}
+                />
+              );
+            })
         )
       }
       {!showAsPolygon &&
         polygons.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features
             ?.filter((feature) => feature.geometry)
-            .map((feature, fIndex) => (
-              <Marker
-                icon={
-                  (hoveredFeature && hoveredFeature.id === feature.id) ||
-                    (selectedFeature && selectedFeature.id === feature.id)
-                    ? markerHoveredIcon
-                    : markerIcon
-                }
-                data-testid="marker"
-                key={`marker-${index}-${feature.id ?? fIndex}`}
-                position={getCenterOfFeatureCollection(featureCollection)}
-                eventHandlers={{
-                  click: () => {
-                    setSelectedFeature(feature);
+            .map((feature, fIndex) => {
+              const markerKey = `marker-${index}-${feature.id ?? fIndex}`;
+              return (
+                <Marker
+                  icon={
+                    (hoveredFeature && hoveredFeature.id === feature.id) ||
+                      (selectedFeature && selectedFeature.id === feature.id)
+                      ? markerHoveredIcon
+                      : markerIcon
+                  }
+                  data-testid="marker"
+                  key={markerKey}
+                  position={getCenterOfFeatureCollection(featureCollection)}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedFeature(feature);
 
-                    const geoJsonLayer = L.geoJSON(feature);
-                    const bounds = geoJsonLayer.getBounds();
-                    map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
-                  },
-                  mouseover: () => {
-                    setHoveredFeature(feature);
-                  },
-                  mouseout: () => {
-                    setHoveredFeature(null);
-                  },
-                }}
-              />
-            ))
+                      const geoJsonLayer = L.geoJSON(feature);
+                      const bounds = geoJsonLayer.getBounds();
+                      map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
+                    },
+                    mouseover: () => {
+                      setHoveredFeature(feature);
+                    },
+                    mouseout: () => {
+                      setHoveredFeature(null);
+                    },
+                  }}
+                />
+              );
+            })
         )
       }
     </>
