@@ -42,7 +42,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
       0,
       initialClientNumbers!.length
     ),
-    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbers && initialClientNumbers.length > 0),
+    enabled: !hasLoadedInitialClientsRef.current && !!(initialClientNumbers && initialClientNumbers.length > 0)
   });
 
   // Merge prefetched clients into matchingClients
@@ -56,7 +56,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
           .map((c) => ({
             id: c.clientNumber,
             acronym: c.acronym,
-            name: c.name,
+            name: c.name
           }));
         return existing.concat(toAdd);
       });
@@ -76,7 +76,7 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
         const toAdd = data.filter((c) => c.id != null && !existingIds.has(c.id));
         return existing.concat(toAdd);
       });
-    },
+    }
   });
 
   /* Debounce the API call by 200ms */
@@ -114,11 +114,12 @@ const ForestClientMultiSelect = ({ selectedClientNumbers, onChange }: ForestClie
       items={matchingClients}
       itemToString={getClientLabel}
       onChange={(selected: { selectedItems: ForestClientAutocompleteResultDto[] }) => {
-        const selectedClientNumbers = selected.selectedItems.map((item) => item.id) as string[];
-        onChange(selectedClientNumbers.length > 0 ? selectedClientNumbers : undefined);
+        const clientNumbers = selected.selectedItems.map((item) => item.id) as string[];
+        onChange(clientNumbers.length > 0 ? clientNumbers : undefined);
       }}
-      onInputValueChange={(changes) => {
-        setClientSearchTerm(String(changes));
+      onInputValueChange={(changes: string | { inputValue?: string }) => {
+        const term = typeof changes === 'string' ? changes : (changes?.inputValue ?? String(changes ?? ''));
+        setClientSearchTerm(term);
       }}
       selectedItems={matchingClients.filter((client) => selectedClientNumbers?.includes(client.id ?? '')) ?? []}
       showSkeleton={initialClientsQuery.isLoading}
