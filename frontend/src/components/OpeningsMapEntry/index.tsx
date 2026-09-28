@@ -33,13 +33,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
     zoomend: () => setZoom(map.getZoom()),
   });
 
-  const [zoom, setZoom] = useState<number>(() => {
-    try {
-      return map.getZoom();
-    } catch {
-      return 13;
-    }
-  });
+  const [zoom, setZoom] = useState<number>(() => map.getZoom());
 
   useEffect(() => {
     setZoom(map.getZoom());

@@ -507,4 +507,72 @@ describe("OpeningsMapEntry", () => {
     expect(markers).toHaveLength(2);
     expect(screen.queryByTestId("geojson-feat-1-0-0")).not.toBeInTheDocument();
   });
+
+  it("handles features without an id at both high and low zoom levels", () => {
+    const polygonWithoutId1: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [-123.35, 48.43],
+                [-123.36, 48.44],
+                [-123.35, 48.44],
+                [-123.35, 48.43],
+              ],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    };
+
+    const polygonWithoutId2: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [-123.45, 48.53],
+                [-123.46, 48.54],
+                [-123.45, 48.54],
+                [-123.45, 48.53],
+              ],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    };
+
+    mockGetZoom.mockReturnValue(13);
+    const { rerender } = render(
+      <OpeningsMapEntry
+        polygons={[polygonWithoutId1, polygonWithoutId2]}
+        hoveredFeature={null}
+        setHoveredFeature={setHoveredFeature}
+        selectedFeature={null}
+        setSelectedFeature={setSelectedFeature}
+      />
+    );
+    expect(screen.getAllByTestId(/geojson-/)).toHaveLength(2);
+
+    mockGetZoom.mockReturnValue(8);
+    rerender(
+      <OpeningsMapEntry
+        polygons={[polygonWithoutId1, polygonWithoutId2]}
+        hoveredFeature={null}
+        setHoveredFeature={setHoveredFeature}
+        selectedFeature={null}
+        setSelectedFeature={setSelectedFeature}
+      />
+    );
+    expect(screen.getAllByTestId("marker")).toHaveLength(2);
+  });
 });
