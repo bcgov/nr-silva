@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { GeoJsonProperties } from "geojson";
-import { FeatureCollection } from "geojson";
+import type { GeoJsonProperties, FeatureCollection } from "geojson";
 import API from "@/services/API";
 import { MapKindType } from "@/types/MapLayer";
 import { MAP_KINDS } from "@/constants/mapKindConstants";
@@ -51,7 +50,7 @@ const compoundIdExtractors: Partial<Record<MapKindType, (props: GeoJsonPropertie
   [MAP_KINDS.cutBlock]: (props) =>
     props?.CUT_BLOCK_FOREST_FILE_ID != null && props?.CUT_BLOCK_ID != null
       ? `${props.CUT_BLOCK_FOREST_FILE_ID}-${props.CUT_BLOCK_ID}`
-      : null,
+      : null
 };
 
 type UsePolygonAvailabilityResult = {
@@ -69,7 +68,7 @@ type UsePolygonAvailabilityResult = {
 const usePolygonAvailability = (
   openingId: number,
   kind: MapKindType,
-  compoundId: string | null,
+  compoundId: string | null
 ): UsePolygonAvailabilityResult => {
   const extractor = compoundIdExtractors[kind];
 
@@ -78,9 +77,9 @@ const usePolygonAvailability = (
     queryFn: () =>
       API.OpeningMapsEndpointService.getOpeningPolygonAndProperties(
         openingId,
-        kind,
+        kind
       ) as unknown as Promise<FeatureCollection>,
-    enabled: !!extractor && compoundId !== null,
+    enabled: !!extractor && compoundId !== null
   });
 
   if (!extractor || compoundId === null || query.isLoading || !query.data) {
