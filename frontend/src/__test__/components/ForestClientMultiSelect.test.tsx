@@ -144,4 +144,16 @@ describe('ForestClientMultiSelect', () => {
     renderComponent();
     expect(screen.getByText('Client')).toBeInTheDocument();
   });
+
+  it('handles object-based input change events safely without object stringification', async () => {
+    renderComponent();
+
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'FOREST' } });
+
+    await waitFor(() => {
+      expect(API.ForestClientEndpointService.searchForestClients).toHaveBeenCalledWith('FOREST');
+    });
+  });
 });
+

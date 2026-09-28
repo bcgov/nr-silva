@@ -194,7 +194,7 @@ describe('ForestClientInput', () => {
     mockSetClientNumber.mockClear();
 
     // Re-type the exact same label
-    const label = clientInput.getAttribute('value') || '';
+    const label = (clientInput as HTMLInputElement).value || '';
     fireEvent.change(clientInput, { target: { value: label } });
 
     expect(mockSetClientNumber).not.toHaveBeenCalled();
