@@ -18,6 +18,13 @@ interface OpeningsMapEntryProps {
 }
 
 const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
+  // Get the map instance from react-leaflet
+  const map = useMapEvents({
+    zoomend: () => setZoom(map.getZoom()),
+  });
+
+  const [zoom, setZoom] = useState<number>(() => map.getZoom());
+
   const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
 
   const hasFeatureProperty = (l: unknown): l is L.Layer & { feature: Feature<Geometry, unknown> } => {
@@ -27,13 +34,6 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   const isPathLayer = (l: unknown): l is L.Path => {
     return typeof l === 'object' && l !== null && 'bringToFront' in l;
   };
-
-  // Get the map instance from react-leaflet
-  const map = useMapEvents({
-    zoomend: () => setZoom(map.getZoom()),
-  });
-
-  const [zoom, setZoom] = useState<number>(() => map.getZoom());
 
   const markerIcon = new L.Icon({
     iconUrl: "/marker.svg",
@@ -65,7 +65,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
       .map((feature) => feature.id)
       .filter(Boolean)
       .map((id) => String(id))
-      .reduce((_acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
+      .reduce((acc, id) => (acc ? `${acc}-${id}` : `${id}-${index}`), "") || `geo-${index}`;
 
   useEffect(() => {
     if (hoveredFeature) {
@@ -139,63 +139,57 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
         polygons.filter(Boolean).map((featureCollection, collectionIndex) =>
           featureCollection.features
             .filter((feature) => feature.geometry)
-            .map((feature, featureIndex) => {
-              const layerKey = `geojson-${collectionIndex}-${feature.id ?? featureIndex}`;
-              return (
-                <GeoJSON
-                  data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
-                  key={layerKey}
-                  data={feature}
-                  style={() =>
-                    getStyleForFeature(
-                      feature,
-                      selectedFeature,
-                      hoveredFeature,
-                      featureIndex,
-                      featureCollection.features.length
-                    )
-                  }
-                  onEachFeature={onEachFeature}
-                />
-              );
-            })
+            .map((feature, featureIndex) => (
+              <GeoJSON
+                data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                data={feature}
+                style={() =>
+                  getStyleForFeature(
+                    feature,
+                    selectedFeature,
+                    hoveredFeature,
+                    featureIndex,
+                    featureCollection.features.length
+                  )
+                }
+                onEachFeature={onEachFeature}
+              />
+            ))
         )
       }
       {!showAsPolygon &&
         polygons.filter(Boolean).map((featureCollection, index) =>
           featureCollection?.features
             ?.filter((feature) => feature.geometry)
-            .map((feature, fIndex) => {
-              const markerKey = `marker-${index}-${feature.id ?? fIndex}`;
-              return (
-                <Marker
-                  icon={
-                    (hoveredFeature && hoveredFeature.id === feature.id) ||
-                      (selectedFeature && selectedFeature.id === feature.id)
-                      ? markerHoveredIcon
-                      : markerIcon
-                  }
-                  data-testid="marker"
-                  key={markerKey}
-                  position={getCenterOfFeatureCollection(featureCollection)}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedFeature(feature);
+            .map((feature, fIndex) => (
+              <Marker
+                icon={
+                  (hoveredFeature && hoveredFeature.id === feature.id) ||
+                    (selectedFeature && selectedFeature.id === feature.id)
+                    ? markerHoveredIcon
+                    : markerIcon
+                }
+                data-testid="marker"
+                key={`marker-${geoKey(featureCollection, index)}-${fIndex}`}
+                position={getCenterOfFeatureCollection(featureCollection)}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedFeature(feature);
 
-                      const geoJsonLayer = L.geoJSON(feature);
-                      const bounds = geoJsonLayer.getBounds();
-                      map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
-                    },
-                    mouseover: () => {
-                      setHoveredFeature(feature);
-                    },
-                    mouseout: () => {
-                      setHoveredFeature(null);
-                    },
-                  }}
-                />
-              );
-            })
+                    const geoJsonLayer = L.geoJSON(feature);
+                    const bounds = geoJsonLayer.getBounds();
+                    map.flyToBounds(bounds, { maxZoom: 15, animate: true, duration: 1.0 });
+                  },
+                  mouseover: () => {
+                    setHoveredFeature(feature);
+                  },
+                  mouseout: () => {
+                    setHoveredFeature(null);
+                  },
+                }}
+              />
+            ))
         )
       }
     </>
