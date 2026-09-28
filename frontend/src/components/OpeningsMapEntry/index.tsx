@@ -142,7 +142,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
             .map((feature, featureIndex) => (
               <GeoJSON
                 data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
-                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
+                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${feature.id ?? featureIndex}`}
                 data={feature}
                 style={() =>
                   getStyleForFeature(
@@ -171,7 +171,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
                     : markerIcon
                 }
                 data-testid="marker"
-                key={`marker-${geoKey(featureCollection, index)}-${fIndex}`}
+                key={`marker-${geoKey(featureCollection, index)}-${feature.id ?? fIndex}`}
                 position={getCenterOfFeatureCollection(featureCollection)}
                 eventHandlers={{
                   click: () => {
