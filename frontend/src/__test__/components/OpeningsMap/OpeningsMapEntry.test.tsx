@@ -25,6 +25,10 @@ vi.mock("react-leaflet", () => ({
     };
   }),
   GeoJSON: ({ data, style, onEachFeature, "data-testid": testId }: any) => {
+    // Like react-leaflet's GeoJSON, initial geometry data is bound to the Leaflet layer on mount
+    // and is retained until the component is remounted with a new key.
+    const initialDataRef = React.useRef(data);
+    const renderedData = initialDataRef.current;
     const layer = {
       bringToFront: vi.fn(),
       on: vi.fn((events: any) => {
@@ -32,13 +36,13 @@ vi.mock("react-leaflet", () => ({
       }),
     };
     if (onEachFeature) {
-      onEachFeature(data, layer);
+      onEachFeature(renderedData, layer);
     }
     const computedStyle = typeof style === "function" ? style() : style;
     return (
       <div
         data-testid={testId || "geojson-layer"}
-        data-feature-id={data?.id}
+        data-feature-id={renderedData?.id}
         data-style={JSON.stringify(computedStyle)}
         onClick={() => (layer as any)._events?.click?.()}
         onMouseOver={() => (layer as any)._events?.mouseover?.()}
@@ -419,5 +423,88 @@ describe("OpeningsMapEntry", () => {
     expect(mockLayerBringToFront).toHaveBeenCalled();
     expect(mockOtherLayer.bringToFront).not.toHaveBeenCalled();
     expect(mockNonFeatureLayer.bringToFront).not.toHaveBeenCalled();
+  });
+
+  it("renders distinct GeoJSON layers for sequentially added features within a collection without retaining stale geometry", () => {
+    mockGetZoom.mockReturnValue(13);
+
+    const featureA = {
+      type: "Feature" as const,
+      id: "feat-A",
+      geometry: {
+        type: "Polygon" as const,
+        coordinates: [[[-123.35, 48.43], [-123.36, 48.44], [-123.35, 48.44], [-123.35, 48.43]]],
+      },
+      properties: { OPENING_ID: 101 },
+    };
+
+    const featureB = {
+      type: "Feature" as const,
+      id: "feat-B",
+      geometry: {
+        type: "Polygon" as const,
+        coordinates: [[[-123.45, 48.53], [-123.46, 48.54], [-123.45, 48.54], [-123.45, 48.53]]],
+      },
+      properties: { OPENING_ID: 101 },
+    };
+
+    const initialCollection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [featureA],
+    };
+
+    const { rerender } = render(
+      <OpeningsMapEntry
+        polygons={[initialCollection]}
+        hoveredFeature={null}
+        setHoveredFeature={setHoveredFeature}
+        selectedFeature={null}
+        setSelectedFeature={setSelectedFeature}
+      />
+    );
+
+    const initialLayers = screen.getAllByTestId(/geojson-/);
+    expect(initialLayers).toHaveLength(1);
+    expect(initialLayers[0]).toHaveAttribute("data-feature-id", "feat-A");
+
+    // Add featureB before featureA in the collection (simulating sequential selection where new items precede existing ones)
+    const updatedCollection: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [featureB, featureA],
+    };
+
+    rerender(
+      <OpeningsMapEntry
+        polygons={[updatedCollection]}
+        hoveredFeature={null}
+        setHoveredFeature={setHoveredFeature}
+        selectedFeature={null}
+        setSelectedFeature={setSelectedFeature}
+      />
+    );
+
+    const updatedLayers = screen.getAllByTestId(/geojson-/);
+    expect(updatedLayers).toHaveLength(2);
+    const renderedIds = updatedLayers.map((el) => el.getAttribute("data-feature-id"));
+    expect(renderedIds).toContain("feat-A");
+    expect(renderedIds).toContain("feat-B");
+  });
+
+  it("initializes and synchronizes zoom from map so low-zoom markers are preserved", () => {
+    mockGetZoom.mockReturnValue(9);
+
+    render(
+      <OpeningsMapEntry
+        polygons={[samplePolygon1, samplePolygon2]}
+        hoveredFeature={null}
+        setHoveredFeature={setHoveredFeature}
+        selectedFeature={null}
+        setSelectedFeature={setSelectedFeature}
+      />
+    );
+
+    const markers = screen.getAllByTestId("marker");
+    expect(markers).toHaveLength(2);
+    expect(screen.queryByTestId("geojson-feat-1-0-0")).not.toBeInTheDocument();
   });
 });

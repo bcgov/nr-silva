@@ -18,8 +18,6 @@ interface OpeningsMapEntryProps {
 }
 
 const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
-  const [zoom, setZoom] = useState<number>(13);
-
   const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
 
   const hasFeatureProperty = (l: unknown): l is L.Layer & { feature: Feature<Geometry, unknown> } => {
@@ -34,6 +32,18 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   const map = useMapEvents({
     zoomend: () => setZoom(map.getZoom()),
   });
+
+  const [zoom, setZoom] = useState<number>(() => {
+    try {
+      return map.getZoom();
+    } catch {
+      return 13;
+    }
+  });
+
+  useEffect(() => {
+    setZoom(map.getZoom());
+  }, [map]);
 
   const markerIcon = new L.Icon({
     iconUrl: "/marker.svg",
@@ -142,7 +152,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
             .map((feature, featureIndex) => (
               <GeoJSON
                 data-testid={`geojson-${geoKey(featureCollection, collectionIndex)}-${featureIndex}`}
-                key={`geojson-${geoKey(featureCollection, collectionIndex)}-${feature.id ?? featureIndex}`}
+                key={`geojson-${collectionIndex}-${feature.id ?? featureIndex}`}
                 data={feature}
                 style={() =>
                   getStyleForFeature(
@@ -171,7 +181,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
                     : markerIcon
                 }
                 data-testid="marker"
-                key={`marker-${geoKey(featureCollection, index)}-${feature.id ?? fIndex}`}
+                key={`marker-${index}-${feature.id ?? fIndex}`}
                 position={getCenterOfFeatureCollection(featureCollection)}
                 eventHandlers={{
                   click: () => {
