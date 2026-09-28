@@ -35,10 +35,6 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
 
   const [zoom, setZoom] = useState<number>(() => map.getZoom());
 
-  useEffect(() => {
-    setZoom(map.getZoom());
-  }, [map]);
-
   const markerIcon = new L.Icon({
     iconUrl: "/marker.svg",
     iconSize: [25, 41],

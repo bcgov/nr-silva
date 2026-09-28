@@ -564,15 +564,9 @@ describe("OpeningsMapEntry", () => {
     expect(screen.getAllByTestId(/geojson-/)).toHaveLength(2);
 
     mockGetZoom.mockReturnValue(8);
-    rerender(
-      <OpeningsMapEntry
-        polygons={[polygonWithoutId1, polygonWithoutId2]}
-        hoveredFeature={null}
-        setHoveredFeature={setHoveredFeature}
-        selectedFeature={null}
-        setSelectedFeature={setSelectedFeature}
-      />
-    );
+    act(() => {
+      capturedMapEvents.zoomend?.();
+    });
     expect(screen.getAllByTestId("marker")).toHaveLength(2);
   });
 });
