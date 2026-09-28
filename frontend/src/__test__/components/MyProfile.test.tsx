@@ -80,4 +80,16 @@ describe('MyProfile Component', () => {
     expect(mockSetTheme).toHaveBeenCalledWith('g10');
     expect(localStorage.setItem).toHaveBeenCalledWith('mode', 'light');
   });
+
+  it('renders correctly when user has no idpProvider', () => {
+    (useAuth as vi.Mock).mockReturnValue({
+      logout: mockLogout,
+      user: {
+        ...mockAuthUser,
+        idpProvider: null as any,
+      },
+    });
+    render(<MyProfile />);
+    expect(screen.getByText(/johndoe/)).toBeInTheDocument();
+  });
 });

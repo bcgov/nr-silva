@@ -55,7 +55,7 @@ const RenderMultiSelect = <ItemType,>({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Defer onChange callback to prevent "Cannot update a component while rendering a different component" warning
-  const deferredOnChange = useCallback((changes: any) => {
+  const deferredOnChange = useCallback((changes: { selectedItems: ItemType[] }) => {
     if (onChange) {
       // Use queueMicrotask to defer the callback until after the current render cycle
       queueMicrotask(() => {
@@ -75,7 +75,7 @@ const RenderMultiSelect = <ItemType,>({
     // Handle clicks outside the component
     const handleDocumentClick = (e: MouseEvent) => {
       const target = e.target as Node;
-      const multiSelect = wrapper.querySelector(`.${CARBON_CLASS_PREFIX}--multi-select`);
+      const multiSelect = wrapper.querySelector(`.${CARBON_CLASS_PREFIX}--multi-select, .cds--multi-select`);
 
       // If click is outside the multiselect, force blur on the container
       if (multiSelect && !multiSelect.contains(target)) {
@@ -83,7 +83,7 @@ const RenderMultiSelect = <ItemType,>({
         // Remove focus by calling blur
         container.blur();
         // Also blur the input if it exists
-        const input = container.querySelector(`.${CARBON_CLASS_PREFIX}--text-input`) as HTMLInputElement;
+        const input = container.querySelector(`.${CARBON_CLASS_PREFIX}--text-input, .cds--text-input`) as HTMLInputElement;
         if (input) {
           input.blur();
         }
