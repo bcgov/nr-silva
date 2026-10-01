@@ -18,7 +18,12 @@ interface OpeningsMapEntryProps {
 }
 
 const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFeature, setHoveredFeature, selectedFeature, setSelectedFeature, isPopupHoveredRef }) => {
-  const [zoom, setZoom] = useState<number>(13);
+  // Get the map instance from react-leaflet
+  const map = useMapEvents({
+    zoomend: () => setZoom(map.getZoom()),
+  });
+
+  const [zoom, setZoom] = useState<number>(() => map.getZoom());
 
   const lastHoveredFeatureIdRef = useRef<string | number | null>(null);
 
@@ -29,11 +34,6 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
   const isPathLayer = (l: unknown): l is L.Path => {
     return typeof l === 'object' && l !== null && 'bringToFront' in l;
   };
-
-  // Get the map instance from react-leaflet
-  const map = useMapEvents({
-    zoomend: () => setZoom(map.getZoom()),
-  });
 
   const markerIcon = new L.Icon({
     iconUrl: "/marker.svg",
@@ -65,7 +65,7 @@ const OpeningsMapEntry: React.FC<OpeningsMapEntryProps> = ({ polygons, hoveredFe
       .map((feature) => feature.id)
       .filter(Boolean)
       .map((id) => String(id))
-      .reduce((_acc, id) => `${id}-${index}`, "") ?? `geo-${index}`;
+      .reduce((acc, id) => (acc ? `${acc}-${id}` : `${id}-${index}`), "") || `geo-${index}`;
 
   useEffect(() => {
     if (hoveredFeature) {
