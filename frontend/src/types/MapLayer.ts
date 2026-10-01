@@ -316,7 +316,7 @@ const colorMap: Record<string, string[]> = {
 }
 
 const outlineColorMap: Record<string, string> = {
-  blue: '#005CB8',
+  blue: '#00A5C699',
   red: '#801701',
   purple: '#6202C5',
   orange: '#E64F02',

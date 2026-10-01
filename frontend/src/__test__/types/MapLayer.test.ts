@@ -468,7 +468,7 @@ describe("MapLayer", () => {
 
       // Total features <= 1
       const singleStyle = getStyleForFeature(openingFeature, null, null, 0, 1);
-      expect(singleStyle.color).toBe("#005CB8");
+      expect(singleStyle.color).toBe("#00A5C699");
       expect(singleStyle.fillColor).toBe("#00A5C699");
       expect(singleStyle.fillOpacity).toBe(0.6);
 
