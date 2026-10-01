@@ -469,23 +469,23 @@ describe("MapLayer", () => {
       // Total features <= 1
       const singleStyle = getStyleForFeature(openingFeature, null, null, 0, 1);
       expect(singleStyle.color).toBe("#00A5C699");
-      expect(singleStyle.fillColor).toBe("#00A5C699");
+      expect(singleStyle.fillColor).toBe("#00A5C6");
       expect(singleStyle.fillOpacity).toBe(0.6);
 
       // Multiple features use the same opening fill color
       const multiStyle = getStyleForFeature(openingFeature, null, null, 2, 4);
-      expect(multiStyle.fillColor).toBe("#00A5C699");
+      expect(multiStyle.fillColor).toBe("#00A5C6");
 
       // Selected state
       const selectedStyle = getStyleForFeature(openingFeature, openingFeature);
       expect(selectedStyle.color).toBe("#000000");
-      expect(selectedStyle.fillColor).toBe("#00A5C699");
+      expect(selectedStyle.fillColor).toBe("#00A5C6");
       expect(selectedStyle.weight).toBe(3);
 
       // Hovered state
       const hoveredStyle = getStyleForFeature(openingFeature, null, openingFeature);
       expect(hoveredStyle.color).toBe("#000000");
-      expect(hoveredStyle.fillColor).toBe("#00A5C699");
+      expect(hoveredStyle.fillColor).toBe("#00A5C6");
     });
 
     it("preserves forest cover and standards unit fill colors", () => {

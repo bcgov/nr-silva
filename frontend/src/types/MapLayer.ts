@@ -43,7 +43,7 @@ export const mapKinds: LayerConfiguration[] = [
     style: {
       ...defaultStyle,
       color: 'blue',
-      fillColor: '#00A5C699',
+      fillColor: '#00A5C6',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
       return {
@@ -271,7 +271,7 @@ export const getStyleForFeature = (
 }
 
 const colorMap: Record<string, string[]> = {
-  blue: ['#00A5C699'],
+  blue: ['#00A5C6'],
   red: [
     '#FFF6F4',
     '#FFE9E4',
