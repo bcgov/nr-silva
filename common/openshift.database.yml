@@ -268,6 +268,9 @@ objects:
                       }
                       trap cleanup EXIT INT TERM
 
+                      echo "Cleaning up stale temporary dump files..."
+                      find "${BACKUP_DIR}" -maxdepth 1 -type f -name "*.tmp" -exec rm -f {} \;
+
                       echo "Creating database dump..."
                       pg_dump \
                         -U "${POSTGRES_USER}" \
