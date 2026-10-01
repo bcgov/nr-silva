@@ -12,6 +12,18 @@ import { Feature, FeatureCollection, Geometry } from "geojson";
 
 describe("MapLayer", () => {
   describe("mapKinds popup formatting", () => {
+    it("configures openings with the teal polygon style", () => {
+      const kind = mapKinds.find((entry) =>
+        entry.code === "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"
+      );
+
+      expect(kind?.style).toMatchObject({
+        color: "#00A5C699",
+        fillColor: "#00A5C6",
+        fillOpacity: 0.6,
+      });
+    });
+
     it("formats popup for RSLT_OPENING_SVW", () => {
       const kind = mapKinds.find((k) => k.code === "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW");
       expect(kind).toBeDefined();
@@ -458,7 +470,7 @@ describe("MapLayer", () => {
       expect(selectedStyle.weight).toBe(3);
     });
 
-    it("applies mapKinds styling and spaced color when matching a known kind", () => {
+    it("applies the opening fill color in every interaction state", () => {
       const openingFeature: Feature<Geometry, any> = {
         type: "Feature",
         id: "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW.999",
@@ -468,17 +480,42 @@ describe("MapLayer", () => {
 
       // Total features <= 1
       const singleStyle = getStyleForFeature(openingFeature, null, null, 0, 1);
-      expect(singleStyle.color).toBe("#005CB8");
-      expect(singleStyle.fillColor).toBe("#9FB3DF");
+      expect(singleStyle.color).toBe("#00A5C699");
+      expect(singleStyle.fillColor).toBe("#00A5C6");
+      expect(singleStyle.fillOpacity).toBe(0.6);
 
-      // Multiple features: spaced color
+      // Multiple features use the same opening fill color
       const multiStyle = getStyleForFeature(openingFeature, null, null, 2, 4);
-      expect(multiStyle.fillColor).toBeDefined();
+      expect(multiStyle.fillColor).toBe("#00A5C6");
 
       // Selected state
       const selectedStyle = getStyleForFeature(openingFeature, openingFeature);
       expect(selectedStyle.color).toBe("#000000");
+      expect(selectedStyle.fillColor).toBe("#00A5C6");
       expect(selectedStyle.weight).toBe(3);
+
+      // Hovered state
+      const hoveredStyle = getStyleForFeature(openingFeature, null, openingFeature);
+      expect(hoveredStyle.color).toBe("#000000");
+      expect(hoveredStyle.fillColor).toBe("#00A5C6");
+    });
+
+    it("preserves forest cover and standards unit fill colors", () => {
+      const forestCoverFeature: Feature<Geometry, any> = {
+        type: "Feature",
+        id: "WHSE_FOREST_VEGETATION.RSLT_FOREST_COVER_INV_SVW.999",
+        properties: {},
+        geometry: { type: "Point", coordinates: [0, 0] },
+      };
+      const standardsUnitFeature: Feature<Geometry, any> = {
+        type: "Feature",
+        id: "WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW.999",
+        properties: {},
+        geometry: { type: "Point", coordinates: [0, 0] },
+      };
+
+      expect(getStyleForFeature(forestCoverFeature).fillColor).toBe("#FFFBFD");
+      expect(getStyleForFeature(standardsUnitFeature).fillColor).toBe("#fcfbfd");
     });
 
     it("returns defaultStyle when feature id does not match any map kind", () => {
