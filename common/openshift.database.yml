@@ -255,7 +255,7 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
-                      set -euo pipefail
+                      set -eu
 
                       TARGET_DUMP="${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump"
                       TEMP_DUMP="${TARGET_DUMP}.tmp"
@@ -376,7 +376,7 @@ objects:
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
-                      set -euo pipefail
+                      set -eu
 
                       TEST_DB="backup_test_db"
                       DUMP_FILE="${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump"
