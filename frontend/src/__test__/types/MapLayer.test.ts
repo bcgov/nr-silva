@@ -12,6 +12,18 @@ import { Feature, FeatureCollection, Geometry } from "geojson";
 
 describe("MapLayer", () => {
   describe("mapKinds popup formatting", () => {
+    it("configures openings with the teal polygon style", () => {
+      const kind = mapKinds.find((entry) =>
+        entry.code === "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW"
+      );
+
+      expect(kind?.style).toMatchObject({
+        color: "#00A5C699",
+        fillColor: "#00A5C6",
+        fillOpacity: 0.6,
+      });
+    });
+
     it("formats popup for RSLT_OPENING_SVW", () => {
       const kind = mapKinds.find((k) => k.code === "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW");
       expect(kind).toBeDefined();

@@ -42,7 +42,7 @@ export const mapKinds: LayerConfiguration[] = [
     description: 'Openings',
     style: {
       ...defaultStyle,
-      color: 'blue',
+      color: '#00A5C699',
       fillColor: '#00A5C6',
     },
     popup: (properties: GeoJsonProperties): Record<string, any> => {
@@ -246,7 +246,7 @@ export const getStyleForFeature = (
   );
 
   if (!kindEntry) return defaultStyle;
-  const colors = colorMap[kindEntry.style.color] || colorMap.default;
+  const colors = colorMap[kindEntry.style.color] || [kindEntry.style.fillColor];
   const fillColor = getSpacedColor(colors!, featureIndex ?? 0, totalFeatures ?? colors!.length);
   const outlineColor = outlineColorMap[kindEntry.style.color] || kindEntry.style.color;
 
@@ -271,7 +271,6 @@ export const getStyleForFeature = (
 }
 
 const colorMap: Record<string, string[]> = {
-  blue: ['#00A5C6'],
   red: [
     '#FFF6F4',
     '#FFE9E4',
@@ -316,7 +315,6 @@ const colorMap: Record<string, string[]> = {
 }
 
 const outlineColorMap: Record<string, string> = {
-  blue: '#00A5C699',
   red: '#801701',
   purple: '#6202C5',
   orange: '#E64F02',
