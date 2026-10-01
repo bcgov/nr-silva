@@ -259,12 +259,11 @@ objects:
 
                       TARGET_DUMP="${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump"
                       TEMP_DUMP="${TARGET_DUMP}.tmp"
+                      RESTORE_DUMP="${BACKUP_DIR}/W0__restore.dump"
+                      RESTORE_TEMP="${RESTORE_DUMP}.tmp"
 
                       cleanup() {
-                        if [ -f "${TEMP_DUMP}" ]; then
-                          echo "Cleaning up incomplete backup dump..."
-                          rm -f "${TEMP_DUMP}"
-                        fi
+                        rm -f "${TEMP_DUMP}" "${RESTORE_TEMP}" || true
                       }
                       trap cleanup EXIT INT TERM
 
@@ -292,7 +291,8 @@ objects:
                       pg_restore --list "${TEMP_DUMP}" > /dev/null
 
                       mv "${TEMP_DUMP}" "${TARGET_DUMP}"
-                      cp -f "${TARGET_DUMP}" "${BACKUP_DIR}/W0__restore.dump"
+                      cp -f "${TARGET_DUMP}" "${RESTORE_TEMP}"
+                      mv "${RESTORE_TEMP}" "${RESTORE_DUMP}"
 
                       echo "Pruning old backups..."
                       find "${BACKUP_DIR}" -type f -name "backup_*.dump" -mtime +"${NUM_BACKUPS}" -exec rm -f {} \;
