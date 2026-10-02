@@ -83,7 +83,7 @@
     "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^4.1.9",
     "bcgov-typescript-codegen": "^1.0.9",
-    "dotenv": "^17.0.0",
+    "dotenv": "^18.0.0",
     "eslint": "^9.0.0",
     "eslint-config-love": "^134.0.0",
     "eslint-import-resolver-typescript": "^4.0.0",
