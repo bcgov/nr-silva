@@ -16,7 +16,7 @@ jobs:
     name: Cleanup FAM Route Allocations
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Remove FAM route allocations for PR
         uses: bcgov/action-oc-runner@v1.7.0
         env:
