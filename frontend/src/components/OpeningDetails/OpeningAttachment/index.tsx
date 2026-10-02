@@ -26,7 +26,7 @@ type OpeningAttachmentProps = {
 }
 
 const OpeningAttachment = ({ openingId }: OpeningAttachmentProps) => {
-  let API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
+  const API_BASE_URL = env.VITE_BACKEND_URL ?? "http://localhost:8080";
 
 
   const attachmentListQuery = useQuery({

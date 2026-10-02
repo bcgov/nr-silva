@@ -52,8 +52,9 @@ export const PreferenceProvider: React.FC<PreferenceProviderProps> = ({
   };
 
   useEffect(() => {
-    queryUserPreference.isSuccess &&
+    if (queryUserPreference.isSuccess) {
       setUserPreference(queryUserPreference.data as UserPreference);
+    }
   }, []);
 
   const contextValue = {

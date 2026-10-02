@@ -7,7 +7,7 @@ import { TEXT_CONFIG } from "./constants";
 import LayerTable from "./LayerTable";
 import { OpeningForestCoverLayerDto } from "@/services/OpenApi";
 import { groupMultiLayerDisplay } from "./utils";
-import { DefaultMultiLayerCodes, MultiLayerDisplayType, MultiLayerMainKey } from "./definitions";
+import { DefaultMultiLayerCodes, MultiLayerDisplayType } from "./definitions";
 
 type SingleMultiLayerProps = {
   isSingleLayer: boolean;

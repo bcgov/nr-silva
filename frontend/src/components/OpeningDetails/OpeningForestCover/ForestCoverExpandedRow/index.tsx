@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import EmptySection from "@/components/EmptySection";
 import { Column, Grid } from "@carbon/react";
