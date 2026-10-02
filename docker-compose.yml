@@ -77,7 +77,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    image: postgis/postgis:17-master
+    image: postgis/postgis:18-master
     platform: linux/amd64
 
   backend-native:
