@@ -102,7 +102,7 @@ const EditTenure = () => {
       await queryClient.invalidateQueries({ queryKey: ['opening', openingId, 'tenure'] });
       bypassBlockerRef.current = true;
       showToast.success(EDIT_TENURE_TOAST_MESSAGES.SAVED);
-      navigate(openingDetailsPath);
+      await navigate(openingDetailsPath);
     },
     onError: (error: unknown) => {
       if (error instanceof ApiError && error.status === 422) {
@@ -131,7 +131,7 @@ const EditTenure = () => {
     if (!hasTenureChanges(tenures, initialTenuresRef.current ?? [])) {
       bypassBlockerRef.current = true;
       showToast.success(EDIT_TENURE_TOAST_MESSAGES.NO_CHANGES);
-      navigate(openingDetailsPath);
+      void navigate(openingDetailsPath);
       return;
     }
 
@@ -154,7 +154,7 @@ const EditTenure = () => {
 
     if (!isDirty) {
       bypassBlockerRef.current = true;
-      navigate(openingDetailsPath);
+      void navigate(openingDetailsPath);
       return;
     }
     setIsLeavePageModalOpen(true);
@@ -167,7 +167,7 @@ const EditTenure = () => {
       blocker.proceed();
       return;
     }
-    navigate(openingDetailsPath);
+    void navigate(openingDetailsPath);
   };
 
   const handleStay = () => {

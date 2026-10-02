@@ -166,7 +166,7 @@ const OpeningsMap: React.FC<MapProps> = ({
    */
   useEffect(() => {
     if (!openingIds?.length) {
-      (async () => await setUserLocation())();
+      void setUserLocation();
     }
   }, [openingIds]);
 
