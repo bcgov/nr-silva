@@ -101,7 +101,7 @@
     "start-server-and-test": "^3.0.0",
     "typescript": "^5.2.2",
     "v8-to-istanbul": "^9.3.0",
-    "vite-plugin-svgr": "^4.3.0",
+    "vite-plugin-svgr": "^5.0.0",
     "vitest": "^4.1.9",
     "wiremock": "^3.13.1"
   },
