@@ -74,7 +74,7 @@ const FriendlyDate: React.FC<FriendlyDateProps> = ({ date }) => {
       )}
       </>
     );
-  } catch (e) {
+  } catch {
     return <span data-testid="friendly-date"></span>; // Fallback for invalid dates
   }
 };
