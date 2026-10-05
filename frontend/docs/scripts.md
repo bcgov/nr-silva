@@ -40,11 +40,11 @@ Runs the OpenAPI code generation, that generate TypeScript types from the backen
 
 ### lint
 
-Runs `eslint src --ext .ts` to lint all TypeScript files in the `src` directory. It generates a report of linting issues in the codebase.
+Runs `eslint src` to lint the codebase in the `src` directory according to ESLint Flat Config (`eslint.config.mjs`). It generates a report of linting issues in the codebase.
 
 ### lint:fix
 
-Runs `eslint` with `--fix`, which automatically fixes lint errors where possible. This is useful for quickly resolving simple issues without manual intervention.
+Runs `eslint src --fix`, which automatically fixes lint errors where possible. This is useful for quickly resolving simple issues without manual intervention.
 
 ### stub
 
