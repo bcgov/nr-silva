@@ -18,7 +18,7 @@ const CreateOpeningSuccess = () => {
 
   const handleViewOpening = () => {
     if (openingId) {
-      navigate(`/openings/${openingId}`);
+      void navigate(`/openings/${openingId}`);
     }
   };
 

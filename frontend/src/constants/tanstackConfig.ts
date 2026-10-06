@@ -68,10 +68,10 @@ async function refreshAccessToken(): Promise<string | null> {
 function processFailedQueue() {
   failedQueue.forEach(({ query, mutation, variables }) => {
     if (mutation) {
-      mutation.execute(variables);  // this safely retries the mutation
+      void mutation.execute(variables); // this safely retries the mutation
     }
     if (query) {
-      query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
+      void query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
     }
   });
 
@@ -89,14 +89,19 @@ function refreshTokenAndRetry(
   if (!isRefreshing) {
     setAuthRefreshInProgress(true);
 
-    refreshAccessToken().then((token) => {
-      if (token) {
-        processFailedQueue();
-      } else {
+    void refreshAccessToken()
+      .then((token) => {
+        if (token) {
+          processFailedQueue();
+        } else {
+          failedQueue.length = 0;
+          setAuthRefreshInProgress(false);
+        }
+      })
+      .catch(() => {
         failedQueue.length = 0;
         setAuthRefreshInProgress(false);
-      }
-    });
+      });
   }
 }
 

@@ -112,7 +112,7 @@ const OpeningSubmissionTrend = () => {
   };
 
   useEffect(() => {
-    submissionTrendQuery.refetch();
+    void submissionTrendQuery.refetch();
   }, [selectedOrgUnits, selectedStatusCodes, selectedYear]);
 
   /**
@@ -163,7 +163,7 @@ const OpeningSubmissionTrend = () => {
         openingStatuses: extractCodesFromCodeDescriptionArr(selectedStatusCodes),
       };
 
-      navigate(`${OpeningsSearchRoute.path}?${buildQueryString(queryParams)}`);
+      void navigate(`${OpeningsSearchRoute.path}?${buildQueryString(queryParams)}`);
     };
     // Ensure existing listeners are removed before adding a new one
     chart.services.events.removeEventListener("bar-click", handleBarClick);

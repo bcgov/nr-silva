@@ -57,9 +57,9 @@ const Openings = () => {
 
   const handleNavById = () => {
     if (openingId.length > 0) {
-      navigate(`/openings/${openingId}`)
+      void navigate(`/openings/${openingId}`);
     }
-  }
+  };
 
   const handleOpeningIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOpeningId(sanitizeDigits(e.target.value ?? ''));
