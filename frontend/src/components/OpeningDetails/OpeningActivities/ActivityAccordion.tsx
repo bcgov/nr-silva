@@ -227,7 +227,7 @@ const ActivityAccordion = ({
 
     setActivityFilter((prev) => {
       if (newDirection === 'NONE') {
-        const { sortField, sortDirection, ...rest } = prev;
+        const { sortField: _sortField, sortDirection: _sortDirection, ...rest } = prev;
         return { ...rest };
       }
 
@@ -277,7 +277,7 @@ const ActivityAccordion = ({
       const next = { ...prev, page: 0 };
 
       if (trimmed === '') {
-        const { filter, ...rest } = next;
+        const { filter: _filter, ...rest } = next;
         return rest;
       }
 
@@ -296,7 +296,7 @@ const ActivityAccordion = ({
   const handleSearchClear = () => {
     setSearchInput('');
     setActivityFilter((prev) => {
-      const { filter, ...rest } = prev;
+      const { filter: _filter, ...rest } = prev;
       return {
         ...rest,
         page: 0
