@@ -265,7 +265,9 @@ objects:
                       cleanup() {
                         rm -f "${TEMP_DUMP}" "${RESTORE_TEMP}" || true
                       }
-                      trap cleanup EXIT INT TERM
+                      trap cleanup EXIT
+                      trap 'exit 130' INT
+                      trap 'exit 143' TERM
 
                       echo "Cleaning up stale temporary dump files..."
                       find "${BACKUP_DIR}" -maxdepth 1 -type f -name "*.tmp" -exec rm -f {} \;
@@ -391,7 +393,9 @@ objects:
                           -c "DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE);" || true
                         rm -f "${RESTORE_CHECKSUM}" || true
                       }
-                      trap cleanup EXIT INT TERM
+                      trap cleanup EXIT
+                      trap 'exit 130' INT
+                      trap 'exit 143' TERM
 
                       if [ ! -f "${DUMP_FILE}" ]; then
                         echo "ERROR: Backup dump file ${DUMP_FILE} does not exist!"
