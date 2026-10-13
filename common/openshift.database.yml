@@ -261,9 +261,10 @@ objects:
                       TEMP_DUMP="${TARGET_DUMP}.tmp"
                       RESTORE_DUMP="${BACKUP_DIR}/W0__restore.dump"
                       RESTORE_TEMP="${RESTORE_DUMP}.tmp"
+                      CHECKSUM_TEMP="${BACKUP_DIR}/original.checksum.tmp"
 
                       cleanup() {
-                        rm -f "${TEMP_DUMP}" "${RESTORE_TEMP}" || true
+                        rm -f "${TEMP_DUMP}" "${RESTORE_TEMP}" "${CHECKSUM_TEMP}" || true
                       }
                       trap cleanup EXIT
                       trap 'exit 130' INT
@@ -287,7 +288,9 @@ objects:
                         -d "${POSTGRES_DB}" \
                         -f /tmp/restore/checksum.sql \
                         --quiet \
-                        -v ON_ERROR_STOP=1 > "${BACKUP_DIR}/original.checksum"
+                        -v ON_ERROR_STOP=1 > "${CHECKSUM_TEMP}"
+
+                      mv "${CHECKSUM_TEMP}" "${BACKUP_DIR}/original.checksum"
 
                       echo "Verifying dump readability..."
                       pg_restore --list "${TEMP_DUMP}" > /dev/null
