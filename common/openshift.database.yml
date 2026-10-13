@@ -389,11 +389,14 @@ objects:
                       TEST_DB="backup_test_db"
                       DUMP_FILE="${BACKUP_DIR}/backup_$(date +%Y-%m-%d).dump"
                       RESTORE_CHECKSUM="${BACKUP_DIR}/restored.checksum"
+                      DB_CLEANED=0
 
                       cleanup() {
-                        echo "Executing cleanup for test database and temporary files..."
-                        psql -U "${POSTGRES_USER}" -h "${NAME}-${ZONE}-${COMPONENT}" -d "${POSTGRES_DB}" \
-                          -c "DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE);" || true
+                        if [ "${DB_CLEANED}" -eq 0 ]; then
+                          echo "Executing cleanup for test database..."
+                          psql -U "${POSTGRES_USER}" -h "${NAME}-${ZONE}-${COMPONENT}" -d "${POSTGRES_DB}" \
+                            -c "DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE);" || true
+                        fi
                         rm -f "${RESTORE_CHECKSUM}" || true
                       }
                       trap cleanup EXIT
@@ -434,6 +437,7 @@ objects:
                       echo "Dropping temporary database..."
                       psql -U "${POSTGRES_USER}" -h "${NAME}-${ZONE}-${COMPONENT}" -d "${POSTGRES_DB}" \
                         -c "DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE);"
+                      DB_CLEANED=1
 
                       echo "Verifying checksum integrity..."
                       diff "${BACKUP_DIR}/original.checksum" "${RESTORE_CHECKSUM}"
