@@ -6,7 +6,7 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
-import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
+import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +35,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class OpeningCreateEndpoint {
 
-  private final OpeningSpatialFileService openingSpatialFileService;
+  private final SpatialFileService spatialFileService;
   private final VirusScanService virusScanService;
   private final CreateOpeningService createOpeningService;
   private final ObjectMapper objectMapper;
@@ -47,7 +47,7 @@ public class OpeningCreateEndpoint {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
-    if (file.getSize() > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+    if (file.getSize() > SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
     }
     byte[] fileBytes;
@@ -58,7 +58,7 @@ public class OpeningCreateEndpoint {
           HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read file: " + e.getMessage(), e);
     }
     virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
-    return openingSpatialFileService.processOpeningSpatialFile(
+    return spatialFileService.processSpatialFile(
         file.getOriginalFilename(), fileBytes);
   }
 
@@ -93,7 +93,7 @@ public class OpeningCreateEndpoint {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
-    if (file.getSize() > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+    if (file.getSize() > SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
     }
     byte[] fileBytes;

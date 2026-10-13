@@ -2,7 +2,7 @@ package ca.bc.gov.restapi.results.postgres.config;
 
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.postgres.service.CreateOpeningService;
-import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
+import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ public class OpeningEndpointTestConfig {
   }
 
   @Bean
-  public OpeningSpatialFileService openingSpatialFileService() {
-    return Mockito.mock(OpeningSpatialFileService.class);
+  public SpatialFileService spatialFileService() {
+    return Mockito.mock(SpatialFileService.class);
   }
 }

@@ -15,7 +15,7 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
-import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
+import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
@@ -42,7 +42,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @Autowired private MockMvc mockMvc;
 
-  @Autowired private OpeningSpatialFileService openingSpatialFileService;
+  @Autowired private SpatialFileService spatialFileService;
 
   @Autowired private VirusScanService virusScanService;
 
@@ -50,7 +50,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @BeforeEach
   void resetMocks() {
-    Mockito.reset(openingSpatialFileService);
+    Mockito.reset(spatialFileService);
     Mockito.reset(virusScanService);
   }
 
@@ -59,7 +59,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   void shouldAcceptUpload() throws Exception {
     ExtractedGeoDataDto dto =
         ExtractedGeoDataDto.builder().geometryArea(null).geoJson(mapper.createObjectNode()).build();
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
+    when(spatialFileService.processSpatialFile(anyString(), any(byte[].class)))
         .thenReturn(dto);
 
     MockMultipartFile file =
@@ -100,7 +100,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Should return bad request when service throws")
   void shouldReturnBadRequestWhenServiceThrows() throws Exception {
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
+    when(spatialFileService.processSpatialFile(anyString(), any(byte[].class)))
         .thenThrow(
             new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
 

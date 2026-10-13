@@ -53,7 +53,7 @@ import org.springframework.web.server.ResponseStatusException;
 @DisplayName("Unit Test | CreateOpeningService")
 class CreateOpeningServiceTest {
 
-  @Mock private OpeningSpatialFileService openingSpatialFileService;
+  @Mock private SpatialFileService spatialFileService;
   @Mock private OpenMapsService openMapsService;
   @Mock private OpeningPostgresRepository openingRepository;
   @Mock private OpeningGeometryPostgresRepository openingGeometryRepository;
@@ -96,7 +96,7 @@ class CreateOpeningServiceTest {
   void setUp() {
     service =
         new CreateOpeningService(
-            openingSpatialFileService,
+            spatialFileService,
             openMapsService,
             openingRepository,
             openingGeometryRepository,
@@ -148,7 +148,7 @@ class CreateOpeningServiceTest {
 
   private void mockGeometryAndMapsheetSteps() throws Exception {
     ExtractedGeoDataDto geoData = buildGeoData();
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any()))
+    when(spatialFileService.processSpatialFile(anyString(), any()))
         .thenReturn(geoData);
     when(openMapsService.getMapsheetForPoint(any(double.class), any(double.class)))
         .thenReturn(FAKE_MAPSHEET);
@@ -337,7 +337,7 @@ class CreateOpeningServiceTest {
   @Test
   @DisplayName("Spatial file processing failure should propagate exception")
   void createOpening_spatialFileFailure_shouldPropagate() {
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any()))
+    when(spatialFileService.processSpatialFile(anyString(), any()))
         .thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Infected file"));
 
     assertThatThrownBy(

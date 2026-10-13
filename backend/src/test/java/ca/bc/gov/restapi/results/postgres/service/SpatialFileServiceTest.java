@@ -28,26 +28,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
-@DisplayName("Unit Test | OpeningSpatialFileService")
-class OpeningSpatialFileServiceTest {
+@DisplayName("Unit Test | SpatialFileService")
+class SpatialFileServiceTest {
 
-  private final OpeningSpatialFileService service = new OpeningSpatialFileService();
+  private final SpatialFileService service = new SpatialFileService();
 
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Test
   @DisplayName("Should throw when file is null or empty")
   void shouldThrowOnNullOrEmpty() {
-    assertThatThrownBy(() -> service.processOpeningSpatialFile("test.json", new byte[0]))
+    assertThatThrownBy(() -> service.processSpatialFile("test.json", new byte[0]))
         .isInstanceOf(ResponseStatusException.class);
   }
 
   @Test
   @DisplayName("Should throw when file exceeds size limit")
   void shouldThrowOnOversize() {
-    byte[] big = new byte[SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES + 1];
+    byte[] big = new byte[SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1];
 
-    assertThatThrownBy(() -> service.processOpeningSpatialFile("big.geojson", big))
+    assertThatThrownBy(() -> service.processSpatialFile("big.geojson", big))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -56,7 +56,7 @@ class OpeningSpatialFileServiceTest {
   void shouldThrowOnUnsupportedExtension() {
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "data.txt", "hello".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -70,7 +70,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "simple.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -87,7 +87,7 @@ class OpeningSpatialFileServiceTest {
     root.set("crs", crs);
 
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "detectGeoJsonCrs", com.fasterxml.jackson.databind.JsonNode.class);
     m.setAccessible(true);
     String code = (String) m.invoke(service, root);
@@ -103,7 +103,7 @@ class OpeningSpatialFileServiceTest {
             + " 1,1 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
     byte[] gmlBytes = gml.getBytes(StandardCharsets.UTF_8);
 
-    Method m = OpeningSpatialFileService.class.getDeclaredMethod("detectGmlCrs", byte[].class);
+    Method m = SpatialFileService.class.getDeclaredMethod("detectGmlCrs", byte[].class);
     m.setAccessible(true);
     String code = (String) m.invoke(service, new Object[] {gmlBytes});
     assertThat(code).isEqualTo("4326");
@@ -116,7 +116,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
             + " -123.0,49.0 ],[ -123.0,49.0001 ],[ -122.9999,49.0001 ],[ -123.0,49.0 ]]]}}]}";
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "geoJsonThinning", String.class, String.class);
     m.setAccessible(true);
     String out = (String) m.invoke(service, geojson, "4326");
@@ -128,7 +128,7 @@ class OpeningSpatialFileServiceTest {
   void validateGeoJsonGeometryNodeMissingType() throws Exception {
     ObjectNode geomNode = mapper.createObjectNode();
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateGeoJsonGeometryNode", JsonNode.class, int.class);
     m.setAccessible(true);
 
@@ -145,7 +145,7 @@ class OpeningSpatialFileServiceTest {
   void shouldThrowOnInvalidJsonContent() {
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "bad.json", "not-json".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -175,7 +175,7 @@ class OpeningSpatialFileServiceTest {
     GeometryFactory gf = new GeometryFactory();
     Geometry pt = gf.createPoint(new Coordinate(500000, 1700000));
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "reprojectTo4326", Geometry.class, String.class);
     m.setAccessible(true);
     Geometry out = (Geometry) m.invoke(service, pt, "3005");
@@ -191,7 +191,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-125,52]}}]}";
 
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
@@ -213,7 +213,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[ -120.5,49.2 ],[ -120.4,49.2 ],[ -120.4,49.3 ],[ -120.5,49.3 ],[ -120.5,49.2 ]]]}}]}";
 
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
@@ -228,7 +228,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-10,10]}}]}";
 
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
@@ -427,7 +427,7 @@ class OpeningSpatialFileServiceTest {
             + "]}";
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "multi.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("exactly one feature");
@@ -437,7 +437,7 @@ class OpeningSpatialFileServiceTest {
   void shouldThrowOnXmlExtension() {
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "data.xml", "<root/>".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Unsupported file type");
@@ -452,7 +452,7 @@ class OpeningSpatialFileServiceTest {
             + "</gml:posList></gml:ArcString></gml:segments></gml:Curve>";
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "curve.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Only Polygon and MultiPolygon");
@@ -465,7 +465,7 @@ class OpeningSpatialFileServiceTest {
             + "\"geometry\":{\"type\":\"Point\",\"coordinates\":[-120.5,49.2]}}]}";
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "point.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Only Polygon and MultiPolygon");
@@ -483,7 +483,7 @@ class OpeningSpatialFileServiceTest {
     };
     Polygon poly = gf.createPolygon(coords);
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "calculateGeometryAreaHectares", Geometry.class, String.class);
     m.setAccessible(true);
     BigDecimal result = (BigDecimal) m.invoke(service, poly, "3005");
@@ -501,7 +501,7 @@ class OpeningSpatialFileServiceTest {
     };
     Polygon poly = gf.createPolygon(coords);
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateNonZeroArea", Geometry.class, String.class, int.class);
     m.setAccessible(true);
     assertThatThrownBy(
@@ -527,7 +527,7 @@ class OpeningSpatialFileServiceTest {
     };
     Polygon poly = gf.createPolygon(coords);
     Method m =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "validateNonZeroArea", Geometry.class, String.class, int.class);
     m.setAccessible(true);
     Assertions.assertDoesNotThrow(() -> m.invoke(service, poly, "3005", 1));
@@ -540,7 +540,7 @@ class OpeningSpatialFileServiceTest {
   void shouldThrowWhenFileNameIsNull() {
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(null, "content".getBytes(StandardCharsets.UTF_8)))
+                service.processSpatialFile(null, "content".getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -555,7 +555,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "invalid-crs.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -571,7 +571,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "degenerate.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -586,7 +586,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "outside-bc.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -599,7 +599,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "bad-crs.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -612,7 +612,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "point.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -625,7 +625,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "outside.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -638,7 +638,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "invalid-ring.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -651,7 +651,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "unclosed-ring.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -666,7 +666,7 @@ class OpeningSpatialFileServiceTest {
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile("valid.gml", gml.getBytes(StandardCharsets.UTF_8));
+        service.processSpatialFile("valid.gml", gml.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
     assertThat(result.geoJson()).isNotNull();
@@ -683,7 +683,7 @@ class OpeningSpatialFileServiceTest {
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile("valid-3005.gml", gml.getBytes(StandardCharsets.UTF_8));
+        service.processSpatialFile("valid-3005.gml", gml.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
     assertThat(result.geoJson()).isNotNull();
@@ -697,7 +697,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-120.5,49.2],[-120.4,49.2],[-120.4,49.3],[-120.5,49.3],[-120.5,49.2]]]}}]}";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile(
+        service.processSpatialFile(
             "valid.geojson", geojson.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
@@ -712,7 +712,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::3005\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[850000,1500000],[850100,1500000],[850100,1500100],[850000,1500100],[850000,1500000]]]}}]}";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile(
+        service.processSpatialFile(
             "valid-3005.geojson", geojson.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
@@ -733,7 +733,7 @@ class OpeningSpatialFileServiceTest {
             + "</gml:MultiPolygon>";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile("multi.gml", gml.getBytes(StandardCharsets.UTF_8));
+        service.processSpatialFile("multi.gml", gml.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
     assertThat(result.geoJson()).isNotNull();
@@ -752,7 +752,7 @@ class OpeningSpatialFileServiceTest {
             + " -120.4,49.3</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile(
+        service.processSpatialFile(
             "polygon-holes.gml", gml.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
@@ -771,7 +771,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "zero-area.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -784,7 +784,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "no-features.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -796,7 +796,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "bad-json.geojson", invalidJson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -810,7 +810,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "invalid-gml.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -826,7 +826,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "no-srs.gml", gml.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -839,7 +839,7 @@ class OpeningSpatialFileServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.processOpeningSpatialFile(
+                service.processSpatialFile(
                     "short-coords.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
   }
@@ -851,7 +851,7 @@ class OpeningSpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::3005\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[850000,1500000],[850100,1500000],[850100,1500100],[850000,1500100],[850000,1500000]]]}}]}";
 
     ExtractedGeoDataDto result =
-        service.processOpeningSpatialFile(
+        service.processSpatialFile(
             "area-test.geojson", geojson.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result).isNotNull();
@@ -870,7 +870,7 @@ class OpeningSpatialFileServiceTest {
         db.parse(new ByteArrayInputStream(gml.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
     Element root = doc.getDocumentElement();
     Method parseGmlElement =
-        OpeningSpatialFileService.class.getDeclaredMethod(
+        SpatialFileService.class.getDeclaredMethod(
             "parseGmlElement", Element.class, GeometryFactory.class);
     parseGmlElement.setAccessible(true);
     GeometryFactory gf = new GeometryFactory();

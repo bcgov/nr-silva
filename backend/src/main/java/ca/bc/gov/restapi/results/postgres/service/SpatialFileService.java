@@ -70,19 +70,20 @@ import org.w3c.dom.NodeList;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpeningSpatialFileService {
+public class SpatialFileService {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
   /**
-   * Processes an uploaded spatial file (GeoJSON, GML, or ESF/XML) and delegates to the appropriate
+   * Processes an uploaded spatial file (GeoJSON or GML) and delegates to the appropriate
    * handler based on file extension. Performs file size and type validation before processing.
    *
-   * @param file the uploaded spatial file
-   * @return ExtractedGeoDataDto containing parsed geometry, metadata, and tenure information
+   * @param fileName the original file name
+   * @param fileBytes the uploaded file contents
+   * @return ExtractedGeoDataDto containing processed geometry and area
    * @throws ResponseStatusException if the file is invalid, unsupported, or exceeds size limits
    */
-  public ExtractedGeoDataDto processOpeningSpatialFile(String fileName, byte[] fileBytes) {
+  public ExtractedGeoDataDto processSpatialFile(String fileName, byte[] fileBytes) {
     if (fileName == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file has no name");
     }
@@ -91,7 +92,7 @@ public class OpeningSpatialFileService {
     }
 
     // This is enforced at the spring boot level, but we double-check here
-    if (fileBytes.length > SilvaPostgresConstants.MAX_OPENING_FILE_SIZE_BYTES) {
+    if (fileBytes.length > SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File exceeds 25MB size limit");
     }
 
@@ -107,7 +108,7 @@ public class OpeningSpatialFileService {
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
     }
 
-    // RISS-ls §5.4.4: exactly one opening boundary per opening
+    // Opening and activity uploads share the single-feature restriction.
     JsonNode features = result.geoJson().get("features");
     if (features != null && features.size() > 1) {
       throw new ResponseStatusException(
