@@ -295,7 +295,8 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
           params,
           (rs, rowNum) -> {
             boolean exists = true;
-            Long cbSkey = (Long) rs.getObject("CB_SKEY");
+            long rawCbSkey = rs.getLong("CB_SKEY");
+            Long cbSkey = rs.wasNull() ? null : rawCbSkey;
             boolean isLicensee = rs.getInt("IS_LICENSEE") == 1;
             String timberMark = rs.getString("TIMBER_MARK");
             String status = rs.getString("BLOCK_STATUS_ST");
