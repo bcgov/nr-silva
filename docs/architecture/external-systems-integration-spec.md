@@ -248,13 +248,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@Component("oracleTenureJdbcAdapter")
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    prefix = "silva.integrations.tenure",
-    name = "provider",
-    havingValue = "oracle",
-    matchIfMissing = true)
 public class OracleTenureJdbcAdapter implements TenureProvider {
 
   private final NamedParameterJdbcTemplate externalOracleJdbcTemplate;
@@ -333,12 +328,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Slf4j
-@Component
+@Component("restApiTenureAdapter")
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    prefix = "silva.integrations.tenure",
-    name = "provider",
-    havingValue = "api")
 public class RestApiTenureAdapter implements TenureProvider {
 
   private final RestClient ftaRestClient;
@@ -382,14 +373,9 @@ import ca.bc.gov.restapi.results.common.provider.TenureProvider;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnProperty(
-    prefix = "silva.integrations.tenure",
-    name = "provider",
-    havingValue = "mock")
+@Component("mockTenureAdapter")
 public class MockTenureAdapter implements TenureProvider {
 
   private final Map<String, ExternalCutBlockDetails> fixtures = new ConcurrentHashMap<>();
@@ -415,6 +401,64 @@ public class MockTenureAdapter implements TenureProvider {
       String forestFileId, String cuttingPermitId, String cutBlockId) {
     return Optional.of(new ExternalTenureSummary(
         forestFileId, cuttingPermitId, cutBlockId, "47/12K", "00010003", "ACT"));
+  }
+}
+```
+
+### 5.4 Runtime Delegating Provider (`common/provider/DelegatingTenureProvider.java`)
+
+In Spring Boot 3 + GraalVM Native Image mode, `@ConditionalOnProperty` is evaluated at Ahead-of-Time (AOT) build time. Any bean conditioned out during the build is pruned from the compiled binary and cannot be re-enabled at runtime.
+
+To allow switching providers in OpenShift solely via environment variables (`SILVA_INTEGRATION_TENURE_PROVIDER=oracle|api|mock`) without rebuilding container images, all adapters are registered as Spring beans and wrapped by a `@Primary` delegating router:
+
+```java
+package ca.bc.gov.restapi.results.common.provider;
+
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+@Component
+@Primary
+public class DelegatingTenureProvider implements TenureProvider {
+
+  private final Map<String, TenureProvider> adapters;
+  private final Environment environment;
+
+  public DelegatingTenureProvider(Map<String, TenureProvider> adapters, Environment environment) {
+    this.adapters = adapters;
+    this.environment = environment;
+  }
+
+  private TenureProvider getDelegate() {
+    String provider = environment.getProperty("silva.integrations.tenure.provider", "oracle");
+    String beanName = switch (provider.toLowerCase()) {
+      case "api" -> "restApiTenureAdapter";
+      case "mock" -> "mockTenureAdapter";
+      default -> "oracleTenureJdbcAdapter";
+    };
+
+    TenureProvider delegate = adapters.get(beanName);
+    if (delegate == null) {
+      throw new IllegalStateException("No TenureProvider bean found for: " + provider);
+    }
+    return delegate;
+  }
+
+  @Override
+  public ExternalCutBlockDetails verifyCutBlock(
+      String forestFileId, String cuttingPermitId, String cutBlockId, String clientNumber) {
+    return getDelegate().verifyCutBlock(forestFileId, cuttingPermitId, cutBlockId, clientNumber);
+  }
+
+  @Override
+  public Optional<ExternalTenureSummary> getTenureSummary(
+      String forestFileId, String cuttingPermitId, String cutBlockId) {
+    return getDelegate().getTenureSummary(forestFileId, cuttingPermitId, cutBlockId);
   }
 }
 ```

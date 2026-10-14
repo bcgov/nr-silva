@@ -42,8 +42,9 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
      - **REST API Adapter (`common/provider/`):** Consumes the external system's REST API once it becomes available.
      - **Mock Adapter (`common/provider/mock/`):** Provides deterministic in-memory stubs for unit testing and offline local development.
 
-3. **Per-Domain Configuration Switching:**
-   - Adapters are bound conditionally via Spring configuration properties per external domain (e.g. `silva.integrations.tenure.provider = oracle | api | mock`).
+3. **Per-Domain Configuration Switching via Delegating Providers:**
+   - In Spring Boot 3 with GraalVM Native Image compilation, `@ConditionalOnProperty` is evaluated at build time (AOT), which prunes unselected beans.
+   - To preserve dynamic runtime switching via OpenShift environment variables (`SILVA_INTEGRATION_<DOMAIN>_PROVIDER = oracle | api | mock`) without rebuilding container images or exploding build arguments, all adapters are compiled into the binary and wrapped by a `@Primary` delegating router.
    - Enables independent, gradual migration as each external system publishes its API.
 
 4. **Lightweight Secondary Oracle Read-Only DataSource:**

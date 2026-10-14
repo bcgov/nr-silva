@@ -16,20 +16,20 @@ Silva interacts with external legacy databases and external services (e.g., FTA 
    - ❌ **WRONG:** `CutBlockEntity findById(Long cbSkey)` (leaks external primary key and table structure).
    - ✅ **RIGHT:** `ExternalCutBlockDetails verifyCutBlock(fileId, cuttingPermit, cutBlock, clientNumber)` (expresses business intent and returns clean Silva domain record; internal availability is checked in Silva).
 
-3. **Per-domain provider switching via `@ConditionalOnProperty`:**
-   - Every provider has a configuration property: `silva.integrations.<domain>.provider=oracle|api|mock`.
-   - Never hardcode the adapter; allow runtime switching.
+3. **Per-domain provider switching via Delegating Providers (GraalVM Native compatible):**
+   - In GraalVM native image builds, `@ConditionalOnProperty` is evaluated at build time (AOT) and prunes inactive beans.
+   - To allow switching via OpenShift environment variables (`silva.integrations.<domain>.provider=oracle|api|mock`) without rebuilding images or exploding Docker build arguments, register all adapters as Spring components and route calls via a `@Primary` delegating provider that reads `Environment.getProperty(...)` at runtime.
 
 4. **External Oracle queries use `NamedParameterJdbcTemplate`:**
    - Do NOT create JPA `@Entity` classes for external tables.
    - Use `NamedParameterJdbcTemplate externalOracleJdbcTemplate` with raw SQL and explicit row mappers inside the Oracle adapter.
 
 5. **Provide a Mock adapter for offline testing:**
-   - Every `XxxProvider` must have a corresponding `MockXxxAdapter` annotated with `@ConditionalOnProperty(prefix = "silva.integrations.<domain>", name = "provider", havingValue = "mock")`.
+   - Every `XxxProvider` must have a corresponding `MockXxxAdapter` component (e.g. `@Component("mockTenureAdapter")`).
 
 ---
 
-## 5-Step Integration Pattern
+## 6-Step Integration Pattern
 
 When adding or refactoring an external dependency:
 
@@ -68,13 +68,8 @@ public interface TenureProvider {
 ### Step 3: Implement Oracle JDBC Adapter in `oracle/provider/`
 Encapsulate all external table queries, column names, and joins.
 ```java
-@Component
+@Component("oracleTenureJdbcAdapter")
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    prefix = "silva.integrations.tenure",
-    name = "provider",
-    havingValue = "oracle",
-    matchIfMissing = true)
 public class OracleTenureJdbcAdapter implements TenureProvider {
   private final NamedParameterJdbcTemplate externalOracleJdbcTemplate;
 
@@ -88,11 +83,7 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
 ### Step 4: Implement Mock Adapter in `common/provider/mock/`
 Allow local dev and unit/integration testing without Oracle credentials.
 ```java
-@Component
-@ConditionalOnProperty(
-    prefix = "silva.integrations.tenure",
-    name = "provider",
-    havingValue = "mock")
+@Component("mockTenureAdapter")
 public class MockTenureAdapter implements TenureProvider {
   @Override
   public ExternalCutBlockDetails verifyCutBlock(...) {
@@ -101,7 +92,26 @@ public class MockTenureAdapter implements TenureProvider {
 }
 ```
 
-### Step 5: Consume in Silva Domain Service
+### Step 5: Implement Delegating Provider in `common/provider/`
+Enables OpenShift runtime switching in GraalVM native image without build arguments.
+```java
+@Component
+@Primary
+@RequiredArgsConstructor
+public class DelegatingTenureProvider implements TenureProvider {
+  private final Map<String, TenureProvider> adapters;
+  private final Environment env;
+
+  @Override
+  public ExternalCutBlockDetails verifyCutBlock(String fileId, String permitId, String blockId, String clientNumber) {
+    String provider = env.getProperty("silva.integrations.tenure.provider", "oracle");
+    TenureProvider delegate = adapters.get(provider.toLowerCase() + "TenureAdapter");
+    return delegate.verifyCutBlock(fileId, permitId, blockId, clientNumber);
+  }
+}
+```
+
+### Step 6: Consume in Silva Domain Service
 Inject the interface, not a concrete class or repository.
 ```java
 @Service
