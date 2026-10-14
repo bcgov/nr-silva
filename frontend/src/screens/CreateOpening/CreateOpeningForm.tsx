@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Button, Column, Form, Grid, InlineNotification, Loading, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Loading } from '@carbon/react';
 import { useBlocker, useNavigate } from 'react-router-dom';
 import { ArrowRight } from '@carbon/icons-react';
 import { scrollToSection } from '@/utils/InputUtils';
@@ -25,7 +25,7 @@ interface CreateOpeningFormProps {
   setCurrentStep: (step: number) => void;
 }
 
-export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateOpeningFormProps) => {
+export const CreateOpeningForm = ({ type: _type, currentStep, setCurrentStep }: CreateOpeningFormProps) => {
   // All hooks called unconditionally at component top
   const [isLeavePageModalOpen, setIsLeavePageModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
     onSuccess: (data) => {
       setWarnText(undefined);
       bypassBlockerRef.current = true;
-      navigate(`${OPENING_CREATE_SUCCESS_PATH}?openingId=${data.openingId}`);
+      void navigate(`${OPENING_CREATE_SUCCESS_PATH}?openingId=${data.openingId}`);
     },
     onError: (err) => {
       const status = err instanceof ApiError ? err.status : 0;
@@ -169,10 +169,10 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
 
   const handleBack = () => {
     if (currentStep === 0) {
-      navigate(OpeningsRoute.path!)
+      void navigate(OpeningsRoute.path!);
     }
     setCurrentStep(Math.max(0, currentStep - 1));
-  }
+  };
 
   const handleNext = () => {
     if (currentStep === 0) {
@@ -216,7 +216,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
   const handleCancel = () => {
     if (!isNavigationBlocked) {
       bypassBlockerRef.current = true;
-      navigate(OpeningsRoute.path!);
+      void navigate(OpeningsRoute.path!);
       return;
     }
 
@@ -232,7 +232,7 @@ export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateO
       return;
     }
 
-    navigate(OpeningsRoute.path!);
+    void navigate(OpeningsRoute.path!);
   };
 
   const handleStay = () => {

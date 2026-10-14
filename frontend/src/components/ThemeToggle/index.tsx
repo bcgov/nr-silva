@@ -12,9 +12,8 @@ const ThemeToggle = () => {
     setIsToggled(theme === 'g10'?false:true);
   },[theme])
 
-  const handleToggle = async () => {
-    toggleTheme(theme,setTheme)
-    // keep the logic opposite at the time of sending the toggle
+  const handleToggle = () => {
+    toggleTheme(theme, setTheme);
   };
 
   return (

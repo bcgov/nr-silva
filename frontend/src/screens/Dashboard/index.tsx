@@ -24,7 +24,7 @@ const Dashboard: React.FC = () => {
 
     if (path && isValidRedirect(path)) {
       // Redirect if a valid path was stored
-      navigate(path, { replace: true });
+      void navigate(path, { replace: true });
     }
 
     // Mark redirect process complete (whether redirect happened or not)

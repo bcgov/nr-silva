@@ -42,7 +42,7 @@ const CreateOpening = () => {
   useEffect(() => {
     if (!isValidType) {
       console.warn("Invalid opening type");
-      navigate("/", { replace: true });
+      void navigate("/", { replace: true });
     }
   }, [isValidType, navigate]);
 

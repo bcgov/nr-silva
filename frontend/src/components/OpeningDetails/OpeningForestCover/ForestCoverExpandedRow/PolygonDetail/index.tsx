@@ -3,7 +3,6 @@ import { Column, Grid } from "@carbon/react";
 import { CardItem } from "@/components/Card";
 import { OpeningForestCoverPolygonDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
-import { formatLocalDate } from "@/utils/DateUtils";
 
 type PolygonDetailProps = {
   polygon?: OpeningForestCoverPolygonDto,

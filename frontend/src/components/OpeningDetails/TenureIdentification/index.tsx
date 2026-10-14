@@ -127,7 +127,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
 
     setTenureFilter((prev) => {
       if (newDirection === 'NONE') {
-        const { sortField, sortDirection, ...rest } = prev;
+        const { sortField: _sortField, sortDirection: _sortDirection, ...rest } = prev;
         return { ...rest };
       }
 
@@ -178,7 +178,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
         const next = { ...prev, page: 0 };
 
         if (trimmed === '') {
-          const { filter, ...rest } = next;
+          const { filter: _filter, ...rest } = next;
           return rest;
         }
 
@@ -198,7 +198,7 @@ const TenureIdentification = ({ openingId }: OpeningTenureProps) => {
   const handleSearchClear = () => {
     setSearchInput('');
     setTenureFilter((prev) => {
-      const { filter, ...rest } = prev;
+      const { filter: _filter, ...rest } = prev;
       return {
         ...rest,
         page: 0

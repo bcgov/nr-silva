@@ -10,7 +10,6 @@ import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { JWT } from "@/types/amplify";
 
 // === Refresh Token Management ===
 
@@ -69,10 +68,10 @@ async function refreshAccessToken(): Promise<string | null> {
 function processFailedQueue() {
   failedQueue.forEach(({ query, mutation, variables }) => {
     if (mutation) {
-      mutation.execute(variables);  // this safely retries the mutation
+      void mutation.execute(variables); // this safely retries the mutation
     }
     if (query) {
-      query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
+      void query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
     }
   });
 
@@ -90,14 +89,19 @@ function refreshTokenAndRetry(
   if (!isRefreshing) {
     setAuthRefreshInProgress(true);
 
-    refreshAccessToken().then((token) => {
-      if (token) {
-        processFailedQueue();
-      } else {
+    void refreshAccessToken()
+      .then((token) => {
+        if (token) {
+          processFailedQueue();
+        } else {
+          failedQueue.length = 0;
+          setAuthRefreshInProgress(false);
+        }
+      })
+      .catch(() => {
         failedQueue.length = 0;
         setAuthRefreshInProgress(false);
-      }
-    });
+      });
   }
 }
 
@@ -120,13 +124,12 @@ function errorHandler(
       if (query) {
         // clear query error and keep the query pending until retry.
         // Do not force fetchStatus here; that can interfere with query.fetch().
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (query as any).setState?.({
           error: null,
           status: 'pending'
         });
       }
-    } catch (e) {
+    } catch {
       // ignore if we can't touch internal state
     }
 

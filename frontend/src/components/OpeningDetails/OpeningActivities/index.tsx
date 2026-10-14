@@ -1,5 +1,4 @@
 import React from "react";
-import qs from 'qs';
 import { AccordionSkeleton, Column, Grid } from "@carbon/react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";

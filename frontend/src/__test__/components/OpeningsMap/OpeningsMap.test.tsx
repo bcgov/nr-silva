@@ -151,6 +151,26 @@ describe("OpeningsMap", () => {
           SILV_BASE_CODE: "DN",
         },
       },
+      {
+        type: "Feature",
+        id: "feat-103",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [-123.55, 48.63],
+              [-123.56, 48.64],
+              [-123.55, 48.64],
+              [-123.55, 48.63],
+            ],
+          ],
+        },
+        properties: {
+          OPENING_ID: 101,
+          FOREST_COVER_ID: "FC2",
+          SILV_POLYGON_NUMBER: "P2",
+        },
+      },
     ],
   };
 
@@ -260,6 +280,37 @@ describe("OpeningsMap", () => {
     expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
       "data-rendered-features",
       "feat-101"
+    );
+  });
+
+  it("renders forest cover polygons sequentially without losing polygons", () => {
+    const { rerender } = render(
+      <OpeningsMap
+        openingIds={[101]}
+        setOpeningPolygonNotFound={mockSetOpeningPolygonNotFound}
+        isForestCoverMap={true}
+        selectedForestCoverIds={["FC1-P1"]}
+      />
+    );
+
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101"
+    );
+
+    // Select second polygon sequentially
+    rerender(
+      <OpeningsMap
+        openingIds={[101]}
+        setOpeningPolygonNotFound={mockSetOpeningPolygonNotFound}
+        isForestCoverMap={true}
+        selectedForestCoverIds={["FC1-P1", "FC2-P2"]}
+      />
+    );
+
+    expect(screen.getByTestId("openings-map-entry")).toHaveAttribute(
+      "data-rendered-features",
+      "feat-101,feat-103"
     );
   });
 

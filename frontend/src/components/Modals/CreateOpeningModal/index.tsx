@@ -28,7 +28,7 @@ const CreateOpeningModal = () => {
 
     const searchParams = new URLSearchParams({ type: selectedType });
 
-    navigate(`${CreateOpeningRoute.path}?${searchParams.toString()}`);
+    void navigate(`${CreateOpeningRoute.path}?${searchParams.toString()}`);
 
     closeModal();
   };

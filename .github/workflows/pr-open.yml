@@ -35,7 +35,7 @@ jobs:
             extra_build_arg: ''
             triggers: ('frontend/')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: bcgov/action-builder-ghcr@cb2629351c87dd1c2130073e4ebb7233a9653a63 # v4.4.1
         with:
           package: ${{ matrix.package }}
@@ -59,7 +59,7 @@ jobs:
       hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
       postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Allocate FAM routes
         id: allocate
         uses: ./.github/actions/allocate-fam-routes
@@ -100,7 +100,7 @@ jobs:
     if: success()
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Remove route reservations from ConfigMap
         uses: bcgov/action-oc-runner@v1.7.0
         env:
@@ -142,7 +142,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}

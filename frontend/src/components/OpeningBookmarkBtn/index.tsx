@@ -23,8 +23,8 @@ const OpeningBookmarkBtn = ({ openingId, tooltipPosition = 'top', btnSize = 'md'
   });
 
   const invalidateFavouriteQuery = () => {
-    openingFavouriteQuery.refetch();
-  }
+    void openingFavouriteQuery.refetch();
+  };
 
   const deleteFavOpenMutation = useMutation({
     mutationFn: () => API.OpeningEndpointService.removeFromFavorites(openingId!),

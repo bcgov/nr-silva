@@ -26,7 +26,7 @@ const ActivitySearch = ({ type }: props) => {
 
   const navigate = useNavigate();
   if (!type) {
-    navigate('/');
+    void navigate('/');
     return null;
   }
 
@@ -40,12 +40,12 @@ const ActivitySearch = ({ type }: props) => {
       return;
     }
 
-    navigate(`${ActivitySearchRoute.path}/${value}`);
+    void navigate(`${ActivitySearchRoute.path}/${value}`);
   };
 
   const handleConfirmSwitch = () => {
     const next = type === 'activities' ? 'disturbances' : 'activities';
-    navigate(`${ActivitySearchRoute.path}/${next}`);
+    void navigate(`${ActivitySearchRoute.path}/${next}`);
     setIsConfirmModalOpen(false);
   };
 

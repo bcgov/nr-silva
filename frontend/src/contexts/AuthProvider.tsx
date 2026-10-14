@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     let mounted = true;
     let redirected = false;
-    (async () => {
+    void (async () => {
       try {
         // Prefer to fetch full session to read accessToken if present
         const session = await fetchAuthSession();
@@ -127,7 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 const searchStr = cleanSearchParams.toString();
                 const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
 
-                login(provider, cleanPath);
+                await login(provider, cleanPath);
               }
             } else {
               // Already attempted once. Clean the query parameter and render the landing page.

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
-import { env } from "@/env";
 import { Add, ArrowRight } from "@carbon/icons-react";
 import { Button, Column, Grid, TextInput, Tabs, TabList, Tab, TabPanel, TabPanels } from "@carbon/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -58,9 +57,9 @@ const Openings = () => {
 
   const handleNavById = () => {
     if (openingId.length > 0) {
-      navigate(`/openings/${openingId}`)
+      void navigate(`/openings/${openingId}`);
     }
-  }
+  };
 
   const handleOpeningIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOpeningId(sanitizeDigits(e.target.value ?? ''));

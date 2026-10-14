@@ -31,7 +31,7 @@ function FavouriteCard({
     if (opensModal) {
       openModal('CREATE_OPENING');
     } else {
-      navigate(link);
+      void navigate(link);
     }
   };
 
