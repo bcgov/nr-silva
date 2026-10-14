@@ -88,7 +88,7 @@ silva:
     tenure:
       provider: ${SILVA_INTEGRATION_TENURE_PROVIDER:oracle}
       api:
-        base-url: ${FTA_API_BASE_URL:https://nr-fta-api-dev.api.gov.bc.ca}
+        base-url: ${FTA_API_BASE_URL:http://localhost:8081}
         timeout-ms: 5000
     org-unit:
       provider: ${SILVA_INTEGRATION_ORGUNIT_PROVIDER:oracle}
