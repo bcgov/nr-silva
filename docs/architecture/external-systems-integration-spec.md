@@ -144,7 +144,9 @@ public class ExternalOracleConfiguration {
   @ConditionalOnProperty(prefix = "silva.integrations.external-oracle", name = "enabled", havingValue = "true")
   public NamedParameterJdbcTemplate externalOracleJdbcTemplate(
       @Qualifier("externalOracleDataSource") DataSource dataSource) {
-    return new NamedParameterJdbcTemplate(dataSource);
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+    template.getJdbcTemplate().setQueryTimeout(5); // 5-second execution timeout for transactional validations
+    return template;
   }
 }
 ```
@@ -159,7 +161,9 @@ public class PrimaryOracleTemplateConfiguration {
   @Bean(name = "externalOracleJdbcTemplate")
   public NamedParameterJdbcTemplate externalOracleJdbcTemplate(
       @Qualifier("oracleDataSource") DataSource dataSource) {
-    return new NamedParameterJdbcTemplate(dataSource);
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+    template.getJdbcTemplate().setQueryTimeout(5); // 5-second execution timeout for transactional validations
+    return template;
   }
 }
 ```
