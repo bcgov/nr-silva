@@ -34,7 +34,7 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
 1. **Domain-Centric Provider Ports (Interfaces):**
    - Define functional provider interfaces in `ca.bc.gov.restapi.results.common.provider` (e.g. `TenureProvider`, `OrgUnitProvider`).
    - Contracts are structured around **Silva's business questions** (e.g. `isCutBlockAvailableForOpening(...)`, `findTenureLicenseeDetails(...)`) rather than generic CRUD tables.
-   - Return clean, Silva-owned domain Value Objects and DTOs (e.g. `CutBlockValidationDetails`, `ExternalTenureSummary`) in `ca.bc.gov.restapi.results.common.dto`. External column names, table aliases, and legacy quirks never cross this boundary.
+   - Return clean, Silva-owned domain Value Objects and DTOs (e.g. `ExternalCutBlockDetails`, `ExternalTenureSummary`) in `ca.bc.gov.restapi.results.common.dto`. External column names, table aliases, and legacy quirks never cross this boundary.
 
 2. **Swappable Adapters:**
    - Concrete implementations are decoupled from the core domain:

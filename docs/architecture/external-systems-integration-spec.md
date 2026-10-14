@@ -62,7 +62,7 @@ ca.bc.gov.restapi.results/
 │   │   └── mock/                      # Offline mock adapters for local dev/testing
 │   │       └── MockTenureAdapter.java
 │   ├── dto/                           # Silva domain records & DTOs
-│   │   ├── CutBlockValidationDetails.java
+│   │   ├── ExternalCutBlockDetails.java
 │   │   └── ExternalTenureSummary.java
 │   └── configuration/                 # Integration & DataSource configuration
 │       ├── ExternalIntegrationConfiguration.java
@@ -156,18 +156,20 @@ public class ExternalOracleConfiguration {
 ```java
 package ca.bc.gov.restapi.results.common.dto;
 
-import java.util.Optional;
-
-public record CutBlockValidationDetails(
+/**
+ * Domain record encapsulating cut block details verified against the external authority (e.g. FTA).
+ * Note: Opening associations and availability are owned by Silva's persistence store
+ * (silva.cut_block_open_admin) and are evaluated by Silva domain services, not the external provider.
+ */
+public record ExternalCutBlockDetails(
     boolean exists,
+    Long cbSkey,
     boolean clientIsLicensee,
-    boolean availableForOpening,
-    Long existingOpeningId,
     String timberMark,
     String status
 ) {
-  public static CutBlockValidationDetails notFound() {
-    return new CutBlockValidationDetails(false, false, false, null, null, null);
+  public static ExternalCutBlockDetails notFound() {
+    return new ExternalCutBlockDetails(false, null, false, null, null);
   }
 }
 ```
@@ -190,7 +192,7 @@ public record ExternalTenureSummary(
 ```java
 package ca.bc.gov.restapi.results.common.provider;
 
-import ca.bc.gov.restapi.results.common.dto.CutBlockValidationDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
 import java.util.Optional;
 
@@ -202,21 +204,19 @@ import java.util.Optional;
 public interface TenureProvider {
 
   /**
-   * Validates cut block existence, licensee authorization, and availability.
+   * Validates cut block existence and licensee authorization against the external authority.
    *
    * @param forestFileId tenure file ID (e.g. TFL001)
    * @param cuttingPermitId cutting permit (may be null)
    * @param cutBlockId cut block ID
    * @param clientNumber client number claiming licensee rights
-   * @param excludedOpeningId opening ID currently owning the tenure (for edits), or null
-   * @return domain validation details
+   * @return external cut block verification details
    */
-  CutBlockValidationDetails validateCutBlock(
+  ExternalCutBlockDetails verifyCutBlock(
       String forestFileId,
       String cuttingPermitId,
       String cutBlockId,
-      String clientNumber,
-      Long excludedOpeningId);
+      String clientNumber);
 
   /**
    * Retrieves summary tenure details for a cut block.
@@ -235,7 +235,7 @@ public interface TenureProvider {
 ```java
 package ca.bc.gov.restapi.results.oracle.provider;
 
-import ca.bc.gov.restapi.results.common.dto.CutBlockValidationDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
 import ca.bc.gov.restapi.results.common.provider.TenureProvider;
 import java.util.Optional;
@@ -264,14 +264,11 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
         cb.CB_SKEY,
         cb.TIMBER_MARK,
         cb.BLOCK_STATUS_ST,
-        CASE WHEN cbc.CLIENT_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS IS_LICENSEE,
-        cboa.OPENING_ID
+        CASE WHEN cbc.CLIENT_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS IS_LICENSEE
       FROM THE.CUT_BLOCK cb
       LEFT JOIN THE.CUT_BLOCK_CLIENT cbc
         ON cbc.CB_SKEY = cb.CB_SKEY
         AND cbc.CLIENT_NUMBER = :clientNumber
-      LEFT JOIN THE.CUT_BLOCK_OPEN_ADMIN cboa
-        ON cboa.CB_SKEY = cb.CB_SKEY
       WHERE cb.FOREST_FILE_ID = :forestFileId
         AND cb.CUT_BLOCK_ID = :cutBlockId
         AND (:cuttingPermitId IS NULL AND cb.CUTTING_PERMIT_ID IS NULL
@@ -279,12 +276,11 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
       """;
 
   @Override
-  public CutBlockValidationDetails validateCutBlock(
+  public ExternalCutBlockDetails verifyCutBlock(
       String forestFileId,
       String cuttingPermitId,
       String cutBlockId,
-      String clientNumber,
-      Long excludedOpeningId) {
+      String clientNumber) {
 
     MapSqlParameterSource params = new MapSqlParameterSource()
         .addValue("forestFileId", forestFileId)
@@ -298,18 +294,16 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
           params,
           (rs, rowNum) -> {
             boolean exists = true;
+            Long cbSkey = (Long) rs.getObject("CB_SKEY");
             boolean isLicensee = rs.getInt("IS_LICENSEE") == 1;
-            Long openingId = (Long) rs.getObject("OPENING_ID");
-            boolean available = (openingId == null)
-                || (excludedOpeningId != null && openingId.equals(excludedOpeningId));
             String timberMark = rs.getString("TIMBER_MARK");
             String status = rs.getString("BLOCK_STATUS_ST");
 
-            return new CutBlockValidationDetails(
-                exists, isLicensee, available, openingId, timberMark, status);
+            return new ExternalCutBlockDetails(
+                exists, cbSkey, isLicensee, timberMark, status);
           });
     } catch (EmptyResultDataAccessException e) {
-      return CutBlockValidationDetails.notFound();
+      return ExternalCutBlockDetails.notFound();
     }
   }
 
@@ -327,7 +321,7 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
 ```java
 package ca.bc.gov.restapi.results.common.provider;
 
-import ca.bc.gov.restapi.results.common.dto.CutBlockValidationDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -348,24 +342,23 @@ public class RestApiTenureAdapter implements TenureProvider {
   private final RestClient ftaRestClient;
 
   @Override
-  public CutBlockValidationDetails validateCutBlock(
+  public ExternalCutBlockDetails verifyCutBlock(
       String forestFileId,
       String cuttingPermitId,
       String cutBlockId,
-      String clientNumber,
-      Long excludedOpeningId) {
+      String clientNumber) {
     
-    // Future REST call to FTA API: GET /api/cut-blocks/validate?...
+    // Future REST call to FTA API: GET /api/cut-blocks/verify?...
     return ftaRestClient.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/api/cut-blocks/validate")
+            .path("/api/cut-blocks/verify")
             .queryParam("forestFileId", forestFileId)
             .queryParam("cuttingPermitId", cuttingPermitId)
             .queryParam("cutBlockId", cutBlockId)
             .queryParam("clientNumber", clientNumber)
             .build())
         .retrieve()
-        .body(CutBlockValidationDetails.class);
+        .body(ExternalCutBlockDetails.class);
   }
 
   @Override
@@ -381,7 +374,7 @@ public class RestApiTenureAdapter implements TenureProvider {
 ```java
 package ca.bc.gov.restapi.results.common.provider.mock;
 
-import ca.bc.gov.restapi.results.common.dto.CutBlockValidationDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
 import ca.bc.gov.restapi.results.common.provider.TenureProvider;
 import java.util.Map;
@@ -397,23 +390,22 @@ import org.springframework.stereotype.Component;
     havingValue = "mock")
 public class MockTenureAdapter implements TenureProvider {
 
-  private final Map<String, CutBlockValidationDetails> fixtures = new ConcurrentHashMap<>();
+  private final Map<String, ExternalCutBlockDetails> fixtures = new ConcurrentHashMap<>();
 
-  public void registerFixture(String key, CutBlockValidationDetails details) {
+  public void registerFixture(String key, ExternalCutBlockDetails details) {
     fixtures.put(key, details);
   }
 
   @Override
-  public CutBlockValidationDetails validateCutBlock(
+  public ExternalCutBlockDetails verifyCutBlock(
       String forestFileId,
       String cuttingPermitId,
       String cutBlockId,
-      String clientNumber,
-      Long excludedOpeningId) {
+      String clientNumber) {
 
     String key = forestFileId + ":" + (cuttingPermitId != null ? cuttingPermitId : "") + ":" + cutBlockId;
     return fixtures.getOrDefault(key,
-        new CutBlockValidationDetails(true, true, true, null, "47/12K", "ACT"));
+        new ExternalCutBlockDetails(true, 1001L, true, "47/12K", "ACT"));
   }
 
   @Override
@@ -429,7 +421,45 @@ public class MockTenureAdapter implements TenureProvider {
 
 ## 6. Flexible Data Ownership & Association Hooks
 
-While external CutBlock data is read-only, Silva owns Opening associations (`silva.cut_block_open_admin`). To ensure future flexibility in case the ministry requires bi-directional sync back to FTA:
+### 6.1 Clean Ownership Boundary: External vs. Internal
+
+1. **External Authority:** Owns CutBlock existence, Timber Mark, status, and Licensee status.
+2. **Silva Persistence (`silva.cut_block_open_admin`):** Exclusively owns Opening-to-Tenure associations and opening availability.
+
+```java
+// How Silva's TenureValidationService orchestrates validation:
+public TenureValidationResultDto validateTenure(
+    TenureRequestDto request, String clientNumber, Long excludedOpeningId) {
+
+  // 1. External verification against external provider port
+  ExternalCutBlockDetails ext = tenureProvider.verifyCutBlock(
+      request.fileId(), request.cuttingPermit(), request.cutBlock(), clientNumber);
+
+  if (!ext.exists()) {
+    return TenureValidationResultDto.fail(TenureValidationErrorCode.TENURE_NOT_FOUND);
+  }
+  if (!ext.clientIsLicensee()) {
+    return TenureValidationResultDto.fail(TenureValidationErrorCode.CLIENT_NOT_LICENSEE);
+  }
+
+  // 2. Silva-owned opening association check in PostgreSQL (allowing excludedOpeningId for edits)
+  boolean allocated = excludedOpeningId == null
+      ? cutBlockOpenAdminRepository.existsAllocatedByTenure(
+          request.fileId(), request.cutBlock(), request.cuttingPermit())
+      : cutBlockOpenAdminRepository.existsAllocatedByTenureForAnotherOpening(
+          request.fileId(), request.cutBlock(), request.cuttingPermit(), excludedOpeningId);
+
+  if (allocated) {
+    return TenureValidationResultDto.fail(TenureValidationErrorCode.TENURE_DUPLICATE_OPENING);
+  }
+
+  return TenureValidationResultDto.success(ext.timberMark());
+}
+```
+
+### 6.2 Association Lifecycle Hooks
+
+To ensure future flexibility in case the ministry requires bi-directional sync back to FTA when associations change:
 
 ```java
 package ca.bc.gov.restapi.results.common.provider.handler;

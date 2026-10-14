@@ -14,7 +14,7 @@ Silva interacts with external legacy databases and external services (e.g., FTA 
 
 2. **Define functional contracts, not CRUD table mirrors:**
    - ❌ **WRONG:** `CutBlockEntity findById(Long cbSkey)` (leaks external primary key and table structure).
-   - ✅ **RIGHT:** `CutBlockValidationDetails validateCutBlock(fileId, cuttingPermit, cutBlock, clientNumber, openingId)` (expresses business intent and returns clean Silva domain record).
+   - ✅ **RIGHT:** `ExternalCutBlockDetails verifyCutBlock(fileId, cuttingPermit, cutBlock, clientNumber)` (expresses business intent and returns clean Silva domain record; internal availability is checked in Silva).
 
 3. **Per-domain provider switching via `@ConditionalOnProperty`:**
    - Every provider has a configuration property: `silva.integrations.<domain>.provider=oracle|api|mock`.
@@ -34,36 +34,34 @@ Silva interacts with external legacy databases and external services (e.g., FTA 
 When adding or refactoring an external dependency:
 
 ### Step 1: Create Domain Records / Value Objects in `common/dto/`
-Define immutable records representing the data Silva actually needs.
+Define immutable records representing the external data Silva actually needs.
 ```java
 package ca.bc.gov.restapi.results.common.dto;
 
-public record CutBlockValidationDetails(
+public record ExternalCutBlockDetails(
     boolean exists,
+    Long cbSkey,
     boolean clientIsLicensee,
-    boolean availableForOpening,
-    Long existingOpeningId,
     String timberMark,
     String status
 ) {
-  public static CutBlockValidationDetails notFound() {
-    return new CutBlockValidationDetails(false, false, false, null, null, null);
+  public static ExternalCutBlockDetails notFound() {
+    return new ExternalCutBlockDetails(false, null, false, null, null);
   }
 }
 ```
 
 ### Step 2: Define Provider Interface (Port) in `common/provider/`
-Define the functional contract.
+Define the functional contract. Note: Opening allocations belong to Silva's persistence store (`silva.cut_block_open_admin`) and are validated in Silva domain services.
 ```java
 package ca.bc.gov.restapi.results.common.provider;
 
 public interface TenureProvider {
-  CutBlockValidationDetails validateCutBlock(
+  ExternalCutBlockDetails verifyCutBlock(
       String forestFileId,
       String cuttingPermitId,
       String cutBlockId,
-      String clientNumber,
-      Long excludedOpeningId);
+      String clientNumber);
 }
 ```
 
@@ -81,7 +79,7 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
   private final NamedParameterJdbcTemplate externalOracleJdbcTemplate;
 
   @Override
-  public CutBlockValidationDetails validateCutBlock(...) {
+  public ExternalCutBlockDetails verifyCutBlock(...) {
     // Execute SQL query against THE.CUT_BLOCK, etc.
   }
 }
@@ -97,8 +95,8 @@ Allow local dev and unit/integration testing without Oracle credentials.
     havingValue = "mock")
 public class MockTenureAdapter implements TenureProvider {
   @Override
-  public CutBlockValidationDetails validateCutBlock(...) {
-    return new CutBlockValidationDetails(true, true, true, null, "47/12K", "ACT");
+  public ExternalCutBlockDetails verifyCutBlock(...) {
+    return new ExternalCutBlockDetails(true, 1001L, true, "47/12K", "ACT");
   }
 }
 ```
@@ -110,13 +108,15 @@ Inject the interface, not a concrete class or repository.
 @RequiredArgsConstructor
 public class TenureValidationService {
   private final TenureProvider tenureProvider;
+  private final CutBlockOpenAdminRepository cboaRepository;
 
   public TenureValidationResponseDto validateTenures(List<TenureRequestDto> tenures, String clientNumber) {
     for (TenureRequestDto req : tenures) {
-      CutBlockValidationDetails details = tenureProvider.validateCutBlock(
-          req.fileId(), req.cuttingPermit(), req.cutBlock(), clientNumber, null);
-      // Process validation results...
+      ExternalCutBlockDetails details = tenureProvider.verifyCutBlock(
+          req.fileId(), req.cuttingPermit(), req.cutBlock(), clientNumber);
+      // Validate Silva-owned opening association against cboaRepository
     }
+    return response;
   }
 }
 ```
