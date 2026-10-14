@@ -137,6 +137,18 @@ public class TenureValidationService {
 
 To switch an external dependency from Oracle to a REST API:
 1. Implement `RestApiXxxAdapter` implementing `XxxProvider` in `common/provider/` using `RestClient`.
-2. Add `@ConditionalOnProperty(prefix = "silva.integrations.<domain>", name = "provider", havingValue = "api")`.
+2. Register it as `@Component("restApi<Domain>Adapter")`.
 3. Set `SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api` in OpenShift config.
 4. **Silva domain services require ZERO code changes.**
+
+---
+
+## CQRS & Read Model Projections Across External Domains
+
+When building features that interact across Silva and external domain boundaries:
+- **Rule of Thumb:**
+  - **Commands & Validations:** Always go through the `XxxProvider` port to verify against the external authoritative system of record before committing changes.
+  - **Queries, Searches & Composite Views:** Always execute locally against Silva's PostgreSQL read projections and indexed tables.
+- **Never Query External REST APIs in High-Traffic Read Paths:**
+  - Do NOT query external APIs inside SQL queries, looping record sets, search endpoints, or spatial GIS operations ($N+1$ latency and rate-limit hazards).
+  - Use local read projections or cached read models for multi-record filtering, dashboards, spatial overlays, and exports.

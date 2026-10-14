@@ -524,9 +524,35 @@ public TenureValidationResultDto validateTenure(
 }
 ```
 
-### 6.2 Association Lifecycle Hooks
+### 6.2 System-Wide CQRS & Read Model Projections
 
-To ensure future flexibility in case the ministry requires bi-directional sync back to FTA when associations change:
+Silva separates operational commands from read-heavy cross-domain queries across all external dependencies (FTA/Tenures, Forest Client, BCGW/Org Units, and future integrated services):
+
+- **The Cross-Network Join & $N+1$ Trap:**
+  - Joining external REST APIs or issuing remote HTTP calls across hundreds or thousands of records introduces crippling network latency and rate-limit exhaustion.
+  - Furthermore, spatial GIS queries (e.g. PostGIS `ST_Intersects` between opening boundaries and external tenures or administrative zones) **cannot be executed over REST APIs**.
+- **When to Use Local Read Projections:**
+  1. **Multi-Criteria Searches & Filtering:** Filtering openings by tenure, client, or geographic coordinates without calling external APIs per record.
+  2. **Composite Dashboards & Detail Views:** Rendering rich opening summaries and headers in a single query without cascading REST calls.
+  3. **Spatial Overlays:** Combining opening geometries with external administrative or tenure boundaries in PostGIS.
+  4. **Reporting & Bulk Data Exports:** Producing annual reports and bulk shapefile/CSV downloads without hitting external rate limits.
+- **Architectural Division of Labor:**
+  - **Command Path (Writes & Authoritative Validations):** State-changing actions and validation checks query the live domain port (`*Provider`, e.g. `TenureProvider.verifyCutBlock`, `ForestClientProvider.getClient`) to enforce business rules against the authoritative system of record.
+  - **Query Path (High-Performance Local Reads):** All multi-entity searches, dashboards, spatial analysis, and reports execute 100% locally against indexed PostgreSQL tables and read model projections.
+
+### 6.3 Case Study: External Ownership of Cut Block Opening Administration (FTA-Owned CBOA)
+
+As an illustrative application of this pattern, consider the scenario where FTA is the master system of record for cut block opening associations (`cut_block_open_admin`):
+1. **System of Record:** FTA owns the authoritative cut block to opening relationship.
+2. **Silva Read Projection:** Silva maintains `silva.cut_block_open_admin` as a local, indexed read model projection in PostgreSQL to power fast opening searches and spatial mapping.
+3. **Data Synchronization Patterns:**
+   - **Write-Through Hook:** When a user links or unlinks a tenure in Silva, `TenureAssociationHandler` emits an asynchronous event or REST notification to FTA.
+   - **Event Streaming / CDC:** When associations change in FTA, events (via Kafka/EventBridge) or CDC (Debezium) update Silva's local read projection.
+   - **Periodic Reconciliation:** A background sync job polls `GET /api/tenures/associations/changes?since=...` to guarantee eventual consistency across read models.
+
+### 6.4 Association Lifecycle Hooks
+
+To ensure future flexibility when tenure associations are modified in Silva:
 
 ```java
 package ca.bc.gov.restapi.results.common.provider.handler;

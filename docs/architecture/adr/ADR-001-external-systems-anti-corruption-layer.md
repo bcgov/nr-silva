@@ -52,10 +52,13 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
    - In `primary-db=oracle` mode, `externalOracleJdbcTemplate` wraps the existing primary `oracleDataSource`, avoiding duplicate connection pools.
    - This keeps external table querying strictly isolated from Silva's primary JPA `EntityManagerFactory`, avoiding multi-dialect JPA complexity and GraalVM reflection issues.
 
-5. **Flexible Data Ownership & Association Hooks:**
-   - External entities (Cut Blocks, Forest Files, Licensees) are strictly read-only external references.
-   - Silva's persistence layer owns Opening associations (`silva.cut_block_open_admin`).
-   - To accommodate future bi-directional sync if required, an optional `TenureAssociationHandler` lifecycle hook is provided.
+5. **CQRS & System-Wide Read Model Projections:**
+   - **Command vs. Query Separation:** Silva applies Command Query Responsibility Segregation (CQRS) across all external domains and legacy boundaries (e.g., Tenures/FTA, Forest Client, Org Units/BCGW, Seedling/SPAR, and any future dependencies identified during discovery).
+     - **Command & Mutation Path (Authoritative Validation):** Any state-changing business action, transactional lifecycle rule, or live integrity check must query the external system of record via its domain port (`*Provider`). This ensures authoritative validation against the true source of truth before persisting changes in Silva.
+     - **Query & Composite Read Path (Local Read Projections):** Operations that read, filter, aggregate, display, or export data across multiple entities (such as multi-criteria searches, dashboard summaries, GIS/spatial overlays, and bulk reporting) must **never** perform synchronous cross-network API calls or per-row HTTP fetching ($N+1$ latency trap). Instead, Silva maintains **local read model projections and materialized views** in PostgreSQL. These projections are indexed and queried with sub-millisecond local SQL.
+   - **Flexible External Data Ownership & Eventual Consistency:**
+     - Where an external system owns entities or relationship records that Silva needs to query or join locally (e.g. tenure associations, client profiles, administrative boundaries), Silva persists a local search/read-optimized projection.
+     - Synchronization is decoupled from query execution and managed asynchronously via event streaming (Kafka/EventBridge), Change Data Capture (CDC), write-through/outbox lifecycle hooks, or scheduled reconciliation jobs.
 
 6. **Tiered Caching & Resilience:**
    - Reference/lookup data (Org Units, Code tables) is cached in-memory with TTL via Spring Cache / Caffeine.
@@ -68,6 +71,7 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
 
 ### Positive
 - **Zero Coupling to External Schemas:** Core Silva services and controllers interact only with clean Silva domain models, completely insulated from legacy Oracle column names or schema renames.
+- **High-Throughput Read & Search Performance:** Adopting CQRS read projections allows multi-criteria searches, composite dashboards, spatial GIS joins, and reporting to execute locally within PostgreSQL with standard indexes, completely shielding Silva read paths from external network latency or downstream service outages.
 - **Seamless API Transition:** Switching an external dependency from Oracle DB to REST API requires implementing a new adapter class and toggling a configuration property; zero modifications to Silva domain services.
 - **Independent Modernization Timelines:** Each external dependency (Tenures/FTA, Forest Client, Org Units) can migrate at its own pace without blocking Silva or other dependencies.
 - **Improved Testability:** Developers can run the full backend locally or in CI without requiring an active Oracle connection by running in PostgreSQL mode with mock providers and `silva.integrations.external-oracle.enabled=false`.
@@ -75,8 +79,9 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
 
 ### Negative / Trade-offs
 - **Additional Abstraction Overhead:** Developers must maintain Provider interfaces and DTOs in addition to the concrete adapter.
+- **Read-Model Projection Synchronization:** Maintaining local CQRS read projections for external dependencies requires write-through synchronization, CDC, or event ingestion to handle eventual consistency.
 - **Dual Connection Pool Management:** In `primary-db=postgres` mode, an extra lightweight Hikari connection pool is maintained for external Oracle access when `oracle` provider is selected.
-- **Eventual Consistency & Synchronization:** When external systems eventually transition to APIs or separate databases, distributed consistency rules (e.g. handling orphaned opening references) must be managed at the application level.
+- **Eventual Consistency & Synchronization:** When external systems transition to APIs or separate databases, distributed consistency rules (e.g. handling orphaned opening references) must be managed at the application level.
 
 ---
 
