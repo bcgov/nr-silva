@@ -48,7 +48,8 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
    - Enables independent, gradual migration as each external system publishes its API.
 
 4. **Lightweight Secondary Oracle Read-Only DataSource:**
-   - In `primary-db=postgres` mode, configure a dedicated, lightweight, read-only Oracle connection pool and `NamedParameterJdbcTemplate` (`externalOracleJdbcTemplate`).
+   - In `primary-db=postgres` mode with external Oracle enabled (`silva.integrations.external-oracle.enabled=true`), configure a dedicated, lightweight, read-only Oracle connection pool and `NamedParameterJdbcTemplate` (`externalOracleJdbcTemplate`).
+   - In `primary-db=oracle` mode, `externalOracleJdbcTemplate` wraps the existing primary `oracleDataSource`, avoiding duplicate connection pools.
    - This keeps external table querying strictly isolated from Silva's primary JPA `EntityManagerFactory`, avoiding multi-dialect JPA complexity and GraalVM reflection issues.
 
 5. **Flexible Data Ownership & Association Hooks:**
@@ -69,7 +70,7 @@ We adopt a **Ports & Adapters (Hexagonal Architecture)** design incorporating an
 - **Zero Coupling to External Schemas:** Core Silva services and controllers interact only with clean Silva domain models, completely insulated from legacy Oracle column names or schema renames.
 - **Seamless API Transition:** Switching an external dependency from Oracle DB to REST API requires implementing a new adapter class and toggling a configuration property; zero modifications to Silva domain services.
 - **Independent Modernization Timelines:** Each external dependency (Tenures/FTA, Forest Client, Org Units) can migrate at its own pace without blocking Silva or other dependencies.
-- **Improved Testability:** Developers can run the full backend locally or in CI without requiring an active Oracle connection by setting the provider to `mock`.
+- **Improved Testability:** Developers can run the full backend locally or in CI without requiring an active Oracle connection by running in PostgreSQL mode with mock providers and `silva.integrations.external-oracle.enabled=false`.
 - **Lightweight Runtime Footprint:** Using `NamedParameterJdbcTemplate` for external Oracle queries avoids the overhead and complexity of configuring secondary JPA persistence units.
 
 ### Negative / Trade-offs

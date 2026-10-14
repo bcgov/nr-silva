@@ -110,7 +110,7 @@ silva:
 
 ### 3.2 Secondary Oracle DataSource Configuration (`ExternalOracleConfiguration.java`)
 
-When running with `server.primary-db=postgres`, this configuration activates a dedicated read-only DataSource and `NamedParameterJdbcTemplate`:
+When running with `server.primary-db=postgres` and external Oracle integration is enabled (`silva.integrations.external-oracle.enabled=true`), this configuration activates a dedicated read-only DataSource and `NamedParameterJdbcTemplate`:
 
 ```java
 package ca.bc.gov.restapi.results.common.configuration;
@@ -126,22 +126,35 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 @Configuration
-@ConditionalOnProperty(
-    prefix = "silva.integrations.external-oracle",
-    name = "enabled",
-    havingValue = "true",
-    matchIfMissing = true)
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class ExternalOracleConfiguration {
 
   @Bean(name = "externalOracleDataSource")
+  @ConditionalOnProperty(prefix = "silva.integrations.external-oracle", name = "enabled", havingValue = "true")
   @ConfigurationProperties(prefix = "spring.oracle.hikari")
   public DataSource externalOracleDataSource() {
     return DataSourceBuilder.create().type(HikariDataSource.class).build();
   }
 
   @Bean(name = "externalOracleJdbcTemplate")
+  @ConditionalOnProperty(prefix = "silva.integrations.external-oracle", name = "enabled", havingValue = "true")
   public NamedParameterJdbcTemplate externalOracleJdbcTemplate(
       @Qualifier("externalOracleDataSource") DataSource dataSource) {
+    return new NamedParameterJdbcTemplate(dataSource);
+  }
+}
+```
+
+In `server.primary-db=oracle` mode, Silva already maintains its primary Oracle DataSource (`oracleDataSource`). To avoid spinning up a redundant second connection pool, `externalOracleJdbcTemplate` wraps the existing primary pool:
+
+```java
+@Configuration
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
+public class PrimaryOracleTemplateConfiguration {
+
+  @Bean(name = "externalOracleJdbcTemplate")
+  public NamedParameterJdbcTemplate externalOracleJdbcTemplate(
+      @Qualifier("oracleDataSource") DataSource dataSource) {
     return new NamedParameterJdbcTemplate(dataSource);
   }
 }
