@@ -127,7 +127,8 @@ class ActivityEndpointTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"Virus detected: Eicar-Test-Signature", "Virus scan unavailable: refused"})
+  @ValueSource(
+      strings = {"Virus detected: Eicar-Test-Signature", "Virus scan unavailable: refused"})
   void scanRejectionPreventsProcessing(String reason) {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
     VirusDetectedException failure = new VirusDetectedException(reason);
