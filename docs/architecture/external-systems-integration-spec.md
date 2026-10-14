@@ -96,10 +96,14 @@ silva:
     forest-client:
       provider: ${SILVA_INTEGRATION_FORESTCLIENT_PROVIDER:api}
     
-    # Secondary Oracle read-only connection (active when any provider uses 'oracle')
+    # Secondary Oracle read-only connection (active in Postgres mode when external-oracle is enabled)
     external-oracle:
       enabled: ${EXTERNAL_ORACLE_ENABLED:true}
       hikari:
+        jdbc-url: ${spring.oracle.jdbcUrl}
+        username: ${spring.oracle.username}
+        password: ${spring.oracle.password}
+        driver-class-name: oracle.jdbc.OracleDriver
         pool-name: SilvaExternalOracleConnPool
         maximum-pool-size: 3
         minimum-idle: 0
@@ -131,7 +135,7 @@ public class ExternalOracleConfiguration {
 
   @Bean(name = "externalOracleDataSource")
   @ConditionalOnProperty(prefix = "silva.integrations.external-oracle", name = "enabled", havingValue = "true")
-  @ConfigurationProperties(prefix = "spring.oracle.hikari")
+  @ConfigurationProperties(prefix = "silva.integrations.external-oracle.hikari")
   public DataSource externalOracleDataSource() {
     return DataSourceBuilder.create().type(HikariDataSource.class).build();
   }
