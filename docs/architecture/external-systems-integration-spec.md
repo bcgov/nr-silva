@@ -264,11 +264,12 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
         cb.CB_SKEY,
         cb.TIMBER_MARK,
         cb.BLOCK_STATUS_ST,
-        CASE WHEN cbc.CLIENT_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS IS_LICENSEE
+        CASE WHEN EXISTS (
+          SELECT 1 FROM THE.CUT_BLOCK_CLIENT cbc
+          WHERE cbc.CB_SKEY = cb.CB_SKEY
+            AND cbc.CLIENT_NUMBER = :clientNumber
+        ) THEN 1 ELSE 0 END AS IS_LICENSEE
       FROM THE.CUT_BLOCK cb
-      LEFT JOIN THE.CUT_BLOCK_CLIENT cbc
-        ON cbc.CB_SKEY = cb.CB_SKEY
-        AND cbc.CLIENT_NUMBER = :clientNumber
       WHERE cb.FOREST_FILE_ID = :forestFileId
         AND cb.CUT_BLOCK_ID = :cutBlockId
         AND (:cuttingPermitId IS NULL AND cb.CUTTING_PERMIT_ID IS NULL
