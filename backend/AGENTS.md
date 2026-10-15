@@ -1,9 +1,10 @@
 # Backend Agent Guidelines
 
-**Quick Start:** This is the minimal entry point. For detailed coding patterns, load the `backend-patterns` skill (search for "backend patterns" in Copilot Chat) which provides 3 focused reference files:
+**Quick Start:** This is the minimal entry point. For detailed coding patterns, load the `backend-patterns` skill (search for "backend patterns" in Copilot Chat) which provides 4 focused reference files:
 - **db-patterns.md** — Dual-database architecture, JPA/Hibernate config, entity → DTO → mapper chain, code lookup tables (6-step), native SQL dialects, null-check patterns, conditional bean registration
 - **api-patterns.md** — Search endpoints, response DTOs & projections, opening detail service orchestration, REST structure, pagination, filtering, OpenAPI documentation
 - **testing.md** — Unit/Mockito/integration 3-tier tests, TestContainers, WireMock, Postgres null-check pattern, database testing
+- **integration-patterns.md** — Ports & Adapters (Hexagonal) / Anti-Corruption Layer (ACL) for external systems (FTA, OrgUnit, ForestClient), swappable adapters (`oracle`, `api`, `mock`), secondary read-only Oracle JdbcTemplate
 
 ## Tech Stack
 
@@ -42,11 +43,14 @@ src/main/java/ca/bc/gov/restapi/results/
 │   ├── endpoint/        # REST controllers
 │   ├── service/         # Service interfaces & abstracts
 │   ├── repository/      # Repository interfaces (@NoRepositoryBean)
-│   └── dto/             # Data transfer objects
-├── oracle/              # Oracle-specific: entities, repos, services
+│   ├── provider/        # External integration ports (interfaces) & REST adapters
+│   │   └── mock/        # Offline mock adapters for local dev/testing
+│   └── dto/             # Data transfer objects & domain records
+├── oracle/              # Oracle-specific: entities, repos, services, adapters
 │   ├── entity/
 │   ├── repository/
-│   └── service/
+│   ├── service/
+│   └── provider/        # Oracle JDBC adapters (NamedParameterJdbcTemplate)
 ├── postgres/            # Postgres-specific: entities, repos, services
 │   ├── entity/
 │   ├── repository/
@@ -56,21 +60,25 @@ src/main/java/ca/bc/gov/restapi/results/
 
 ## Naming Conventions
 
-- Oracle classes: `XxxOracleEntity`, `XxxOracleRepository`, `XxxOracleService`
+- Oracle classes: `XxxOracleEntity`, `XxxOracleRepository`, `XxxOracleService`, `OracleXxxJdbcAdapter`
 - Postgres classes: `XxxPostgresEntity`, `XxxPostgresRepository`, `XxxPostgresService`
+- Integration ports/adapters: `XxxProvider` (interface), `OracleXxxJdbcAdapter` (Oracle), `RestApiXxxAdapter` (REST API), `MockXxxAdapter` (mock)
 - Shared interfaces/abstracts: `XxxService` (interface), `AbstractXxxService` (abstract impl)
-- DTOs: Plain `@Getter` + `@NoArgsConstructor` (use `@Setter` for nullable fields, not records)
+- DTOs: Plain `@Getter` + `@NoArgsConstructor` (use `@Setter` for nullable fields, not records; domain records acceptable for internal provider DTOs)
 
 ## Task Classification Decision Tree
 
 ```
-1. Does task involve adding entities, repositories, code lookups, native queries, or dual-DB setup?
+1. Does task involve external systems (FTA, OrgUnit, ForestClient), external Oracle tables, or swappable API adapters?
+   → Load "integration-patterns.md" reference
+
+2. Does task involve adding entities, repositories, code lookups, native queries, or dual-DB setup?
    → Load "db-patterns.md" reference
 
-2. Does task involve search/query endpoints, DTOs, projections, REST structure, or opening details?
+3. Does task involve search/query endpoints, DTOs, projections, REST structure, or opening details?
    → Load "api-patterns.md" reference
 
-3. Does task involve testing (unit/integration/WireMock)?
+4. Does task involve testing (unit/integration/WireMock)?
    → Load "testing.md" reference
 ```
 
