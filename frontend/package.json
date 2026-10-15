@@ -82,7 +82,7 @@
     "@types/testing-library__jest-dom": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^5.0.0",
     "bcgov-typescript-codegen": "^1.0.9",
     "dotenv": "^17.0.0",
     "eslint": "^9.0.0",
@@ -104,13 +104,16 @@
     "typescript-eslint": "^8.0.0",
     "v8-to-istanbul": "^9.3.0",
     "vite-plugin-svgr": "^5.0.0",
-    "vitest": "^4.1.9",
+    "vitest": "^5.0.0",
     "wiremock": "^3.13.1"
   },
   "overrides": {
     "braces@3.0.2": "3.0.3",
     "fast-xml-parser@4.4.0": "4.4.1",
     "ws@8.17.0": "8.17.1",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "4.3.2"
+    },
     "@babel/runtime": "7.29.7",
     "@babel/helpers": "7.29.7",
     "react-router": "^7.18.2",
