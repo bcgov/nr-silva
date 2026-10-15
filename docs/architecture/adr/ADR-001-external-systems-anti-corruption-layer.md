@@ -1,7 +1,7 @@
 ---
 id: ADR-001
 title: Anti-Corruption Layer (ACL) for External System Dependencies
-status: proposed
+status: accepted
 date: 2026-10-14
 deciders: [Developers]
 consulted: []
