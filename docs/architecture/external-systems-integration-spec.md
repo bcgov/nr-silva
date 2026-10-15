@@ -4,6 +4,19 @@
 
 Silva relies on external ministry systems (e.g., Forest Tenures Administration / FTA, Forest Client, Ministry Organization Units). In order to decouple Silva's domain from external database schemas and enable seamless migration to future REST APIs, all external dependencies follow a **Ports and Adapters (Hexagonal)** architecture with an **Anti-Corruption Layer (ACL)**.
 
+> [!NOTE]
+> **Tenures / FTA as the Primary Reference Implementation**
+> This specification defines the universal integration architecture for **all external dependencies** in Silva (including Forest Client, Ministry Organization Units, SPAR/Seedlings, and future services).
+>
+> To ensure architectural guidance is grounded in concrete, compilable code rather than abstract pseudocode, **Forest Tenures Administration (FTA)** is used throughout this document as the primary reference implementation and pilot case study. The exact same package structure, port interfaces, delegating routers, and adapter tiers apply to all other external domains:
+>
+> | Domain | Port Interface (`common/provider`) | Concrete Adapters | Delegating Router (`@Primary`) |
+> | :--- | :--- | :--- | :--- |
+> | **Tenures (Reference)** | `TenureProvider` | `OracleTenureJdbcAdapter`, `RestApiTenureAdapter`, `MockTenureAdapter` | `DelegatingTenureProvider` |
+> | **Forest Client** | `ForestClientProvider` | `OracleForestClientJdbcAdapter`, `RestApiForestClientAdapter`, `MockForestClientAdapter` | `DelegatingForestClientProvider` |
+> | **Org Units** | `OrgUnitProvider` | `OracleOrgUnitJdbcAdapter`, `RestApiOrgUnitAdapter`, `MockOrgUnitAdapter` | `DelegatingOrgUnitProvider` |
+> | **Future External Systems** | `XxxProvider` | `OracleXxxJdbcAdapter`, `RestApiXxxAdapter`, `MockXxxAdapter` | `DelegatingXxxProvider` |
+
 ```mermaid
 flowchart TD
     subgraph Silva Domain ["Silva Domain (Core)"]
@@ -171,6 +184,8 @@ public class PrimaryOracleTemplateConfiguration {
 ---
 
 ## 4. Port & Domain Contract Definition
+
+The following sections illustrate the contract and adapter patterns using **Tenure / Cut Block** as the concrete reference pilot. Every other external dependency implements analogous DTOs, Provider interfaces, and adapter classes.
 
 ### 4.1 Domain Value Objects (`common/dto`)
 
