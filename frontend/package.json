@@ -108,9 +108,6 @@
     "wiremock": "^3.13.1"
   },
   "overrides": {
-    "braces@3.0.2": "3.0.3",
-    "fast-xml-parser@4.4.0": "4.4.1",
-    "ws@8.17.0": "8.17.1",
     "@istanbuljs/load-nyc-config": {
       "js-yaml": "4.3.2"
     },
