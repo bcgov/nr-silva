@@ -7,8 +7,11 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -19,10 +22,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.geojson.GeoJsonReader;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -856,6 +862,89 @@ class SpatialFileServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(result.geometryArea()).isNotNull().isGreaterThan(BigDecimal.ZERO);
+  }
+
+  @Test
+  void processesActivitySampleWithTheExistingAreaPrecisionAndThinning() throws Exception {
+    byte[] input = activitySampleBytes();
+    JsonNode original = mapper.readTree(input);
+    Geometry originalGeometry =
+        new GeoJsonReader().read(original.at("/features/0/geometry").toString());
+
+    ExtractedGeoDataDto result = service.processSpatialFile("activity.geojson", input);
+
+    assertThat(result.geometryArea()).isEqualTo(new BigDecimal("4.3"));
+    assertThat(result.geoJson().path("type").asText()).isEqualTo("FeatureCollection");
+    assertThat(result.geoJson().path("features").size()).isEqualTo(1);
+    Geometry processedGeometry =
+        new GeoJsonReader().read(result.geoJson().at("/features/0/geometry").toString());
+    assertThat(processedGeometry.getGeometryType()).isEqualTo("Polygon");
+    assertThat(processedGeometry.isValid()).isTrue();
+    assertThat(processedGeometry.getNumPoints()).isLessThan(originalGeometry.getNumPoints());
+    assertThat(processedGeometry.getEnvelopeInternal().getMinX()).isBetween(-180.0, 180.0);
+    assertThat(processedGeometry.getEnvelopeInternal().getMinY()).isBetween(-90.0, 90.0);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"149, 1.4", "159, 1.5", "9, 0.0"})
+  void truncatesHectaresToOneDecimalWithoutRoundingUp(int heightMetres, String expectedArea) {
+    int northing = 1_500_000 + heightMetres;
+    String geojson =
+        """
+        {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
+         "features":[{"type":"Feature","geometry":{"type":"Polygon",
+         "coordinates":[[[850000,1500000],[850100,1500000],[850100,%d],
+                          [850000,%d],[850000,1500000]]]}}]}
+        """.formatted(northing, northing);
+
+    ExtractedGeoDataDto result =
+        service.processSpatialFile("area.geojson", geojson.getBytes(StandardCharsets.UTF_8));
+
+    assertThat(result.geometryArea()).isEqualTo(new BigDecimal(expectedArea));
+  }
+
+  @Test
+  void acceptsOneFeatureContainingMultiplePolygons() {
+    String geojson =
+        """
+        {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
+         "features":[{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[
+          [[[850000,1500000],[850100,1500000],[850100,1500100],
+            [850000,1500100],[850000,1500000]]],
+          [[[850200,1500000],[850300,1500000],[850300,1500100],
+            [850200,1500100],[850200,1500000]]]
+         ]}}]}
+        """;
+
+    ExtractedGeoDataDto result =
+        service.processSpatialFile(
+            "multipolygon.geojson", geojson.getBytes(StandardCharsets.UTF_8));
+
+    assertThat(result.geoJson().path("features").size()).isEqualTo(1);
+    assertThat(result.geoJson().at("/features/0/geometry/type").asText()).isEqualTo("MultiPolygon");
+    assertThat(result.geometryArea()).isEqualTo(new BigDecimal("2.0"));
+  }
+
+  @Test
+  void rejectsMultipleActivityFeaturesEvenWhenEachGeometryIsValid() throws IOException {
+    ObjectNode collection = (ObjectNode) mapper.readTree(activitySampleBytes());
+    ArrayNode features = (ArrayNode) collection.path("features");
+    features.add(features.get(0).deepCopy());
+
+    assertThatThrownBy(
+            () ->
+                service.processSpatialFile(
+                    "activities.geojson", mapper.writeValueAsBytes(collection)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("exactly one feature (found 2)");
+  }
+
+  private byte[] activitySampleBytes() throws IOException {
+    try (InputStream input =
+        getClass().getResourceAsStream("/spatial/activity-1527650.geojson")) {
+      assertThat(input).isNotNull();
+      return input.readAllBytes();
+    }
   }
 
   private Geometry parseGml(String gml) throws Exception {
