@@ -31,3 +31,4 @@ ENV SPRING_PROFILES_ACTIVE=container,prod
 
 # Startup
 ENTRYPOINT ["/app/results"]
+
