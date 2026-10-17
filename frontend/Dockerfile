@@ -26,4 +26,3 @@ RUN apk add --no-cache ca-certificates && \
 USER 1001
 EXPOSE 3000
 HEALTHCHECK CMD curl -f http://localhost/:3000
-
