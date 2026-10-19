@@ -1,6 +1,6 @@
 # Backend Sonar Compliance
 
-Consult the project's live [Java profile](https://sonarcloud.io/api/qualityprofiles/search?organization=bcgov-sonarcloud&project=nr-silva-backend&language=java) and [assigned quality gate](https://sonarcloud.io/api/qualitygates/get_by_project?organization=bcgov-sonarcloud&project=nr-silva-backend) before Sonar compliance work. This checklist is selective; the live settings define the complete rules and thresholds.
+Use this checklist locally for backend changes. Query SonarCloud only when the task requires a live Sonar audit, current Quality Gate verification, or investigation of rule configuration. This checklist covers selected rules, not the complete profile.
 
 ## Java code
 
@@ -37,4 +37,8 @@ assertThatThrownBy(() -> service.processSpatialFile("test.geojson", bytes))
 - Resolve findings without adding suppressions, widening analysis exclusions, lowering quality thresholds, or weakening tests.
 - Local checks do not establish Sonar compliance; report live findings and Quality Gate status separately when analysis is available.
 
-See the [Sonar remediation recipes](../../sonar-audit/resources/remediation-patterns.md) for detailed examples and the [sonar-audit skill](../../sonar-audit/SKILL.md) for live analysis.
+See the [Sonar remediation recipes](../../sonar-audit/resources/remediation-patterns.md) for detailed examples.
+
+## Live verification
+
+For tasks requiring live verification, use the [sonar-audit skill](../../sonar-audit/SKILL.md). The project's live [Java profile](https://sonarcloud.io/api/qualityprofiles/search?organization=bcgov-sonarcloud&project=nr-silva-backend&language=java) and [assigned quality gate](https://sonarcloud.io/api/qualitygates/get_by_project?organization=bcgov-sonarcloud&project=nr-silva-backend) define the complete rules and thresholds.
