@@ -24,11 +24,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -901,6 +903,22 @@ class SpatialFileServiceTest {
         service.processSpatialFile("area.geojson", geojson.getBytes(StandardCharsets.UTF_8));
 
     assertThat(result.geometryArea()).isEqualTo(new BigDecimal(expectedArea));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"empty.geojson", "empty.json"})
+  void rejectsEmptyFeatureCollections(String fileName) {
+    byte[] input =
+        "{\"type\":\"FeatureCollection\",\"features\":[]}".getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile(fileName, input))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> {
+              assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+              assertThat(exception.getReason())
+                  .isEqualTo("Spatial file must contain exactly one feature (found 0)");
+            });
   }
 
   @Test

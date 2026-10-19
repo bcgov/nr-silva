@@ -135,6 +135,23 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
             "not fully within the Province of BC boundary"));
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"/api/activities/spatial/upload", "/api/openings/create/upload"})
+  void rejectsEmptyFeatureCollectionsOnBothUploadPaths(String path) throws Exception {
+    mockMvc
+        .perform(
+            multipart(path)
+                .file(file("empty.geojson", "{\"type\":\"FeatureCollection\",\"features\":[]}"))
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(
+            jsonPath("$.detail")
+                .value("Spatial file must contain exactly one feature (found 0)"));
+  }
+
   @Test
   void rejectsMissingFile() throws Exception {
     mockMvc

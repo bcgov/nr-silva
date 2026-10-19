@@ -110,7 +110,7 @@ public class SpatialFileService {
 
     // Opening and activity uploads share the single-feature restriction.
     JsonNode features = result.geoJson().get("features");
-    if (features != null && features.size() > 1) {
+    if (features != null && features.size() != 1) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Spatial file must contain exactly one feature (found " + features.size() + ")");
