@@ -10,7 +10,6 @@ import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
 import { ACCESS_TOKEN_KEY } from ".";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { JWT } from "@/types/amplify";
 
 // === Refresh Token Management ===
 
@@ -125,13 +124,12 @@ function errorHandler(
       if (query) {
         // clear query error and keep the query pending until retry.
         // Do not force fetchStatus here; that can interfere with query.fetch().
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (query as any).setState?.({
           error: null,
           status: 'pending'
         });
       }
-    } catch (e) {
+    } catch {
       // ignore if we can't touch internal state
     }
 

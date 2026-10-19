@@ -39,8 +39,8 @@
     "build:env": "echo \"window.config = { \\\"VITE_USER_POOLS_ID\\\": \\\"ca-central-1_UpeAqsYt4\\\", \\\"VITE_USER_POOLS_WEB_CLIENT_ID\\\": \\\"4e7gnonatuf3q7pfcpv7d8gfiv\\\", \\\"VITE_ZONE\\\": \\\"TEST\\\" };\" > build/env.js",
     "preview": "vite preview --port 4173",
     "generate:openapi": "rm -rf ./src/services/OpenApi && npx bcgov-typescript-codegen --input http://localhost:8080/v3/api-docs --output ./src/services/OpenApi --client axios",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "npm run lint -- --fix",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "precoverage": "rm -rf .nyc_output coverage",
     "coverage": " npm run test:unit && npm run test:ui",
     "postcoverage": "mkdir -p coverage && touch coverage/coverage-final.json && cp coverage/coverage-final.json .nyc_output/unit-test.json && nyc merge .nyc_output .nyc_output/coverage.json && nyc report",
@@ -63,6 +63,7 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@playwright/test": "1.63.0",
     "@testing-library/dom": "^10.2.0",
@@ -81,9 +82,9 @@
     "@types/testing-library__jest-dom": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^5.0.0",
     "bcgov-typescript-codegen": "^1.0.9",
-    "dotenv": "^17.0.0",
+    "dotenv": "^18.0.0",
     "eslint": "^9.0.0",
     "eslint-config-love": "^134.0.0",
     "eslint-import-resolver-typescript": "^4.0.0",
@@ -100,15 +101,16 @@
     "sass": "^1.62.1",
     "start-server-and-test": "^3.0.0",
     "typescript": "^5.2.2",
+    "typescript-eslint": "^8.0.0",
     "v8-to-istanbul": "^9.3.0",
     "vite-plugin-svgr": "^5.0.0",
-    "vitest": "^4.1.9",
+    "vitest": "^5.0.0",
     "wiremock": "^3.13.1"
   },
   "overrides": {
-    "braces@3.0.2": "3.0.3",
-    "fast-xml-parser@4.4.0": "4.4.1",
-    "ws@8.17.0": "8.17.1",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "4.3.2"
+    },
     "@babel/runtime": "7.29.7",
     "@babel/helpers": "7.29.7",
     "react-router": "^7.18.2",

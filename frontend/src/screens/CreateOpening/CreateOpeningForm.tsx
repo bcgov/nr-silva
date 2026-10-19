@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Button, Column, Form, Grid, InlineNotification, Loading, Stack } from '@carbon/react';
+import { Button, Column, Form, Grid, InlineNotification, Loading } from '@carbon/react';
 import { useBlocker, useNavigate } from 'react-router-dom';
 import { ArrowRight } from '@carbon/icons-react';
 import { scrollToSection } from '@/utils/InputUtils';
@@ -25,7 +25,7 @@ interface CreateOpeningFormProps {
   setCurrentStep: (step: number) => void;
 }
 
-export const CreateOpeningForm = ({ type, currentStep, setCurrentStep }: CreateOpeningFormProps) => {
+export const CreateOpeningForm = ({ type: _type, currentStep, setCurrentStep }: CreateOpeningFormProps) => {
   // All hooks called unconditionally at component top
   const [isLeavePageModalOpen, setIsLeavePageModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();

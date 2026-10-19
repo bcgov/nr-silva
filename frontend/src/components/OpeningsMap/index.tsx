@@ -56,7 +56,7 @@ const OpeningsMap: React.FC<MapProps> = ({
     48.43737, -123.35883,
   ]);
   const [zoomLevel, setZoomLevel] = useState<number>(13);
-  const [mapSize, setMapSize] = useState<number>(mapHeight);
+  const [mapSize] = useState<number>(mapHeight);
 
   const [hoveredFeature, setHoveredFeature] = useState<Feature<Geometry, any> | null>(null);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Geometry, any> | null>(null);

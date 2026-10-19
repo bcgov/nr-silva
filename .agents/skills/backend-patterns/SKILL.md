@@ -53,25 +53,41 @@ Load: `testing.md`
 
 ---
 
+### 4. **External Integrations / Anti-Corruption Layer (ACL) Tasks**
+Load: `integration-patterns.md`
+- Ports & Adapters (Hexagonal) pattern for external systems (FTA, OrgUnit, ForestClient)
+- Swappable adapters (`oracle`, `api`, `mock`) via `silva.integrations.<domain>.provider`
+- Decoupling domain logic from external Oracle tables & field names
+- Secondary read-only Oracle `NamedParameterJdbcTemplate`
+- Mock adapters for offline local dev and unit testing
+
+**Use when task involves:** "External data", "external tables", "FTA", "cut block validation", "OrgUnit lookup", "Ports and Adapters", "Anti-Corruption Layer", "switch to API", "secondary Oracle connection"
+
+---
+
 ## Task Classification Decision Tree
 
 **Apply this tree to classify the task before loading references:**
 
 ```
-1. Does task involve database/entity/query/mapping/nullable columns?
-   YES → Load db-patterns.md
+1. Does task involve external systems, external Oracle tables, or swappable API adapters?
+   YES → Load integration-patterns.md
    NO  → Go to 2
 
-2. Does task involve API endpoint/search/REST service/DTO/response projection?
-   YES → Load api-patterns.md
+2. Does task involve database/entity/query/mapping/nullable columns?
+   YES → Load db-patterns.md
    NO  → Go to 3
 
-3. Does task involve testing/mocking/integration tests/test setup?
+3. Does task involve API endpoint/search/REST service/DTO/response projection?
+   YES → Load api-patterns.md
+   NO  → Go to 4
+
+4. Does task involve testing/mocking/integration tests/test setup?
    YES → Load testing.md
    NO  → Use main backend/AGENTS.md for general guidance
 
 Multi-concern tasks:
-- Identify PRIMARY concern (database vs. API vs. test)
+- Identify PRIMARY concern (external vs database vs API vs test)
 - Load that reference first
 - Mention in response: "Also loaded [secondary reference] for [reason]"
 ```
