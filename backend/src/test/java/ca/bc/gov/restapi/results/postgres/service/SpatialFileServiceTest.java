@@ -62,10 +62,9 @@ class SpatialFileServiceTest {
   @Test
   @DisplayName("Should throw on unsupported extension")
   void shouldThrowOnUnsupportedExtension() {
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "data.txt", "hello".getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = "hello".getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("data.txt", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -76,10 +75,9 @@ class SpatialFileServiceTest {
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
             + " -123.0,49.0 ],[ -123.0,49.1 ],[ -122.9,49.1 ],[ -123.0,49.0 ]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "simple.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("simple.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -140,21 +138,18 @@ class SpatialFileServiceTest {
             "validateGeoJsonGeometryNode", JsonNode.class, int.class);
     m.setAccessible(true);
 
-    try {
-      m.invoke(service, geomNode, 1);
-      Assertions.fail("Expected ResponseStatusException");
-    } catch (java.lang.reflect.InvocationTargetException ite) {
-      assertThat(ite.getCause()).isInstanceOf(ResponseStatusException.class);
-    }
+    InvocationTargetException exception =
+        Assertions.assertThrows(
+            InvocationTargetException.class, () -> m.invoke(service, geomNode, 1));
+    assertThat(exception.getCause()).isInstanceOf(ResponseStatusException.class);
   }
 
   @Test
   @DisplayName("Should throw invalid geojson when file content is not JSON")
   void shouldThrowOnInvalidJsonContent() {
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "bad.json", "not-json".getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = "not-json".getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("bad.json", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -203,14 +198,9 @@ class SpatialFileServiceTest {
             "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, geojson, "9999");
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> m.invoke(service, geojson, "9999"))
+        .isInstanceOf(InvocationTargetException.class)
+        .cause()
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -240,14 +230,9 @@ class SpatialFileServiceTest {
             "validateGeoJsonWithinBcBoundary", String.class, String.class);
     m.setAccessible(true);
 
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, geojson, "4326");
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> m.invoke(service, geojson, "4326"))
+        .isInstanceOf(InvocationTargetException.class)
+        .cause()
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -372,7 +357,7 @@ class SpatialFileServiceTest {
 
   @Test
   @DisplayName("parseGmlToGeometry throws on invalid GML (no geometry)")
-  void parseGmlToGeometryThrowsNoGeometry() throws Exception {
+  void parseGmlToGeometryThrowsNoGeometry() {
     String invalidGml =
         "<gml:NoSuchGeometry xmlns:gml=\"http://www.opengis.net/gml\"></gml:NoSuchGeometry>";
 
@@ -383,7 +368,7 @@ class SpatialFileServiceTest {
 
   @Test
   @DisplayName("parseGmlToGeometry throws on malformed XML")
-  void parseGmlToGeometryThrowsMalformedXml() throws Exception {
+  void parseGmlToGeometryThrowsMalformedXml() {
     String malformed = "<gml:Polygon><unclosed>";
 
     assertThatThrownBy(() -> parseGml(malformed)).isInstanceOf(Exception.class);
@@ -391,7 +376,7 @@ class SpatialFileServiceTest {
 
   @Test
   @DisplayName("parseGmlPolygon throws when exterior ring missing")
-  void parseGmlPolygonThrowsMissingExterior() throws Exception {
+  void parseGmlPolygonThrowsMissingExterior() {
     String noExterior = "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\"></gml:Polygon>";
 
     assertThatThrownBy(() -> parseGml(noExterior))
@@ -401,7 +386,7 @@ class SpatialFileServiceTest {
 
   @Test
   @DisplayName("parseGmlPoint throws when no coordinates")
-  void parseGmlPointThrowsNoCoordinates() throws Exception {
+  void parseGmlPointThrowsNoCoordinates() {
     String noCoords =
         "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:pos></gml:pos></gml:Point>";
 
@@ -412,7 +397,7 @@ class SpatialFileServiceTest {
 
   @Test
   @DisplayName("parseGmlLinearRing throws when less than 4 coordinates")
-  void parseGmlLinearRingThrowsInvalidRing() throws Exception {
+  void parseGmlLinearRingThrowsInvalidRing() {
     String tooFewCoords =
         "<gml:Polygon"
             + " xmlns:gml=\"http://www.opengis.net/gml\"><gml:exterior><gml:LinearRing><gml:posList>0"
@@ -433,20 +418,18 @@ class SpatialFileServiceTest {
             + "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[["
             + "-121.5,50.2],[-121.4,50.2],[-121.4,50.3],[-121.5,50.3],[-121.5,50.2]]]}}"
             + "]}";
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "multi.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("multi.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("exactly one feature");
   }
 
   @Test
   void shouldThrowOnXmlExtension() {
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "data.xml", "<root/>".getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = "<root/>".getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("data.xml", fileBytes))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Unsupported file type");
   }
@@ -458,10 +441,9 @@ class SpatialFileServiceTest {
             + "<gml:Curve xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
             + "<gml:segments><gml:ArcString><gml:posList>-123.2 49.2 -123.1 49.3 -123.0 49.2"
             + "</gml:posList></gml:ArcString></gml:segments></gml:Curve>";
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "curve.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("curve.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Only Polygon and MultiPolygon");
   }
@@ -471,10 +453,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\","
             + "\"geometry\":{\"type\":\"Point\",\"coordinates\":[-120.5,49.2]}}]}";
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "point.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("point.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("Only Polygon and MultiPolygon");
   }
@@ -512,14 +493,9 @@ class SpatialFileServiceTest {
         SpatialFileService.class.getDeclaredMethod(
             "validateNonZeroArea", Geometry.class, String.class, int.class);
     m.setAccessible(true);
-    assertThatThrownBy(
-            () -> {
-              try {
-                m.invoke(service, poly, "3005", 1);
-              } catch (InvocationTargetException ite) {
-                throw ite.getCause();
-              }
-            })
+    assertThatThrownBy(() -> m.invoke(service, poly, "3005", 1))
+        .isInstanceOf(InvocationTargetException.class)
+        .cause()
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("zero or collapsed surface area");
   }
@@ -546,9 +522,9 @@ class SpatialFileServiceTest {
   @Test
   @DisplayName("Should throw when file name is null")
   void shouldThrowWhenFileNameIsNull() {
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(null, "content".getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = "content".getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile(null, fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -561,10 +537,9 @@ class SpatialFileServiceTest {
             + " -123,49.1 -122.9,49.1 -123,49"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "invalid-crs.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("invalid-crs.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -577,10 +552,9 @@ class SpatialFileServiceTest {
             + " -123,49 -123,49 -123,49"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "degenerate.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("degenerate.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -592,10 +566,9 @@ class SpatialFileServiceTest {
             + "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "outside-bc.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("outside-bc.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -605,10 +578,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::9999\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-123.0,49.0],[-123.0,49.1],[-122.9,49.1],[-123.0,49.0]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "bad-crs.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("bad-crs.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -618,10 +590,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-123.0,49.0]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "point.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("point.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -631,10 +602,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[0.0,0.0],[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "outside.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("outside.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -644,10 +614,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-123.0,49.0],[-123.0,49.1],[-122.9,49.0]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "invalid-ring.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("invalid-ring.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -657,10 +626,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-123.0,49.0],[-123.0,49.1],[-122.9,49.1],[-122.9,49.0]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "unclosed-ring.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("unclosed-ring.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -777,10 +745,9 @@ class SpatialFileServiceTest {
             + " -123.0,49.0 -123.0,49.0 -123.0,49.0"
             + "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "zero-area.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("zero-area.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -790,10 +757,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}}}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "no-features.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("no-features.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -802,10 +768,9 @@ class SpatialFileServiceTest {
   void shouldThrowForInvalidGeoJsonSyntax() {
     String invalidJson = "{\"type\":\"FeatureCollection\", \"features\": [invalid]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "bad-json.geojson", invalidJson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = invalidJson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("bad-json.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -816,10 +781,9 @@ class SpatialFileServiceTest {
         "<gml:Invalid xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">"
             + "</gml:Invalid>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "invalid-gml.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("invalid-gml.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -832,10 +796,9 @@ class SpatialFileServiceTest {
             + " -123.1,49.0 -123.1,49.1 -123.0,49.1"
             + " -123.0,49.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "no-srs.gml", gml.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = gml.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("no-srs.gml", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -845,10 +808,9 @@ class SpatialFileServiceTest {
     String geojson =
         "{\"type\":\"FeatureCollection\",\"crs\":{\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-120.5,49.2],[-120.4,49.2],[-120.5,49.2]]]}}]}";
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "short-coords.geojson", geojson.getBytes(StandardCharsets.UTF_8)))
+    byte[] fileBytes = geojson.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(() -> service.processSpatialFile("short-coords.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class);
   }
 
@@ -949,10 +911,9 @@ class SpatialFileServiceTest {
     ArrayNode features = (ArrayNode) collection.path("features");
     features.add(features.get(0).deepCopy());
 
-    assertThatThrownBy(
-            () ->
-                service.processSpatialFile(
-                    "activities.geojson", mapper.writeValueAsBytes(collection)))
+    byte[] fileBytes = mapper.writeValueAsBytes(collection);
+
+    assertThatThrownBy(() -> service.processSpatialFile("activities.geojson", fileBytes))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("exactly one feature (found 2)");
   }
