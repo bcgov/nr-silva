@@ -13,6 +13,8 @@ Reference guide for **backend coding conventions** in Silva (Java Spring Boot + 
 
 **Choose your reference based on task type:**
 
+When writing or modifying Java code or tests, also load [Sonar compliance](references/sonar-compliance.md). For Sonar-only tasks, load that reference directly.
+
 ### 1. **Database/Entity/Model/Query Pattern Tasks**
 Load: `db-patterns.md`
 - Dual-database architecture overview
