@@ -29,15 +29,15 @@ flowchart TD
         direction TB
         ACL["1. External Dependency Tables (ACL Scope)<br/>(77 tables)"]
         Boundary["2. Boundary Hotspots (#1519 Scope)<br/>(11 tables)"]
-        Core["3. Internal Silva Core (ETL Scope)<br/>(74 tables)"]
-        Archive["4. Internal Audit & Archive Snapshots<br/>(19 tables)"]
+        Core["3. Internal Silva Core (ETL Scope)<br/>(73 tables)"]
+        Archive["4. Internal Audit & Archive Snapshots<br/>(20 tables)"]
         Temp["5. Legacy Temp & Session Staging<br/>(24 tables)"]
         Codes["6. Reference & Domain Code Tables<br/>(47 tables)"]
     end
 
     subgraph Targets ["Modern Silva Targets"]
         Ports["Domain Provider Ports<br/>(TenureProvider, ForestClientProvider, etc.)"]
-        CQRS["Local CQRS Read Projections<br/>(silva.cut_block_open_admin)"]
+        CQRS["Local Read Models / Projections<br/>(silva.cut_block_open_admin pending #1519)"]
         PostgresCore["PostgreSQL silva Schema<br/>(silva.opening, etc.)"]
         ColdStorage["PostgreSQL Historical Partitions<br/>(silva.*_archive)"]
         Deprecate["DEPRECATE & ELIMINATE<br/>(Stateless Spring DTOs)"]
@@ -56,8 +56,8 @@ flowchart TD
 | :--- | :---: | :--- | :--- |
 | **External Dependency Tables (ACL Scope)** | **77** | Ports & Adapters (ACL) | Domain Provider Ports (`*Provider`) in `ca.bc.gov.restapi.results.common.provider` |
 | **Boundary Hotspots & Shared Tables** | **11** | CQRS Read Projections & Hooks | Local PostgreSQL read projections (`silva.cut_block_open_admin`) + lifecycle hooks; reviewed in **[#1519](https://github.com/bcgov/nr-silva/issues/1519)** |
-| **Internal Silva Core Tables (ETL Scope)** | **74** | PostgreSQL Schema | Migrated to PostgreSQL `silva` schema via ETL module; Spring Data JPA |
-| **Internal Audit, Archive & History Tables** | **19** | Partitioned / Event History | PostgreSQL append-only audit tables and historical milestone archive tables |
+| **Internal Silva Core Tables (ETL Scope)** | **73** | PostgreSQL Schema | Migrated to PostgreSQL `silva` schema via ETL module; Spring Data JPA |
+| **Internal Audit, Archive & History Tables** | **20** | Partitioned / Event History | PostgreSQL append-only audit tables and historical milestone archive tables |
 | **Legacy Temp, Session & Staging Tables** | **24** | **Deprecate / Eliminate** | Eliminated; replaced by stateless HTTP sessions, React Query, and in-memory DTOs |
 | **Reference & Domain Code Tables** | **47** | Flyway Seeding & Caching | Seeded via Flyway migrations into PostgreSQL `silva.code_*`; Caffeine cached (`ttl = 60m`) |
 | **Total Reconciled Assets** | **252** | | |
@@ -71,7 +71,7 @@ Silva separates operational commands from read-heavy cross-domain queries:
 - **The Cross-Network Join & $N+1$ Trap:** Directly joining remote external REST APIs across hundreds or thousands of records introduces severe latency and risks external rate-limit exhaustion. Furthermore, spatial GIS queries (e.g. PostGIS `ST_Intersects` between opening polygons and cut block geometries) **cannot be executed over remote REST APIs**.
 - **The Division of Labor:**
   1. **Command Path (Authoritative Validation):** State-changing actions and validation checks query the live domain port (`*Provider`, e.g. `TenureProvider.verifyCutBlock`, `ForestClientProvider.getClient`) to enforce business rules against the authoritative system of record.
-  2. **Query Path (High-Performance Local Reads):** All multi-entity searches, composite dashboards, spatial GIS overlays, and reports execute 100% locally against indexed PostgreSQL tables and read model projections (`silva.cut_block_open_admin`, `silva.opening_search_vw`).
+  2. **Query Path (High-Performance Local Reads):** All multi-entity searches, composite dashboards, spatial GIS overlays, and reports execute 100% locally against indexed PostgreSQL tables and read model projections (`silva.cut_block_open_admin` [candidate projection pending #1519], `silva.opening_search_vw`).
 
 ```mermaid
 flowchart TD
@@ -127,7 +127,7 @@ These tables belong to external ministry systems. Under the Anti-Corruption Laye
 | :--- | :--- | :--- |
 | `BLOCK_STATUS_CODE` | Cut block operational status lookup (e.g., Active, Complete, Logged) | Cut block eligibility and operational status check |
 | `CORP_CAPTURE_METHOD` | Spatial coordinate capture methodology for tenure mapping | Spatial coordinate capture metadata |
-| `CUT_BLOCK_AUDIT` | Historical audit log of cut block modifications in FTA | Cut block modification history |
+| `CUT_BLOCK_AUDIT` | Historical audit log of cut block modifications in FTA | Cut block geometry/attribute modification history; opening tenure linkage changes are governed separately via `silva.cut_block_open_admin` and reviewed in #1519 |
 | `CUT_BLOCK_CLIENT` | Cut block licensee client and billing association | Licensee client validation against cut block |
 | `CUT_BLOCK_GEOM` | Spatial polygon geometry and boundary mapping for harvested cut blocks | Spatial boundary and cut block mapping |
 | `DIST_TENR_DEFLT` | Natural resource district default tenure administration parameters | Default district administrative parameters |
@@ -267,7 +267,7 @@ These tables belong to external ministry systems. Under the Anti-Corruption Laye
 
 ## 4. Internal Silva-Owned Core Tables (ETL Module Scope)
 
-These 74 tables represent core Silva business entities. They are **100% owned by Silva** and targeted for full migration into the PostgreSQL `silva` schema by the ETL pipeline.
+These 73 tables represent core Silva business entities. They are **100% owned by Silva** and targeted for full migration into the PostgreSQL `silva` schema by the ETL pipeline.
 
 ### 4.1 Opening Header & Geography
 
@@ -303,6 +303,7 @@ These 74 tables represent core Silva business entities. They are **100% owned by
 | `STOCKING_LAYER_SPECIES` | `silva.stocking_layer_species` | Approved preferred and acceptable tree species per stocking layer |
 | `STOCKING_MILESTONE` | `silva.stocking_milestone` | Regeneration and free growing declared milestones and due dates |
 | `STOCKING_STANDARD_UNIT` | `silva.stocking_standard_unit` | Stocking Standard Units (SSU) defining regeneration obligations |
+| `STOCKING_STANDARD_GEOMETRY` | `silva.stocking_standard_geometry` | Approved spatial geometry polygons for stocking standard units |
 | `STOCKING_STATUS_TYPE_XREF` | `silva.stocking_status_type_xref` | Cross-reference associating stocking statuses with stocking types |
 
 ### 4.3 Forest Cover & Inventory Polygons
@@ -382,7 +383,7 @@ Historical snapshots, amendment revisions, and transactional audit trails.
 | `RESULTS_AUDIT_DETAIL` | `silva.results_audit_detail` | Append-only attribute change audit log; partitioned by audit year. |
 | `RESULTS_AUDIT_EVENT` | `silva.results_audit_event` | High-level business audit event log for opening transactions. |
 | `RESULTS_AUDIT_GEOMETRY` | `silva.results_audit_geometry` | Spatial geometry revision audit trail. |
-| `CUT_BLOCK_AUDIT` | `silva.cut_block_audit` | Audit log of cut block opening linkages. |
+| `RESULTS_ELECTRONIC_SUBMISSION` | `silva.results_electronic_submission` | Durable provenance tracking for electronic submissions (ESUB); referenced by opening, activity, and forest cover foreign keys. |
 | `STOCKING_STANDARD_UNIT_ARCHIVE` | `silva.stocking_standard_unit_archive` | Historical archive snapshot of stocking standard units. |
 | `STOCKING_STANDARD_GEOM_ARCHIVE` | `silva.stocking_standard_geom_archive` | Historical spatial polygon archive for stocking standards. |
 | `STOCKING_LAYER_ARCHIVE` | `silva.stocking_layer_archive` | Historical archive of stocking layers. |
@@ -432,7 +433,6 @@ Legacy RESULTS heavily utilized database tables for transient operations, includ
 | `RESULTS_XML_SUBMISSION_TEMP` | ESF XML electronic submission temp | **DEPRECATE:** Replaced by streaming XML parser and direct Spring processing. |
 | `RESULTS_VAL_XML_SUBS_TEMP` | Electronic submission validation staging | **DEPRECATE:** Replaced by in-memory schema validation. |
 | `RESULTS_PRO_XML_SUBS_TEMP` | Electronic submission processing staging | **DEPRECATE:** Replaced by transactional Spring service processing. |
-| `RESULTS_ELECTRONIC_SUBMISSION` | Legacy electronic submission tracking | **DEPRECATE:** Replaced by modern submission audit logs. |
 | `RESULTS201_INBOX_SEARCH_TEMP` | User inbox search temporary results | **DEPRECATE:** Replaced by direct indexed SQL pagination (`Pageable`). |
 | `RESULTS_INBOX_PREVIEW` | Legacy inbox preview temporary staging | **DEPRECATE:** Replaced by direct indexed SQL queries. |
 | `RESULTS_VRIMS_OID_TEMP` | VRIMS spatial integration temporary state | **DEPRECATE:** Replaced by direct PostGIS integration. |
@@ -513,7 +513,7 @@ Eleven boundary tables sit at the intersection between Silva and external system
 
 | Table Name | System Boundary | Primary Ownership Conflict & Architectural Remediation |
 | :--- | :---: | :--- |
-| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Shared Bridge Table:** FTA owns Cut Blocks; Silva owns Openings. Silva persists `silva.cut_block_open_admin` as a local PostgreSQL CQRS read projection and invokes `TenureAssociationHandler` lifecycle hooks on association changes. |
+| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Shared Bridge Table (Conditional Candidate Pattern pending #1519):** Under Integration Spec §6.1 (Silva exclusive ownership of opening-cut block linkages), Silva manages `silva.cut_block_open_admin` as the local authority. Under the illustrative scenario in §6.3 (FTA tenure mastership), it functions as a CQRS read projection updated via event hooks. The final command-side persistence model and consistency guarantees will be formally established in Issue #1519. |
 | `CUT_BLOCK` | FTA | **External Master:** Owned by FTA. Legacy RESULTS executed direct updates against this table. In modern Silva, `CUT_BLOCK` is **strictly Read-Only** via `TenureProvider`. Mutations are delegated to FTA via REST/events under RFC-001. |
 | `ORG_UNIT` | Corporate BCGW / Silva | **Corporate Hierarchy:** Shared ministry organizational structure. Decoupled via `OrgUnitProvider` with in-memory caching. |
 | `EUSER` | Corporate / Silva | **Legacy User Registry:** Replaced by Keycloak / OIDC identity tokens (BCeID / IDIR) and a modern `silva.user_profile` table for user preferences and roles. |
