@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SilvaPostgresConstants extends SilvaConstants {
 
-  public static final Integer MAX_OPENING_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25 MB
+  public static final Integer MAX_SPATIAL_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25 MB
 
   /** Tolerance for Douglas-Peucker thinning in meters (for EPSG:3005). */
   public static final double THINNING_TOLERANCE_METERS = 2.5;
