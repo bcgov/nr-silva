@@ -1,12 +1,18 @@
 package ca.bc.gov.restapi.results.postgres.endpoint;
 
+import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
@@ -15,15 +21,17 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
 import ca.bc.gov.restapi.results.postgres.config.OpeningEndpointTestConfig;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
-import ca.bc.gov.restapi.results.postgres.service.OpeningSpatialFileService;
+import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,7 +50,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @Autowired private MockMvc mockMvc;
 
-  @Autowired private OpeningSpatialFileService openingSpatialFileService;
+  @Autowired private SpatialFileService spatialFileService;
 
   @Autowired private VirusScanService virusScanService;
 
@@ -50,7 +58,7 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
 
   @BeforeEach
   void resetMocks() {
-    Mockito.reset(openingSpatialFileService);
+    Mockito.reset(spatialFileService);
     Mockito.reset(virusScanService);
   }
 
@@ -58,8 +66,11 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Should accept upload and return accepted")
   void shouldAcceptUpload() throws Exception {
     ExtractedGeoDataDto dto =
-        ExtractedGeoDataDto.builder().geometryArea(null).geoJson(mapper.createObjectNode()).build();
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
+        ExtractedGeoDataDto.builder()
+            .geometryArea(new BigDecimal("4.3"))
+            .geoJson(mapper.createObjectNode().put("type", "FeatureCollection"))
+            .build();
+    when(spatialFileService.processSpatialFile(anyString(), any(byte[].class)))
         .thenReturn(dto);
 
     MockMultipartFile file =
@@ -76,7 +87,16 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isAccepted());
+        .andExpect(status().isAccepted())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(content().json(mapper.writeValueAsString(dto)))
+        .andExpect(jsonPath("$.geometryArea").value(4.3))
+        .andExpect(jsonPath("$.geoJson.type").value("FeatureCollection"));
+
+    InOrder order = inOrder(virusScanService, spatialFileService);
+    order.verify(virusScanService).scanOrThrow(aryEq(file.getBytes()), eq("test.geojson"));
+    order.verify(spatialFileService).processSpatialFile(eq("test.geojson"), aryEq(file.getBytes()));
+    order.verifyNoMoreInteractions();
   }
 
   @Test
@@ -95,12 +115,14 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .file(file)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isForbidden());
+
+    verifyNoInteractions(virusScanService, spatialFileService);
   }
 
   @Test
   @DisplayName("Should return bad request when service throws")
   void shouldReturnBadRequestWhenServiceThrows() throws Exception {
-    when(openingSpatialFileService.processOpeningSpatialFile(anyString(), any(byte[].class)))
+    when(spatialFileService.processSpatialFile(anyString(), any(byte[].class)))
         .thenThrow(
             new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "bad"));
 
@@ -118,7 +140,15 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.detail").value("bad"));
+
+    InOrder order = inOrder(virusScanService, spatialFileService);
+    order.verify(virusScanService).scanOrThrow(aryEq(file.getBytes()), eq("test.geojson"));
+    order.verify(spatialFileService).processSpatialFile(eq("test.geojson"), aryEq(file.getBytes()));
+    order.verifyNoMoreInteractions();
   }
 
   @Test
@@ -139,7 +169,10 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnprocessableEntity());
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(jsonPath("$.detail").value("Virus detected: Eicar-Test-Signature"));
+
+    verifyNoInteractions(spatialFileService);
   }
 
   @Test
@@ -163,7 +196,10 @@ class OpeningEndpointUploadIntegrationTest extends AbstractTestContainerIntegrat
                 .with(csrf().asHeader())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnprocessableEntity());
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(jsonPath("$.detail").value("Virus scan unavailable: connection refused"));
+
+    verifyNoInteractions(spatialFileService);
   }
 
   @Test

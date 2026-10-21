@@ -48,7 +48,7 @@ public class CreateOpeningService {
 
   private static final long FEATURE_CLASS_SKEY = 2409L;
 
-  private final OpeningSpatialFileService openingSpatialFileService;
+  private final SpatialFileService spatialFileService;
   private final OpenMapsService openMapsService;
   private final OpeningPostgresRepository openingRepository;
   private final OpeningGeometryPostgresRepository openingGeometryRepository;
@@ -79,7 +79,7 @@ public class CreateOpeningService {
 
     // Step 1: process spatial file (validates, thins, reprojects to EPSG:4326)
     ExtractedGeoDataDto geoData =
-        openingSpatialFileService.processOpeningSpatialFile(fileName, fileBytes);
+        spatialFileService.processSpatialFile(fileName, fileBytes);
 
     // Step 2: parse GeoJSON → JTS Geometry in EPSG:4326; get centroid
     Geometry geometry4326 = parseAllGeometries(geoData.geoJson());
