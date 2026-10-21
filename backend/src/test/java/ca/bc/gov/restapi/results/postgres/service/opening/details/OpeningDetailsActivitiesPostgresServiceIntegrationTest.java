@@ -133,4 +133,26 @@ class OpeningDetailsActivitiesPostgresServiceIntegrationTest
     assertThat(dto.objective1().code()).isNull();
     assertThat(dto.funding().code()).isNull();
   }
+
+  @Test
+  @DisplayName("Main search term matches child table objectives and funding in list and count")
+  void activities_searchTerm_matchesChildTableValues() {
+    clearLegacyFunding(COMPLETED);
+    addObjective(COMPLETED, "Y", "2BT", 1);
+    addFunding(COMPLETED, "Y", "BCP", 1);
+    addObjective(COMPLETED, "N", "AMD", 1);
+
+    var byObjective =
+        service.getOpeningActivitiesActivities(OPENING_ID, "BILLION", PageRequest.of(0, 50));
+    var byFunding =
+        service.getOpeningActivitiesActivities(OPENING_ID, "BC PARKS", PageRequest.of(0, 50));
+    var byOtherSet =
+        service.getOpeningActivitiesActivities(OPENING_ID, "AMENDMENT", PageRequest.of(0, 50));
+
+    assertThat(byObjective.getContent()).extracting("atuId").contains(COMPLETED);
+    assertThat(byObjective.getTotalElements()).isEqualTo(byObjective.getContent().size());
+    assertThat(byFunding.getContent()).extracting("atuId").contains(COMPLETED);
+    assertThat(byFunding.getTotalElements()).isEqualTo(byFunding.getContent().size());
+    assertThat(byOtherSet.getContent()).extracting("atuId").doesNotContain(COMPLETED);
+  }
 }
