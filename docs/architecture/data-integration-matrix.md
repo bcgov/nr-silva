@@ -70,8 +70,18 @@ Silva separates operational commands from read-heavy cross-domain queries:
 
 - **The Cross-Network Join & $N+1$ Trap:** Directly joining remote external REST APIs across hundreds or thousands of records introduces severe latency and risks external rate-limit exhaustion. Furthermore, spatial GIS queries (e.g. PostGIS `ST_Intersects` between opening polygons and cut block geometries) **cannot be executed over remote REST APIs**.
 - **The Division of Labor:**
-  1. **Command Path (Authoritative Validation):** State-changing actions and validation checks query the live domain port (`*Provider`, e.g. `TenureProvider.verifyCutBlock`, `ForestClientProvider.getClient`) to enforce business rules against the authoritative system of record.
-  2. **Query Path (High-Performance Local Reads):** All multi-entity searches, composite dashboards, spatial GIS overlays, and reports execute 100% locally against indexed PostgreSQL tables and read model projections (`silva.cut_block_open_admin` [candidate projection pending #1519], `silva.opening_search_vw`).
+
+  #### Command Path (Authoritative Validation)
+  - **When to use:** You are changing state — saving, linking, updating, or deleting.
+  - **What it does:** Fetches live data from the external system of record to enforce business rules before allowing the transaction to commit.
+  - **Why:** You need real-time truth from the authoritative source of record to prevent invalid business states.
+  - **Concrete Example:** Before a user can link a tenure to an opening, the system calls `TenureProvider.verifyCutBlock()`, querying the live FTA database to ask: *"Is this cut block actually valid and owned by the right licensee?"* Only if FTA confirms eligibility does Silva permit the association to persist.
+
+  #### Query Path (High-Performance Local Reads)
+  - **When to use:** You are reading, filtering, searching, viewing dashboards, mapping GIS layers, or generating reports.
+  - **What it does:** Queries 100% local PostgreSQL tables and read projections pre-synced from external systems.
+  - **Why:** Remote network calls and REST APIs are slow ($N+1$ latency trap), PostGIS spatial queries cannot execute over external REST endpoints, and displaying data does not require authoritative locking.
+  - **Concrete Example:** When a user searches for *"all openings filtered by tenure X"*, Silva queries the local `silva.cut_block_open_admin` read projection (candidate pattern pending [#1519](https://github.com/bcgov/nr-silva/issues/1519)), delivering sub-millisecond responses and PostGIS vector tile rendering without ever making remote calls to FTA.
 
 ```mermaid
 flowchart TD
