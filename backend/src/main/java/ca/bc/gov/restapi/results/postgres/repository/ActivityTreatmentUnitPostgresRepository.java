@@ -43,6 +43,16 @@ public interface ActivityTreatmentUnitPostgresRepository
   List<ActivityTreatmentUnitEntity> findByOpeningIdAndSilvBaseCode(
       Long openingId, String silvBaseCode);
 
+  /** Allocates the id of a new activity. */
+  @Query(nativeQuery = true, value = "SELECT nextval('silva.activity_treatment_unit_id_seq')")
+  Long nextActivityId();
+
+  /** Returns the sequence number of the next activity under an opening. */
+  @Query(
+      "SELECT COALESCE(MAX(a.activityTuSeqNo), 0) + 1 FROM ActivityTreatmentUnitEntity a "
+          + "WHERE a.openingId = :openingId")
+  Integer nextSequenceNumber(@Param("openingId") Long openingId);
+
   @Override
   @Query(
       nativeQuery = true,
