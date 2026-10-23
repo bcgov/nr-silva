@@ -31,6 +31,8 @@ import org.springframework.data.domain.Pageable;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractStockingStandardsService implements StockingStandardsService {
 
+  private static final String PIPE_DELIMITER = "\\|\\|";
+
   protected StockingStandardsRepository stockingStandardsRepository;
   protected ForestClientService forestClientService;
 
@@ -156,7 +158,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
       return List.of();
     }
     String[] codeArr = codes.split(",");
-    String[] nameArr = names != null ? names.split("\\|\\|") : new String[0];
+    String[] nameArr = names != null ? names.split(PIPE_DELIMITER) : new String[0];
     List<CodeDescriptionDto> result = new ArrayList<>();
     for (int i = 0; i < codeArr.length; i++) {
       String code = codeArr[i].trim();
@@ -173,7 +175,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
       return List.of();
     }
     String[] codeArr = codes.split(",");
-    String[] nameArr = names != null ? names.split("\\|\\|") : new String[0];
+    String[] nameArr = names != null ? names.split(PIPE_DELIMITER) : new String[0];
     List<CodeDescriptionDto> result = new ArrayList<>();
     for (int i = 0; i < codeArr.length; i++) {
       String code = codeArr[i].trim();
@@ -219,6 +221,6 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
     if (raw == null || raw.isBlank()) {
       return List.of();
     }
-    return Arrays.stream(raw.split("\\|\\|")).map(String::trim).filter(s -> !s.isBlank()).toList();
+    return Arrays.stream(raw.split(PIPE_DELIMITER)).map(String::trim).filter(s -> !s.isBlank()).toList();
   }
 }
