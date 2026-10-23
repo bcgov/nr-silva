@@ -22,6 +22,10 @@ import org.springframework.stereotype.Repository;
 public interface SilvicultureCommentPostgresRepository
     extends JpaRepository<SilvicultureCommentEntity, Long>, SilvicultureCommentRepository {
 
+  /** Allocates the id of a new comment. */
+  @Query(nativeQuery = true, value = "SELECT nextval('silva.silviculture_comment_id_seq')")
+  Long nextCommentId();
+
   @Override
   @Query(nativeQuery = true, value = SilvaPostgresQueryConstants.GET_COMMENTS)
   List<CommentProjection> getCommentById(

@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.entity.comment;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -31,7 +31,7 @@ public class SilvicultureCommentEntity {
   private String commentTypeCode;
 
   @Column(name = "comment_text", length = 2000)
-  @Max(2000)
+  @Size(max = 2000)
   private String comment;
 
   @Column(name = "entry_userid", length = 30)
