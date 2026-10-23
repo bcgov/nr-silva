@@ -39,6 +39,7 @@ public class CreateActivityService {
   private static final String COMMENT_TYPE_CODE = "GENERAL";
 
   private final CreateActivityValidationService validationService;
+  private final ActivityGeometryService geometryService;
   private final ActivityTreatmentUnitPostgresRepository activityRepository;
   private final ActivityTuObjectivePostgresRepository objectiveRepository;
   private final ActivityTuFundSrcePostgresRepository fundSrceRepository;
@@ -55,13 +56,32 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(CreateActivityRequestDto dto) {
+    return createActivity(dto, null, null);
+  }
+
+  /**
+   * Validates and creates the activity with its objectives, funding sources, comment and the
+   * optional spatial file. Nothing is saved when the request or the file is invalid.
+   *
+   * @param dto the request
+   * @param fileName the original name of the spatial file, or null when there is no file
+   * @param fileBytes the content of the spatial file, already scanned for viruses, or null
+   * @return the created activity
+   */
+  @Transactional
+  public CreateActivityResponseDto createActivity(
+      CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
     OpeningEntity opening = validationService.validate(dto);
+    var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = LocalDateTime.now();
     String resultsInd = dto.status() == ActivityStatus.COMPLETED ? ACTUAL_SET : PLANNED_SET;
 
     Long activityId = activityRepository.nextActivityId();
     activityRepository.save(buildActivity(dto, opening, activityId, resultsInd, userId, now));
+    if (geometry != null) {
+      geometryService.save(activityId, geometry, userId, now);
+    }
     saveObjectives(dto.objectiveCodes(), activityId, resultsInd, userId, now);
     saveFundingSources(dto.fundingSourceCodes(), activityId, resultsInd, userId, now);
     saveComment(dto.comment(), activityId, userId, now);
