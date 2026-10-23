@@ -1,7 +1,9 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsActivitiesService;
@@ -12,6 +14,7 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,8 +23,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.bean.override.convention.TestBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,12 +38,25 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
 
   // Opening with a prime licence gross area of 79.4 ha and org unit 1
   private static final Long OPENING_ID = 1004185L;
+  private static final String SQUARE_GEOJSON =
+      """
+      {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
+       "features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon",
+       "coordinates":[[[850000,1500000],[850100,1500000],[850100,1500100],
+                        [850000,1500100],[850000,1500000]]]}}]}
+      """;
 
   @Autowired private CreateActivityService service;
   @Autowired private OpeningDetailsActivitiesService activitiesService;
   @Autowired private SilvicultureCommentRepository commentRepository;
   @Autowired private JdbcTemplate jdbcTemplate;
   @PersistenceContext private EntityManager entityManager;
+
+  @TestBean private SpatialFileService spatialFileService;
+
+  static SpatialFileService spatialFileService() {
+    return new SpatialFileService();
+  }
 
   private CreateActivityRequestDto planned(String baseCode, String comment) {
     return new CreateActivityRequestDto(
@@ -245,6 +263,85 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThatThrownBy(() -> service.createActivity(planned("PL", "comment")))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("baseCode: must be one of");
+
+    entityManager.flush();
+    Integer after =
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
+    assertThat(after).isEqualTo(before);
+  }
+
+  @Test
+  @DisplayName("Saves the spatial file as the activity geometry in EPSG:3005")
+  void createActivity_withSpatialFile_savesGeometry() {
+    Long id =
+        service
+            .createActivity(
+                planned("HC", null), "activity.geojson", SQUARE_GEOJSON.getBytes(UTF_8))
+            .activityId();
+    entityManager.flush();
+
+    Map<String, Object> row =
+        jdbcTemplate.queryForMap(
+            "SELECT ST_SRID(geometry) AS srid, feature_area, feature_perimeter, "
+                + "feature_class_skey, entry_userid, revision_count "
+                + "FROM silva.activity_treatment_geometry WHERE activity_treatment_unit_id = ?",
+            id);
+    assertThat(row.get("srid")).isEqualTo(3005);
+    assertThat(row.get("feature_class_skey")).isEqualTo(2411L);
+    assertThat(row.get("revision_count")).isEqualTo(1);
+    assertThat((String) row.get("entry_userid")).startsWith("IDIR\\");
+    // A 100 m x 100 m square, within the error of reprojecting to EPSG:4326 and back
+    assertThat((BigDecimal) row.get("feature_area"))
+        .isCloseTo(new BigDecimal("1.0"), within(new BigDecimal("0.05")));
+    assertThat((BigDecimal) row.get("feature_perimeter"))
+        .isCloseTo(new BigDecimal("400"), within(new BigDecimal("5")));
+  }
+
+  @Test
+  @DisplayName("Saves a GeoJSON file in EPSG:4326")
+  void createActivity_withLongitudeLatitudeFile_savesGeometry() throws IOException {
+    byte[] file = new ClassPathResource("spatial/activity-1527650.geojson").getContentAsByteArray();
+
+    Long id = service.createActivity(planned("HC", null), "activity.geojson", file).activityId();
+    entityManager.flush();
+
+    BigDecimal area =
+        jdbcTemplate.queryForObject(
+            "SELECT feature_area FROM silva.activity_treatment_geometry "
+                + "WHERE activity_treatment_unit_id = ?",
+            BigDecimal.class,
+            id);
+    assertThat(area).isPositive();
+  }
+
+  @Test
+  @DisplayName("Saves no geometry when there is no file")
+  void createActivity_withoutFile_savesNoGeometry() {
+    Long id = service.createActivity(planned("HC", null)).activityId();
+    entityManager.flush();
+
+    Integer count =
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM silva.activity_treatment_geometry "
+                + "WHERE activity_treatment_unit_id = ?",
+            Integer.class,
+            id);
+    assertThat(count).isZero();
+  }
+
+  @Test
+  @DisplayName("Saves nothing when the spatial file is invalid")
+  void createActivity_invalidFile_savesNothing() {
+    Integer before =
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
+
+    assertThatThrownBy(
+            () ->
+                service.createActivity(
+                    planned("HC", "comment"), "bad.geojson", "not a spatial file".getBytes(UTF_8)))
+        .isInstanceOf(ResponseStatusException.class);
 
     entityManager.flush();
     Integer after =

@@ -56,6 +56,15 @@ public class ActivityEndpoint {
               description = "Spatial file (GeoJSON or GML), up to 25MB",
               schema = @Schema(type = "string", format = "binary"))
           MultipartFile file) {
+    byte[] fileBytes = readAndScanFile(file);
+    return spatialFileService.processSpatialFile(file.getOriginalFilename(), fileBytes);
+  }
+
+  /**
+   * Checks that the uploaded file is present and within the size limit, reads it and scans it for
+   * viruses before anything else is done with it.
+   */
+  private byte[] readAndScanFile(MultipartFile file) {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
@@ -70,6 +79,6 @@ public class ActivityEndpoint {
           HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read file: " + e.getMessage(), e);
     }
     virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
-    return spatialFileService.processSpatialFile(file.getOriginalFilename(), fileBytes);
+    return fileBytes;
   }
 }
