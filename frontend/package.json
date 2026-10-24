@@ -29,7 +29,7 @@
     "react-router-dom": "^7.0.0",
     "react-toastify": "^11.1.0",
     "vite": "^6.0.0",
-    "vite-tsconfig-paths": "^5.0.0"
+    "vite-tsconfig-paths": "^6.0.0"
   },
   "scripts": {
     "dev": "start-server-and-test stub http://127.0.0.1:8080 start",
