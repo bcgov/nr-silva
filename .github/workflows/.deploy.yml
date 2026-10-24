@@ -73,7 +73,7 @@ jobs:
       allowed_origins: ${{ steps.allowed_origins.outputs.allowed_origins }}
       route: ${{ steps.route.outputs.route }}
       run_tests: ${{ steps.deploy.outputs.triggered }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: FAM routing
         id: route
@@ -130,7 +130,7 @@ jobs:
     name: Deploy (${{ matrix.name }}) - ${{ inputs.deployment_model }}
     environment: ${{ inputs.environment }}
     needs: [init]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     strategy:
       matrix:
