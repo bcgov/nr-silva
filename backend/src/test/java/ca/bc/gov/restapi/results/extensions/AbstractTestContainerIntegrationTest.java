@@ -34,14 +34,15 @@ public abstract class AbstractTestContainerIntegrationTest {
   static final Flyway flywayPostgres;
   static Flyway flywayOracle;
 
-  static final String primaryDb = resolveTestProperty("server.primary-db", "PRIMARY_DB", "oracle");
+  static final String PRIMARY_DB =
+      resolveTestProperty("server.primary-db", "PRIMARY_DB", "oracle");
 
   static {
     String[] postgresLocations;
-    if ("oracle".equals(primaryDb)) {
+    if ("oracle".equals(PRIMARY_DB)) {
       postgresLocations =
           new String[] {"classpath:db/migration", "classpath:migration/postgres/default"};
-    } else if ("postgres".equals(primaryDb)) {
+    } else if ("postgres".equals(PRIMARY_DB)) {
       postgresLocations =
           new String[] {
             "classpath:db/migration",
@@ -53,13 +54,13 @@ public abstract class AbstractTestContainerIntegrationTest {
       throw new IllegalStateException(
           "Unsupported value for primary database configuration "
               + "(property 'server.primary-db' or env var 'PRIMARY_DB'): '"
-              + primaryDb
+              + PRIMARY_DB
               + "'. Expected one of: oracle, postgres.");
     }
 
     postgres.start();
 
-    if ("oracle".equals(primaryDb)) {
+    if ("oracle".equals(PRIMARY_DB)) {
       oracle.start();
     }
 
@@ -107,7 +108,7 @@ public abstract class AbstractTestContainerIntegrationTest {
    */
   @DynamicPropertySource
   static void registerDynamicProperties(DynamicPropertyRegistry registry) {
-    registry.add("server.primary-db", () -> primaryDb);
+    registry.add("server.primary-db", () -> PRIMARY_DB);
 
     registry.add("spring.datasource.jdbcUrl", postgres::getJdbcUrl);
     registry.add("spring.datasource.username", postgres::getUsername);
@@ -115,7 +116,7 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry.add("spring.datasource.hikari.username", postgres::getUsername);
     registry.add("spring.datasource.hikari.password", postgres::getPassword);
 
-    if ("oracle".equals(primaryDb)) {
+    if ("oracle".equals(PRIMARY_DB)) {
       registry.add("spring.oracle.url", oracle::getJdbcUrl);
       registry.add("spring.oracle.jdbcUrl", oracle::getJdbcUrl);
       registry.add("spring.oracle.username", oracle::getUsername);

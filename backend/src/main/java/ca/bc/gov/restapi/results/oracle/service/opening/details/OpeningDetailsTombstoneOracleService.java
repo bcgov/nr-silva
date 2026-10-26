@@ -6,6 +6,7 @@ import ca.bc.gov.restapi.results.common.service.ForestClientService;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsNotificationService;
 import ca.bc.gov.restapi.results.common.service.opening.details.impl.AbstractOpeningDetailsTombstoneService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ public class OpeningDetailsTombstoneOracleService extends AbstractOpeningDetails
       OpeningRepository<?> openingRepository,
       ForestClientService forestClientService,
       SilvicultureCommentRepository commentRepository,
-      OpeningDetailsNotificationService openingDetailsNotificationService) {
+      @Qualifier("openingDetailsNotificationOracleService")
+          OpeningDetailsNotificationService openingDetailsNotificationService) {
     super(
         openingRepository,
         forestClientService,

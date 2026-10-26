@@ -26,7 +26,6 @@ import ca.bc.gov.restapi.results.common.service.ForestCoverService;
 import ca.bc.gov.restapi.results.common.service.OpeningSearchService;
 import ca.bc.gov.restapi.results.common.service.StandardUnitService;
 import ca.bc.gov.restapi.results.common.service.StockingStandardsService;
-import ca.bc.gov.restapi.results.oracle.SilvaOracleConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -90,41 +89,41 @@ public class SearchEndpoint {
    */
   @GetMapping("/openings")
   public Page<OpeningSearchResponseDto> searchOpeningExact(
-      @RequestParam(value = SilvaOracleConstants.OPENING_ID, required = false) Long openingId,
-      @RequestParam(value = SilvaOracleConstants.CATEGORIES, required = false)
+      @RequestParam(value = SilvaConstants.OPENING_ID, required = false) Long openingId,
+      @RequestParam(value = SilvaConstants.CATEGORIES, required = false)
           List<String> categories,
-      @RequestParam(value = SilvaOracleConstants.OPENING_STATUSES, required = false)
+      @RequestParam(value = SilvaConstants.OPENING_STATUSES, required = false)
           List<String> openingStatuses,
-      @RequestParam(value = SilvaOracleConstants.LICENSE_NUMBER, required = false)
+      @RequestParam(value = SilvaConstants.LICENSE_NUMBER, required = false)
           String licenseNumber,
-      @RequestParam(value = SilvaOracleConstants.LICENSEE_OPENING_ID, required = false)
+      @RequestParam(value = SilvaConstants.LICENSEE_OPENING_ID, required = false)
           String licenseeOpeningId,
-      @RequestParam(value = SilvaOracleConstants.UPDATE_DATE_START, required = false)
+      @RequestParam(value = SilvaConstants.UPDATE_DATE_START, required = false)
           String updateDateStart,
-      @RequestParam(value = SilvaOracleConstants.UPDATE_DATE_END, required = false)
+      @RequestParam(value = SilvaConstants.UPDATE_DATE_END, required = false)
           String updateDateEnd,
-      @RequestParam(value = SilvaOracleConstants.CUT_BLOCK_ID, required = false) String cutBlockId,
-      @RequestParam(value = SilvaOracleConstants.CUTTING_PERMIT_ID, required = false)
+      @RequestParam(value = SilvaConstants.CUT_BLOCK_ID, required = false) String cutBlockId,
+      @RequestParam(value = SilvaConstants.CUTTING_PERMIT_ID, required = false)
           String cuttingPermitId,
-      @RequestParam(value = SilvaOracleConstants.TIMBER_MARK, required = false) String timberMark,
-      @RequestParam(value = SilvaOracleConstants.ORG_UNITS, required = false) List<String> orgUnits,
-      @RequestParam(value = SilvaOracleConstants.CLIENT_NUMBERS, required = false)
+      @RequestParam(value = SilvaConstants.TIMBER_MARK, required = false) String timberMark,
+      @RequestParam(value = SilvaConstants.ORG_UNITS, required = false) List<String> orgUnits,
+      @RequestParam(value = SilvaConstants.CLIENT_NUMBERS, required = false)
           List<String> clientNumbers,
-      @RequestParam(value = SilvaOracleConstants.IS_CREATED_BY_USER, required = false)
+      @RequestParam(value = SilvaConstants.IS_CREATED_BY_USER, required = false)
           Boolean isCreatedByUser,
-      @RequestParam(value = SilvaOracleConstants.SUBMITTED_TO_FRPA, required = false)
+      @RequestParam(value = SilvaConstants.SUBMITTED_TO_FRPA, required = false)
           Boolean submittedToFrpa,
-      @RequestParam(value = SilvaOracleConstants.MAPSHEET_GRID, required = false)
+      @RequestParam(value = SilvaConstants.MAPSHEET_GRID, required = false)
           String mapsheetGrid,
-      @RequestParam(value = SilvaOracleConstants.MAPSHEET_LETTER, required = false)
+      @RequestParam(value = SilvaConstants.MAPSHEET_LETTER, required = false)
           String mapsheetLetter,
-      @RequestParam(value = SilvaOracleConstants.MAPSHEET_SQUARE, required = false)
+      @RequestParam(value = SilvaConstants.MAPSHEET_SQUARE, required = false)
           String mapsheetSquare,
-      @RequestParam(value = SilvaOracleConstants.MAPSHEET_QUAD, required = false)
+      @RequestParam(value = SilvaConstants.MAPSHEET_QUAD, required = false)
           String mapsheetQuad,
-      @RequestParam(value = SilvaOracleConstants.MAPSHEET_SUB_QUAD, required = false)
+      @RequestParam(value = SilvaConstants.MAPSHEET_SUB_QUAD, required = false)
           String mapsheetSubQuad,
-      @RequestParam(value = SilvaOracleConstants.OPENING_NUMBER, required = false)
+      @RequestParam(value = SilvaConstants.OPENING_NUMBER, required = false)
           String openingNumber,
       @ParameterObject Pageable paginationParameters) {
 

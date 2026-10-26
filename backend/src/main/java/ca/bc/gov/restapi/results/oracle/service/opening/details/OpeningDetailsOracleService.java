@@ -8,22 +8,23 @@ import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsSt
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsTenureService;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsTombstoneService;
 import ca.bc.gov.restapi.results.common.service.opening.history.OpeningForestCoverHistoryService;
-
-
 import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardUnitHistoryService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "oracle")
 @Service
 public class OpeningDetailsOracleService extends AbstractOpeningDetailsService {
-  public OpeningDetailsOracleService(OpeningDetailsTombstoneService tombstoneService,
-      OpeningDetailsStockingService stockingService,
-      OpeningDetailsActivitiesService activitiesService, OpeningDetailsTenureService tenureService,
-      OpeningDetailsForestCoverService forestCoverService,
-      OpeningForestCoverHistoryService forestCoverHistoryService,
-      OpeningDetailsAttachmentService attachmentService,
-      OpeningStandardUnitHistoryService standardUnitHistoryService) {
+  public OpeningDetailsOracleService(
+      @Qualifier("openingDetailsTombstoneOracleService") OpeningDetailsTombstoneService tombstoneService,
+      @Qualifier("openingDetailsStockingOracleService") OpeningDetailsStockingService stockingService,
+      @Qualifier("openingDetailsActivitiesOracleService") OpeningDetailsActivitiesService activitiesService,
+      @Qualifier("openingDetailsTenureOracleService") OpeningDetailsTenureService tenureService,
+      @Qualifier("openingDetailsForestCoverOracleService") OpeningDetailsForestCoverService forestCoverService,
+      @Qualifier("openingForestCoverHistoryOracleService") OpeningForestCoverHistoryService forestCoverHistoryService,
+      @Qualifier("openingDetailsAttachmentOracleService") OpeningDetailsAttachmentService attachmentService,
+      @Qualifier("openingStandardUnitHistoryOracleService") OpeningStandardUnitHistoryService standardUnitHistoryService) {
     super(tombstoneService, stockingService, activitiesService, tenureService, forestCoverService,
         forestCoverHistoryService, attachmentService, standardUnitHistoryService);
   }

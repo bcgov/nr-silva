@@ -169,36 +169,40 @@ public class StockingStandardValidationService {
 
     List<BecDataDto> becData = dto.becData();
     if (becInfo) {
-      if (becData == null || becData.isEmpty()) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "At least one BEC entry is required when BEC information is selected");
-      }
-      if (referenceValidationService.hasDuplicateBecCombinations(becData)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
-      }
-      List<String> invalidCombos = new ArrayList<>();
-      for (BecDataDto bec : becData) {
-        if (!referenceValidationService.validateBec(bec).exists()) {
-          invalidCombos.add(
-              bec.bgcZoneCode()
-                  + "/"
-                  + bec.bgcSubzoneCode()
-                  + "/"
-                  + StringUtils.defaultString(bec.variant())
-                  + "/"
-                  + StringUtils.defaultString(bec.phase())
-                  + "/"
-                  + bec.siteSeries());
-        }
-      }
-      if (!invalidCombos.isEmpty()) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Unknown BEC combination(s): " + String.join(", ", invalidCombos));
-      }
+      validateBecDataEntries(becData);
     } else if (becData != null && !becData.isEmpty()) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "BEC entries must not be supplied when BEC information is not selected");
+    }
+  }
+
+  private void validateBecDataEntries(List<BecDataDto> becData) {
+    if (becData == null || becData.isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "At least one BEC entry is required when BEC information is selected");
+    }
+    if (referenceValidationService.hasDuplicateBecCombinations(becData)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "becData must not contain duplicate BEC combinations");
+    }
+    List<String> invalidCombos = new ArrayList<>();
+    for (BecDataDto bec : becData) {
+      if (!referenceValidationService.validateBec(bec).exists()) {
+        invalidCombos.add(
+            bec.bgcZoneCode()
+                + "/"
+                + bec.bgcSubzoneCode()
+                + "/"
+                + StringUtils.defaultString(bec.variant())
+                + "/"
+                + StringUtils.defaultString(bec.phase())
+                + "/"
+                + bec.siteSeries());
+      }
+    }
+    if (!invalidCombos.isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Unknown BEC combination(s): " + String.join(", ", invalidCombos));
     }
   }
 
@@ -259,38 +263,46 @@ public class StockingStandardValidationService {
 
   private void validateLayers(CreateStockingStandardRequestDto dto) {
     if (dto.layerType() == StockingLayerType.SINGLE) {
-      if (dto.singleLayer() == null) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "singleLayer is required when layerType is SINGLE");
-      }
-      if (dto.multiLayers() != null && !dto.multiLayers().isEmpty()) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "multiLayers must not be supplied when layerType is SINGLE");
-      }
-      if (!"I".equals(dto.singleLayer().layerCode())) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "singleLayer must use layer code I when layerType is SINGLE");
-      }
-      validateLayerFields(dto.singleLayer(), false);
+      validateSingleLayer(dto);
     } else {
-      if (dto.singleLayer() != null) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "singleLayer must not be supplied when layerType is MULTI");
-      }
-      List<StockingLayerDto> multiLayers = dto.multiLayers();
-      if (multiLayers == null || multiLayers.size() != 4) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Exactly 4 layer entries (codes 4, 3, 2, 1) are required when layerType is MULTI");
-      }
-      Set<String> suppliedCodes =
-          multiLayers.stream().map(StockingLayerDto::layerCode).collect(java.util.stream.Collectors.toSet());
-      if (!suppliedCodes.equals(MULTI_LAYER_CODES)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "multiLayers must contain exactly layer codes 4, 3, 2 and 1");
-      }
-      for (StockingLayerDto layer : multiLayers) {
-        validateLayerFields(layer, true);
-      }
+      validateMultiLayers(dto);
+    }
+  }
+
+  private void validateSingleLayer(CreateStockingStandardRequestDto dto) {
+    if (dto.singleLayer() == null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "singleLayer is required when layerType is SINGLE");
+    }
+    if (dto.multiLayers() != null && !dto.multiLayers().isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "multiLayers must not be supplied when layerType is SINGLE");
+    }
+    if (!"I".equals(dto.singleLayer().layerCode())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "singleLayer must use layer code I when layerType is SINGLE");
+    }
+    validateLayerFields(dto.singleLayer(), false);
+  }
+
+  private void validateMultiLayers(CreateStockingStandardRequestDto dto) {
+    if (dto.singleLayer() != null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "singleLayer must not be supplied when layerType is MULTI");
+    }
+    List<StockingLayerDto> multiLayers = dto.multiLayers();
+    if (multiLayers == null || multiLayers.size() != 4) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Exactly 4 layer entries (codes 4, 3, 2, 1) are required when layerType is MULTI");
+    }
+    Set<String> suppliedCodes =
+        multiLayers.stream().map(StockingLayerDto::layerCode).collect(java.util.stream.Collectors.toSet());
+    if (!suppliedCodes.equals(MULTI_LAYER_CODES)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "multiLayers must contain exactly layer codes 4, 3, 2 and 1");
+    }
+    for (StockingLayerDto layer : multiLayers) {
+      validateLayerFields(layer, true);
     }
   }
 
@@ -305,7 +317,21 @@ public class StockingStandardValidationService {
               + ")");
     }
 
-    if (multi && !LAYER_1_2_ONLY_CODES.contains(code)) {
+    if (multi) {
+      validateMultiLayerCodeSpecificFields(layer, code);
+    }
+
+    if (layer.heightRelativeToComp() != null
+        && !VALID_HEIGHT_RELATIVE_UNIT_CODES.contains(layer.heightRelativeToCompUnitCode())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "heightRelativeToCompUnitCode must be one of " + VALID_HEIGHT_RELATIVE_UNIT_CODES
+              + " (layer " + code + ")");
+    }
+  }
+
+  private void validateMultiLayerCodeSpecificFields(StockingLayerDto layer, String code) {
+    if (!LAYER_1_2_ONLY_CODES.contains(code)) {
       if (layer.minResidualBasalArea() != null) {
         rejectLayerField(code, "minResidualBasalArea");
       }
@@ -319,21 +345,12 @@ public class StockingStandardValidationService {
         rejectLayerField(code, "maxConiferous");
       }
     }
-    if (multi && !LAYER_3_4_ONLY_CODES.contains(code)) {
+    if (!LAYER_3_4_ONLY_CODES.contains(code)) {
       if (layer.heightRelativeToComp() != null) {
         rejectLayerField(code, "heightRelativeToComp");
       }
       if (layer.heightRelativeToCompUnitCode() != null) {
         rejectLayerField(code, "heightRelativeToCompUnitCode");
-      }
-    }
-
-    if (layer.heightRelativeToComp() != null) {
-      if (!VALID_HEIGHT_RELATIVE_UNIT_CODES.contains(layer.heightRelativeToCompUnitCode())) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "heightRelativeToCompUnitCode must be one of " + VALID_HEIGHT_RELATIVE_UNIT_CODES
-                + " (layer " + code + ")");
       }
     }
   }
