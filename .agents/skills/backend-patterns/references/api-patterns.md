@@ -242,6 +242,23 @@ public ResponseEntity<Void> delete(@PathVariable String id) { /* ... */ }
 
 ---
 
+## Operation-Level Access Control
+
+Who may perform a protected write operation (create an opening, create an activity, ...) is configured in **one place**: `postgres/security/OperationAccessPolicy`. Roles are Cognito groups per client number, such as `Submitter_00012797`. Do not add ad hoc role checks in endpoints or services.
+
+To protect a new operation:
+
+1. Add it to the `ProtectedOperation` enum.
+2. Register its allowed roles in `OperationAccessPolicy.ALLOWED_ROLES` (a unit test fails if an operation has no roles registered).
+3. Call the policy from the **service**, not the endpoint:
+   - `requireClientRole(operation, clientNumber)` when the request carries the client number (for example opening creation).
+   - `requireOpeningRole(operation, openingId)` when access comes through an existing opening: the user needs an allowed role for one of the opening's clients (licensee of its forest file, or holder of the obligation or responsibility on its cut blocks, resolved by `OpeningClientResolver`). An opening without clients is closed to everyone.
+4. Both methods throw a 403 `ResponseStatusException`. Order the checks: 404 (resource exists), then 403 (role), then 400 (request validation). Add a 403 `@ApiResponse` to the endpoint.
+
+Why a service call and not `@PreAuthorize`: some client numbers live in the multipart JSON body, which method security cannot see before the body is parsed.
+
+Read endpoints and the existing `@PreAuthorize("@auth.isIdirUser()")` checks are outside this policy.
+
 ## Pagination & Filtering
 
 Use Spring Data's `Pageable` and `Specification` for complex queries:
