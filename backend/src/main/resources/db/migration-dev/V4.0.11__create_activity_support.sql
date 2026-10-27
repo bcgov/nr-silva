@@ -62,7 +62,9 @@ COMMENT ON COLUMN silva.activity_treatment_geometry.geometry IS 'Spatial coordin
 COMMENT ON COLUMN silva.activity_treatment_geometry.feature_area IS 'The area of the activity polygon measured in hectares.';
 COMMENT ON COLUMN silva.activity_treatment_geometry.feature_perimeter IS 'The perimeter of the activity polygon measured in metres.';
 
--- Sequences needed to create new activities and their comments
+-- Sequences needed to create new activities and their comments. They start after the current maximum
+-- id; the ETL later loads rows with their original ids, so the application also realigns them with
+-- the table maximum every time it allocates an id (see the nextActivityId and nextCommentId queries).
 CREATE SEQUENCE IF NOT EXISTS silva.activity_treatment_unit_id_seq;
 SELECT setval('silva.activity_treatment_unit_id_seq', COALESCE((SELECT MAX(activity_treatment_unit_id) FROM silva.activity_treatment_unit), 1));
 

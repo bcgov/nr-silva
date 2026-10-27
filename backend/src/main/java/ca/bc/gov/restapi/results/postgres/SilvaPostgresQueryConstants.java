@@ -686,7 +686,7 @@ public class SilvaPostgresQueryConstants {
 					soc2.description AS objective2_name,
 					CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END AS objective3_code,
 					soc3.description AS objective3_name,
-					atu.treatment_amount AS area,
+					COALESCE(atu.treatment_amount, CASE WHEN atu.atu_completion_date IS NULL THEN atu.planned_treatment_amount END) AS area,
 					atu.silv_fund_srce_code AS funding_code,
 					sfsc.description AS funding_name,
 					atu.silviculture_project_id AS project_id,
@@ -732,11 +732,6 @@ public class SilvaPostgresQueryConstants {
 							JOIN silv_objective_code atoc ON atoc.silv_objective_code = ato.silv_objective_code
 							WHERE ato.activity_treatment_unit_id = atu.activity_treatment_unit_id
 								AND ato.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-								AND COALESCE(
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END,
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_2 ELSE atu.plan_silv_objective_code_2 END,
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END
-								) IS NULL
 								AND (
 									ato.silv_objective_code like '%' || :mainSearchTerm || '%'
 									OR upper(atoc.description) like '%' || :mainSearchTerm || '%'
@@ -748,7 +743,6 @@ public class SilvaPostgresQueryConstants {
 							JOIN silv_fund_srce_code atfc ON atfc.silv_fund_srce_code = atf.silv_fund_srce_code
 							WHERE atf.activity_treatment_unit_id = atu.activity_treatment_unit_id
 								AND atf.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-								AND atu.silv_fund_srce_code IS NULL
 								AND (
 									atf.silv_fund_srce_code like '%' || :mainSearchTerm || '%'
 									OR upper(atfc.description) like '%' || :mainSearchTerm || '%'
@@ -827,11 +821,6 @@ public class SilvaPostgresQueryConstants {
 								JOIN silv_objective_code atoc ON atoc.silv_objective_code = ato.silv_objective_code
 								WHERE ato.activity_treatment_unit_id = atu.activity_treatment_unit_id
 									AND ato.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-									AND COALESCE(
-										CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END,
-										CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_2 ELSE atu.plan_silv_objective_code_2 END,
-										CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END
-									) IS NULL
 									AND (
 										ato.silv_objective_code LIKE '%' || :mainSearchTerm || '%'
 										OR upper(atoc.description) LIKE '%' || :mainSearchTerm || '%'
@@ -843,7 +832,6 @@ public class SilvaPostgresQueryConstants {
 								JOIN silv_fund_srce_code atfc ON atfc.silv_fund_srce_code = atf.silv_fund_srce_code
 								WHERE atf.activity_treatment_unit_id = atu.activity_treatment_unit_id
 									AND atf.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-									AND atu.silv_fund_srce_code IS NULL
 									AND (
 										atf.silv_fund_srce_code LIKE '%' || :mainSearchTerm || '%'
 										OR upper(atfc.description) LIKE '%' || :mainSearchTerm || '%'
@@ -1871,7 +1859,7 @@ public class SilvaPostgresQueryConstants {
 					cboa.cut_block_id AS cutBlock,
 					atu.opening_id AS openingId,
 					cboa.cutting_permit_id AS cuttingPermit,
-					atu.treatment_amount AS treatmentAmountArea,
+					COALESCE(atu.treatment_amount, CASE WHEN atu.atu_completion_date IS NULL THEN atu.planned_treatment_amount END) AS treatmentAmountArea,
 					atu.fia_project_id AS intraAgencyNumber,
 					occ.open_category_code AS openingCategoryCode,
 					occ.description AS openingCategoryDescription,
@@ -1888,8 +1876,8 @@ public class SilvaPostgresQueryConstants {
 					WHERE cboa2.opening_id = op.opening_id
 				)
 				LEFT JOIN silv_base_code sbc ON atu.silv_base_code = sbc.silv_base_code
-				LEFT JOIN silv_technique_code stc ON atu.silv_technique_code = stc.silv_technique_code
-				LEFT JOIN silv_method_code smc ON atu.silv_method_code = smc.silv_method_code
+				LEFT JOIN silv_technique_code stc ON stc.silv_technique_code = CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_technique_code ELSE atu.plan_silv_technique_code END
+				LEFT JOIN silv_method_code smc ON smc.silv_method_code = CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_method_code ELSE atu.plan_silv_method_code END
 				LEFT JOIN silv_fund_srce_code sfsc ON atu.silv_fund_srce_code = sfsc.silv_fund_srce_code
 				LEFT JOIN LATERAL (
 					SELECT atf.silv_fund_srce_code, atfc.description
@@ -1897,7 +1885,6 @@ public class SilvaPostgresQueryConstants {
 					JOIN silv_fund_srce_code atfc ON atfc.silv_fund_srce_code = atf.silv_fund_srce_code
 					WHERE atf.activity_treatment_unit_id = atu.activity_treatment_unit_id
 						AND atf.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-						AND atu.silv_fund_srce_code IS NULL
 					ORDER BY atf.fund_srce_order
 					LIMIT 1
 				) cfs ON TRUE
@@ -1911,10 +1898,10 @@ public class SilvaPostgresQueryConstants {
 						'NOVALUE' IN (:#{#filter.bases}) OR UPPER(atu.silv_base_code) IN (:#{#filter.bases})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.techniques}) OR UPPER(atu.silv_technique_code) IN (:#{#filter.techniques})
+						'NOVALUE' IN (:#{#filter.techniques}) OR UPPER(CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_technique_code ELSE atu.plan_silv_technique_code END) IN (:#{#filter.techniques})
 					)
 					AND (
-						'NOVALUE' IN (:#{#filter.methods}) OR UPPER(atu.silv_method_code) IN (:#{#filter.methods})
+						'NOVALUE' IN (:#{#filter.methods}) OR UPPER(CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_method_code ELSE atu.plan_silv_method_code END) IN (:#{#filter.methods})
 					)
 					AND (
 						CAST(:#{#filter.isComplete} AS boolean) IS NULL
@@ -1923,19 +1910,14 @@ public class SilvaPostgresQueryConstants {
 					)
 					AND (
 						'NOVALUE' IN (:#{#filter.objectives})
-						OR UPPER(atu.silv_objective_code_1) IN (:#{#filter.objectives})
-						OR UPPER(atu.silv_objective_code_2) IN (:#{#filter.objectives})
-						OR UPPER(atu.silv_objective_code_3) IN (:#{#filter.objectives})
+						OR UPPER(CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END) IN (:#{#filter.objectives})
+						OR UPPER(CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_2 ELSE atu.plan_silv_objective_code_2 END) IN (:#{#filter.objectives})
+						OR UPPER(CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END) IN (:#{#filter.objectives})
 						OR EXISTS (
 							SELECT 1
 							FROM activity_tu_objective ato
 							WHERE ato.activity_treatment_unit_id = atu.activity_treatment_unit_id
 								AND ato.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-								AND COALESCE(
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END,
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_2 ELSE atu.plan_silv_objective_code_2 END,
-									CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END
-								) IS NULL
 								AND UPPER(ato.silv_objective_code) IN (:#{#filter.objectives})
 						)
 					)
@@ -1946,7 +1928,6 @@ public class SilvaPostgresQueryConstants {
 							FROM activity_tu_fund_srce atf
 							WHERE atf.activity_treatment_unit_id = atu.activity_treatment_unit_id
 								AND atf.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
-								AND atu.silv_fund_srce_code IS NULL
 								AND UPPER(atf.silv_fund_srce_code) IN (:#{#filter.fundingSources})
 						)
 					)

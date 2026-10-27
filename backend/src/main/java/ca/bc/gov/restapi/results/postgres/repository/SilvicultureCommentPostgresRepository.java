@@ -22,8 +22,22 @@ import org.springframework.stereotype.Repository;
 public interface SilvicultureCommentPostgresRepository
     extends JpaRepository<SilvicultureCommentEntity, Long>, SilvicultureCommentRepository {
 
-  /** Allocates the id of a new comment. */
-  @Query(nativeQuery = true, value = "SELECT nextval('silva.silviculture_comment_id_seq')")
+  /**
+   * Allocates the id of a new comment. The sequence is first moved past the highest id in the table
+   * because the ETL loads rows with their original ids without advancing the sequence. The
+   * advisory lock keeps concurrent allocations from computing the same value.
+   */
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+          WITH lock AS (SELECT pg_advisory_xact_lock(hashtext('silva.silviculture_comment_id_seq')))
+          SELECT setval('silva.silviculture_comment_id_seq',
+                 GREATEST((SELECT COALESCE(MAX(silviculture_comment_id), 0)
+                           FROM silva.silviculture_comment),
+                          (SELECT last_value FROM silva.silviculture_comment_id_seq)) + 1)
+          FROM lock
+          """)
   Long nextCommentId();
 
   @Override

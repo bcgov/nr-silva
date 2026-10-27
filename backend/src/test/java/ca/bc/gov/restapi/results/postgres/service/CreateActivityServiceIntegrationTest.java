@@ -258,6 +258,50 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   }
 
   @Test
+  @DisplayName("Allocates ids past rows loaded with their own ids, as the ETL does")
+  void createActivity_staleSequence_allocatesIdAboveTableMaximum() {
+    Long maxId =
+        jdbcTemplate.queryForObject(
+            "SELECT MAX(activity_treatment_unit_id) FROM silva.activity_treatment_unit",
+            Long.class);
+    jdbcTemplate.queryForObject("SELECT setval('silva.activity_treatment_unit_id_seq', 1)", Long.class);
+
+    Long id = service.createActivity(OPENING_ID, planned("HC", "note")).activityId();
+
+    assertThat(id).isGreaterThan(maxId);
+  }
+
+  @Test
+  @DisplayName("Creates a completed activity without planned date, area and cost")
+  void createActivity_completedWithoutPlannedValues_saves() {
+    CreateActivityRequestDto request =
+        new CreateActivityRequestDto(
+            ActivityStatus.COMPLETED,
+            "HC",
+            null,
+            null,
+            null,
+            List.of("BCP"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            LocalDate.now().plusDays(3),
+            new BigDecimal("5.0"),
+            null);
+
+    Map<String, Object> row =
+        activityRow(service.createActivity(OPENING_ID, request).activityId());
+
+    assertThat(row.get("planned_date")).isNull();
+    assertThat(row.get("planned_treatment_amount")).isNull();
+    assertThat(row.get("planned_treatment_cost")).isNull();
+    assertThat(row.get("treatment_amount")).isEqualTo(new BigDecimal("5.0"));
+  }
+
+  @Test
   @DisplayName("Saves nothing when the request is invalid")
   void createActivity_invalid_savesNothing() {
     Integer before =
