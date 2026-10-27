@@ -63,6 +63,11 @@ public class ActivityEndpoint {
           "Invalid request or spatial file; every violation is listed as 'field: message'",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
+      responseCode = "403",
+      description =
+          "The user has no role for the licensee or obligation holder clients of the opening",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
       responseCode = "404",
       description = "Opening not found",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))

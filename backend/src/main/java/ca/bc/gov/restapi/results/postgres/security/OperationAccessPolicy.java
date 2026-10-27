@@ -31,6 +31,7 @@ public class OperationAccessPolicy {
           ProtectedOperation.CREATE_ACTIVITY, ANY_CLIENT_ROLE);
 
   private final LoggedUserHelper loggedUserHelper;
+  private final OpeningClientResolver openingClientResolver;
 
   /**
    * Returns the roles allowed to perform the operation.
@@ -50,12 +51,31 @@ public class OperationAccessPolicy {
    * @throws ResponseStatusException with status 403 when the user has no allowed role
    */
   public void requireClientRole(ProtectedOperation operation, String clientNumber) {
-    boolean allowed =
-        allowedRoles(operation).stream()
-            .anyMatch(role -> loggedUserHelper.hasAbstractRole(role, clientNumber));
-    if (!allowed) {
+    if (!hasAllowedRole(operation, clientNumber)) {
       throw new ResponseStatusException(
           HttpStatus.FORBIDDEN, "Not authorised for client number " + clientNumber);
     }
+  }
+
+  /**
+   * Requires that the user holds an allowed role for at least one client of the opening. An opening
+   * without clients is not accessible to anyone.
+   *
+   * @param operation the operation being performed
+   * @param openingId the opening the operation applies to
+   * @throws ResponseStatusException with status 403 when the user has no allowed role
+   */
+  public void requireOpeningRole(ProtectedOperation operation, Long openingId) {
+    boolean allowed =
+        openingClientResolver.clientNumbersOf(openingId).stream()
+            .anyMatch(clientNumber -> hasAllowedRole(operation, clientNumber));
+    if (!allowed) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorised for this opening");
+    }
+  }
+
+  private boolean hasAllowedRole(ProtectedOperation operation, String clientNumber) {
+    return allowedRoles(operation).stream()
+        .anyMatch(role -> loggedUserHelper.hasAbstractRole(role, clientNumber));
   }
 }
