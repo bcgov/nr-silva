@@ -53,9 +53,10 @@ public class ActivityEndpoint {
       summary = "Create an activity",
       description =
           "Creates a planned or completed activity with a basic base code under an opening. "
-              + "The optional spatial file is scanned for viruses first, then validated and "
-              + "processed like the activity spatial upload. Nothing is saved when the request "
-              + "or the file is invalid.")
+              + "Checks run in this order: the opening exists (404), the user has access to it "
+              + "(403), the optional spatial file is read and scanned for viruses (400/422), and "
+              + "then the request and the file are validated (400). Nothing is saved when the "
+              + "request or the file is invalid.")
   @ApiResponse(responseCode = "201", description = "Activity created")
   @ApiResponse(
       responseCode = "400",
@@ -99,9 +100,9 @@ public class ActivityEndpoint {
     if (file == null || file.isEmpty()) {
       return createActivityService.createActivity(openingId, dto);
     }
-    byte[] fileBytes = readAndScanFile(file);
+    // The file is read and scanned by the service, after the opening and access checks
     return createActivityService.createActivity(
-        openingId, dto, file.getOriginalFilename(), fileBytes);
+        openingId, dto, file.getOriginalFilename(), () -> readAndScanFile(file));
   }
 
   /**
