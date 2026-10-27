@@ -16,12 +16,12 @@ import static org.mockito.Mockito.when;
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
+import ca.bc.gov.restapi.results.postgres.dto.ActivitySpatialUploadResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
-import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
+import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
 import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
-import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -48,12 +48,13 @@ class ActivityEndpointTest {
       {"status":"PLANNED","baseCode":"HC","fundingSourceCodes":["BCP"],
        "plannedDate":"2999-01-01","plannedArea":1.5}
       """;
-  private final SpatialFileService spatialFileService = mock(SpatialFileService.class);
+  private final ActivitySpatialUploadService uploadService =
+      mock(ActivitySpatialUploadService.class);
   private final VirusScanService virusScanService = mock(VirusScanService.class);
   private final CreateActivityService createActivityService = mock(CreateActivityService.class);
   private final ActivityEndpoint endpoint =
       new ActivityEndpoint(
-          spatialFileService,
+          uploadService,
           virusScanService,
           createActivityService,
           new ObjectMapper().findAndRegisterModules());
@@ -61,40 +62,46 @@ class ActivityEndpointTest {
   @Test
   void scansBeforeProcessingAndReturnsTheServiceResult() {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
-    ExtractedGeoDataDto expected =
-        new ExtractedGeoDataDto(new BigDecimal("4.3"), new ObjectMapper().createObjectNode());
-    when(spatialFileService.processSpatialFile(eq("activity.geojson"), aryEq(FILE_BYTES)))
+    ActivitySpatialUploadResponseDto expected =
+        new ActivitySpatialUploadResponseDto(
+            new BigDecimal("4.3"),
+            new ObjectMapper().createObjectNode(),
+            new BigDecimal("79.4"),
+            null);
+    when(uploadService.process(eq(OPENING_ID), eq("activity.geojson"), aryEq(FILE_BYTES)))
         .thenReturn(expected);
 
-    assertThat(endpoint.uploadActivitySpatial(file)).isSameAs(expected);
+    assertThat(endpoint.uploadActivitySpatial(OPENING_ID, file)).isSameAs(expected);
 
-    InOrder order = inOrder(virusScanService, spatialFileService);
+    InOrder order = inOrder(virusScanService, uploadService);
     order.verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
-    order.verify(spatialFileService).processSpatialFile(eq("activity.geojson"), aryEq(FILE_BYTES));
+    order
+        .verify(uploadService)
+        .process(eq(OPENING_ID), eq("activity.geojson"), aryEq(FILE_BYTES));
     order.verifyNoMoreInteractions();
   }
 
   @Test
   void rejectsNullFile() {
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(null))
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, null))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> {
               assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
               assertThat(exception.getReason()).isEqualTo("Uploaded file is null or empty");
             });
-    verifyNoInteractions(virusScanService, spatialFileService);
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @Test
   void rejectsEmptyFile() {
     MockMultipartFile file = new MockMultipartFile("file", new byte[0]);
 
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file))
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, file))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
-    verifyNoInteractions(virusScanService, spatialFileService);
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @Test
@@ -102,7 +109,7 @@ class ActivityEndpointTest {
     MultipartFile file = mock(MultipartFile.class);
     when(file.getSize()).thenReturn(SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1L);
 
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file))
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, file))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> {
@@ -110,7 +117,7 @@ class ActivityEndpointTest {
               assertThat(exception.getReason()).isEqualTo("File exceeds 25MB size limit");
             });
     verify(file, never()).getBytes();
-    verifyNoInteractions(virusScanService, spatialFileService);
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @Test
@@ -120,10 +127,10 @@ class ActivityEndpointTest {
     when(file.getBytes()).thenReturn(FILE_BYTES);
     when(file.getOriginalFilename()).thenReturn("activity.geojson");
 
-    endpoint.uploadActivitySpatial(file);
+    endpoint.uploadActivitySpatial(OPENING_ID, file);
 
     verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
-    verify(spatialFileService).processSpatialFile(eq("activity.geojson"), aryEq(FILE_BYTES));
+    verify(uploadService).process(eq(OPENING_ID), eq("activity.geojson"), aryEq(FILE_BYTES));
   }
 
   @Test
@@ -132,7 +139,7 @@ class ActivityEndpointTest {
     IOException failure = new IOException("read failed");
     when(file.getBytes()).thenThrow(failure);
 
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file))
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, file))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> {
@@ -141,7 +148,7 @@ class ActivityEndpointTest {
               assertThat(exception.getReason()).isEqualTo("Failed to read file: read failed");
               assertThat(exception.getCause()).isSameAs(failure);
             });
-    verifyNoInteractions(virusScanService, spatialFileService);
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @ParameterizedTest
@@ -154,8 +161,9 @@ class ActivityEndpointTest {
         .when(virusScanService)
         .scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
 
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file)).isSameAs(failure);
-    verifyNoInteractions(spatialFileService);
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, file))
+        .isSameAs(failure);
+    verifyNoInteractions(uploadService);
   }
 
   @Test
@@ -163,10 +171,11 @@ class ActivityEndpointTest {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
     ResponseStatusException failure =
         new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid geometry");
-    when(spatialFileService.processSpatialFile(eq("activity.geojson"), aryEq(FILE_BYTES)))
+    when(uploadService.process(eq(OPENING_ID), eq("activity.geojson"), aryEq(FILE_BYTES)))
         .thenThrow(failure);
 
-    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file)).isSameAs(failure);
+    assertThatThrownBy(() -> endpoint.uploadActivitySpatial(OPENING_ID, file))
+        .isSameAs(failure);
     verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
   }
 
@@ -215,7 +224,7 @@ class ActivityEndpointTest {
         .thenReturn(expected);
 
     assertThat(endpoint.createActivity(OPENING_ID, DATA, null)).isSameAs(expected);
-    verifyNoInteractions(virusScanService, spatialFileService);
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @Test
