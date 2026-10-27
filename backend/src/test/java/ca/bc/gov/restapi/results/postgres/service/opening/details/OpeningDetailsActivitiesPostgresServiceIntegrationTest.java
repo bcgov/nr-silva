@@ -196,6 +196,8 @@ class OpeningDetailsActivitiesPostgresServiceIntegrationTest
     addObjective(COMPLETED, "Y", "2BT", 1);
     addFunding(COMPLETED, "Y", "BCP", 1);
     addObjective(COMPLETED, "N", "AMD", 1);
+    // Control: the planned activity has AMD in its active (planned) set, so the search is not empty
+    addObjective(PLANNED_LEGACY_OBJECTIVE, "N", "AMD", 1);
 
     var byObjective =
         service.getOpeningActivitiesActivities(OPENING_ID, "BILLION", PageRequest.of(0, 50));
@@ -208,7 +210,11 @@ class OpeningDetailsActivitiesPostgresServiceIntegrationTest
     assertThat(byObjective.getTotalElements()).isEqualTo(byObjective.getContent().size());
     assertThat(byFunding.getContent()).extracting("atuId").contains(COMPLETED);
     assertThat(byFunding.getTotalElements()).isEqualTo(byFunding.getContent().size());
-    assertThat(byOtherSet.getContent()).extracting("atuId").doesNotContain(COMPLETED);
+    assertThat(byOtherSet.getContent())
+        .extracting("atuId")
+        .isNotEmpty()
+        .contains(PLANNED_LEGACY_OBJECTIVE)
+        .doesNotContain(COMPLETED);
   }
 
   @Test

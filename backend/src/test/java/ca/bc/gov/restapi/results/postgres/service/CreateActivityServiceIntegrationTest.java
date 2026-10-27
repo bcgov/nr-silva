@@ -155,7 +155,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         .containsEntry("activity_tu_seq_no", maxSeq + 1)
         .containsEntry("org_unit_no", 1L)
         .containsEntry("revision_count", 1);
-    assertThat(row.get("planned_treatment_amount")).isEqualTo(new BigDecimal("12.5"));
+    assertThat(row).containsEntry("planned_treatment_amount", new BigDecimal("12.5"));
     assertThat(row.get("atu_completion_date")).isNull();
     assertThat(row.get("silv_technique_code")).isNull();
     assertThat(row.get("silv_objective_code_1")).isNull();
@@ -188,8 +188,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         .containsEntry("silv_technique_code", "CG")
         .containsEntry("silv_method_code", "BAGS")
         .containsEntry("actual_treatment_cost", 1200);
-    assertThat(row.get("treatment_amount")).isEqualTo(new BigDecimal("28.5"));
-    assertThat(row.get("planned_treatment_amount")).isEqualTo(new BigDecimal("30.0"));
+    assertThat(row)
+        .containsEntry("treatment_amount", new BigDecimal("28.5"))
+        .containsEntry("planned_treatment_amount", new BigDecimal("30.0"));
     assertThat(row.get("atu_completion_date")).isNotNull();
     assertThat(row.get("plan_silv_technique_code")).isNull();
 
@@ -300,7 +301,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThat(row.get("planned_date")).isNull();
     assertThat(row.get("planned_treatment_amount")).isNull();
     assertThat(row.get("planned_treatment_cost")).isNull();
-    assertThat(row.get("treatment_amount")).isEqualTo(new BigDecimal("5.0"));
+    assertThat(row).containsEntry("treatment_amount", new BigDecimal("5.0"));
   }
 
   @Test
@@ -310,7 +311,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
 
-    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("PL", "comment")))
+    CreateActivityRequestDto invalid = planned("PL", "comment");
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, invalid))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("baseCode: must be one of");
 
@@ -340,9 +343,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
                 + "feature_class_skey, entry_userid, revision_count "
                 + "FROM silva.activity_treatment_geometry WHERE activity_treatment_unit_id = ?",
             id);
-    assertThat(row.get("srid")).isEqualTo(3005);
-    assertThat(row.get("feature_class_skey")).isEqualTo(2411L);
-    assertThat(row.get("revision_count")).isEqualTo(1);
+    assertThat(row)
+        .containsEntry("srid", 3005)
+        .containsEntry("feature_class_skey", 2411L)
+        .containsEntry("revision_count", 1);
     assertThat((String) row.get("entry_userid")).startsWith("IDIR\\");
     // A 100 m x 100 m square, within the error of reprojecting to EPSG:4326 and back
     assertThat((BigDecimal) row.get("feature_area"))
@@ -392,13 +396,11 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
 
+    CreateActivityRequestDto request = planned("HC", "comment");
+    Supplier<byte[]> invalidFile = () -> "not a spatial file".getBytes(UTF_8);
+
     assertThatThrownBy(
-            () ->
-                service.createActivity(
-                    OPENING_ID,
-                    planned("HC", "comment"),
-                    "bad.geojson",
-                    () -> "not a spatial file".getBytes(UTF_8)))
+            () -> service.createActivity(OPENING_ID, request, "bad.geojson", invalidFile))
         .isInstanceOf(ResponseStatusException.class);
 
     entityManager.flush();
@@ -419,8 +421,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Rejects a user with a role only for another client and saves nothing")
   void createActivity_roleForAnotherClient_forbidden() {
     int before = activityCount();
+    CreateActivityRequestDto request = planned("HC", null);
 
-    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("HC", null)))
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
@@ -432,7 +435,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @WithMockJwt(cognitoGroups = {"Viewer"})
   @DisplayName("Rejects a user with only the viewer role")
   void createActivity_viewerOnly_forbidden() {
-    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("HC", null)))
+    CreateActivityRequestDto request = planned("HC", null);
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
@@ -441,7 +446,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Rejects everyone for an opening without clients")
   void createActivity_openingWithoutClients_forbidden() {
-    assertThatThrownBy(() -> service.createActivity(OPENING_WITHOUT_CLIENTS, planned("HC", null)))
+    CreateActivityRequestDto request = planned("HC", null);
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_WITHOUT_CLIENTS, request))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
@@ -464,7 +471,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @WithMockJwt(cognitoGroups = {})
   @DisplayName("Reports an unknown opening as not found before checking access")
   void createActivity_unknownOpening_notFoundBeforeForbidden() {
-    assertThatThrownBy(() -> service.createActivity(-1L, planned("HC", null)))
+    CreateActivityRequestDto request = planned("HC", null);
+
+    assertThatThrownBy(() -> service.createActivity(-1L, request))
         .isInstanceOf(NotFoundGenericException.class);
   }
 
@@ -472,7 +481,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @WithMockJwt(cognitoGroups = {"Submitter_00099999"})
   @DisplayName("Checks access before validating the request")
   void createActivity_forbiddenAndInvalid_forbidden() {
-    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("PL", "comment")))
+    CreateActivityRequestDto request = planned("PL", "comment");
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
@@ -490,14 +501,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Does not read the file of an unknown opening")
   void createActivity_unknownOpening_doesNotReadFile() {
     AtomicInteger calls = new AtomicInteger();
+    CreateActivityRequestDto request = planned("HC", null);
+    Supplier<byte[]> reader = failingReader(calls, new IllegalStateException("scanned"));
 
-    assertThatThrownBy(
-            () ->
-                service.createActivity(
-                    -1L,
-                    planned("HC", null),
-                    "activity.geojson",
-                    failingReader(calls, new IllegalStateException("scanned"))))
+    assertThatThrownBy(() -> service.createActivity(-1L, request, "activity.geojson", reader))
         .isInstanceOf(NotFoundGenericException.class);
 
     assertThat(calls).hasValue(0);
@@ -508,14 +515,11 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Does not read the file when the user has no access")
   void createActivity_forbidden_doesNotReadFile() {
     AtomicInteger calls = new AtomicInteger();
+    CreateActivityRequestDto request = planned("HC", null);
+    Supplier<byte[]> reader = failingReader(calls, new IllegalStateException("scanned"));
 
     assertThatThrownBy(
-            () ->
-                service.createActivity(
-                    OPENING_ID,
-                    planned("HC", null),
-                    "activity.geojson",
-                    failingReader(calls, new IllegalStateException("scanned"))))
+            () -> service.createActivity(OPENING_ID, request, "activity.geojson", reader))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
@@ -530,14 +534,11 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     AtomicInteger calls = new AtomicInteger();
     ResponseStatusException rejected =
         new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Virus detected");
+    CreateActivityRequestDto request = planned("PL", "comment");
+    Supplier<byte[]> reader = failingReader(calls, rejected);
 
     assertThatThrownBy(
-            () ->
-                service.createActivity(
-                    OPENING_ID,
-                    planned("PL", "comment"),
-                    "activity.geojson",
-                    failingReader(calls, rejected)))
+            () -> service.createActivity(OPENING_ID, request, "activity.geojson", reader))
         .isSameAs(rejected);
 
     assertThat(calls).hasValue(1);

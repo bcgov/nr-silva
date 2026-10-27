@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
@@ -14,6 +15,7 @@ import jakarta.validation.Validator;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,11 +37,15 @@ public class CreateActivityValidationService {
 
   /** Basic activity bases; any other base code is rejected. */
   public static final Set<String> BASIC_BASE_CODES =
-      new TreeSet<>(
-          Set.of(
-              "AU", "BR", "CC", "CM", "EP", "FE", "HC", "HI", "JS", "LB", "PC", "PR", "RC", "RD",
-              "ST", "SX"));
+      Collections.unmodifiableSortedSet(
+          new TreeSet<>(
+              Set.of(
+                  "AU", "BR", "CC", "CM", "EP", "FE", "HC", "HI", "JS", "LB", "PC", "PR", "RC",
+                  "RD", "ST", "SX")));
 
+  private static final String COMPLETION_DATE = "completionDate";
+  private static final String PLANNED_AREA = "plannedArea";
+  private static final String TREATED_AREA = "treatedArea";
   private static final BigDecimal AREA_TOLERANCE_FACTOR = new BigDecimal("1.25");
   private static final String NO_REQUIREMENT_CATEGORY = "NREQ";
   // RESULTS exempts these bases from the area tolerance; more bases are exempt for NREQ openings
@@ -90,13 +96,13 @@ public class CreateActivityValidationService {
 
   private void validateStatusFields(CreateActivityRequestDto dto, List<String> errors) {
     if (dto.status() == ActivityStatus.COMPLETED) {
-      requireValue(dto.completionDate() != null, "completionDate", errors);
-      requireValue(dto.treatedArea() != null, "treatedArea", errors);
+      requireValue(dto.completionDate() != null, COMPLETION_DATE, errors);
+      requireValue(dto.treatedArea() != null, TREATED_AREA, errors);
     } else if (dto.status() == ActivityStatus.PLANNED) {
       requireValue(dto.plannedDate() != null, "plannedDate", errors);
-      requireValue(dto.plannedArea() != null, "plannedArea", errors);
-      rejectValue(dto.completionDate() != null, "completionDate", errors);
-      rejectValue(dto.treatedArea() != null, "treatedArea", errors);
+      requireValue(dto.plannedArea() != null, PLANNED_AREA, errors);
+      rejectValue(dto.completionDate() != null, COMPLETION_DATE, errors);
+      rejectValue(dto.treatedArea() != null, TREATED_AREA, errors);
       rejectValue(dto.actualCost() != null, "actualCost", errors);
     }
   }
@@ -155,7 +161,7 @@ public class CreateActivityValidationService {
       List<String> codes,
       GenericCodeRepository<? extends GenericCodeEntity> repository,
       List<String> errors) {
-    LocalDate today = LocalDate.now();
+    LocalDate today = DateUtil.todayInVancouver();
     List<? extends GenericCodeEntity> found = repository.findAllById(codes);
     for (String code : codes) {
       boolean inEffect =
@@ -179,7 +185,7 @@ public class CreateActivityValidationService {
   private void validatePlannedDate(CreateActivityRequestDto dto, List<String> errors) {
     if (dto.status() == ActivityStatus.PLANNED
         && dto.plannedDate() != null
-        && !dto.plannedDate().isAfter(LocalDate.now())) {
+        && !dto.plannedDate().isAfter(DateUtil.todayInVancouver())) {
       errors.add("plannedDate: must be later than the current date");
     }
   }
@@ -191,9 +197,9 @@ public class CreateActivityValidationService {
       return;
     }
     BigDecimal maxArea = grossArea.multiply(AREA_TOLERANCE_FACTOR);
-    checkArea("plannedArea", "Planned area", dto.plannedArea(), maxArea, grossArea, errors);
+    checkArea(PLANNED_AREA, "Planned area", dto.plannedArea(), maxArea, grossArea, errors);
     if (dto.status() == ActivityStatus.COMPLETED) {
-      checkArea("treatedArea", "Treated area", dto.treatedArea(), maxArea, grossArea, errors);
+      checkArea(TREATED_AREA, "Treated area", dto.treatedArea(), maxArea, grossArea, errors);
     }
   }
 

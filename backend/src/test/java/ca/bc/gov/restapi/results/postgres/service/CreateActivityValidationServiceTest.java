@@ -159,15 +159,17 @@ class CreateActivityValidationServiceTest {
   }
 
   private String errorOf(Request request) {
+    CreateActivityRequestDto dto = request.build();
     ResponseStatusException exception =
         org.junit.jupiter.api.Assertions.assertThrows(
-            ResponseStatusException.class, () -> service.validate(opening, request.build()));
+            ResponseStatusException.class, () -> service.validate(opening, dto));
     assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     return exception.getReason();
   }
 
   private void assertValid(Request request) {
-    assertThatCode(() -> service.validate(opening, request.build())).doesNotThrowAnyException();
+    CreateActivityRequestDto dto = request.build();
+    assertThatCode(() -> service.validate(opening, dto)).doesNotThrowAnyException();
   }
 
   @Test

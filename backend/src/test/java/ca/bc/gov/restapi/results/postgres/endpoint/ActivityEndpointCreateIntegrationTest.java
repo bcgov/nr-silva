@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -130,7 +131,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.baseCode").value("FE"));
 
-    verify(virusScanService, org.mockito.Mockito.never()).scanOrThrow(any(), any());
+    verify(virusScanService, never()).scanOrThrow(any(), any());
   }
 
   @Test

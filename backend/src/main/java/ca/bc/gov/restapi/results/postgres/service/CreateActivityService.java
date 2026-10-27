@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.entity.activity.ActivityTreatmentUnitEntity;
@@ -62,7 +63,7 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(Long openingId, CreateActivityRequestDto dto) {
-    return createActivity(openingId, dto, null, (Supplier<byte[]>) null);
+    return create(openingId, dto, null, null);
   }
 
   /**
@@ -79,6 +80,15 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(
+      Long openingId,
+      CreateActivityRequestDto dto,
+      String fileName,
+      Supplier<byte[]> fileReader) {
+    return create(openingId, dto, fileName, fileReader);
+  }
+
+  // Shared by both transactional entry points so one does not call the other through 'this'
+  private CreateActivityResponseDto create(
       Long openingId,
       CreateActivityRequestDto dto,
       String fileName,
@@ -100,7 +110,7 @@ public class CreateActivityService {
     validationService.validate(opening, dto);
     var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = DateUtil.nowInVancouver();
     String resultsInd = dto.status() == ActivityStatus.COMPLETED ? ACTUAL_SET : PLANNED_SET;
 
     Long activityId = activityRepository.nextActivityId();

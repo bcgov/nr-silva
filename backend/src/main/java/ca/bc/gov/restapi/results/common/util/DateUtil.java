@@ -23,6 +23,13 @@ public class DateUtil {
   }
 
   /**
+   * Returns the current date and time in the Vancouver time zone.
+   */
+  public static LocalDateTime nowInVancouver() {
+    return LocalDateTime.now(VANCOUVER);
+  }
+
+  /**
    * Returns true if the given expiry date is in the past (relative to today in Vancouver time).
    * Returns false if the expiry date is null.
    */
