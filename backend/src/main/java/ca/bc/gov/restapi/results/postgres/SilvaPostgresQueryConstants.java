@@ -666,6 +666,10 @@ public class SilvaPostgresQueryConstants {
 					FROM activity_treatment_unit atu
 					WHERE atu.silv_base_code = 'DN' AND atu.opening_id = :openingId""";
 
+		// Spring Data appends the requested sort to this query. It looks for an existing "order by"
+		// anywhere in the text to decide how, so the subqueries below must not use one. It also
+		// only leaves a sort alias unqualified when it ends a CASE ... END expression, otherwise
+		// the alias would be prefixed with the table alias (see funding_sort and objective1_sort).
 		public static final String GET_OPENING_ACTIVITIES_ACTIVITIES =
 				"""
 				SELECT
@@ -692,7 +696,38 @@ public class SilvaPostgresQueryConstants {
 					atu.silviculture_project_id AS project_id,
 					to_char(atu.update_timestamp,'YYYY-MM-DD') AS last_update,
 					to_char(atu.planned_date,'YYYY-MM-DD') AS planned_date,
-					to_char(atu.atu_completion_date,'YYYY-MM-DD') AS end_date
+					to_char(atu.atu_completion_date,'YYYY-MM-DD') AS end_date,
+					CASE WHEN atu.silv_fund_srce_code IS NOT NULL THEN atu.silv_fund_srce_code ELSE (
+						SELECT MIN(atf.silv_fund_srce_code)
+						FROM activity_tu_fund_srce atf
+						WHERE atf.activity_treatment_unit_id = atu.activity_treatment_unit_id
+							AND atf.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
+							AND atf.fund_srce_order = (
+								SELECT MIN(atfo.fund_srce_order)
+								FROM activity_tu_fund_srce atfo
+								WHERE atfo.activity_treatment_unit_id = atu.activity_treatment_unit_id
+									AND atfo.results_ind = atf.results_ind
+							)
+					) END AS funding_sort,
+					CASE
+						WHEN COALESCE(
+							CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END,
+							CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_2 ELSE atu.plan_silv_objective_code_2 END,
+							CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_3 ELSE atu.plan_silv_objective_code_3 END
+						) IS NULL THEN (
+							SELECT MIN(ato.silv_objective_code)
+							FROM activity_tu_objective ato
+							WHERE ato.activity_treatment_unit_id = atu.activity_treatment_unit_id
+								AND ato.results_ind = CASE WHEN atu.atu_completion_date IS NOT NULL THEN 'Y' ELSE 'N' END
+								AND ato.objective_order = (
+									SELECT MIN(atoo.objective_order)
+									FROM activity_tu_objective atoo
+									WHERE atoo.activity_treatment_unit_id = atu.activity_treatment_unit_id
+										AND atoo.results_ind = ato.results_ind
+								)
+						)
+						ELSE CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_objective_code_1 ELSE atu.plan_silv_objective_code_1 END
+					END AS objective1_sort
 				FROM activity_treatment_unit atu
 				LEFT JOIN silv_base_code sbc ON sbc.silv_base_code = atu.silv_base_code
 				LEFT JOIN silv_technique_code stc ON stc.silv_technique_code = CASE WHEN atu.atu_completion_date IS NOT NULL THEN atu.silv_technique_code ELSE atu.plan_silv_technique_code END

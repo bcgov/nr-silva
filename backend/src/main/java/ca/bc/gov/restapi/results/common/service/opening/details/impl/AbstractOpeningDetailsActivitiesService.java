@@ -112,10 +112,19 @@ public abstract class AbstractOpeningDetailsActivitiesService
                     pageable.getPageNumber(),
                     pageable.getPageSize(),
                     PaginationUtil.resolveSort(
-                        pageable.getSort(), "ACTIVITY_TU_SEQ_NO", ACTIVITIES_SORT_FIELDS)))
+                        pageable.getSort(), "ACTIVITY_TU_SEQ_NO", activitiesSortFields())))
             .map(this::toActivitiesDto);
     return new PageImpl<>(
         addAdditionalActivityCodes(page.getContent()), page.getPageable(), page.getTotalElements());
+  }
+
+  /**
+   * Maps the sortable activity properties to the database fields. Implementations whose activity
+   * values are not fully held by the legacy columns override it so the sort follows the values
+   * displayed.
+   */
+  protected Map<String, String> activitiesSortFields() {
+    return ACTIVITIES_SORT_FIELDS;
   }
 
   private OpeningDetailsActivitiesActivitiesDto toActivitiesDto(

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,6 +121,60 @@ class OpeningDetailsActivitiesPostgresServiceIntegrationTest
 
     assertThat(codes(planned.objectives())).containsExactly("CE");
     assertThat(codes(completed.fundingSources())).containsExactly("XXX");
+  }
+
+  @Test
+  @DisplayName("Sorts by the funding source and objective shown, including child table values")
+  void activities_sortByChildTableValues_followsDisplayedValues() {
+    clearLegacyFunding(COMPLETED);
+    addFunding(COMPLETED, "Y", "BCT", 1);
+    addFunding(PLANNED_LEGACY_OBJECTIVE, "N", "BCP", 1);
+    addObjective(COMPLETED, "Y", "A", 1);
+
+    // funding: planned BCP < completed BCT; objective1: completed A < planned legacy CE
+    assertThat(positions("funding", Sort.Direction.ASC))
+        .containsExactly(PLANNED_LEGACY_OBJECTIVE, COMPLETED);
+    assertThat(positions("funding", Sort.Direction.DESC))
+        .containsExactly(COMPLETED, PLANNED_LEGACY_OBJECTIVE);
+    assertThat(positions("objective1", Sort.Direction.ASC))
+        .containsExactly(COMPLETED, PLANNED_LEGACY_OBJECTIVE);
+    assertThat(positions("objective1", Sort.Direction.DESC))
+        .containsExactly(PLANNED_LEGACY_OBJECTIVE, COMPLETED);
+  }
+
+  @Test
+  @DisplayName("Sorts planned activities by their planned technique, method and area")
+  void activities_sortPlannedValues_usesDisplayedColumns() {
+    jdbcTemplate.update(
+        "UPDATE silva.activity_treatment_unit SET plan_silv_technique_code = 'CG', "
+            + "plan_silv_method_code = 'BAGS', planned_treatment_amount = 0.1, "
+            + "treatment_amount = NULL WHERE activity_treatment_unit_id = ?",
+        PLANNED_LEGACY_OBJECTIVE);
+    jdbcTemplate.update(
+        "UPDATE silva.activity_treatment_unit SET silv_technique_code = 'BU', "
+            + "silv_method_code = 'MACH', treatment_amount = 999 "
+            + "WHERE activity_treatment_unit_id = ?",
+        COMPLETED);
+
+    // tech: completed BU < planned CG; method: planned BAGS < completed MACH; area: 0.1 < 999
+    assertThat(positions("tech", Sort.Direction.ASC))
+        .containsExactly(COMPLETED, PLANNED_LEGACY_OBJECTIVE);
+    assertThat(positions("method", Sort.Direction.ASC))
+        .containsExactly(PLANNED_LEGACY_OBJECTIVE, COMPLETED);
+    assertThat(positions("area", Sort.Direction.ASC))
+        .containsExactly(PLANNED_LEGACY_OBJECTIVE, COMPLETED);
+  }
+
+  // Ids of the two activities under test, in the order the sorted list returns them
+  private List<Long> positions(String property, Sort.Direction direction) {
+    return service
+        .getOpeningActivitiesActivities(
+            OPENING_ID, null, PageRequest.of(0, 50, Sort.by(direction, property)))
+        .getContent()
+        .stream()
+        .map(OpeningDetailsActivitiesActivitiesDto::atuId)
+        .filter(id -> COMPLETED.equals(id) || PLANNED_LEGACY_OBJECTIVE.equals(id))
+        .toList();
   }
 
   @Test
