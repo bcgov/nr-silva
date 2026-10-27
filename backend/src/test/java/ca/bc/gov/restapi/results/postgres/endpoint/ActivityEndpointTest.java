@@ -239,14 +239,14 @@ class ActivityEndpointTest {
   }
 
   @Test
-  void createRejectsAnEmptyNamedFile() {
+  void createIgnoresAnEmptyNamedFilePart() {
     MockMultipartFile empty = new MockMultipartFile("file", "activity.geojson", null, new byte[0]);
 
-    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, empty))
-        .isInstanceOfSatisfying(
-            ResponseStatusException.class,
-            e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
-    verifyNoInteractions(virusScanService, createActivityService);
+    endpoint.createActivity(OPENING_ID, DATA, empty);
+
+    verify(createActivityService)
+        .createActivity(eq(OPENING_ID), any(CreateActivityRequestDto.class));
+    verifyNoInteractions(virusScanService, uploadService);
   }
 
   @Test

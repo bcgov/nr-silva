@@ -1,12 +1,10 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
-import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
-import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -50,7 +48,6 @@ public class CreateActivityValidationService {
       Set.of("FE", "PC", "JS", "PR", "RC", "RD", "EP", "CC", "CM", "SX", "AU", "BR");
 
   private final Validator validator;
-  private final OpeningPostgresRepository openingRepository;
   private final OpeningGrossAreaResolver grossAreaResolver;
   private final SilvBaseCodePostgresRepository baseCodeRepository;
   private final SilvTechniqueCodePostgresRepository techniqueCodeRepository;
@@ -59,23 +56,16 @@ public class CreateActivityValidationService {
   private final SilvFundSrceCodePostgresRepository fundSrceCodeRepository;
 
   /**
-   * Validates the request and returns the opening the activity is created under.
+   * Validates the request.
    *
-   * @param openingId the opening the activity is created under
+   * @param opening the opening the activity is created under
    * @param dto the request
-   * @return the opening
-   * @throws NotFoundGenericException when the opening does not exist
    * @throws ResponseStatusException with status 400 listing every violation
    */
-  public OpeningEntity validate(Long openingId, CreateActivityRequestDto dto) {
-    OpeningEntity opening =
-        openingRepository
-            .findById(openingId)
-            .orElseThrow(() -> new NotFoundGenericException("Opening"));
-
+  public void validate(OpeningEntity opening, CreateActivityRequestDto dto) {
     List<String> errors = new ArrayList<>();
     validator.validate(dto).stream()
-        .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+        .map(violation -> toMessage(violation.getPropertyPath().toString(), violation.getMessage()))
         .sorted()
         .forEach(errors::add);
 
@@ -88,7 +78,11 @@ public class CreateActivityValidationService {
     if (!errors.isEmpty()) {
       throw badRequest(errors);
     }
-    return opening;
+  }
+
+  // List element violations have paths like "objectiveCodes[0].<list element>"
+  private String toMessage(String path, String message) {
+    return path.replace(".<list element>", "") + ": " + message;
   }
 
   private void validateStatusFields(CreateActivityRequestDto dto, List<String> errors) {
@@ -96,6 +90,8 @@ public class CreateActivityValidationService {
       requireValue(dto.completionDate() != null, "completionDate", errors);
       requireValue(dto.treatedArea() != null, "treatedArea", errors);
     } else if (dto.status() == ActivityStatus.PLANNED) {
+      requireValue(dto.plannedDate() != null, "plannedDate", errors);
+      requireValue(dto.plannedArea() != null, "plannedArea", errors);
       rejectValue(dto.completionDate() != null, "completionDate", errors);
       rejectValue(dto.treatedArea() != null, "treatedArea", errors);
       rejectValue(dto.actualCost() != null, "actualCost", errors);
@@ -176,8 +172,11 @@ public class CreateActivityValidationService {
     return started && notExpired;
   }
 
+  // Only a planned activity must be planned for the future; a completed one can carry any date
   private void validatePlannedDate(CreateActivityRequestDto dto, List<String> errors) {
-    if (dto.plannedDate() != null && !dto.plannedDate().isAfter(LocalDate.now())) {
+    if (dto.status() == ActivityStatus.PLANNED
+        && dto.plannedDate() != null
+        && !dto.plannedDate().isAfter(LocalDate.now())) {
       errors.add("plannedDate: must be later than the current date");
     }
   }
