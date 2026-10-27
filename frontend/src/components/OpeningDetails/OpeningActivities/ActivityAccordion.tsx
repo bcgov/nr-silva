@@ -7,6 +7,7 @@ import {
   Checkbox,
   DefinitionTooltip,
   Pagination,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -22,7 +23,7 @@ import {
   Tag,
   Tooltip,
 } from "@carbon/react";
-import { Activity, Search } from "@carbon/icons-react";
+import { Activity, Add, Search } from "@carbon/icons-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { SortDirectionType } from "@/types/PaginationTypes";
@@ -68,6 +69,14 @@ const AccordionTitle = ({ total }: { total: number }) => (
   </div>
 );
 
+type ActivityCellData =
+  | OpeningDetailsActivitiesActivitiesDto
+  | CodeDescriptionDto
+  | CodeDescriptionDto[]
+  | string
+  | number
+  | null;
+
 type ActivityRowProps = {
   openingId: number;
   row: OpeningDetailsActivitiesActivitiesDto;
@@ -76,7 +85,7 @@ type ActivityRowProps = {
   selectedSilvicultureActivityIds: string[];
   setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
   renderCellContent: (
-    data: OpeningDetailsActivitiesActivitiesDto | CodeDescriptionDto | string | number | null,
+    data: ActivityCellData,
     columnKey: string,
     isLastElement: boolean
   ) => React.ReactNode;
@@ -316,7 +325,7 @@ const ActivityAccordion = ({
   };
 
   const renderCellContent = (
-    data: OpeningDetailsActivitiesActivitiesDto | CodeDescriptionDto | string | number | null,
+    data: ActivityCellData,
     columnKey: string,
     isLastElement: boolean
   ) => {
@@ -327,7 +336,7 @@ const ActivityAccordion = ({
         return (
           <Tag
             className="activity-status-tag"
-            type={codeDescription.code === "C" ? "green" : "purple"}
+            type={codeDescription.code === "PLN" ? "purple" : "green"}
             size="md"
           >
             {codeDescription.description}
@@ -384,131 +393,144 @@ const ActivityAccordion = ({
         title={<AccordionTitle total={totalUnfiltered} />}
         open={!!targetActivityId}
       >
-
-        <TableContainer className="default-table-container activity-table-container">
-          <TableToolbar className="activity-search-toolbar-container">
-            <TableToolbarSearch
-              className="default-tab-search-bar"
-              persistent
-              placeholder="Search by keyword"
-              value={searchInput}
-              onChange={handleSearchInputChange}
-              onKeyDown={handleSearchKeyDown}
-              onClear={handleSearchClear}
-            />
+        <Stack orientation="vertical" gap={4}>
+          <div className="add-activity-button-container">
             <Button
-              kind="primary"
-              className="default-button-with-loading"
-              renderIcon={Search}
-              onClick={applySearchFilter}
+              kind="tertiary"
+              renderIcon={Add}
+              size="md"
             >
-              Search
+              Add activity
             </Button>
-          </TableToolbar>
+          </div>
 
-          {/* Table skeleton */}
-          {
-            activityQuery.isLoading
-              ? <TableSkeleton
-                headers={ActivityTableHeaders}
-                showToolbar={false}
-                showHeader={false}
-                rowCount={10}
+          <TableContainer className="default-table-container activity-table-container">
+            <TableToolbar className="activity-search-toolbar-container">
+              <TableToolbarSearch
+                className="default-tab-search-bar"
+                persistent
+                placeholder="Search by keyword"
+                value={searchInput}
+                onChange={handleSearchInputChange}
+                onKeyDown={handleSearchKeyDown}
+                onClear={handleSearchClear}
               />
-              : (
-                <Table
-                  className="default-zebra-table activity-table"
-                  aria-label="Activity table"
-                >
-                  <TableHead>
-                    <TableRow>
-                      <>
-                        <TableExpandHeader />
-                        <TableHeader key="map-header">
-                          <div className="default-map-header-checkbox-container">
-                            <Tooltip
-                              label={allSelected ? "Unselect all" : "Select all"}
-                              align="right"
-                            >
-                              <span>
-                                <Checkbox
-                                  id="activities-map-select-all"
-                                  data-testid="activities-map-select-all"
-                                  checked={allSelected}
-                                  indeterminate={!allSelected && someSelected}
-                                  disabled={allOnPage.length === 0}
-                                  labelText="Select all polygons on map"
-                                  hideLabel
-                                  onChange={(_, { checked }) => {
-                                    setSelectedSilvicultureActivityIds(ids =>
-                                      checked
-                                        ? [...new Set([...ids, ...allOnPage])]
-                                        : ids.filter(id => !allOnPage.includes(id))
-                                    );
-                                  }}
-                                />
-                              </span>
-                            </Tooltip>
-                            <span>Map</span>
-                          </div>
-                        </TableHeader>
-                        {ActivityTableHeaders.map((header) => (
-                          <TableHeader
-                            key={header.key}
-                            isSortable={header.sortable}
-                            isSortHeader={activityFilter.sortField === header.key}
-                            sortDirection={activityFilter.sortDirection}
-                            onClick={() => handleSort(header.key as keyof OpeningDetailsActivitiesActivitiesDto)}
-                          >
-                            {header.header}
+              <Button
+                kind="primary"
+                className="default-button-with-loading"
+                renderIcon={Search}
+                onClick={applySearchFilter}
+              >
+                Search
+              </Button>
+            </TableToolbar>
+
+            {/* Table skeleton */}
+            {
+              activityQuery.isLoading
+                ? <TableSkeleton
+                  headers={ActivityTableHeaders}
+                  showToolbar={false}
+                  showHeader={false}
+                  rowCount={10}
+                />
+                : (
+                  <Table
+                    className="default-zebra-table activity-table"
+                    aria-label="Activity table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <>
+                          <TableExpandHeader />
+                          <TableHeader key="map-header">
+                            <div className="default-map-header-checkbox-container">
+                              <Tooltip
+                                label={allSelected ? "Unselect all" : "Select all"}
+                                align="right"
+                              >
+                                <span>
+                                  <Checkbox
+                                    id="activities-map-select-all"
+                                    data-testid="activities-map-select-all"
+                                    checked={allSelected}
+                                    indeterminate={!allSelected && someSelected}
+                                    disabled={allOnPage.length === 0}
+                                    labelText="Select all polygons on map"
+                                    hideLabel
+                                    onChange={(_, { checked }) => {
+                                      setSelectedSilvicultureActivityIds(ids =>
+                                        checked
+                                          ? [...new Set([...ids, ...allOnPage])]
+                                          : ids.filter(id => !allOnPage.includes(id))
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              </Tooltip>
+                              <span>Map</span>
+                            </div>
                           </TableHeader>
-                        ))}
-                      </>
-                    </TableRow>
-                  </TableHead>
+                          {ActivityTableHeaders.map((header) => (
+                            <TableHeader
+                              key={header.key}
+                              isSortable={header.sortable}
+                              isSortHeader={activityFilter.sortField === header.key}
+                              sortDirection={activityFilter.sortDirection}
+                              onClick={() => handleSort(header.key as keyof OpeningDetailsActivitiesActivitiesDto)}
+                            >
+                              {header.header}
+                            </TableHeader>
+                          ))}
+                        </>
+                      </TableRow>
+                    </TableHead>
 
-                  <TableBody>
-                    {activityQuery.data?.content?.map((row, index) => (
-                      <ActivityRow
-                        key={row.atuId}
-                        openingId={openingId}
-                        row={row}
-                        index={index}
-                        totalRows={activityQuery.data?.content?.length ?? 0}
-                        selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
-                        setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
-                        renderCellContent={renderCellContent}
-                        initialExpanded={isCommentDeepLink && row.atuId.toString() === targetActivityId}
-                        targetComment={isCommentDeepLink && row.atuId.toString() === targetActivityId}
-                      />
-                    ))}
-                  </TableBody>
-                </Table>
-              )
-          }
+                    <TableBody>
+                      {activityQuery.data?.content?.map((row, index) => (
+                        <ActivityRow
+                          key={row.atuId}
+                          openingId={openingId}
+                          row={row}
+                          index={index}
+                          totalRows={activityQuery.data?.content?.length ?? 0}
+                          selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                          setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                          renderCellContent={renderCellContent}
+                          initialExpanded={isCommentDeepLink && row.atuId.toString() === targetActivityId}
+                          targetComment={isCommentDeepLink && row.atuId.toString() === targetActivityId}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                )
+            }
 
-          {
-            activityQuery.data?.page?.totalElements === 0
-              ? (
-                <EmptySection
-                  pictogram="UserSearch"
-                  title={`No results for "${activityFilter.filter}"`}
-                  description="Consider adjusting your search term and try again."
-                  whiteLayer
-                />
-              )
-              : (
-                <Pagination
-                  className="default-pagination-white"
-                  page={currPageNumber + 1}
-                  pageSize={currPageSize}
-                  pageSizes={OddPageSizesConfig}
-                  totalItems={activityQuery.data?.page?.totalElements}
-                  onChange={handlePagination}
-                />
-              )
-          }
-        </TableContainer>
+            {
+              activityQuery.data?.page?.totalElements === 0
+                ? (
+                  <EmptySection
+                    pictogram="UserSearch"
+                    title={`No results for "${activityFilter.filter}"`}
+                    description="Consider adjusting your search term and try again."
+                    whiteLayer
+                  />
+                )
+                : (
+                  <Pagination
+                    className="default-pagination-white"
+                    page={currPageNumber + 1}
+                    pageSize={currPageSize}
+                    pageSizes={OddPageSizesConfig}
+                    totalItems={activityQuery.data?.page?.totalElements}
+                    onChange={handlePagination}
+                  />
+                )
+            }
+          </TableContainer>
+        </Stack>
+
+
       </AccordionItem>
     </Accordion>
   );
