@@ -63,6 +63,8 @@ import ca.bc.gov.restapi.results.postgres.dto.BecDuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.BecValidationErrorDto;
 import ca.bc.gov.restapi.results.postgres.dto.BecValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.BecValidationResultDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateStockingStandardRequestDto;
@@ -91,6 +93,7 @@ import ca.bc.gov.restapi.results.postgres.dto.UserRecentOpeningDto;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntity;
 import ca.bc.gov.restapi.results.postgres.entity.UserOpeningEntityId;
 import ca.bc.gov.restapi.results.postgres.entity.UserRecentOpeningEntity;
+import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
 import ca.bc.gov.restapi.results.postgres.enums.BecValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.enums.SpeciesValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.enums.StockingLayerType;
@@ -217,6 +220,9 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   StockingStandardsSearchResponseDto.class,
   StockingStandardsCommentSearchFilterDto.class,
   StockingStandardsCommentSearchResponseDto.class,
+  CreateActivityRequestDto.class,
+  CreateActivityResponseDto.class,
+  ActivityStatus.class,
   CreateOpeningRequestDto.class,
   CreateOpeningResponseDto.class,
   ExtractedGeoDataDto.class,

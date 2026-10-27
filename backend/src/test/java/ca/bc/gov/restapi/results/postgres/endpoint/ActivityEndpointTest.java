@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.AdditionalMatchers.aryEq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -15,15 +16,21 @@ import static org.mockito.Mockito.when;
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
+import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
+import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
 import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
@@ -35,10 +42,20 @@ import org.springframework.web.server.ResponseStatusException;
 class ActivityEndpointTest {
 
   private static final byte[] FILE_BYTES = {1, 2, 3};
+  private static final String DATA =
+      """
+      {"openingId":1,"status":"PLANNED","baseCode":"HC","fundingSourceCodes":["BCP"],
+       "plannedDate":"2999-01-01","plannedArea":1.5}
+      """;
   private final SpatialFileService spatialFileService = mock(SpatialFileService.class);
   private final VirusScanService virusScanService = mock(VirusScanService.class);
+  private final CreateActivityService createActivityService = mock(CreateActivityService.class);
   private final ActivityEndpoint endpoint =
-      new ActivityEndpoint(spatialFileService, virusScanService);
+      new ActivityEndpoint(
+          spatialFileService,
+          virusScanService,
+          createActivityService,
+          new ObjectMapper().findAndRegisterModules());
 
   @Test
   void scansBeforeProcessingAndReturnsTheServiceResult() {
@@ -150,5 +167,123 @@ class ActivityEndpointTest {
 
     assertThatThrownBy(() -> endpoint.uploadActivitySpatial(file)).isSameAs(failure);
     verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
+  }
+
+  @Test
+  void createScansTheFileBeforeCreatingTheActivity() {
+    MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
+    CreateActivityResponseDto expected =
+        new CreateActivityResponseDto(10L, 1L, ActivityStatus.PLANNED, "HC");
+    when(createActivityService.createActivity(
+            any(CreateActivityRequestDto.class), eq("activity.geojson"), aryEq(FILE_BYTES)))
+        .thenReturn(expected);
+
+    assertThat(endpoint.createActivity(DATA, file)).isSameAs(expected);
+
+    InOrder order = inOrder(virusScanService, createActivityService);
+    order.verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
+    order
+        .verify(createActivityService)
+        .createActivity(any(CreateActivityRequestDto.class), eq("activity.geojson"), any());
+    order.verifyNoMoreInteractions();
+  }
+
+  @Test
+  void createParsesTheRequestData() {
+    MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
+
+    endpoint.createActivity(DATA, file);
+
+    ArgumentCaptor<CreateActivityRequestDto> request =
+        ArgumentCaptor.forClass(CreateActivityRequestDto.class);
+    verify(createActivityService).createActivity(request.capture(), any(), any());
+    assertThat(request.getValue().openingId()).isEqualTo(1L);
+    assertThat(request.getValue().status()).isEqualTo(ActivityStatus.PLANNED);
+    assertThat(request.getValue().plannedDate()).isEqualTo(LocalDate.of(2999, 1, 1));
+    assertThat(request.getValue().plannedArea()).isEqualByComparingTo("1.5");
+  }
+
+  @Test
+  void createWithoutFileSkipsTheScanner() {
+    CreateActivityResponseDto expected =
+        new CreateActivityResponseDto(10L, 1L, ActivityStatus.PLANNED, "HC");
+    when(createActivityService.createActivity(any(CreateActivityRequestDto.class)))
+        .thenReturn(expected);
+
+    assertThat(endpoint.createActivity(DATA, null)).isSameAs(expected);
+    verifyNoInteractions(virusScanService, spatialFileService);
+  }
+
+  @Test
+  void createIgnoresAnUnselectedFilePart() {
+    MockMultipartFile noFile = new MockMultipartFile("file", "", null, new byte[0]);
+
+    endpoint.createActivity(DATA, noFile);
+
+    verify(createActivityService).createActivity(any(CreateActivityRequestDto.class));
+    verifyNoInteractions(virusScanService);
+  }
+
+  @Test
+  void createRejectsAnEmptyNamedFile() {
+    MockMultipartFile empty = new MockMultipartFile("file", "activity.geojson", null, new byte[0]);
+
+    assertThatThrownBy(() -> endpoint.createActivity(DATA, empty))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
+    verifyNoInteractions(virusScanService, createActivityService);
+  }
+
+  @Test
+  void createRejectsInvalidJsonBeforeAnythingElse() {
+    MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
+
+    assertThatThrownBy(() -> endpoint.createActivity("{not json", file))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e -> {
+              assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+              assertThat(e.getReason()).startsWith("Invalid JSON in 'data'");
+            });
+    verifyNoInteractions(virusScanService, createActivityService);
+  }
+
+  @Test
+  void createRejectsAnUnknownStatus() {
+    String data = DATA.replace("PLANNED", "DONE");
+
+    assertThatThrownBy(() -> endpoint.createActivity(data, null))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
+    verifyNoInteractions(createActivityService);
+  }
+
+  @Test
+  void createDoesNotSaveWhenTheScannerRejectsTheFile() {
+    MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
+    VirusDetectedException failure = new VirusDetectedException("Virus detected: Eicar");
+    doThrow(failure)
+        .when(virusScanService)
+        .scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
+
+    assertThatThrownBy(() -> endpoint.createActivity(DATA, file)).isSameAs(failure);
+    verifyNoInteractions(createActivityService);
+  }
+
+  @Test
+  void createRejectsAnOversizedFileBeforeReadingOrScanning() throws IOException {
+    MultipartFile file = mock(MultipartFile.class);
+    when(file.isEmpty()).thenReturn(false);
+    when(file.getOriginalFilename()).thenReturn("activity.geojson");
+    when(file.getSize()).thenReturn(SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1L);
+
+    assertThatThrownBy(() -> endpoint.createActivity(DATA, file))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
+    verify(file, never()).getBytes();
+    verifyNoInteractions(virusScanService, createActivityService);
   }
 }
