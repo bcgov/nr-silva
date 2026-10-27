@@ -65,25 +65,23 @@ public class CreateActivityValidationService {
   /**
    * Validates the request and returns the opening the activity is created under.
    *
+   * @param openingId the opening the activity is created under
    * @param dto the request
    * @return the opening
    * @throws NotFoundGenericException when the opening does not exist
    * @throws ResponseStatusException with status 400 listing every violation
    */
-  public OpeningEntity validate(CreateActivityRequestDto dto) {
+  public OpeningEntity validate(Long openingId, CreateActivityRequestDto dto) {
+    OpeningEntity opening =
+        openingRepository
+            .findById(openingId)
+            .orElseThrow(() -> new NotFoundGenericException("Opening"));
+
     List<String> errors = new ArrayList<>();
     validator.validate(dto).stream()
         .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
         .sorted()
         .forEach(errors::add);
-
-    if (dto.openingId() == null) {
-      throw badRequest(errors);
-    }
-    OpeningEntity opening =
-        openingRepository
-            .findById(dto.openingId())
-            .orElseThrow(() -> new NotFoundGenericException("Opening"));
 
     validateAreas(dto, opening, errors);
     validateStatusFields(dto, errors);

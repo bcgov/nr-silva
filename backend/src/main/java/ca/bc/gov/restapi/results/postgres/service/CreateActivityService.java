@@ -51,18 +51,20 @@ public class CreateActivityService {
   /**
    * Validates and creates the activity with its objectives, funding sources and comment.
    *
+   * @param openingId the opening the activity is created under
    * @param dto the request
    * @return the created activity
    */
   @Transactional
-  public CreateActivityResponseDto createActivity(CreateActivityRequestDto dto) {
-    return createActivity(dto, null, null);
+  public CreateActivityResponseDto createActivity(Long openingId, CreateActivityRequestDto dto) {
+    return createActivity(openingId, dto, null, null);
   }
 
   /**
    * Validates and creates the activity with its objectives, funding sources, comment and the
    * optional spatial file. Nothing is saved when the request or the file is invalid.
    *
+   * @param openingId the opening the activity is created under
    * @param dto the request
    * @param fileName the original name of the spatial file, or null when there is no file
    * @param fileBytes the content of the spatial file, already scanned for viruses, or null
@@ -70,8 +72,8 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(
-      CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
-    OpeningEntity opening = validationService.validate(dto);
+      Long openingId, CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
+    OpeningEntity opening = validationService.validate(openingId, dto);
     var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = LocalDateTime.now();
