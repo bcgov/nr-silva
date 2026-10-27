@@ -117,7 +117,7 @@ class CreateActivityValidationServiceTest {
         new CreateActivityValidationService(
             Validation.buildDefaultValidatorFactory().getValidator(),
             openingRepository,
-            cutBlockOpenAdminRepository,
+            new OpeningGrossAreaResolver(cutBlockOpenAdminRepository),
             baseCodeRepository,
             techniqueCodeRepository,
             methodCodeRepository,
