@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -328,7 +330,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
                 OPENING_ID,
                 planned("HC", null),
                 "activity.geojson",
-                SQUARE_GEOJSON.getBytes(UTF_8))
+                () -> SQUARE_GEOJSON.getBytes(UTF_8))
             .activityId();
     entityManager.flush();
 
@@ -355,7 +357,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     byte[] file = new ClassPathResource("spatial/activity-1527650.geojson").getContentAsByteArray();
 
     Long id =
-        service.createActivity(OPENING_ID, planned("HC", null), "activity.geojson", file)
+        service.createActivity(OPENING_ID, planned("HC", null), "activity.geojson", () -> file)
             .activityId();
     entityManager.flush();
 
@@ -396,7 +398,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
                     OPENING_ID,
                     planned("HC", "comment"),
                     "bad.geojson",
-                    "not a spatial file".getBytes(UTF_8)))
+                    () -> "not a spatial file".getBytes(UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
 
     entityManager.flush();
@@ -474,5 +476,71 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+  }
+
+  private Supplier<byte[]> failingReader(AtomicInteger calls, RuntimeException failure) {
+    return () -> {
+      calls.incrementAndGet();
+      throw failure;
+    };
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {})
+  @DisplayName("Does not read the file of an unknown opening")
+  void createActivity_unknownOpening_doesNotReadFile() {
+    AtomicInteger calls = new AtomicInteger();
+
+    assertThatThrownBy(
+            () ->
+                service.createActivity(
+                    -1L,
+                    planned("HC", null),
+                    "activity.geojson",
+                    failingReader(calls, new IllegalStateException("scanned"))))
+        .isInstanceOf(NotFoundGenericException.class);
+
+    assertThat(calls).hasValue(0);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Submitter_00099999"})
+  @DisplayName("Does not read the file when the user has no access")
+  void createActivity_forbidden_doesNotReadFile() {
+    AtomicInteger calls = new AtomicInteger();
+
+    assertThatThrownBy(
+            () ->
+                service.createActivity(
+                    OPENING_ID,
+                    planned("HC", null),
+                    "activity.geojson",
+                    failingReader(calls, new IllegalStateException("scanned"))))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+
+    assertThat(calls).hasValue(0);
+  }
+
+  @Test
+  @DisplayName("Reads the file once access is granted and reports its failure before validation")
+  void createActivity_fileRejected_reportedBeforeValidationAndSavesNothing() {
+    int before = activityCount();
+    AtomicInteger calls = new AtomicInteger();
+    ResponseStatusException rejected =
+        new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Virus detected");
+
+    assertThatThrownBy(
+            () ->
+                service.createActivity(
+                    OPENING_ID,
+                    planned("PL", "comment"),
+                    "activity.geojson",
+                    failingReader(calls, rejected)))
+        .isSameAs(rejected);
+
+    assertThat(calls).hasValue(1);
+    assertThat(activityCount()).isEqualTo(before);
   }
 }

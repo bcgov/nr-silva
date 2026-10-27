@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,6 +18,7 @@ import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.common.exception.VirusDetectedException;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.restapi.results.extensions.WithMockJwt;
+import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
 import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -235,6 +237,68 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
         .andExpect(status().isUnprocessableEntity());
 
     assertThat(activityCount()).isEqualTo(before);
+  }
+
+  @Test
+  @DisplayName("Returns not found, without scanning, for an infected file on an unknown opening")
+  void create_unknownOpeningAndInfectedFile_returnsNotFoundWithoutScanning() throws Exception {
+    doThrow(new VirusDetectedException("Virus detected: Eicar-Test-Signature"))
+        .when(virusScanService)
+        .scanOrThrow(any(), eq("activity.geojson"));
+
+    mockMvc
+        .perform(
+            create(-1L, data("HC", "[\"BCP\"]")).file(spatialFile()).with(csrf().asHeader()))
+        .andExpect(status().isNotFound());
+
+    verifyNoInteractions(virusScanService);
+  }
+
+  @Test
+  @DisplayName("Returns not found, without reading the file, for an oversized file on an unknown opening")
+  void create_unknownOpeningAndOversizedFile_returnsNotFound() throws Exception {
+    MockMultipartFile oversized =
+        new MockMultipartFile(
+            "file",
+            "big.geojson",
+            null,
+            new byte[(int) SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1]);
+
+    mockMvc
+        .perform(create(-1L, data("HC", "[\"BCP\"]")).file(oversized).with(csrf().asHeader()))
+        .andExpect(status().isNotFound());
+
+    verifyNoInteractions(virusScanService);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Planner_00099999"})
+  @DisplayName("Returns forbidden, without scanning, for an infected file without access")
+  void create_noRoleAndInfectedFile_returnsForbiddenWithoutScanning() throws Exception {
+    doThrow(new VirusDetectedException("Virus detected: Eicar-Test-Signature"))
+        .when(virusScanService)
+        .scanOrThrow(any(), eq("activity.geojson"));
+
+    mockMvc
+        .perform(
+            create(OPENING_ID, data("HC", "[\"BCP\"]"))
+                .file(spatialFile())
+                .with(csrf().asHeader()))
+        .andExpect(status().isForbidden());
+
+    verifyNoInteractions(virusScanService);
+  }
+
+  @Test
+  @DisplayName("Reports an infected file before problems with the request")
+  void create_infectedFileAndInvalidRequest_returnsUnprocessable() throws Exception {
+    doThrow(new VirusDetectedException("Virus detected: Eicar-Test-Signature"))
+        .when(virusScanService)
+        .scanOrThrow(any(), eq("activity.geojson"));
+
+    mockMvc
+        .perform(create(OPENING_ID, data("PL", "[]")).file(spatialFile()).with(csrf().asHeader()))
+        .andExpect(status().isUnprocessableEntity());
   }
 
   @Test
