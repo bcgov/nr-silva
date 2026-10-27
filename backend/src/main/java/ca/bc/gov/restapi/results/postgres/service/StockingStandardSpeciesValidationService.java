@@ -60,60 +60,81 @@ public class StockingStandardSpeciesValidationService {
         continue;
       }
 
-      List<StockingSpeciesValidationResultDto> speciesResults = new ArrayList<>();
-      List<StockingSpeciesDto> structurallyValidSpecies = new ArrayList<>();
-      List<Integer> structurallyValidIndices = new ArrayList<>();
-      List<StockingSpeciesDto> species = layer.species();
-      if (species != null) {
-        for (int speciesIndex = 0; speciesIndex < species.size(); speciesIndex++) {
-          StockingSpeciesDto speciesDto = species.get(speciesIndex);
-          SpeciesFieldValidationError fieldError = validateFields(speciesDto);
-          if (fieldError != null) {
-            speciesResults.add(
-                new StockingSpeciesValidationResultDto(
-                    speciesIndex, false, fieldError.errorCode(), fieldError.errorMessage()));
-            continue;
-          }
-
-          structurallyValidSpecies.add(speciesDto);
-          structurallyValidIndices.add(speciesIndex);
-          var outcome = referenceValidationService.validateSpecies(layer.layerCode(), speciesDto);
-          if (outcome.minimumHeightError() != null) {
-            speciesResults.add(
-                new StockingSpeciesValidationResultDto(
-                    speciesIndex,
-                    false,
-                    SpeciesValidationErrorCode.SPECIES_MIN_HEIGHT_REQUIRED,
-                    outcome.minimumHeightError()));
-          } else if (!outcome.exists()) {
-            speciesResults.add(
-                new StockingSpeciesValidationResultDto(
-                    speciesIndex,
-                    false,
-                    SpeciesValidationErrorCode.SPECIES_CODE_UNKNOWN_OR_INACTIVE,
-                    "Unknown or inactive species code(s): " + speciesDto.speciesCode()));
-          } else {
-            speciesResults.add(new StockingSpeciesValidationResultDto(speciesIndex, true, null, null));
-          }
-        }
-      }
-
-      List<SpeciesDuplicateConflictDto> layerConflicts =
-          findDuplicateConflicts(
-              layerIndex, layer.layerCode(), structurallyValidSpecies, structurallyValidIndices);
-      duplicateConflicts.addAll(layerConflicts);
-      boolean isLayerValid =
-          speciesResults.stream().allMatch(StockingSpeciesValidationResultDto::isValid)
-              && layerConflicts.isEmpty();
-      layerResults.add(
-          new StockingSpeciesLayerValidationResultDto(
-              layerIndex, layer.layerCode(), isLayerValid, null, null, speciesResults));
+      layerResults.add(validateLayer(layerIndex, layer, duplicateConflicts));
     }
 
     boolean isValid =
         layerResults.stream().allMatch(StockingSpeciesLayerValidationResultDto::isValid)
             && duplicateConflicts.isEmpty();
     return new StockingSpeciesValidationResponseDto(layerResults, duplicateConflicts, isValid);
+  }
+
+  private StockingSpeciesLayerValidationResultDto validateLayer(
+      int layerIndex,
+      StockingSpeciesLayerValidationRequestDto layer,
+      List<SpeciesDuplicateConflictDto> duplicateConflicts) {
+    List<StockingSpeciesValidationResultDto> speciesResults = new ArrayList<>();
+    List<StockingSpeciesDto> structurallyValidSpecies = new ArrayList<>();
+    List<Integer> structurallyValidIndices = new ArrayList<>();
+    List<StockingSpeciesDto> species = layer.species();
+    if (species != null) {
+      for (int speciesIndex = 0; speciesIndex < species.size(); speciesIndex++) {
+        validateSingleSpecies(
+            species.get(speciesIndex),
+            speciesIndex,
+            layer.layerCode(),
+            speciesResults,
+            structurallyValidSpecies,
+            structurallyValidIndices);
+      }
+    }
+
+    List<SpeciesDuplicateConflictDto> layerConflicts =
+        findDuplicateConflicts(
+            layerIndex, layer.layerCode(), structurallyValidSpecies, structurallyValidIndices);
+    duplicateConflicts.addAll(layerConflicts);
+    boolean isLayerValid =
+        speciesResults.stream().allMatch(StockingSpeciesValidationResultDto::isValid)
+            && layerConflicts.isEmpty();
+    return new StockingSpeciesLayerValidationResultDto(
+        layerIndex, layer.layerCode(), isLayerValid, null, null, speciesResults);
+  }
+
+  private void validateSingleSpecies(
+      StockingSpeciesDto speciesDto,
+      int speciesIndex,
+      String layerCode,
+      List<StockingSpeciesValidationResultDto> speciesResults,
+      List<StockingSpeciesDto> structurallyValidSpecies,
+      List<Integer> structurallyValidIndices) {
+    SpeciesFieldValidationError fieldError = validateFields(speciesDto);
+    if (fieldError != null) {
+      speciesResults.add(
+          new StockingSpeciesValidationResultDto(
+              speciesIndex, false, fieldError.errorCode(), fieldError.errorMessage()));
+      return;
+    }
+
+    structurallyValidSpecies.add(speciesDto);
+    structurallyValidIndices.add(speciesIndex);
+    var outcome = referenceValidationService.validateSpecies(layerCode, speciesDto);
+    if (outcome.minimumHeightError() != null) {
+      speciesResults.add(
+          new StockingSpeciesValidationResultDto(
+              speciesIndex,
+              false,
+              SpeciesValidationErrorCode.SPECIES_MIN_HEIGHT_REQUIRED,
+              outcome.minimumHeightError()));
+    } else if (!outcome.exists()) {
+      speciesResults.add(
+          new StockingSpeciesValidationResultDto(
+              speciesIndex,
+              false,
+              SpeciesValidationErrorCode.SPECIES_CODE_UNKNOWN_OR_INACTIVE,
+              "Unknown or inactive species code(s): " + speciesDto.speciesCode()));
+    } else {
+      speciesResults.add(new StockingSpeciesValidationResultDto(speciesIndex, true, null, null));
+    }
   }
 
   private boolean isValidLayerCode(String layerCode) {
