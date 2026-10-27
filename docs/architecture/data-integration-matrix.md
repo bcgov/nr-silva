@@ -523,14 +523,14 @@ Eleven boundary tables sit directly at the intersection between Silva and extern
 
 > [!TIP]
 > **Complete DDL, Foreign Key & Field-Level Audit Document**  
-> For full Oracle column-by-column data dictionary definitions, constraints, indexes, table comments, and the complete foreign key catalog, see the companion document:  
-> **[Cross-System Foreign Keys, Boundary Hotspots & DDL Audit]**.
+> For full Oracle column-by-column data dictionary definitions, constraints, indexes, table comments, and the complete 24-constraint foreign key catalog, see the internal project Confluence specification:  
+> **_Cross-System Foreign Keys, Boundary Hotspots & DDL Audit_** (available in the internal Silva Confluence Architecture repository space).
 
 ### 8.1 Boundary Ownership & Synchronization Matrix
 
 | Table Name | System Boundary | System of Record (SoR) | Modern Architecture & Integration Pattern |
 | :--- | :---: | :---: | :--- |
-| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Split Ownership**<br/>• Silva: Opening linkages & area copy<br/>• FTA: Cut block & disturbance attributes | **Shared Bridge (CQRS Read Model & Local Persistence):**<br/>• **Command Path:** Validated via `TenureProvider.verifyCutBlock()` against FTA master.<br/>• **Query Path:** Maintained in PostgreSQL as `silva.cut_block_open_admin` for sub-millisecond opening searches and PostGIS joins.<br/>• **Async Sync:** Silva emits `TenureAssociationHandler` events (`onTenureAssociated`, `onTenureRemoved`) to FTA; FTA disturbance updates sync via CDC / event stream. |
+| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Split Ownership**<br/>• Silva: Opening linkages (`opening_id`, `opening_prime_licence_ind`), opening area copy (`opening_gross_area`), and derived disturbance metrics (`disturbance_gross_area`, `disturbance_start_date`, `disturbance_end_date`)<br/>• FTA: Cut block identity (`forest_file_id`, `cutting_permit_id`, `cut_block_id`, `timber_mark`, `cb_skey`) & planned harvesting metrics (`planned_gross_block_area`, `planned_net_block_area`, `planned_harvest_date`) | **Shared Bridge (CQRS Read Model & Local Persistence):**<br/>• **Command Path:** Validated via `TenureProvider.verifyCutBlock()` against FTA master.<br/>• **Silva Derivation (Disturbance Fields):** `disturbance_gross_area`, `disturbance_start_date`, and `disturbance_end_date` are derived within Silva from silviculture disturbance (`DN`) `ACTIVITY_TREATMENT_UNIT` records via `OpeningTenureAssociationService.reconcile()`. FTA does not write to these fields, eliminating competing writers.<br/>• **Query Path:** Maintained in PostgreSQL as `silva.cut_block_open_admin` for sub-millisecond opening searches and PostGIS joins.<br/>• **Async Sync:** Silva emits `TenureAssociationHandler` events (`onTenureAssociated`, `onTenureRemoved`) to notify FTA; FTA cut block updates sync via CDC / event stream without overwriting Silva-derived disturbance attributes. |
 | `CUT_BLOCK` | FTA | **FTA Master**<br/>(100% External) | **External Master (Strictly Read-Only):**<br/>• Legacy direct `UPDATE` queries from RESULTS are eliminated.<br/>• Silva domain services only perform read-only lookups via `TenureProvider`. Mutations are delegated to FTA via REST/events under RFC-001. |
 | `ORG_UNIT` | Corporate BCGW / Silva | **Corporate MOF**<br/>(100% External) | **Corporate Hierarchy (Port & Caffeine Caching):**<br/>• Decoupled behind `OrgUnitProvider`.<br/>• In-memory Caffeine cache (`ttl = 60m`). Logical foreign key `org_unit_no` stored in Silva PostgreSQL entities. |
 | `EUSER` | Corporate / Silva | **eServices (Legacy)** | **DEPRECATE & ELIMINATE:**<br/>• Replaced by standard OIDC / Keycloak authentication (BCeID / IDIR) and JWT access tokens.<br/>• User preferences and application roles persist in a modern `silva.user_profile` PostgreSQL table. |
@@ -577,7 +577,7 @@ This integration matrix contains strictly architectural taxonomy, domain relatio
 
 - **[ADR-001: Anti-Corruption Layer for External Systems](./adr/ADR-001-external-systems-anti-corruption-layer.md)**
 - **[External Systems Integration Spec](./external-systems-integration-spec.md)**
-- **[Cross-System Foreign Keys, Boundary Hotspots & DDL Audit]**
+- **_Cross-System Foreign Keys, Boundary Hotspots & DDL Audit_** (Internal Silva Confluence Architecture Specification)
 - **[Parent Epic #1517](https://github.com/bcgov/nr-silva/issues/1517)**
 - **[Sub-Issue 1.2 (#1519)](https://github.com/bcgov/nr-silva/issues/1519):** Audit cross-system foreign keys, dual-writes, and boundary ownership (Completed).
 - **[Sub-Issue 1.3 (#1520)](https://github.com/bcgov/nr-silva/issues/1520):** Establish cross-team interface RFC process and template.
