@@ -12,9 +12,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Request body (the {@code data} part) for creating a basic activity under an opening.
+ * Request body (the {@code data} part) for creating a basic activity under an opening. The opening
+ * is given by the request path.
  *
- * @param openingId the opening the activity is created under
  * @param status whether the activity is planned or completed
  * @param baseCode the activity base code; only the basic bases are accepted
  * @param techniqueCode optional technique code
@@ -32,7 +32,6 @@ import java.util.List;
  * @param actualCost optional actual cost in whole dollars, only for completed activities
  */
 public record CreateActivityRequestDto(
-    @NotNull Long openingId,
     @NotNull ActivityStatus status,
     @NotBlank @Size(max = 2) String baseCode,
     @Size(max = 2) String techniqueCode,

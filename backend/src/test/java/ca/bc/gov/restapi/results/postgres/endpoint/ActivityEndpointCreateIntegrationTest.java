@@ -42,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  private static final String CREATE_PATH = "/api/activities";
+  private static final String CREATE_PATH = "/api/openings/{openingId}/activities";
   // Opening with a prime licence gross area of 79.4 ha
   private static final long OPENING_ID = 1004185L;
   private static final String SQUARE_GEOJSON =
@@ -67,18 +67,18 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
     clearInvocations(virusScanService);
   }
 
-  private String data(long openingId, String base, String funding) {
+  private String data(String base, String funding) {
     return """
-        {"openingId":%d,"status":"PLANNED","baseCode":"%s","techniqueCode":"CG",
+        {"status":"PLANNED","baseCode":"%s","techniqueCode":"CG",
          "methodCode":"BAGS","objectiveCodes":["A","AC"],"fundingSourceCodes":%s,
          "projectNumber":"PRJ-1","licenseeActivityId":"LIC-1","comment":"a comment",
          "plannedDate":"%s","plannedArea":12.5,"plannedCost":1500}
         """
-        .formatted(openingId, base, funding, LocalDate.now().plusDays(30));
+        .formatted(base, funding, LocalDate.now().plusDays(30));
   }
 
-  private MockMultipartHttpServletRequestBuilder create(String data) {
-    return multipart(CREATE_PATH)
+  private MockMultipartHttpServletRequestBuilder create(long openingId, String data) {
+    return multipart(CREATE_PATH, openingId)
         .file(new MockMultipartFile("data", "", MediaType.APPLICATION_JSON_VALUE, data.getBytes()));
   }
 
@@ -97,7 +97,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   void create_withFile_returnsCreated() throws Exception {
     mockMvc
         .perform(
-            create(data(OPENING_ID, "HC", "[\"BCP\",\"BCT\"]"))
+            create(OPENING_ID, data("HC", "[\"BCP\",\"BCT\"]"))
                 .file(spatialFile())
                 .with(csrf().asHeader()))
         .andExpect(status().isCreated())
@@ -124,7 +124,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   @DisplayName("Creates an activity without a spatial file")
   void create_withoutFile_returnsCreated() throws Exception {
     mockMvc
-        .perform(create(data(OPENING_ID, "FE", "[\"BCP\"]")).with(csrf().asHeader()))
+        .perform(create(OPENING_ID, data("FE", "[\"BCP\"]")).with(csrf().asHeader()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.baseCode").value("FE"));
 
@@ -137,7 +137,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
     int before = activityCount();
 
     mockMvc
-        .perform(create(data(OPENING_ID, "PL", "[]")).with(csrf().asHeader()))
+        .perform(create(OPENING_ID, data("PL", "[]")).with(csrf().asHeader()))
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.detail").value(containsString("fundingSourceCodes: must not be empty")))
@@ -150,10 +150,10 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   @DisplayName("Returns the opening gross area when the area is over the tolerance")
   void create_areaOverTolerance_reportsGrossArea() throws Exception {
     String data =
-        data(OPENING_ID, "HC", "[\"BCP\"]").replace("\"plannedArea\":12.5", "\"plannedArea\":200");
+        data("HC", "[\"BCP\"]").replace("\"plannedArea\":12.5", "\"plannedArea\":200");
 
     mockMvc
-        .perform(create(data).with(csrf().asHeader()))
+        .perform(create(OPENING_ID, data).with(csrf().asHeader()))
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.detail")
@@ -167,15 +167,31 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   @DisplayName("Returns not found when the opening does not exist")
   void create_unknownOpening_returnsNotFound() throws Exception {
     mockMvc
-        .perform(create(data(-1L, "HC", "[\"BCP\"]")).with(csrf().asHeader()))
+        .perform(create(-1L, data("HC", "[\"BCP\"]")).with(csrf().asHeader()))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Returns bad request when the opening id in the path is not a number")
+  void create_nonNumericOpeningId_returnsBadRequest() throws Exception {
+    mockMvc
+        .perform(
+            multipart(CREATE_PATH, "abc")
+                .file(
+                    new MockMultipartFile(
+                        "data",
+                        "",
+                        MediaType.APPLICATION_JSON_VALUE,
+                        data("HC", "[\"BCP\"]").getBytes()))
+                .with(csrf().asHeader()))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   @DisplayName("Returns bad request when the data part is not valid JSON")
   void create_invalidJson_returnsBadRequest() throws Exception {
     mockMvc
-        .perform(create("{not json").with(csrf().asHeader()))
+        .perform(create(OPENING_ID, "{not json").with(csrf().asHeader()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.detail").value(containsString("Invalid JSON in 'data'")));
   }
@@ -190,7 +206,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            create(data(OPENING_ID, "HC", "[\"BCP\"]"))
+            create(OPENING_ID, data("HC", "[\"BCP\"]"))
                 .file(spatialFile())
                 .with(csrf().asHeader()))
         .andExpect(status().isUnprocessableEntity());
@@ -207,7 +223,8 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
             "file", "bad.geojson", null, "not a spatial file".getBytes(StandardCharsets.UTF_8));
 
     mockMvc
-        .perform(create(data(OPENING_ID, "HC", "[\"BCP\"]")).file(bad).with(csrf().asHeader()))
+        .perform(
+            create(OPENING_ID, data("HC", "[\"BCP\"]")).file(bad).with(csrf().asHeader()))
         .andExpect(status().isBadRequest());
 
     assertThat(activityCount()).isEqualTo(before);
