@@ -20,6 +20,13 @@
 
   .activity-accordion {
 
+    .add-activity-button-container {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
     .activity-table-container {
       .#{vars.$bcgov-prefix}--table-toolbar {
         position: sticky;
