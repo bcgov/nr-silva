@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -28,9 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/** Activity endpoints available in PostgreSQL mode. */
+/**
+ * Activity endpoints available in PostgreSQL mode. Paths are set on each method because activities
+ * are created under an opening while the spatial upload does not depend on one.
+ */
 @RestController
-@RequestMapping(path = "/api/activities", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class ActivityEndpoint {
@@ -41,7 +45,9 @@ public class ActivityEndpoint {
   private final ObjectMapper objectMapper;
 
   /** Creates a basic activity under an opening, with an optional spatial file. */
-  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(
+      value = "/api/openings/{openingId}/activities",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
       summary = "Create an activity",
@@ -65,6 +71,8 @@ public class ActivityEndpoint {
       description = "Upload rejected by the virus scanner",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   public CreateActivityResponseDto createActivity(
+      @PathVariable("openingId") @Parameter(description = "Opening the activity is created under")
+          Long openingId,
       @RequestPart("data")
           @Parameter(
               description = "Activity creation request (JSON)",
@@ -83,10 +91,11 @@ public class ActivityEndpoint {
           HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getOriginalMessage());
     }
     if (file == null || (file.isEmpty() && isBlank(file.getOriginalFilename()))) {
-      return createActivityService.createActivity(dto);
+      return createActivityService.createActivity(openingId, dto);
     }
     byte[] fileBytes = readAndScanFile(file);
-    return createActivityService.createActivity(dto, file.getOriginalFilename(), fileBytes);
+    return createActivityService.createActivity(
+        openingId, dto, file.getOriginalFilename(), fileBytes);
   }
 
   private boolean isBlank(String value) {
@@ -94,7 +103,9 @@ public class ActivityEndpoint {
   }
 
   /** Processes an activity spatial file without creating an activity or saving geometry. */
-  @PostMapping(value = "/spatial/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(
+      value = "/api/activities/spatial/upload",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.ACCEPTED)
   @Operation(
       summary = "Upload an activity spatial file",

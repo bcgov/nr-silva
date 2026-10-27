@@ -42,9 +42,10 @@ import org.springframework.web.server.ResponseStatusException;
 class ActivityEndpointTest {
 
   private static final byte[] FILE_BYTES = {1, 2, 3};
+  private static final Long OPENING_ID = 7L;
   private static final String DATA =
       """
-      {"openingId":1,"status":"PLANNED","baseCode":"HC","fundingSourceCodes":["BCP"],
+      {"status":"PLANNED","baseCode":"HC","fundingSourceCodes":["BCP"],
        "plannedDate":"2999-01-01","plannedArea":1.5}
       """;
   private final SpatialFileService spatialFileService = mock(SpatialFileService.class);
@@ -175,16 +176,20 @@ class ActivityEndpointTest {
     CreateActivityResponseDto expected =
         new CreateActivityResponseDto(10L, 1L, ActivityStatus.PLANNED, "HC");
     when(createActivityService.createActivity(
-            any(CreateActivityRequestDto.class), eq("activity.geojson"), aryEq(FILE_BYTES)))
+            eq(OPENING_ID),
+            any(CreateActivityRequestDto.class),
+            eq("activity.geojson"),
+            aryEq(FILE_BYTES)))
         .thenReturn(expected);
 
-    assertThat(endpoint.createActivity(DATA, file)).isSameAs(expected);
+    assertThat(endpoint.createActivity(OPENING_ID, DATA, file)).isSameAs(expected);
 
     InOrder order = inOrder(virusScanService, createActivityService);
     order.verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
     order
         .verify(createActivityService)
-        .createActivity(any(CreateActivityRequestDto.class), eq("activity.geojson"), any());
+        .createActivity(
+            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"), any());
     order.verifyNoMoreInteractions();
   }
 
@@ -192,12 +197,11 @@ class ActivityEndpointTest {
   void createParsesTheRequestData() {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
 
-    endpoint.createActivity(DATA, file);
+    endpoint.createActivity(OPENING_ID, DATA, file);
 
     ArgumentCaptor<CreateActivityRequestDto> request =
         ArgumentCaptor.forClass(CreateActivityRequestDto.class);
-    verify(createActivityService).createActivity(request.capture(), any(), any());
-    assertThat(request.getValue().openingId()).isEqualTo(1L);
+    verify(createActivityService).createActivity(eq(OPENING_ID), request.capture(), any(), any());
     assertThat(request.getValue().status()).isEqualTo(ActivityStatus.PLANNED);
     assertThat(request.getValue().plannedDate()).isEqualTo(LocalDate.of(2999, 1, 1));
     assertThat(request.getValue().plannedArea()).isEqualByComparingTo("1.5");
@@ -207,10 +211,10 @@ class ActivityEndpointTest {
   void createWithoutFileSkipsTheScanner() {
     CreateActivityResponseDto expected =
         new CreateActivityResponseDto(10L, 1L, ActivityStatus.PLANNED, "HC");
-    when(createActivityService.createActivity(any(CreateActivityRequestDto.class)))
+    when(createActivityService.createActivity(eq(OPENING_ID), any(CreateActivityRequestDto.class)))
         .thenReturn(expected);
 
-    assertThat(endpoint.createActivity(DATA, null)).isSameAs(expected);
+    assertThat(endpoint.createActivity(OPENING_ID, DATA, null)).isSameAs(expected);
     verifyNoInteractions(virusScanService, spatialFileService);
   }
 
@@ -218,9 +222,10 @@ class ActivityEndpointTest {
   void createIgnoresAnUnselectedFilePart() {
     MockMultipartFile noFile = new MockMultipartFile("file", "", null, new byte[0]);
 
-    endpoint.createActivity(DATA, noFile);
+    endpoint.createActivity(OPENING_ID, DATA, noFile);
 
-    verify(createActivityService).createActivity(any(CreateActivityRequestDto.class));
+    verify(createActivityService)
+        .createActivity(eq(OPENING_ID), any(CreateActivityRequestDto.class));
     verifyNoInteractions(virusScanService);
   }
 
@@ -228,7 +233,7 @@ class ActivityEndpointTest {
   void createRejectsAnEmptyNamedFile() {
     MockMultipartFile empty = new MockMultipartFile("file", "activity.geojson", null, new byte[0]);
 
-    assertThatThrownBy(() -> endpoint.createActivity(DATA, empty))
+    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, empty))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
@@ -239,7 +244,7 @@ class ActivityEndpointTest {
   void createRejectsInvalidJsonBeforeAnythingElse() {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
 
-    assertThatThrownBy(() -> endpoint.createActivity("{not json", file))
+    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, "{not json", file))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             e -> {
@@ -253,7 +258,7 @@ class ActivityEndpointTest {
   void createRejectsAnUnknownStatus() {
     String data = DATA.replace("PLANNED", "DONE");
 
-    assertThatThrownBy(() -> endpoint.createActivity(data, null))
+    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, data, null))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
@@ -268,7 +273,7 @@ class ActivityEndpointTest {
         .when(virusScanService)
         .scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
 
-    assertThatThrownBy(() -> endpoint.createActivity(DATA, file)).isSameAs(failure);
+    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, file)).isSameAs(failure);
     verifyNoInteractions(createActivityService);
   }
 
@@ -279,7 +284,7 @@ class ActivityEndpointTest {
     when(file.getOriginalFilename()).thenReturn("activity.geojson");
     when(file.getSize()).thenReturn(SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1L);
 
-    assertThatThrownBy(() -> endpoint.createActivity(DATA, file))
+    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, file))
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));

@@ -63,7 +63,6 @@ class CreateActivityValidationServiceTest {
 
   /** Mutable copy of the request so each test only changes what it cares about. */
   private static class Request {
-    Long openingId = OPENING_ID;
     ActivityStatus status = ActivityStatus.PLANNED;
     String baseCode = "HC";
     String techniqueCode = null;
@@ -79,7 +78,6 @@ class CreateActivityValidationServiceTest {
 
     CreateActivityRequestDto build() {
       return new CreateActivityRequestDto(
-          openingId,
           status,
           baseCode,
           techniqueCode,
@@ -169,7 +167,7 @@ class CreateActivityValidationServiceTest {
   private String errorOf(Request request) {
     ResponseStatusException exception =
         org.junit.jupiter.api.Assertions.assertThrows(
-            ResponseStatusException.class, () -> service.validate(request.build()));
+            ResponseStatusException.class, () -> service.validate(OPENING_ID, request.build()));
     assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     return exception.getReason();
   }
@@ -177,7 +175,7 @@ class CreateActivityValidationServiceTest {
   @Test
   @DisplayName("Accepts a valid planned activity and returns the opening")
   void validate_validPlanned_returnsOpening() {
-    assertThat(service.validate(new Request().build())).isSameAs(opening);
+    assertThat(service.validate(OPENING_ID, new Request().build())).isSameAs(opening);
   }
 
   @Test
@@ -194,7 +192,7 @@ class CreateActivityValidationServiceTest {
     request.objectiveCodes = List.of("A", "B", "C", "D", "E");
     request.fundingSourceCodes = List.of("BCP", "BCT", "CBI", "CF", "FIP");
 
-    assertThat(service.validate(request.build())).isSameAs(opening);
+    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
   }
 
   @Test
@@ -203,7 +201,7 @@ class CreateActivityValidationServiceTest {
     for (String base : CreateActivityValidationService.BASIC_BASE_CODES) {
       Request request = new Request();
       request.baseCode = base;
-      assertThat(service.validate(request.build())).isSameAs(opening);
+      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
     }
     assertThat(CreateActivityValidationService.BASIC_BASE_CODES)
         .containsExactlyInAnyOrder(
@@ -342,7 +340,7 @@ class CreateActivityValidationServiceTest {
   void validate_unknownOpening_notFound() {
     when(openingRepository.findById(OPENING_ID)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.validate(new Request().build()))
+    assertThatThrownBy(() -> service.validate(OPENING_ID, new Request().build()))
         .isInstanceOf(NotFoundGenericException.class);
   }
 
@@ -352,7 +350,7 @@ class CreateActivityValidationServiceTest {
     Request request = new Request();
     request.plannedArea = new BigDecimal("125.0");
 
-    assertThat(service.validate(request.build())).isSameAs(opening);
+    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
   }
 
   @Test
@@ -388,7 +386,7 @@ class CreateActivityValidationServiceTest {
       Request request = new Request();
       request.baseCode = base;
       request.plannedArea = new BigDecimal("900.0");
-      assertThat(service.validate(request.build())).isSameAs(opening);
+      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
     }
   }
 
@@ -401,7 +399,7 @@ class CreateActivityValidationServiceTest {
       Request request = new Request();
       request.baseCode = base;
       request.plannedArea = new BigDecimal("900.0");
-      assertThat(service.validate(request.build())).isSameAs(opening);
+      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
     }
     for (String base : List.of("HC", "HI", "LB", "ST")) {
       Request request = new Request();
@@ -451,6 +449,6 @@ class CreateActivityValidationServiceTest {
     Request request = new Request();
     request.plannedArea = new BigDecimal("900.0");
 
-    assertThat(service.validate(request.build())).isSameAs(opening);
+    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
   }
 }

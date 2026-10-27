@@ -60,7 +60,6 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
 
   private CreateActivityRequestDto planned(String baseCode, String comment) {
     return new CreateActivityRequestDto(
-        OPENING_ID,
         ActivityStatus.PLANNED,
         baseCode,
         "CG",
@@ -80,7 +79,6 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
 
   private CreateActivityRequestDto completed() {
     return new CreateActivityRequestDto(
-        OPENING_ID,
         ActivityStatus.COMPLETED,
         "HC",
         "CG",
@@ -130,7 +128,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             Integer.class,
             OPENING_ID);
 
-    CreateActivityResponseDto response = service.createActivity(planned("HC", "  first comment "));
+    CreateActivityResponseDto response =
+        service.createActivity(OPENING_ID, planned("HC", "  first comment "));
 
     assertThat(response.openingId()).isEqualTo(OPENING_ID);
     assertThat(response.status()).isEqualTo(ActivityStatus.PLANNED);
@@ -175,7 +174,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Creates a completed activity with the actual set of values")
   void createActivity_completed_savesActualSet() {
-    CreateActivityResponseDto response = service.createActivity(completed());
+    CreateActivityResponseDto response = service.createActivity(OPENING_ID, completed());
 
     Map<String, Object> row = activityRow(response.activityId());
     assertThat(row)
@@ -198,7 +197,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("The new activity shows its objectives and funding in the opening activities list")
   void createActivity_completed_isReadFromChildTables() {
-    Long id = service.createActivity(completed()).activityId();
+    Long id = service.createActivity(OPENING_ID, completed()).activityId();
     entityManager.flush();
 
     var activity =
@@ -220,7 +219,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Saves the comment as an activity comment")
   void createActivity_withComment_savesLinkedComment() {
-    Long id = service.createActivity(planned("HC", "  first comment ")).activityId();
+    Long id =
+        service.createActivity(OPENING_ID, planned("HC", "  first comment ")).activityId();
     entityManager.flush();
 
     var comments = commentRepository.getCommentById(null, id, null, null, null);
@@ -234,7 +234,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Does not save a comment when it is blank")
   void createActivity_blankComment_savesNoComment() {
-    Long id = service.createActivity(planned("HC", "   ")).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("HC", "   ")).activityId();
     entityManager.flush();
 
     assertThat(commentRepository.getCommentById(null, id, null, null, null)).isEmpty();
@@ -243,8 +243,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Numbers activities under the opening in sequence")
   void createActivity_twice_incrementsSequenceNumber() {
-    Long first = service.createActivity(planned("HC", null)).activityId();
-    Long second = service.createActivity(planned("FE", null)).activityId();
+    Long first = service.createActivity(OPENING_ID, planned("HC", null)).activityId();
+    Long second = service.createActivity(OPENING_ID, planned("FE", null)).activityId();
 
     Integer firstSeq = (Integer) activityRow(first).get("activity_tu_seq_no");
     Integer secondSeq = (Integer) activityRow(second).get("activity_tu_seq_no");
@@ -260,7 +260,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
 
-    assertThatThrownBy(() -> service.createActivity(planned("PL", "comment")))
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("PL", "comment")))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("baseCode: must be one of");
 
@@ -277,7 +277,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     Long id =
         service
             .createActivity(
-                planned("HC", null), "activity.geojson", SQUARE_GEOJSON.getBytes(UTF_8))
+                OPENING_ID,
+                planned("HC", null),
+                "activity.geojson",
+                SQUARE_GEOJSON.getBytes(UTF_8))
             .activityId();
     entityManager.flush();
 
@@ -303,7 +306,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   void createActivity_withLongitudeLatitudeFile_savesGeometry() throws IOException {
     byte[] file = new ClassPathResource("spatial/activity-1527650.geojson").getContentAsByteArray();
 
-    Long id = service.createActivity(planned("HC", null), "activity.geojson", file).activityId();
+    Long id =
+        service.createActivity(OPENING_ID, planned("HC", null), "activity.geojson", file)
+            .activityId();
     entityManager.flush();
 
     BigDecimal area =
@@ -318,7 +323,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Saves no geometry when there is no file")
   void createActivity_withoutFile_savesNoGeometry() {
-    Long id = service.createActivity(planned("HC", null)).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("HC", null)).activityId();
     entityManager.flush();
 
     Integer count =
@@ -340,7 +345,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThatThrownBy(
             () ->
                 service.createActivity(
-                    planned("HC", "comment"), "bad.geojson", "not a spatial file".getBytes(UTF_8)))
+                    OPENING_ID,
+                    planned("HC", "comment"),
+                    "bad.geojson",
+                    "not a spatial file".getBytes(UTF_8)))
         .isInstanceOf(ResponseStatusException.class);
 
     entityManager.flush();
