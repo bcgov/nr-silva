@@ -22,6 +22,7 @@ import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -61,7 +62,7 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(Long openingId, CreateActivityRequestDto dto) {
-    return createActivity(openingId, dto, null, null);
+    return createActivity(openingId, dto, null, (Supplier<byte[]>) null);
   }
 
   /**
@@ -71,18 +72,25 @@ public class CreateActivityService {
    * @param openingId the opening the activity is created under
    * @param dto the request
    * @param fileName the original name of the spatial file, or null when there is no file
-   * @param fileBytes the content of the spatial file, already scanned for viruses, or null
+   * @param fileReader reads the spatial file, checks its size and scans it for viruses, or null
+   *     when there is no file. It is only called once the opening is known to exist and the user
+   *     has access to it, and before the request is validated or anything is saved.
    * @return the created activity
    */
   @Transactional
   public CreateActivityResponseDto createActivity(
-      Long openingId, CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
-    // 404 for an unknown opening first, then 403; only then the opening row is locked and the
-    // request validated, so users without access can never hold the lock
+      Long openingId,
+      CreateActivityRequestDto dto,
+      String fileName,
+      Supplier<byte[]> fileReader) {
+    // 404 for an unknown opening first, then 403, then the file is read and scanned; only then the
+    // opening row is locked and the request validated, so users without access can neither make
+    // the server process a file nor hold the lock
     if (!openingRepository.existsById(openingId)) {
       throw new NotFoundGenericException("Opening");
     }
     accessPolicy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, openingId);
+    byte[] fileBytes = fileReader == null ? null : fileReader.get();
     // The lock serialises creates under the same opening: the activity sequence number is
     // MAX + 1 and the opening revision count is read-modify-write, both would race otherwise
     OpeningEntity opening =

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -180,26 +181,26 @@ class ActivityEndpointTest {
   }
 
   @Test
-  void createScansTheFileBeforeCreatingTheActivity() {
+  @SuppressWarnings("unchecked")
+  void createHandsTheServiceAReaderThatScansTheFile() {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
     CreateActivityResponseDto expected =
         new CreateActivityResponseDto(10L, 1L, ActivityStatus.PLANNED, "HC");
     when(createActivityService.createActivity(
-            eq(OPENING_ID),
-            any(CreateActivityRequestDto.class),
-            eq("activity.geojson"),
-            aryEq(FILE_BYTES)))
+            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"), any()))
         .thenReturn(expected);
 
     assertThat(endpoint.createActivity(OPENING_ID, DATA, file)).isSameAs(expected);
 
-    InOrder order = inOrder(virusScanService, createActivityService);
-    order.verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
-    order
-        .verify(createActivityService)
+    ArgumentCaptor<Supplier<byte[]>> reader = ArgumentCaptor.forClass(Supplier.class);
+    verify(createActivityService)
         .createActivity(
-            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"), any());
-    order.verifyNoMoreInteractions();
+            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"),
+            reader.capture());
+    // The file is not scanned by the endpoint; the service decides when to read it
+    verifyNoInteractions(virusScanService);
+    assertThat(reader.getValue().get()).containsExactly(FILE_BYTES);
+    verify(virusScanService).scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
   }
 
   @Test
@@ -275,29 +276,44 @@ class ActivityEndpointTest {
   }
 
   @Test
-  void createDoesNotSaveWhenTheScannerRejectsTheFile() {
+  @SuppressWarnings("unchecked")
+  void createReaderFailsWhenTheScannerRejectsTheFile() {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
     VirusDetectedException failure = new VirusDetectedException("Virus detected: Eicar");
     doThrow(failure)
         .when(virusScanService)
         .scanOrThrow(aryEq(FILE_BYTES), eq("activity.geojson"));
 
-    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, file)).isSameAs(failure);
-    verifyNoInteractions(createActivityService);
+    endpoint.createActivity(OPENING_ID, DATA, file);
+
+    ArgumentCaptor<Supplier<byte[]>> reader = ArgumentCaptor.forClass(Supplier.class);
+    verify(createActivityService)
+        .createActivity(
+            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"),
+            reader.capture());
+    assertThatThrownBy(() -> reader.getValue().get()).isSameAs(failure);
   }
 
   @Test
-  void createRejectsAnOversizedFileBeforeReadingOrScanning() throws IOException {
+  @SuppressWarnings("unchecked")
+  void createReaderRejectsAnOversizedFileBeforeReadingOrScanning() throws IOException {
     MultipartFile file = mock(MultipartFile.class);
     when(file.isEmpty()).thenReturn(false);
     when(file.getOriginalFilename()).thenReturn("activity.geojson");
     when(file.getSize()).thenReturn(SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1L);
 
-    assertThatThrownBy(() -> endpoint.createActivity(OPENING_ID, DATA, file))
+    endpoint.createActivity(OPENING_ID, DATA, file);
+
+    ArgumentCaptor<Supplier<byte[]>> reader = ArgumentCaptor.forClass(Supplier.class);
+    verify(createActivityService)
+        .createActivity(
+            eq(OPENING_ID), any(CreateActivityRequestDto.class), eq("activity.geojson"),
+            reader.capture());
+    assertThatThrownBy(() -> reader.getValue().get())
         .isInstanceOfSatisfying(
             ResponseStatusException.class,
             e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
     verify(file, never()).getBytes();
-    verifyNoInteractions(virusScanService, createActivityService);
+    verifyNoInteractions(virusScanService);
   }
 }
