@@ -3,10 +3,13 @@ package ca.bc.gov.restapi.results.postgres.security;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import java.util.Arrays;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +27,11 @@ import org.springframework.web.server.ResponseStatusException;
 class OperationAccessPolicyTest {
 
   private static final String CLIENT = "00012797";
+  private static final Long OPENING_ID = 1001L;
 
-  private final OperationAccessPolicy policy = new OperationAccessPolicy(new LoggedUserHelper());
+  private final OpeningClientResolver openingClientResolver = mock(OpeningClientResolver.class);
+  private final OperationAccessPolicy policy =
+      new OperationAccessPolicy(new LoggedUserHelper(), openingClientResolver);
 
   @AfterEach
   void clearSecurityContext() {
@@ -116,5 +122,54 @@ class OperationAccessPolicyTest {
             Arrays.asList(Role.SUBMITTER, Role.APPROVER, Role.PLANNER, Role.ADMIN));
     assertThat(policy.allowedRoles(ProtectedOperation.CREATE_OPENING))
         .isEqualTo(policy.allowedRoles(ProtectedOperation.CREATE_ACTIVITY));
+  }
+
+  @Test
+  @DisplayName("Allows a role for any one client of the opening")
+  void requireOpeningRole_roleForOneOfTheClients_allowed() {
+    when(openingClientResolver.clientNumbersOf(OPENING_ID))
+        .thenReturn(Set.of("00000001", CLIENT, "00000003"));
+    loginWithGroups("Viewer", "Planner_" + CLIENT);
+
+    assertThatCode(
+            () -> policy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, OPENING_ID))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  @DisplayName("Rejects a user with roles only for other clients")
+  void requireOpeningRole_roleForAnotherClient_forbidden() {
+    when(openingClientResolver.clientNumbersOf(OPENING_ID)).thenReturn(Set.of("00000001"));
+    loginWithGroups("Submitter_" + CLIENT);
+
+    assertThatThrownBy(
+            () -> policy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, OPENING_ID))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> {
+              assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+              assertThat(exception.getReason()).isEqualTo("Not authorised for this opening");
+            });
+  }
+
+  @Test
+  @DisplayName("Rejects everyone when the opening has no clients")
+  void requireOpeningRole_openingWithoutClients_forbidden() {
+    when(openingClientResolver.clientNumbersOf(OPENING_ID)).thenReturn(Set.of());
+    loginWithGroups("Admin_" + CLIENT);
+
+    assertThatThrownBy(
+            () -> policy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, OPENING_ID))
+        .isInstanceOf(ResponseStatusException.class);
+  }
+
+  @Test
+  @DisplayName("Rejects an unauthenticated user for an opening with clients")
+  void requireOpeningRole_noAuthentication_forbidden() {
+    when(openingClientResolver.clientNumbersOf(OPENING_ID)).thenReturn(Set.of(CLIENT));
+
+    assertThatThrownBy(
+            () -> policy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, OPENING_ID))
+        .isInstanceOf(ResponseStatusException.class);
   }
 }

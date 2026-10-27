@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
@@ -16,6 +17,8 @@ import ca.bc.gov.restapi.results.postgres.repository.ActivityTuFundSrcePostgresR
 import ca.bc.gov.restapi.results.postgres.repository.ActivityTuObjectivePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvicultureCommentPostgresRepository;
+import ca.bc.gov.restapi.results.postgres.security.OperationAccessPolicy;
+import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +49,7 @@ public class CreateActivityService {
   private final SilvicultureCommentPostgresRepository commentRepository;
   private final ActivityTuCommentLinkPostgresRepository commentLinkRepository;
   private final OpeningPostgresRepository openingRepository;
+  private final OperationAccessPolicy accessPolicy;
   private final LoggedUserHelper loggedUserHelper;
 
   /**
@@ -73,6 +77,11 @@ public class CreateActivityService {
   @Transactional
   public CreateActivityResponseDto createActivity(
       Long openingId, CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
+    // 404 for an unknown opening first, then 403, and only then the request is validated
+    openingRepository
+        .findById(openingId)
+        .orElseThrow(() -> new NotFoundGenericException("Opening"));
+    accessPolicy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, openingId);
     OpeningEntity opening = validationService.validate(openingId, dto);
     var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
