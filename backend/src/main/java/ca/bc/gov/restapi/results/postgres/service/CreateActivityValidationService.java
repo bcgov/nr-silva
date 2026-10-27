@@ -64,6 +64,9 @@ public class CreateActivityValidationService {
    */
   public void validate(OpeningEntity opening, CreateActivityRequestDto dto) {
     List<String> errors = new ArrayList<>();
+    if (dto == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "data: must not be null");
+    }
     validator.validate(dto).stream()
         .map(violation -> toMessage(violation.getPropertyPath().toString(), violation.getMessage()))
         .sorted()
