@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @DisplayName("Integration Test | Create activity endpoint")
 @AutoConfigureMockMvc
-@WithMockJwt
+@WithMockJwt(cognitoGroups = {"Submitter_00010003"})
 @Transactional
 class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegrationTest {
 
@@ -169,6 +169,29 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
     mockMvc
         .perform(create(-1L, data("HC", "[\"BCP\"]")).with(csrf().asHeader()))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Planner_00099999"})
+  @DisplayName("Returns forbidden for a user without a role for the opening's clients")
+  void create_noRoleForTheOpening_returnsForbidden() throws Exception {
+    int before = activityCount();
+
+    mockMvc
+        .perform(create(OPENING_ID, data("HC", "[\"BCP\"]")).with(csrf().asHeader()))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.detail").value("Not authorised for this opening"));
+
+    assertThat(activityCount()).isEqualTo(before);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Planner_00099999"})
+  @DisplayName("Returns forbidden before reporting problems with the request")
+  void create_noRoleAndInvalidRequest_returnsForbidden() throws Exception {
+    mockMvc
+        .perform(create(OPENING_ID, data("PL", "[]")).with(csrf().asHeader()))
+        .andExpect(status().isForbidden());
   }
 
   @Test

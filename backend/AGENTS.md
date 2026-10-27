@@ -107,6 +107,7 @@ This is a **critical cross-layer rule**. Breaking it causes silent API contract 
 - Always inject common repository interface, not concrete impl
 - Field order in `@AllArgsConstructor` services = constructor order
 - Always use top-level imports (never inline fully-qualified names)
+- Operation-level RBAC (who may create an opening, create an activity, ...) is configured in one place: `postgres/security/OperationAccessPolicy`. To protect a new write operation, add it to `ProtectedOperation`, register its allowed roles there, and call `requireClientRole` (client number known) or `requireOpeningRole` (access through the opening's licensee/obligation clients) from the service. Do not add ad hoc role checks in endpoints or services
 
 ## Test Requirements
 

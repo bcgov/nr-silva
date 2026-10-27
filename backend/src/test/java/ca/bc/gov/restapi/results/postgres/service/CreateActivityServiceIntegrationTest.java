@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 
+import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsActivitiesService;
 import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest;
@@ -25,19 +26,22 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.convention.TestBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
-@WithMockJwt
+@WithMockJwt(cognitoGroups = {"Submitter_00010003"})
 @Transactional
 @DisplayName("Integration Test | Create activity service | Postgres")
 class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  // Opening with a prime licence gross area of 79.4 ha and org unit 1
+  // Opening with a prime licence gross area of 79.4 ha, org unit 1 and licensee client 00010003
   private static final Long OPENING_ID = 1004185L;
+  // Opening without any licensee or obligation holder client
+  private static final Long OPENING_WITHOUT_CLIENTS = 1480130L;
   private static final String SQUARE_GEOJSON =
       """
       {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
@@ -356,5 +360,75 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
     assertThat(after).isEqualTo(before);
+  }
+
+  private int activityCount() {
+    entityManager.flush();
+    return jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Submitter_00099999"})
+  @DisplayName("Rejects a user with a role only for another client and saves nothing")
+  void createActivity_roleForAnotherClient_forbidden() {
+    int before = activityCount();
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("HC", null)))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+
+    assertThat(activityCount()).isEqualTo(before);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Viewer"})
+  @DisplayName("Rejects a user with only the viewer role")
+  void createActivity_viewerOnly_forbidden() {
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("HC", null)))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+  }
+
+  @Test
+  @DisplayName("Rejects everyone for an opening without clients")
+  void createActivity_openingWithoutClients_forbidden() {
+    assertThatThrownBy(() -> service.createActivity(OPENING_WITHOUT_CLIENTS, planned("HC", null)))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Planner_00010004"})
+  @DisplayName("Allows a holder of the obligation on the cut block")
+  void createActivity_obligationHolder_allowed() {
+    jdbcTemplate.update(
+        "INSERT INTO silva.cut_block_client (cblk_client_skey, cb_skey, "
+            + "cut_block_client_type_code, client_locn_code, client_number, revision_count, "
+            + "entry_userid, entry_timestamp, update_userid, update_timestamp) "
+            + "VALUES (90000001, 189945, 'O', '00', '00010004', 1, 'TEST', now(), 'TEST', now())");
+
+    assertThat(service.createActivity(OPENING_ID, planned("HC", null)).activityId()).isNotNull();
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {})
+  @DisplayName("Reports an unknown opening as not found before checking access")
+  void createActivity_unknownOpening_notFoundBeforeForbidden() {
+    assertThatThrownBy(() -> service.createActivity(-1L, planned("HC", null)))
+        .isInstanceOf(NotFoundGenericException.class);
+  }
+
+  @Test
+  @WithMockJwt(cognitoGroups = {"Submitter_00099999"})
+  @DisplayName("Checks access before validating the request")
+  void createActivity_forbiddenAndInvalid_forbidden() {
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, planned("PL", "comment")))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
   }
 }
