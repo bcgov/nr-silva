@@ -10,6 +10,7 @@ import ca.bc.gov.restapi.results.postgres.repository.ActivityAdditionalCodeProje
 import ca.bc.gov.restapi.results.postgres.repository.ActivityTuFundSrcePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.ActivityTuObjectivePostgresRepository;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -28,8 +29,31 @@ public class OpeningDetailsActivitiesPostgresService extends
   private static final String ACTUAL_SET = "Y";
   private static final String PLANNED_SET = "N";
 
+  // The list query exposes these aliases with the values shown: the planned or actual column, and
+  // the first child table value for activities created in Silva. Sorting by the legacy columns
+  // would ignore them, and the child values are only added after the page is read.
+  private static final Map<String, String> POSTGRES_ACTIVITIES_SORT_FIELDS =
+      overrides(
+          Map.of(
+              "tech", "tech_code",
+              "method", "method_code",
+              "area", "area",
+              "funding", "funding_sort",
+              "objective1", "objective1_sort"));
+
   private final ActivityTuObjectivePostgresRepository objectiveRepository;
   private final ActivityTuFundSrcePostgresRepository fundSrceRepository;
+
+  private static Map<String, String> overrides(Map<String, String> replacements) {
+    Map<String, String> fields = new HashMap<>(ACTIVITIES_SORT_FIELDS);
+    fields.putAll(replacements);
+    return Map.copyOf(fields);
+  }
+
+  @Override
+  protected Map<String, String> activitiesSortFields() {
+    return POSTGRES_ACTIVITIES_SORT_FIELDS;
+  }
 
   public OpeningDetailsActivitiesPostgresService(ActivityTreatmentUnitRepository activityRepository,
       ForestClientService forestClientService, SilvicultureCommentRepository commentRepository,
