@@ -77,12 +77,19 @@ public class CreateActivityService {
   @Transactional
   public CreateActivityResponseDto createActivity(
       Long openingId, CreateActivityRequestDto dto, String fileName, byte[] fileBytes) {
-    // 404 for an unknown opening first, then 403, and only then the request is validated
-    openingRepository
-        .findById(openingId)
-        .orElseThrow(() -> new NotFoundGenericException("Opening"));
+    // 404 for an unknown opening first, then 403; only then the opening row is locked and the
+    // request validated, so users without access can never hold the lock
+    if (!openingRepository.existsById(openingId)) {
+      throw new NotFoundGenericException("Opening");
+    }
     accessPolicy.requireOpeningRole(ProtectedOperation.CREATE_ACTIVITY, openingId);
-    OpeningEntity opening = validationService.validate(openingId, dto);
+    // The lock serialises creates under the same opening: the activity sequence number is
+    // MAX + 1 and the opening revision count is read-modify-write, both would race otherwise
+    OpeningEntity opening =
+        openingRepository
+            .findByIdForUpdate(openingId)
+            .orElseThrow(() -> new NotFoundGenericException("Opening"));
+    validationService.validate(opening, dto);
     var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = LocalDateTime.now();
@@ -119,7 +126,7 @@ public class CreateActivityService {
             .silvActivityMeasurementCode(HECTARES)
             .activityLicenseeId(dto.licenseeActivityId())
             .fiaProjectId(dto.projectNumber())
-            .plannedDate(dto.plannedDate().atStartOfDay())
+            .plannedDate(dto.plannedDate() == null ? null : dto.plannedDate().atStartOfDay())
             .plannedTreatmentAmount(dto.plannedArea())
             .plannedTreatmentCost(toWholeDollars(dto.plannedCost()))
             .resultsInd(resultsInd)

@@ -1,13 +1,12 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
-import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvBaseCodePostgresEntity;
@@ -18,7 +17,6 @@ import ca.bc.gov.restapi.results.postgres.entity.code.SilvTechniqueCodePostgresE
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -28,7 +26,6 @@ import jakarta.validation.Validation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +47,6 @@ class CreateActivityValidationServiceTest {
 
   private static final Long OPENING_ID = 1001L;
 
-  @Mock private OpeningPostgresRepository openingRepository;
   @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
   @Mock private SilvBaseCodePostgresRepository baseCodeRepository;
   @Mock private SilvTechniqueCodePostgresRepository techniqueCodeRepository;
@@ -116,7 +112,6 @@ class CreateActivityValidationServiceTest {
     service =
         new CreateActivityValidationService(
             Validation.buildDefaultValidatorFactory().getValidator(),
-            openingRepository,
             new OpeningGrossAreaResolver(cutBlockOpenAdminRepository),
             baseCodeRepository,
             techniqueCodeRepository,
@@ -130,7 +125,6 @@ class CreateActivityValidationServiceTest {
             .category("FTML")
             .openingGrossArea(new BigDecimal("100.0000"))
             .build();
-    when(openingRepository.findById(OPENING_ID)).thenReturn(Optional.of(opening));
 
     when(baseCodeRepository.findAllById(any()))
         .thenAnswer(
@@ -167,15 +161,19 @@ class CreateActivityValidationServiceTest {
   private String errorOf(Request request) {
     ResponseStatusException exception =
         org.junit.jupiter.api.Assertions.assertThrows(
-            ResponseStatusException.class, () -> service.validate(OPENING_ID, request.build()));
+            ResponseStatusException.class, () -> service.validate(opening, request.build()));
     assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     return exception.getReason();
   }
 
+  private void assertValid(Request request) {
+    assertThatCode(() -> service.validate(opening, request.build())).doesNotThrowAnyException();
+  }
+
   @Test
-  @DisplayName("Accepts a valid planned activity and returns the opening")
-  void validate_validPlanned_returnsOpening() {
-    assertThat(service.validate(OPENING_ID, new Request().build())).isSameAs(opening);
+  @DisplayName("Accepts a valid planned activity")
+  void validate_validPlanned_passes() {
+    assertValid(new Request());
   }
 
   @Test
@@ -192,7 +190,48 @@ class CreateActivityValidationServiceTest {
     request.objectiveCodes = List.of("A", "B", "C", "D", "E");
     request.fundingSourceCodes = List.of("BCP", "BCT", "CBI", "CF", "FIP");
 
-    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+    assertValid(request);
+  }
+
+  @Test
+  @DisplayName("Completed activity does not need planned date, area or cost, and accepts any date")
+  void validate_completedWithoutPlannedFields_passes() {
+    Request request = new Request();
+    request.status = ActivityStatus.COMPLETED;
+    request.completionDate = LocalDate.now().plusDays(10);
+    request.treatedArea = new BigDecimal("20.0");
+    request.plannedDate = null;
+    request.plannedArea = null;
+    request.plannedCost = null;
+    assertValid(request);
+
+    request.plannedDate = LocalDate.now().minusYears(2);
+    assertValid(request);
+    request.plannedDate = LocalDate.now().plusYears(2);
+    assertValid(request);
+  }
+
+  @Test
+  @DisplayName("Planned activity requires planned date and planned area")
+  void validate_plannedWithoutDateAndArea_rejected() {
+    Request request = new Request();
+    request.plannedDate = null;
+    request.plannedArea = null;
+
+    assertThat(errorOf(request))
+        .contains("plannedDate: must not be null")
+        .contains("plannedArea: must not be null");
+  }
+
+  @Test
+  @DisplayName("Reports list element violations with the plain field path")
+  void validate_blankListElement_reportedWithoutListElementSuffix() {
+    Request request = new Request();
+    request.objectiveCodes = List.of(" ");
+
+    assertThat(errorOf(request))
+        .contains("objectiveCodes[0]: must not be blank")
+        .doesNotContain("<list element>");
   }
 
   @Test
@@ -201,7 +240,7 @@ class CreateActivityValidationServiceTest {
     for (String base : CreateActivityValidationService.BASIC_BASE_CODES) {
       Request request = new Request();
       request.baseCode = base;
-      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+      assertValid(request);
     }
     assertThat(CreateActivityValidationService.BASIC_BASE_CODES)
         .containsExactlyInAnyOrder(
@@ -226,7 +265,6 @@ class CreateActivityValidationServiceTest {
     request.status = null;
     request.fundingSourceCodes = List.of();
     request.objectiveCodes = List.of("A", "B", "C", "D", "E", "F");
-    request.plannedDate = null;
     request.plannedArea = new BigDecimal("0");
     request.plannedCost = new BigDecimal("10.5");
 
@@ -236,7 +274,6 @@ class CreateActivityValidationServiceTest {
         .contains("status: must not be null")
         .contains("fundingSourceCodes: must not be empty")
         .contains("objectiveCodes: size must be between 0 and 5")
-        .contains("plannedDate: must not be null")
         .contains("plannedArea: must be greater than 0")
         .contains("plannedCost: must be a whole number of dollars");
   }
@@ -336,21 +373,12 @@ class CreateActivityValidationServiceTest {
   }
 
   @Test
-  @DisplayName("Fails with not found when the opening does not exist")
-  void validate_unknownOpening_notFound() {
-    when(openingRepository.findById(OPENING_ID)).thenReturn(Optional.empty());
-
-    assertThatThrownBy(() -> service.validate(OPENING_ID, new Request().build()))
-        .isInstanceOf(NotFoundGenericException.class);
-  }
-
-  @Test
   @DisplayName("Allows an area up to 125% of the opening gross area")
   void validate_areaWithinTolerance_passes() {
     Request request = new Request();
     request.plannedArea = new BigDecimal("125.0");
 
-    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+    assertValid(request);
   }
 
   @Test
@@ -386,7 +414,7 @@ class CreateActivityValidationServiceTest {
       Request request = new Request();
       request.baseCode = base;
       request.plannedArea = new BigDecimal("900.0");
-      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+      assertValid(request);
     }
   }
 
@@ -399,7 +427,7 @@ class CreateActivityValidationServiceTest {
       Request request = new Request();
       request.baseCode = base;
       request.plannedArea = new BigDecimal("900.0");
-      assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+      assertValid(request);
     }
     for (String base : List.of("HC", "HI", "LB", "ST")) {
       Request request = new Request();
@@ -449,6 +477,6 @@ class CreateActivityValidationServiceTest {
     Request request = new Request();
     request.plannedArea = new BigDecimal("900.0");
 
-    assertThat(service.validate(OPENING_ID, request.build())).isSameAs(opening);
+    assertValid(request);
   }
 }

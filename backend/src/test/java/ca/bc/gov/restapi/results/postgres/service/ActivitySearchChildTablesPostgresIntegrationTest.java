@@ -124,13 +124,38 @@ class ActivitySearchChildTablesPostgresIntegrationTest
   }
 
   @Test
-  @DisplayName("Legacy columns win over child tables when they have a value")
-  void search_legacyValues_ignoreChildTables() {
+  @DisplayName("Child table values match even when the legacy columns have a value")
+  void search_childValues_matchAlongsideLegacyValues() {
     addObjective(PLANNED_LEGACY_OBJECTIVE, "N", "AMD", 1);
     addFunding(COMPLETED, "Y", "BCP", 1);
 
-    assertThat(contains(search(List.of("AMD"), null), PLANNED_LEGACY_OBJECTIVE)).isFalse();
-    assertThat(contains(search(null, List.of("BCP")), COMPLETED)).isFalse();
+    assertThat(contains(search(List.of("AMD"), null), PLANNED_LEGACY_OBJECTIVE)).isTrue();
+    assertThat(contains(search(null, List.of("BCP")), COMPLETED)).isTrue();
     assertThat(contains(search(null, List.of("XXX")), COMPLETED)).isTrue();
+  }
+
+  @Test
+  @DisplayName("Planned activities are found and shown by their planned technique, method and area")
+  void search_plannedActivity_usesPlannedColumns() {
+    jdbcTemplate.update(
+        "UPDATE silva.activity_treatment_unit SET atu_completion_date = NULL, "
+            + "silv_technique_code = NULL, silv_method_code = NULL, treatment_amount = NULL, "
+            + "plan_silv_technique_code = 'CG', plan_silv_method_code = 'BAGS', "
+            + "planned_treatment_amount = 7.5 WHERE activity_treatment_unit_id = ?",
+        COMPLETED);
+    ActivitySearchFiltersDto filters =
+        new ActivitySearchFiltersDto(
+            null, List.of("CG"), List.of("BAGS"), false, null, null, null, null, null, null, null,
+            null, null, null);
+
+    ActivitySearchResponseDto found =
+        activityService.searchActivity(filters, PageRequest.of(0, 500)).getContent().stream()
+            .filter(result -> COMPLETED.equals(result.activityId()))
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(found.technique().code()).isEqualTo("CG");
+    assertThat(found.method().code()).isEqualTo("BAGS");
+    assertThat(found.treatmentAmountArea()).isEqualByComparingTo("7.5");
   }
 }

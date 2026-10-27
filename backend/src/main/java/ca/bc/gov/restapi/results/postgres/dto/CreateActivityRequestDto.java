@@ -24,12 +24,16 @@ import java.util.List;
  * @param projectNumber optional project number (the "Intra-agency Number" in RESULTS)
  * @param licenseeActivityId optional identifier used by the licensee
  * @param comment optional comment
- * @param plannedDate planned date, later than the current date
- * @param plannedArea planned area in hectares
+ * @param plannedDate planned date; required for planned activities, where it must be later than the
+ *     current date, and optional (any date) for completed ones
+ * @param plannedArea planned area in hectares; required for planned activities, optional for
+ *     completed ones
  * @param plannedCost optional planned cost in whole dollars
- * @param completionDate completion date, only for completed activities
- * @param treatedArea treated area in hectares, only for completed activities
- * @param actualCost optional actual cost in whole dollars, only for completed activities
+ * @param completionDate completion date; required for completed activities and not allowed for
+ *     planned ones
+ * @param treatedArea treated area in hectares; required for completed activities and not allowed
+ *     for planned ones
+ * @param actualCost optional actual cost in whole dollars; not allowed for planned activities
  */
 public record CreateActivityRequestDto(
     @NotNull ActivityStatus status,
@@ -41,8 +45,8 @@ public record CreateActivityRequestDto(
     @Size(max = 10) String projectNumber,
     @Size(max = 30) String licenseeActivityId,
     @Size(max = 2000) String comment,
-    @NotNull LocalDate plannedDate,
-    @NotNull @DecimalMin(value = "0", inclusive = false) @Digits(integer = 10, fraction = 1)
+    LocalDate plannedDate,
+    @DecimalMin(value = "0", inclusive = false) @Digits(integer = 10, fraction = 1)
         BigDecimal plannedArea,
     @DecimalMin("0")
         @Digits(integer = 9, fraction = 0, message = "must be a whole number of dollars")

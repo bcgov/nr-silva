@@ -85,7 +85,7 @@ public class ActivityEndpoint {
           String rawData,
       @RequestPart(value = "file", required = false)
           @Parameter(
-              description = "Optional spatial file (GeoJSON or GML), up to 25MB",
+              description = "Optional spatial file (GeoJSON or GML), up to 25MB; an empty file is ignored",
               schema = @Schema(type = "string", format = "binary"))
           MultipartFile file) {
     CreateActivityRequestDto dto;
@@ -95,16 +95,13 @@ public class ActivityEndpoint {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getOriginalMessage());
     }
-    if (file == null || (file.isEmpty() && isBlank(file.getOriginalFilename()))) {
+    // Browsers send an empty file part (usually with a file name) when no file was chosen
+    if (file == null || file.isEmpty()) {
       return createActivityService.createActivity(openingId, dto);
     }
     byte[] fileBytes = readAndScanFile(file);
     return createActivityService.createActivity(
         openingId, dto, file.getOriginalFilename(), fileBytes);
-  }
-
-  private boolean isBlank(String value) {
-    return value == null || value.isBlank();
   }
 
   /**

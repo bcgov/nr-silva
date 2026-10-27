@@ -29,7 +29,7 @@ public class ActivityTreatmentGeometryEntity implements Persistable<Long> {
   @Column(name = "activity_treatment_unit_id")
   private Long activityTreatmentUnitId;
 
-  @Column(name = "geometry", columnDefinition = "geometry(Geometry,3005)", nullable = false)
+  @Column(name = "geometry", columnDefinition = "geometry(geometry, 3005)", nullable = false)
   private Geometry geometry;
 
   @Column(name = "feature_area", precision = 11, scale = 4, nullable = false)
