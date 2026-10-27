@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -37,21 +38,26 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.convention.TestBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Exercises activity uploads through HTTP using the real shared spatial processor. */
 @EnabledIfSystemProperty(named = "server.primary-db", matches = "postgres")
 @DisplayName("Integration Test | Activity Upload Endpoint")
 @AutoConfigureMockMvc
 @WithMockJwt
+@Transactional
 class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  private static final String UPLOAD_PATH = "/api/activities/spatial/upload";
+  private static final String UPLOAD_PATH = "/api/openings/{openingId}/activities/spatial/upload";
+  // Opening with a prime licence gross area of 79.4 ha and no stored geometry
+  private static final long OPENING_ID = 1004185L;
   private static final String GEOJSON =
       """
       {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
@@ -69,6 +75,7 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
       """;
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private JdbcTemplate jdbcTemplate;
   @MockitoBean private VirusScanService virusScanService;
   @TestBean private SpatialFileService spatialFileService;
   @Autowired private ObjectMapper mapper;
@@ -96,6 +103,8 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
             .andExpect(jsonPath("$.geoJson.type").value("FeatureCollection"))
             .andExpect(jsonPath("$.geoJson.features.length()").value(1))
             .andExpect(jsonPath("$.geoJson.features[0].geometry.type").value("Polygon"))
+            .andExpect(jsonPath("$.openingGrossArea").value(79.4))
+            .andExpect(jsonPath("$.openingGeoJson").value(nullValue()))
             .andReturn();
 
     JsonNode result = mapper.readTree(response.getResponse().getContentAsString());
@@ -136,7 +145,11 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/api/activities/spatial/upload", "/api/openings/create/upload"})
+  @ValueSource(
+      strings = {
+        "/api/openings/1004185/activities/spatial/upload",
+        "/api/openings/create/upload"
+      })
   void rejectsEmptyFeatureCollectionsOnBothUploadPaths(String path) throws Exception {
     mockMvc
         .perform(
@@ -155,7 +168,7 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
   @Test
   void rejectsMissingFile() throws Exception {
     mockMvc
-        .perform(multipart(UPLOAD_PATH).with(csrf().asHeader()))
+        .perform(multipart(UPLOAD_PATH, OPENING_ID).with(csrf().asHeader()))
         .andExpect(status().isBadRequest());
     verifyNoInteractions(virusScanService);
   }
@@ -200,6 +213,63 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
   }
 
   @Test
+  void returnsTheOpeningGeometryWhenTheOpeningHasOne() throws Exception {
+    insertOpeningGeometry();
+
+    mockMvc
+        .perform(upload(file("activity.geojson", GEOJSON)).with(csrf().asHeader()))
+        .andExpect(status().isAccepted())
+        .andExpect(jsonPath("$.openingGeoJson.type").value("FeatureCollection"))
+        .andExpect(jsonPath("$.openingGeoJson.features[0].geometry.type").value("Polygon"))
+        .andExpect(
+            jsonPath("$.openingGeoJson.features[0].properties.OPENING_ID").value(OPENING_ID));
+  }
+
+  @Test
+  void returnsTheGrossAreaStoredOnTheOpening() throws Exception {
+    jdbcTemplate.update(
+        "UPDATE silva.opening SET opening_gross_area = 50.5 WHERE opening_id = ?", OPENING_ID);
+
+    mockMvc
+        .perform(upload(file("activity.geojson", GEOJSON)).with(csrf().asHeader()))
+        .andExpect(status().isAccepted())
+        .andExpect(jsonPath("$.openingGrossArea").value(50.5));
+  }
+
+  @Test
+  void returnsNotFoundForAnUnknownOpening() throws Exception {
+    mockMvc
+        .perform(
+            multipart(UPLOAD_PATH, -1L)
+                .file(file("activity.geojson", GEOJSON))
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void rejectsNonNumericOpeningId() throws Exception {
+    mockMvc
+        .perform(
+            multipart(UPLOAD_PATH, "abc")
+                .file(file("activity.geojson", GEOJSON))
+                .with(csrf().asHeader())
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  private void insertOpeningGeometry() {
+    jdbcTemplate.update(
+        "INSERT INTO silva.opening_geometry (opening_id, geometry, feature_area, "
+            + "feature_perimeter, feature_class_skey, entry_userid, entry_timestamp, "
+            + "update_userid, update_timestamp, revision_count) "
+            + "VALUES (?, ST_GeomFromText('POLYGON((850000 1500000, 850100 1500000, "
+            + "850100 1500100, 850000 1500100, 850000 1500000))', 3005), 1, 400, 2409, "
+            + "'TEST', now(), 'TEST', now(), 1)",
+        OPENING_ID);
+  }
+
+  @Test
   void requiresCsrf() throws Exception {
     mockMvc
         .perform(upload(file("activity.geojson", GEOJSON)))
@@ -227,6 +297,6 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
   }
 
   private static MockHttpServletRequestBuilder upload(MockMultipartFile file) {
-    return multipart(UPLOAD_PATH).file(file).accept(MediaType.APPLICATION_JSON);
+    return multipart(UPLOAD_PATH, OPENING_ID).file(file).accept(MediaType.APPLICATION_JSON);
   }
 }

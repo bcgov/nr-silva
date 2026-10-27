@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
+import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
 import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
-import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,8 @@ class ActivityEndpointAvailabilityTest {
   private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withUserConfiguration(ActivityEndpoint.class)
-          .withBean(SpatialFileService.class, () -> mock(SpatialFileService.class))
+          .withBean(
+              ActivitySpatialUploadService.class, () -> mock(ActivitySpatialUploadService.class))
           .withBean(VirusScanService.class, () -> mock(VirusScanService.class))
           .withBean(CreateActivityService.class, () -> mock(CreateActivityService.class))
           .withBean(ObjectMapper.class, ObjectMapper::new);

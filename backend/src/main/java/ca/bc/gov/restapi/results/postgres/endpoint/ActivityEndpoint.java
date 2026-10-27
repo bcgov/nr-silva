@@ -2,11 +2,11 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
+import ca.bc.gov.restapi.results.postgres.dto.ActivitySpatialUploadResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
-import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
+import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
 import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
-import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +39,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class ActivityEndpoint {
 
-  private final SpatialFileService spatialFileService;
+  private final ActivitySpatialUploadService activitySpatialUploadService;
   private final VirusScanService virusScanService;
   private final CreateActivityService createActivityService;
   private final ObjectMapper objectMapper;
@@ -102,33 +102,43 @@ public class ActivityEndpoint {
     return value == null || value.isBlank();
   }
 
-  /** Processes an activity spatial file without creating an activity or saving geometry. */
+  /**
+   * Processes an activity spatial file without creating an activity or saving geometry. The opening
+   * data is returned next to the activity geometry so both can be compared.
+   */
   @PostMapping(
-      value = "/api/activities/spatial/upload",
+      value = "/api/openings/{openingId}/activities/spatial/upload",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.ACCEPTED)
   @Operation(
       summary = "Upload an activity spatial file",
       description =
           "Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. "
-              + "Returns geometry in EPSG:4326 and area in hectares without persisting data.")
-  @ApiResponse(responseCode = "202", description = "Processed spatial geometry and area")
+              + "Returns the geometry in EPSG:4326 and its area in hectares, with the gross area "
+              + "and the geometry of the opening, without persisting data.")
+  @ApiResponse(responseCode = "202", description = "Processed spatial geometry and opening data")
   @ApiResponse(
       responseCode = "400",
       description = "Invalid spatial file",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
+      responseCode = "404",
+      description = "Opening not found",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
       responseCode = "422",
       description = "Upload rejected by the virus scanner",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-  public ExtractedGeoDataDto uploadActivitySpatial(
+  public ActivitySpatialUploadResponseDto uploadActivitySpatial(
+      @PathVariable("openingId") @Parameter(description = "Opening the activity is created under")
+          Long openingId,
       @RequestPart("file")
           @Parameter(
               description = "Spatial file (GeoJSON or GML), up to 25MB",
               schema = @Schema(type = "string", format = "binary"))
           MultipartFile file) {
     byte[] fileBytes = readAndScanFile(file);
-    return spatialFileService.processSpatialFile(file.getOriginalFilename(), fileBytes);
+    return activitySpatialUploadService.process(openingId, file.getOriginalFilename(), fileBytes);
   }
 
   /**

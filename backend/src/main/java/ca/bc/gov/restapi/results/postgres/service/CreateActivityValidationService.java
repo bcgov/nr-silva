@@ -4,10 +4,8 @@ import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
@@ -20,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import lombok.RequiredArgsConstructor;
@@ -51,11 +48,10 @@ public class CreateActivityValidationService {
   private static final Set<String> AREA_EXEMPT_BASES = Set.of("PC", "FE");
   private static final Set<String> AREA_EXEMPT_BASES_NO_REQUIREMENT =
       Set.of("FE", "PC", "JS", "PR", "RC", "RD", "EP", "CC", "CM", "SX", "AU", "BR");
-  private static final String PRIME_LICENCE = "Y";
 
   private final Validator validator;
   private final OpeningPostgresRepository openingRepository;
-  private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
+  private final OpeningGrossAreaResolver grossAreaResolver;
   private final SilvBaseCodePostgresRepository baseCodeRepository;
   private final SilvTechniqueCodePostgresRepository techniqueCodeRepository;
   private final SilvMethodCodePostgresRepository methodCodeRepository;
@@ -188,7 +184,7 @@ public class CreateActivityValidationService {
 
   private void validateAreas(
       CreateActivityRequestDto dto, OpeningEntity opening, List<String> errors) {
-    BigDecimal grossArea = resolveGrossArea(opening);
+    BigDecimal grossArea = grossAreaResolver.resolve(opening);
     if (grossArea == null || isAreaExempt(dto.baseCode(), opening.getCategory())) {
       return;
     }
@@ -220,18 +216,6 @@ public class CreateActivityValidationService {
             ? AREA_EXEMPT_BASES_NO_REQUIREMENT
             : AREA_EXEMPT_BASES;
     return baseCode != null && exempt.contains(baseCode);
-  }
-
-  private BigDecimal resolveGrossArea(OpeningEntity opening) {
-    if (opening.getOpeningGrossArea() != null) {
-      return opening.getOpeningGrossArea();
-    }
-    return cutBlockOpenAdminRepository.findAllByOpeningId(opening.getId()).stream()
-        .filter(tenure -> PRIME_LICENCE.equals(tenure.getOpeningPrimeLicenceInd()))
-        .map(CutBlockOpenAdminEntity::getOpeningGrossArea)
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(null);
   }
 
   private String plain(BigDecimal value) {
