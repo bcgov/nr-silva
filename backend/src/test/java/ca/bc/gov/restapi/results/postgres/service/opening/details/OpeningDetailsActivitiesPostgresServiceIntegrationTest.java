@@ -210,4 +210,19 @@ class OpeningDetailsActivitiesPostgresServiceIntegrationTest
     assertThat(byFunding.getTotalElements()).isEqualTo(byFunding.getContent().size());
     assertThat(byOtherSet.getContent()).extracting("atuId").doesNotContain(COMPLETED);
   }
+
+  @Test
+  @DisplayName("Numeric search term matches the planned area of a planned activity in list and count")
+  void activities_searchTerm_matchesPlannedArea() {
+    jdbcTemplate.update(
+        "UPDATE silva.activity_treatment_unit SET treatment_amount = NULL, "
+            + "planned_treatment_amount = 12345.6 WHERE activity_treatment_unit_id = ?",
+        PLANNED_LEGACY_OBJECTIVE);
+
+    var byArea =
+        service.getOpeningActivitiesActivities(OPENING_ID, "12345.6", PageRequest.of(0, 50));
+
+    assertThat(byArea.getContent()).extracting("atuId").containsExactly(PLANNED_LEGACY_OBJECTIVE);
+    assertThat(byArea.getTotalElements()).isEqualTo(1);
+  }
 }
