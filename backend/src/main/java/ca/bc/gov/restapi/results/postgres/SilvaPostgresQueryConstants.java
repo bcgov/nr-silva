@@ -784,7 +784,7 @@ public class SilvaPostgresQueryConstants {
 								)
 						 )
 						 OR CAST(atu.silviculture_project_id AS text) like '%' || :mainSearchTerm || '%'
-						 OR (:mainSearchTerm ~ '^\\d+(\\.\\d+)?$' AND atu.treatment_amount = CAST(:mainSearchTerm AS numeric))
+						 OR (:mainSearchTerm ~ '^\\d+(\\.\\d+)?$' AND COALESCE(atu.treatment_amount, CASE WHEN atu.atu_completion_date IS NULL THEN atu.planned_treatment_amount END) = CAST(:mainSearchTerm AS numeric))
 					 )
 					)""";
 
@@ -815,8 +815,7 @@ public class SilvaPostgresQueryConstants {
 						plan_silv_objective_code_3,
 						silv_fund_srce_code,
 						silviculture_project_id,
-						treatment_amount
-					FROM activity_treatment_unit
+						COALESCE(treatment_amount, CASE WHEN atu_completion_date IS NULL THEN planned_treatment_amount END) AS area_unified
 				) atu
 				LEFT JOIN silv_base_code sbc ON sbc.silv_base_code = atu.silv_base_code
 				LEFT JOIN silv_technique_code stc ON stc.silv_technique_code = atu.tech_code_unified
@@ -873,7 +872,7 @@ public class SilvaPostgresQueryConstants {
 									)
 							)
 							OR CAST(atu.silviculture_project_id AS text) LIKE '%' || :mainSearchTerm || '%'
-							OR (:mainSearchTerm ~ '^\\d+(\\.\\d+)?$' AND atu.treatment_amount = CAST(:mainSearchTerm AS numeric))
+							OR (:mainSearchTerm ~ '^\\d+(\\.\\d+)?$' AND atu.area_unified = CAST(:mainSearchTerm AS numeric))
 						)
 					)""";
 
