@@ -62,8 +62,9 @@ Load: `integration-patterns.md`
 - Decoupling domain logic from external Oracle tables & field names
 - Secondary read-only Oracle `NamedParameterJdbcTemplate`
 - Mock adapters for offline local dev and unit testing
+- Cross-team Interface RFC framework, template, and lifecycle (`docs/architecture/rfc/template.md`)
 
-**Use when task involves:** "External data", "external tables", "FTA", "cut block validation", "OrgUnit lookup", "Ports and Adapters", "Anti-Corruption Layer", "switch to API", "secondary Oracle connection"
+**Use when task involves:** "External data", "external tables", "FTA", "cut block validation", "OrgUnit lookup", "Ports and Adapters", "Anti-Corruption Layer", "switch to API", "secondary Oracle connection", "RFC", "interface contract"
 
 ---
 
