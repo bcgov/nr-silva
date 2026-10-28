@@ -30,6 +30,7 @@ jobs:
       - uses: bcgov/actions-openshift/route-tls@46f2614322f7ba1a5ad88a7e4e1b98569c80dcf7 # v0.6.0
         with:
           hostname: ${{ vars.ROUTE_HOST }}
+          route_name: ${{ github.event.repository.name }}-prod-frontend-vanity
           target_service: ${{ github.event.repository.name }}-prod-frontend
           tls_certificate: ${{ secrets.TLS_CERTIFICATE }}
           tls_private_key: ${{ secrets.TLS_PRIVATE_KEY }}
