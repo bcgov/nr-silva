@@ -18,6 +18,26 @@
     }
   }
 
+  .opening-activities-stack {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-columns: auto;
+
+    .add-activity-button-wrapper {
+      display: flex;
+      align-self: flex-start;
+
+      .add-activity-button {
+        inline-size: auto;
+        max-inline-size: none;
+        aspect-ratio: 1;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   .activity-accordion {
 
     .add-activity-button-container {
