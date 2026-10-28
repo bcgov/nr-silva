@@ -21,6 +21,7 @@ import {
   ACTIVITY_SEARCH_DISTURBANCES_PATH,
   ACTIVITY_SEARCH_ACTIVITIES_FULL_PATH,
   WILDCARD_PATH,
+  CREATE_ACTIVITY_PATH,
 } from './paths';
 
 const Dashboard = lazy(() => import('@/screens/Dashboard'));
@@ -36,6 +37,7 @@ const CommentSearch = lazy(() => import('@/screens/CommentSearch'));
 const StockingStandardsSearch = lazy(() => import('@/screens/StockingStandardsSearch'));
 const StockingStandardsCommentSearch = lazy(() => import('@/screens/StockingStandardsCommentSearch'));
 const EditTenure = lazy(() => import('@/screens/EditTenure'));
+const CreateActivity = lazy(() => import('@/screens/CreateActivity'));
 
 const PageLoader = () => <Loading withOverlay />;
 
@@ -144,4 +146,17 @@ export const StockingStandardsSearchRoute: RouteObject = {
 export const StockingStandardsCommentSearchRoute: RouteObject = {
   path: STOCKING_STANDARDS_COMMENT_SEARCH_PATH,
   element: <SideLayout pageContent={<Suspense fallback={<PageLoader />}><StockingStandardsCommentSearch /></Suspense>} />,
+}
+
+export const CreateActivityRoute: RouteObject = {
+  path: CREATE_ACTIVITY_PATH,
+  element: (
+    <FeatureGateRoute
+      featureName="Create activity"
+      title="Activity creation is unavailable"
+      description="Creating new activities is disabled in this deployment model. Please return to the opening details."
+    >
+      <SideLayout pageContent={<Suspense fallback={<PageLoader />}><CreateActivity /></Suspense>} />
+    </FeatureGateRoute>
+  ),
 }

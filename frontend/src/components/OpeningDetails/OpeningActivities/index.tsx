@@ -1,8 +1,11 @@
-import React from "react";
-import { AccordionSkeleton, Column, Grid } from "@carbon/react";
-import { useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { AccordionSkeleton, Button, Column, Grid, Stack } from "@carbon/react";
+import { Add } from "@carbon/icons-react";
+import { generatePath, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
+import useBreakpoint from "@/hooks/UseBreakpoint";
+import { CREATE_ACTIVITY_PATH } from "@/routes/paths";
 import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
 
 import EmptySection from "../../EmptySection";
@@ -28,8 +31,12 @@ const OpeningActivities = ({
   setSelectedDisturbanceIds
 }: OpeningActivitiesProps) => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const breakPoint = useBreakpoint();
   const targetDisturbanceId = searchParams.get(DEEP_LINK_PARAMS.disturbanceId);
   const targetActivityId = searchParams.get(DEEP_LINK_PARAMS.activityId);
+  const [isActivityAccordionOpen, setIsActivityAccordionOpen] = useState(!!targetActivityId);
+  const showAddActivityButton = !isActivityAccordionOpen && breakPoint !== "sm" && breakPoint !== "md";
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
@@ -104,13 +111,30 @@ const OpeningActivities = ({
         (activityQuery.data?.page?.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <ActivityAccordion
-                openingId={openingId}
-                totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
-                selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
-                setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
-                targetActivityId={targetActivityId}
-              />
+              <Stack gap={4} orientation="horizontal" className="opening-activities-stack">
+                <ActivityAccordion
+                  openingId={openingId}
+                  totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
+                  selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                  setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                  targetActivityId={targetActivityId}
+                  onOpenChange={setIsActivityAccordionOpen}
+                />
+
+                {showAddActivityButton && (
+                  <div className="add-activity-button-wrapper">
+                    <Button
+                      kind="tertiary"
+                      hasIconOnly
+                      renderIcon={() => <Add size={24} />}
+                      iconDescription="Add activity"
+                      size="2xl"
+                      className="add-activity-button"
+                      onClick={() => navigate(generatePath(CREATE_ACTIVITY_PATH, { openingId: String(openingId) }))}
+                    />
+                  </div>
+                )}
+              </Stack>
             </Column>
           )
           : null

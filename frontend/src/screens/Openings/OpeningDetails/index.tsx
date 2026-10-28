@@ -95,7 +95,7 @@ const OpeningDetails = () => {
   });
 
   const postRecentOpeningMutation = useMutation({
-    mutationFn: (openingId: number) => API.UserRecentOpeningEndpointService.recordUserViewedOpening(openingId),
+    mutationFn: (oId: number) => API.UserRecentOpeningEndpointService.recordUserViewedOpening(oId),
   });
 
   useEffect(() => {
@@ -137,7 +137,7 @@ const OpeningDetails = () => {
       </PageTitle>
 
       {
-        openingDetailsTombstoneQuery.data?.notifications.length! > 0 ? <Column sm={4} md={8} lg={16}>
+        (openingDetailsTombstoneQuery.data?.notifications.length ?? 0) > 0 ? <Column sm={4} md={8} lg={16}>
           <OpeningNotifications
             notifications={openingDetailsTombstoneQuery.data?.notifications ?? []}
           />

@@ -18,6 +18,7 @@ export const STOCKING_STANDARDS_COMMENT_SEARCH_PATH = '/stocking-standards-searc
 export const CREATE_OPENING_PATH = '/openings/create';
 export const OPENING_DETAILS_PATH = '/openings/:openingId';
 export const EDIT_TENURE_PATH = '/openings/:openingId/edit-tenure';
+export const CREATE_ACTIVITY_PATH = '/openings/:openingId/create-activity';
 export const ACTIVITY_SEARCH_ACTIVITIES_PATH = 'activities';
 export const ACTIVITY_SEARCH_DISTURBANCES_PATH = 'disturbances';
 export const ACTIVITY_SEARCH_ACTIVITIES_FULL_PATH =
