@@ -92,6 +92,40 @@ Then head to http://localhost:3000 too see SILVA running. You can see the REST A
 Before writing your first line of code, please take a moment and check out
 our [CONTRIBUTING](CONTRIBUTING.md) guide.
 
+## Route TLS
+
+Custom vanity URL TLS for the PROD frontend OpenShift Route is validated and applied on-demand via the standalone [`.github/workflows/route-tls.yml`](./.github/workflows/route-tls.yml) workflow using [`bcgov/actions-openshift/route-tls`](https://github.com/bcgov/actions-openshift/tree/main/route-tls).
+
+### GitHub Secrets & Variables (prod environment)
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `ROUTE_HOST` | Variable | Vanity URL hostname (e.g., `silva.nrs.gov.bc.ca` — hostname only, no scheme). |
+| `TLS_CERTIFICATE` | Secret | Leaf certificate PEM (`<host>.pem`). |
+| `TLS_PRIVATE_KEY` | Secret | Unencrypted private key PEM (`<host>.key`). Never commit this. |
+| `TLS_CA_CERTIFICATE` | Secret | Issuing intermediate CA PEM (`Entrust OV TLS Issuing RSA CA 2.pem`). |
+
+Upload secrets to the `prod` environment via GitHub CLI:
+
+```bash
+CERT_HOST='silva.nrs.gov.bc.ca' # Replace with certificate filename prefix
+gh secret set TLS_CERTIFICATE --env prod < "${CERT_HOST}.pem"
+gh secret set TLS_PRIVATE_KEY --env prod < "${CERT_HOST}.key"
+gh secret set TLS_CA_CERTIFICATE --env prod < 'Entrust OV TLS Issuing RSA CA 2.pem'
+```
+
+### Running the Workflow
+
+Trigger the workflow with `dry_run=true` to validate certificates and hostname match without making changes, or `dry_run=false` to apply:
+
+```bash
+# Validate certificates
+gh workflow run route-tls.yml -f dry_run=true
+
+# Apply to OpenShift
+gh workflow run route-tls.yml -f dry_run=false
+```
+
 ## Getting help
 
 As mentioned, we're here to help. Feel free to reach out and
