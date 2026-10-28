@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { generatePath, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Accordion,
   AccordionItem,
@@ -29,6 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SortDirectionType } from "@/types/PaginationTypes";
 import { PaginationOnChangeType } from "@/types/GeneralTypes";
 import { PLACE_HOLDER } from "@/constants";
+import { CREATE_ACTIVITY_PATH } from "@/routes/paths";
 import API from "@/services/API";
 import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText } from "@/utils/multiSelectUtils";
@@ -55,6 +56,7 @@ type ActivityAccordionProps = {
   selectedSilvicultureActivityIds: string[];
   setSelectedSilvicultureActivityIds: React.Dispatch<React.SetStateAction<string[]>>;
   targetActivityId?: string | null;
+  onOpenChange?: (isOpen: boolean) => void;
 };
 
 const AccordionTitle = ({ total }: { total: number }) => (
@@ -183,7 +185,8 @@ const ActivityAccordion = ({
   totalUnfiltered,
   selectedSilvicultureActivityIds,
   setSelectedSilvicultureActivityIds,
-  targetActivityId
+  targetActivityId,
+  onOpenChange
 }: ActivityAccordionProps) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [currPageNumber, setCurrPageNumber] = useState<number>(DEFAULT_PAGE_NUM);
@@ -191,6 +194,7 @@ const ActivityAccordion = ({
   const [activityFilter, setActivityFilter] = useState<ActivityFilterType>(DefaultFilter);
 
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const section = searchParams.get(DEEP_LINK_PARAMS.section);
   const isCommentDeepLink = section === DEEP_LINK_SECTIONS.activityComment;
 
@@ -392,6 +396,7 @@ const ActivityAccordion = ({
         className="default-tab-accordion-item"
         title={<AccordionTitle total={totalUnfiltered} />}
         open={!!targetActivityId}
+        onHeadingClick={({ isOpen }) => onOpenChange?.(isOpen)}
       >
         <Stack orientation="vertical" gap={4}>
           <div className="add-activity-button-container">
@@ -399,6 +404,7 @@ const ActivityAccordion = ({
               kind="tertiary"
               renderIcon={Add}
               size="md"
+              onClick={() => navigate(generatePath(CREATE_ACTIVITY_PATH, { openingId: String(openingId) }))}
             >
               Add activity
             </Button>
