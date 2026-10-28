@@ -2,8 +2,13 @@ package ca.bc.gov.restapi.results.postgres.endpoint;
 
 import ca.bc.gov.restapi.results.common.clamav.VirusScanService;
 import ca.bc.gov.restapi.results.postgres.SilvaPostgresConstants;
-import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
-import ca.bc.gov.restapi.results.postgres.service.SpatialFileService;
+import ca.bc.gov.restapi.results.postgres.dto.ActivitySpatialUploadResponseDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
+import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
+import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
+import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -23,39 +29,126 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/** Activity endpoints available in PostgreSQL mode. */
+/**
+ * Activity endpoints available in PostgreSQL mode. Paths are set on each method because activities
+ * are created under an opening while the spatial upload does not depend on one.
+ */
 @RestController
-@RequestMapping(path = "/api/activities", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class ActivityEndpoint {
 
-  private final SpatialFileService spatialFileService;
+  private final ActivitySpatialUploadService activitySpatialUploadService;
   private final VirusScanService virusScanService;
+  private final CreateActivityService createActivityService;
+  private final ObjectMapper objectMapper;
 
-  /** Processes an activity spatial file without creating an activity or saving geometry. */
-  @PostMapping(value = "/spatial/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  /** Creates a basic activity under an opening, with an optional spatial file. */
+  @PostMapping(
+      value = "/api/openings/{openingId}/activities",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-      summary = "Upload an activity spatial file",
+      summary = "Create an activity",
       description =
-          "Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. "
-              + "Returns geometry in EPSG:4326 and area in hectares without persisting data.")
-  @ApiResponse(responseCode = "202", description = "Processed spatial geometry and area")
+          "Creates a planned or completed activity with a basic base code under an opening. "
+              + "Checks run in this order: the opening exists (404), the user has access to it "
+              + "(403), the optional spatial file is read and scanned for viruses (400/422), and "
+              + "then the request and the file are validated (400). Nothing is saved when the "
+              + "request or the file is invalid.")
+  @ApiResponse(responseCode = "201", description = "Activity created")
   @ApiResponse(
       responseCode = "400",
-      description = "Invalid spatial file",
+      description =
+          "Invalid request or spatial file; every violation is listed as 'field: message'",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description =
+          "The user has no role for the licensee or obligation holder clients of the opening",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Opening not found",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
       responseCode = "422",
       description = "Upload rejected by the virus scanner",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-  public ExtractedGeoDataDto uploadActivitySpatial(
+  public CreateActivityResponseDto createActivity(
+      @PathVariable("openingId") @Parameter(description = "Opening the activity is created under")
+          Long openingId,
+      @RequestPart("data")
+          @Parameter(
+              description = "Activity creation request (JSON)",
+              schema = @Schema(implementation = CreateActivityRequestDto.class))
+          String rawData,
+      @RequestPart(value = "file", required = false)
+          @Parameter(
+              description = "Optional spatial file (GeoJSON or GML), up to 25MB; an empty file is ignored",
+              schema = @Schema(type = "string", format = "binary"))
+          MultipartFile file) {
+    CreateActivityRequestDto dto;
+    try {
+      dto = objectMapper.readValue(rawData, CreateActivityRequestDto.class);
+    } catch (JsonProcessingException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getOriginalMessage());
+    }
+    // Browsers send an empty file part (usually with a file name) when no file was chosen
+    if (file == null || file.isEmpty()) {
+      return createActivityService.createActivity(openingId, dto);
+    }
+    // The file is read and scanned by the service, after the opening and access checks
+    return createActivityService.createActivity(
+        openingId, dto, file.getOriginalFilename(), () -> readAndScanFile(file));
+  }
+
+  /**
+   * Processes an activity spatial file without creating an activity or saving geometry. The opening
+   * data is returned next to the activity geometry so both can be compared.
+   */
+  @PostMapping(
+      value = "/api/openings/{openingId}/activities/spatial/upload",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @Operation(
+      summary = "Upload an activity spatial file",
+      description =
+          "Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. "
+              + "Returns the geometry in EPSG:4326 and its area in hectares, with the gross area "
+              + "and the geometry of the opening, without persisting data.")
+  @ApiResponse(responseCode = "202", description = "Processed spatial geometry and opening data")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Invalid spatial file",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "404",
+      description = "Opening not found",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  @ApiResponse(
+      responseCode = "422",
+      description = "Upload rejected by the virus scanner",
+      content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+  public ActivitySpatialUploadResponseDto uploadActivitySpatial(
+      @PathVariable("openingId") @Parameter(description = "Opening the activity is created under")
+          Long openingId,
       @RequestPart("file")
           @Parameter(
               description = "Spatial file (GeoJSON or GML), up to 25MB",
               schema = @Schema(type = "string", format = "binary"))
           MultipartFile file) {
+    byte[] fileBytes = readAndScanFile(file);
+    return activitySpatialUploadService.process(openingId, file.getOriginalFilename(), fileBytes);
+  }
+
+  /**
+   * Checks that the uploaded file is present and within the size limit, reads it and scans it for
+   * viruses before anything else is done with it.
+   */
+  private byte[] readAndScanFile(MultipartFile file) {
     if (file == null || file.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file is null or empty");
     }
@@ -70,6 +163,6 @@ public class ActivityEndpoint {
           HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read file: " + e.getMessage(), e);
     }
     virusScanService.scanOrThrow(fileBytes, file.getOriginalFilename());
-    return spatialFileService.processSpatialFile(file.getOriginalFilename(), fileBytes);
+    return fileBytes;
   }
 }

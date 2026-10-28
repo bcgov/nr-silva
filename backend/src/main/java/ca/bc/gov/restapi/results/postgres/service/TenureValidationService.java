@@ -1,6 +1,5 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
-import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
@@ -11,6 +10,8 @@ import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockClientPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
+import ca.bc.gov.restapi.results.postgres.security.OperationAccessPolicy;
+import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service that validates tenure data including cut block existence, client auth, and duplicates.
@@ -32,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public class TenureValidationService {
 
-  private final LoggedUserHelper loggedUserHelper;
+  private final OperationAccessPolicy accessPolicy;
   private final CutBlockPostgresRepository cutBlockRepository;
   private final CutBlockClientPostgresRepository cutBlockClientRepository;
   private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
@@ -63,10 +62,7 @@ public class TenureValidationService {
   public TenureValidationResponseDto validateTenures(
       List<TenureRequestDto> tenures, String clientNumber, Long openingId) {
     // Auth check fails fast — security boundary, not a data validation error
-    if (!loggedUserHelper.hasRoleMatching(role -> role.endsWith("_" + clientNumber))) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN, "Not authorised for client number " + clientNumber);
-    }
+    accessPolicy.requireClientRole(ProtectedOperation.CREATE_OPENING, clientNumber);
 
     List<TenureValidationResultDto> validationResults = new ArrayList<>();
     Map<Integer, CutBlockEntity> resolvedBlocks = new HashMap<>();

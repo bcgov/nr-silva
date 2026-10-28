@@ -98,6 +98,16 @@ nr-silva/
    - Ask the user directly
    - Better to ask than waste time on wrong assumptions
 
+### Questions Get Answers, Not Code
+
+When the user asks a question (for example "have we addressed this?", "what do you think?", "can we add X?", "is the fix on the Postgres side only?"), answer it. Do not edit files, run state-changing commands, or commit.
+
+- Read-only investigation is fine and expected: reading code, grep, git log/diff, running existing tests. Base the answer on what you find.
+- Say what you would change, where, and why. Then stop and let the user decide.
+- Only change code when the user gives an instruction to do so ("fix it", "go ahead", "implement", "yes, do it").
+- If a question comes with a pasted review comment or finding, the same applies: say whether it is valid and how you would fix it, but don't fix it until asked.
+- Never commit, push, or amend unless asked.
+
 ### Examples
 
 **Technical patterns — explore to verify:**
