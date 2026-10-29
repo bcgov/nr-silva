@@ -55,7 +55,10 @@ stateDiagram-v2
 1. **`proposed`**: The RFC is drafted by the Silva engineering team using [`template.md`](./template.md). It details Silva's consumer needs, proposed REST endpoints and/or event schemas, DTO field mappings, performance SLAs, and security protocols.
 2. **`in_review`**: The RFC is formally submitted to the target system's engineering team and product owner. Cross-team reviews, technical negotiations, and schema adjustments take place.
 3. **`accepted`**: Both Silva and external teams agree on the contract, payload schemas, error formats, and implementation milestones.
-4. **`implemented`**: The external team deploys the API/event stream in production/staging, Silva implements the corresponding `RestApi*Adapter`, and automated contract tests pass.
+4. **`implemented`**: The external team deploys the API/event stream in production/staging and Silva completes the integration according to `interface_type`:
+   - **`synchronous_rest`:** Silva implements `RestApi*Adapter` (using Spring `RestClient`), verifies via WireMock contract tests, and activates via OpenShift runtime configuration (`SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api`).
+   - **`asynchronous_event`:** Silva implements event consumers/handlers to ingest events into local PostgreSQL read projections (`silva.*`), with contract tests verifying CloudEvents payload deserialization and idempotency.
+   - **`hybrid`:** Delivers both the synchronous REST adapter and asynchronous projection consumers.
 5. **`rejected`**: The proposal is declined or superseded by an alternative architecture.
 
 ---

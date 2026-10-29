@@ -177,9 +177,11 @@ Each RFC document tracks its status using MADR-style YAML frontmatter:
    - Both teams formally sign off on the contract, field mapping, operational SLAs, and target delivery milestones.
    - The external team schedules the implementation of the REST API / event publisher in their backlog.
 4. **`implemented`**:
-   - The external team deploys the API/event stream in staging/production.
-   - Silva engineers implement `RestApiXxxAdapter` using Spring `RestClient`, write contract tests using WireMock, and verify against external test environments.
-   - The integration is activated in OpenShift via runtime configuration (`SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api`).
+   - The external team deploys the API or event stream in staging/production.
+   - Silva engineers complete integration based on `interface_type`:
+     - **`synchronous_rest`:** Implement `RestApiXxxAdapter` using Spring `RestClient`, write contract tests using WireMock, and activate in OpenShift via `SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api`.
+     - **`asynchronous_event`:** Implement domain event consumers (e.g. Kafka / CloudEvents handlers) that update or invalidate local PostgreSQL read projections (`silva.*`), with contract tests verifying message deserialization and idempotency.
+     - **`hybrid`:** Implement both the REST adapter and event-driven read projection listeners.
 5. **`rejected`**:
    - The proposed contract is rejected or superseded by an alternative architecture (e.g. event stream instead of polling REST API).
 
