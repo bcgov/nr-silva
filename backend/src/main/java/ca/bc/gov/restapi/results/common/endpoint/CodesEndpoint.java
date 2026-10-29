@@ -52,130 +52,182 @@ public class CodesEndpoint {
   /**
    * Get all silv base codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv base codes.
    */
   @GetMapping("/silv-base")
-  public List<CodeDescriptionDto> getSilvBaseCodes() {
-    return codeService.getAllSilvBaseCode();
+  public List<CodeDescriptionDto> getSilvBaseCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvBaseCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv technique codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv technique codes.
    */
   @GetMapping("/silv-technique")
-  public List<CodeDescriptionDto> getSilvTechniqueCodes() {
-    return codeService.getAllSilvTechniqueCode();
+  public List<CodeDescriptionDto> getSilvTechniqueCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvTechniqueCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv method codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv method codes.
    */
   @GetMapping("/silv-method")
-  public List<CodeDescriptionDto> getSilvMethodCodes() {
-    return codeService.getAllSilvMethodCode();
+  public List<CodeDescriptionDto> getSilvMethodCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvMethodCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv objective codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv objective codes.
    */
   @GetMapping("/silv-objective")
-  public List<CodeDescriptionDto> getSilvObjectiveCodes() {
-    return codeService.getAllSilvObjectiveCode();
+  public List<CodeDescriptionDto> getSilvObjectiveCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvObjectiveCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv fund source codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv fund source codes.
    */
   @GetMapping("/silv-fund-source")
-  public List<CodeDescriptionDto> getSilvFundSourceCodes() {
-    return codeService.getAllSilvFundSrceCode();
+  public List<CodeDescriptionDto> getSilvFundSourceCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvFundSrceCode(Boolean.TRUE.equals(effectiveOnly));
+  }
+
+  /**
+   * Get all opening status codes.
+   *
+   * @param effectiveOnly Query param to filter only effective codes.
+   * @return List of {@link CodeDescriptionDto} with found opening status codes.
+   */
+  @GetMapping("/opening-status")
+  public List<CodeDescriptionDto> getOpeningStatusCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllOpenStatusCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv system codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv system codes.
    */
   @GetMapping("/silv-system")
-  public List<CodeDescriptionDto> getSilvSystemCodes() {
-    return codeService.getAllSilvSystemCode();
+  public List<CodeDescriptionDto> getSilvSystemCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvSystemCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv system variant codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv system variant codes.
    */
   @GetMapping("/silv-system-variant")
-  public List<CodeDescriptionDto> getSilvSystemVariantCodes() {
-    return codeService.getAllSilvSystemVariantCode();
+  public List<CodeDescriptionDto> getSilvSystemVariantCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvSystemVariantCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv cut phase codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv cut phase codes.
    */
   @GetMapping("/silv-cut-phase")
-  public List<CodeDescriptionDto> getSilvCutPhaseCodes() {
-    return codeService.getAllSilvCutPhaseCode();
+  public List<CodeDescriptionDto> getSilvCutPhaseCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvCutPhaseCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all disturbance codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found disturbance codes.
    */
   @GetMapping("/disturbance")
-  public List<CodeDescriptionDto> getDisturbanceCodes() {
-    return codeService.getAllDisturbanceCode();
+  public List<CodeDescriptionDto> getDisturbanceCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllDisturbanceCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv damage agent codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv damage agent codes.
    */
   @GetMapping("/silv-damage-agent")
-  public List<CodeDescriptionDto> getSilvDamageAgentCodes() {
-    return codeService.getAllSilvDamageAgentCode();
+  public List<CodeDescriptionDto> getSilvDamageAgentCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvDamageAgentCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all stocking status codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found stocking status codes.
    */
   @GetMapping("/stocking-status")
-  public List<CodeDescriptionDto> getStockingStatusCodes() {
-    return codeService.getAllStockingStatusCode();
+  public List<CodeDescriptionDto> getStockingStatusCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllStockingStatusCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all stocking type codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found stocking type codes.
    */
   @GetMapping("/stocking-type")
-  public List<CodeDescriptionDto> getStockingTypeCodes() {
-    return codeService.getAllStockingTypeCode();
+  public List<CodeDescriptionDto> getStockingTypeCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllStockingTypeCode(Boolean.TRUE.equals(effectiveOnly));
   }
 
   /**
    * Get all silv tree species codes.
    *
+   * @param effectiveOnly Query param to filter only effective codes.
    * @return List of {@link CodeDescriptionDto} with found silv tree species codes.
    */
   @GetMapping("/silv-tree-species")
-  public List<CodeDescriptionDto> getSilvTreeSpeciesCodes() {
-    return codeService.getAllSilvTreeSpeciesCode();
+  public List<CodeDescriptionDto> getSilvTreeSpeciesCodes(
+      @RequestParam(value = "effectiveOnly", required = false, defaultValue = "false")
+          Boolean effectiveOnly) {
+    return codeService.getAllSilvTreeSpeciesCode(Boolean.TRUE.equals(effectiveOnly));
   }
 }
