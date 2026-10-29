@@ -16,3 +16,5 @@ export const getAddActivityCrumbs = (openingId: string): BreadCrumbType[] => [
     path: generatePath(CREATE_ACTIVITY_PATH, { openingId })
   }
 ] as const;
+
+export const NON_BASIC_SILV_BASE_CODES = new Set(['PL', 'DS', 'SP', 'SU']);

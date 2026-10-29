@@ -19,4 +19,5 @@ Auto-active every response. See skill files for detailed rules:
 - For backend work, always consult `backend/AGENTS.md` first before editing or adding API/business logic.
 - When working in the frontend, prefer the `frontend-patterns` skill and `frontend/AGENTS.md` conventions for React, TypeScript, and styling.
 - When working in the backend, prefer the `backend-patterns` skill and `backend/AGENTS.md` conventions for Spring Boot and server-side code.
+- **Testing rule:** Never write tests for small, partial, or step-by-step implementation tasks. Write tests ONLY when a feature/screen reaches logical completion or when the user explicitly asks.
 - Use `caveman ultra` by default for terse workspace responses unless the user explicitly requests a different intensity.
