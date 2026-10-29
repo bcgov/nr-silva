@@ -6,7 +6,9 @@ import PageTitle from "@/components/PageTitle";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
 import { PLACE_HOLDER } from "@/constants";
+import AddActivityForm from "@/components/AddActivityForm";
 
+import "./styles.scss";
 
 const CreateActivity = () => {
   const param = useParams();
@@ -28,9 +30,8 @@ const CreateActivity = () => {
     refetchOnMount: "always",
   });
 
-
   return (
-    <Grid className="default-grid default-search-grid">
+    <Grid className="default-grid add-activity-container-grid">
       <Column sm={4} md={8} lg={16}>
         <PageTitle
           title={`Add Activity - Opening ${openingId}`}
@@ -42,8 +43,9 @@ const CreateActivity = () => {
           breadCrumbs={crumbs}
         />
       </Column>
-      <Column className="full-width-col" sm={4} md={8} lg={16}>
-        haha
+
+      <Column sm={4} md={8} lg={16}>
+        <AddActivityForm openingId={openingId} />
       </Column>
     </Grid>
   );

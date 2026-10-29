@@ -13,7 +13,8 @@ import {
     UserRecentOpeningEndpointService,
     SearchEndpointService,
     OpeningCreateEndpointService,
-    TenureEndpointService
+    TenureEndpointService,
+    ActivityEndpointService
 } from "./OpenApi";
 
 // Clean baseURL
@@ -42,7 +43,8 @@ const serviceConstructors = {
     UserRecentOpeningEndpointService,
     SearchEndpointService,
     OpeningCreateEndpointService,
-    TenureEndpointService
+    TenureEndpointService,
+    ActivityEndpointService
 } as const;
 
 type SilvaApiType = {
