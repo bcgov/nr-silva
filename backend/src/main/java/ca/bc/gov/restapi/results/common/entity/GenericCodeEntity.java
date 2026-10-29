@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.entity;
 
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
@@ -23,6 +24,25 @@ public abstract class GenericCodeEntity {
 
   @Transient
   public boolean isExpired() {
-    return expiryDate != null && LocalDate.now().isAfter(expiryDate);
+    return isExpired(DateUtil.todayInVancouver());
+  }
+
+  @Transient
+  public boolean isExpired(LocalDate date) {
+    return expiryDate != null && date != null && date.isAfter(expiryDate);
+  }
+
+  @Transient
+  public boolean isEffective() {
+    return isEffective(DateUtil.todayInVancouver());
+  }
+
+  @Transient
+  public boolean isEffective(LocalDate date) {
+    if (date == null) {
+      return false;
+    }
+    return (effectiveDate == null || !date.isBefore(effectiveDate)) && !isExpired(date);
   }
 }
+

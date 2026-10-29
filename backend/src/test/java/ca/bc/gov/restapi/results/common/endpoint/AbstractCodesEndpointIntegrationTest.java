@@ -345,4 +345,43 @@ public abstract class AbstractCodesEndpointIntegrationTest
         .andExpect(jsonPath("$[*].code").isArray())
         .andExpect(jsonPath("$[*].description").isArray());
   }
+
+  @Test
+  @DisplayName("Get opening status codes should return 200 with codes")
+  @WithMockUser(roles = "user_read")
+  void getOpeningStatusCodes_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(get("/api/codes/opening-status").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  @DisplayName("Get silv base codes with effectiveOnly=true should return 200")
+  @WithMockUser(roles = "user_read")
+  void getSilvBaseCodes_effectiveOnlyTrue_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/codes/silv-base")
+                .param("effectiveOnly", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  @DisplayName("Get silv base codes with effectiveOnly=false should return 200")
+  @WithMockUser(roles = "user_read")
+  void getSilvBaseCodes_effectiveOnlyFalse_shouldReturn200() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/codes/silv-base")
+                .param("effectiveOnly", "false")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray());
+  }
 }

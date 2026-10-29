@@ -310,4 +310,85 @@ public abstract class AbstractCodeServiceTest extends AbstractTestContainerInteg
           Assertions.assertFalse(dto.code().isBlank(), "Code should not be blank");
         });
   }
+
+  @Test
+  @DisplayName("All code methods with effectiveOnly true should not include expired codes")
+  void allCodeMethods_effectiveOnlyTrue_shouldExcludeExpired() {
+    if (codeService == null) {
+      return;
+    }
+    List<List<CodeDescriptionDto>> results =
+        List.of(
+            codeService.getAllSilvBaseCode(true),
+            codeService.getAllSilvTechniqueCode(true),
+            codeService.getAllSilvMethodCode(true),
+            codeService.getAllSilvObjectiveCode(true),
+            codeService.getAllSilvFundSrceCode(true),
+            codeService.getAllOpenStatusCode(true),
+            codeService.getAllDisturbanceCode(true),
+            codeService.getAllSilvSystemCode(true),
+            codeService.getAllSilvSystemVariantCode(true),
+            codeService.getAllSilvCutPhaseCode(true),
+            codeService.getAllSilvDamageAgentCode(true),
+            codeService.getAllStockingStatusCode(true),
+            codeService.getAllStockingTypeCode(true),
+            codeService.getAllSilvTreeSpeciesCode(true));
+
+    for (List<CodeDescriptionDto> list : results) {
+      Assertions.assertNotNull(list);
+      for (CodeDescriptionDto dto : list) {
+        if (dto.description() != null) {
+          Assertions.assertFalse(
+              dto.description().endsWith(" (Expired)"),
+              "Description should not end with '(Expired)' when effectiveOnly=true: " + dto.description());
+        }
+      }
+    }
+  }
+
+  @Test
+  @DisplayName("All code methods with effectiveOnly false should match no-arg default methods")
+  void allCodeMethods_effectiveOnlyFalse_shouldMatchNoArg() {
+    if (codeService == null) {
+      return;
+    }
+    Assertions.assertEquals(
+        codeService.getAllSilvBaseCode().size(), codeService.getAllSilvBaseCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvTechniqueCode().size(),
+        codeService.getAllSilvTechniqueCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvMethodCode().size(), codeService.getAllSilvMethodCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvObjectiveCode().size(),
+        codeService.getAllSilvObjectiveCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvFundSrceCode().size(),
+        codeService.getAllSilvFundSrceCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllOpenStatusCode().size(), codeService.getAllOpenStatusCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllDisturbanceCode().size(),
+        codeService.getAllDisturbanceCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvSystemCode().size(), codeService.getAllSilvSystemCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvSystemVariantCode().size(),
+        codeService.getAllSilvSystemVariantCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvCutPhaseCode().size(),
+        codeService.getAllSilvCutPhaseCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvDamageAgentCode().size(),
+        codeService.getAllSilvDamageAgentCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllStockingStatusCode().size(),
+        codeService.getAllStockingStatusCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllStockingTypeCode().size(),
+        codeService.getAllStockingTypeCode(false).size());
+    Assertions.assertEquals(
+        codeService.getAllSilvTreeSpeciesCode().size(),
+        codeService.getAllSilvTreeSpeciesCode(false).size());
+  }
 }
