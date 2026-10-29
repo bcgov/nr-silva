@@ -31,7 +31,7 @@ The initial pilot contract is **RFC-001 (FTA)**. Subsequent domains identified i
 
 | RFC ID | Target System | Title | Type | Status | Related Port | Tracking |
 | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
-| **[RFC-001](./RFC-001-fta-integration-contract.md)** *(Planned)* | **FTA** | Forest Tenures Administration Integration Contract | `hybrid` | `proposed` | `TenureProvider` | Pilot ([#1527](https://github.com/bcgov/nr-silva/issues/1527)) |
+| **[RFC-001](https://github.com/bcgov/nr-silva/issues/1527)** *(Planned)* | **FTA** | Forest Tenures Administration Integration Contract | `hybrid` | `proposed` | `TenureProvider` | Pilot ([#1527](https://github.com/bcgov/nr-silva/issues/1527)) |
 | *To be assigned* | *Candidate Domains* | *Forest Client, Org Units, SPAR, FSP, BEC, etc.* | *TBD* | *Pending Gate* | *See Data Matrix* | [#1528](https://github.com/bcgov/nr-silva/issues/1528) |
 
 ---

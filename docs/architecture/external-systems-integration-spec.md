@@ -353,7 +353,7 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
 
 > [!TIP]
 > **Cross-Team Interface RFC Process:**
-> Interface contracts for external REST APIs and asynchronous domain events are formally negotiated using the [Cross-Team Interface RFC Process](rfc/README.md) and standardized via [`docs/architecture/rfc/template.md`](rfc/template.md). See [RFC-001](rfc/RFC-001-fta-integration-contract.md) for the FTA contract specification.
+> Interface contracts for external REST APIs and asynchronous domain events are formally negotiated using the [Cross-Team Interface RFC Process](rfc/README.md) and standardized via [`docs/architecture/rfc/template.md`](rfc/template.md). See [RFC-001 (Planned)](https://github.com/bcgov/nr-silva/issues/1527) for the FTA contract specification tracked under issue #1527.
 
 ```java
 package ca.bc.gov.restapi.results.common.provider;
