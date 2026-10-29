@@ -358,8 +358,9 @@ sequenceDiagram
 | **M5: Deprecation** | YYYY-MM-DD | Retire `Oracle[Target]JdbcAdapter` | Deprecate cross-schema direct DB grants |
 
 ### 7.2 Zero-Downtime Reversibility (Two-Way Door)
-- Silva dynamically switches provider adapters via the OpenShift environment variable `SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api|oracle|mock`.
-- If the external API experiences an outage or rollback during deployment, Silva operators can instantly revert to `provider=oracle` with a config reload, requiring **zero code changes or container rebuilds**.
+- Silva dynamically selects provider adapters via the environment variable `SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api|oracle|mock`.
+- If the external API experiences an outage or requires rollback, operators revert to `provider=oracle` by updating the environment variable. This initiates a rolling rollout of the deployment using the identical container image, requiring **zero code changes or image rebuilds**.
+- Zero downtime during transition or rollback is guaranteed by container platform rolling update semantics and Spring Boot readiness probes (`/actuator/health/readiness`), ensuring incoming traffic cuts over only when replacement pods are fully initialized and healthy.
 
 ---
 
