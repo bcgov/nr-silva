@@ -311,8 +311,9 @@ public record ExternalCutBlockDetails(
 - **Service Account:** Dedicated Silva service account (`sa-nr-silva`) with least-privilege read access.
 
 ### 6.3 Network Routing & Transport Security
-- **OpenShift In-Cluster Communication:** Route over OpenShift internal service DNS (`http://service.namespace.svc.cluster.local`) or external HTTPS route with valid BCGov TLS certificate.
-- **Public Internet Egress:** External systems hosted outside OpenShift must expose endpoints behind the BCGov API Gateway (Kong) with IP allowlisting or mTLS.
+- **Mandatory Transport Encryption:** All communication channels carrying authentication tokens, payload data, or user identity audit headers must enforce HTTPS / TLS 1.3 encryption in transit. Plaintext HTTP transport is strictly prohibited.
+- **Internal Service Communication:** Internal service-to-service communication must enforce encrypted transport (HTTPS with trusted certificate validation or authenticated mutual TLS / mTLS).
+- **External Egress / Ingress:** External endpoints must be accessed over secure HTTPS via enterprise API gateways or reverse proxies with valid CA-signed TLS certificates and IP allowlisting or mutual TLS (mTLS) as required.
 
 ### 6.4 Privacy & Compliance
 - **Data Classification:** Protected B / Public Forestry Operational Data.
