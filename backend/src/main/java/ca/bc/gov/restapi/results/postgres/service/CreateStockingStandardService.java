@@ -93,6 +93,24 @@ public class CreateStockingStandardService {
     standardsRegimeRepository.save(standardsRegime);
 
     // Step 3: org units.
+    saveOrgUnits(standardsRegimeId, orgUnitNos, auditUserId, now);
+
+    // Step 4: clients (Operational Plan only).
+    saveClients(standardsRegimeId, dto, auditUserId, now);
+
+    // Step 5: BEC data.
+    saveBecData(standardsRegimeId, dto.becData(), auditUserId, now);
+
+    // Step 6: layer(s) and their species.
+    List<StockingLayerDto> layers =
+        dto.layerType() == StockingLayerType.SINGLE ? List.of(dto.singleLayer()) : dto.multiLayers();
+    saveLayersAndSpecies(standardsRegimeId, layers, auditUserId, now);
+
+    return new CreateStockingStandardResponseDto(standardsRegimeId);
+  }
+
+  private void saveOrgUnits(
+      Long standardsRegimeId, List<Long> orgUnitNos, String auditUserId, LocalDateTime now) {
     for (Long orgUnitNo : orgUnitNos) {
       orgUnitLinkRepository.save(
           StandardsRegimeOrgUnitEntity.builder()
@@ -105,8 +123,13 @@ public class CreateStockingStandardService {
               .revisionCount(1)
               .build());
     }
+  }
 
-    // Step 4: clients (Operational Plan only).
+  private void saveClients(
+      Long standardsRegimeId,
+      CreateStockingStandardRequestDto dto,
+      String auditUserId,
+      LocalDateTime now) {
     if (dto.authorityType() == StockingStandardAuthorityType.OPERATIONAL_PLAN
         && dto.clientNumbers() != null) {
       for (String clientNumber : dto.clientNumbers()) {
@@ -122,10 +145,12 @@ public class CreateStockingStandardService {
                 .build());
       }
     }
+  }
 
-    // Step 5: BEC data.
-    if (dto.becData() != null) {
-      for (BecDataDto bec : dto.becData()) {
+  private void saveBecData(
+      Long standardsRegimeId, List<BecDataDto> becData, String auditUserId, LocalDateTime now) {
+    if (becData != null) {
+      for (BecDataDto bec : becData) {
         Long siteSeriesId =
             jdbcTemplate.queryForObject(
                 "SELECT nextval('silva.standard_regime_site_series_id_seq')", Long.class);
@@ -147,10 +172,13 @@ public class CreateStockingStandardService {
                 .build());
       }
     }
+  }
 
-    // Step 6: layer(s) and their species.
-    List<StockingLayerDto> layers =
-        dto.layerType() == StockingLayerType.SINGLE ? List.of(dto.singleLayer()) : dto.multiLayers();
+  private void saveLayersAndSpecies(
+      Long standardsRegimeId,
+      List<StockingLayerDto> layers,
+      String auditUserId,
+      LocalDateTime now) {
     for (StockingLayerDto layer : layers) {
       Long layerId =
           jdbcTemplate.queryForObject(
@@ -197,7 +225,5 @@ public class CreateStockingStandardService {
         }
       }
     }
-
-    return new CreateStockingStandardResponseDto(standardsRegimeId);
   }
 }

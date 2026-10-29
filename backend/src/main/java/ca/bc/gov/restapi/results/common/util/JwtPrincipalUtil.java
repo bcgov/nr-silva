@@ -412,7 +412,7 @@ public class JwtPrincipalUtil {
    * @return The last name extracted from the JWT claims, or an empty string if not specified.
    */
   private static String getLastNameValue(Map<String, Object> claims) {
-    return processName(claims).get("lastName");
+    return processName(claims).get(LAST_NAME);
   }
 
   /**

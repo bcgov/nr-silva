@@ -28,7 +28,7 @@ flowchart TD
     subgraph Scopes ["Modernization Classification"]
         direction TB
         ACL["1. External Dependency Tables (ACL Scope)<br/>(77 tables)"]
-        Boundary["2. Boundary Hotspots (#1519 Scope)<br/>(11 tables)"]
+        Boundary["2. Boundary Hotspots (#1519 Audited)<br/>(11 tables)"]
         Core["3. Internal Silva Core (ETL Scope)<br/>(73 tables)"]
         Archive["4. Internal Audit & Archive Snapshots<br/>(20 tables)"]
         Temp["5. Legacy Temp & Session Staging<br/>(24 tables)"]
@@ -37,7 +37,7 @@ flowchart TD
 
     subgraph Targets ["Modern Silva Targets"]
         Ports["Domain Provider Ports<br/>(TenureProvider, ForestClientProvider, etc.)"]
-        CQRS["Local Read Models / Projections<br/>(silva.cut_block_open_admin pending #1519)"]
+        CQRS["Local Read Models / Projections<br/>(silva.cut_block_open_admin audited in #1519)"]
         PostgresCore["PostgreSQL silva Schema<br/>(silva.opening, etc.)"]
         ColdStorage["PostgreSQL Historical Partitions<br/>(silva.*_archive)"]
         Deprecate["DEPRECATE & ELIMINATE<br/>(Stateless Spring DTOs)"]
@@ -55,7 +55,7 @@ flowchart TD
 | Scope Category | Asset Count | Target Architecture | Modernization Destination |
 | :--- | :---: | :--- | :--- |
 | **External Dependency Tables (ACL Scope)** | **77** | Ports & Adapters (ACL) | Domain Provider Ports (`*Provider`) in `ca.bc.gov.restapi.results.common.provider` |
-| **Boundary Hotspots & Shared Tables** | **11** | CQRS Read Projections & Hooks | Local PostgreSQL read projections (`silva.cut_block_open_admin`) + lifecycle hooks; reviewed in **[#1519](https://github.com/bcgov/nr-silva/issues/1519)** |
+| **Boundary Hotspots & Shared Tables** | **11** | CQRS Read Projections & Hooks | Local PostgreSQL read projections (`silva.cut_block_open_admin`) + lifecycle hooks; audited & finalized in **[#1519](https://github.com/bcgov/nr-silva/issues/1519)** |
 | **Internal Silva Core Tables (ETL Scope)** | **73** | PostgreSQL Schema | Migrated to PostgreSQL `silva` schema via ETL module; Spring Data JPA |
 | **Internal Audit, Archive & History Tables** | **20** | Partitioned / Event History | PostgreSQL append-only audit tables and historical milestone archive tables |
 | **Legacy Temp, Session & Staging Tables** | **24** | **Deprecate / Eliminate** | Eliminated; replaced by stateless HTTP sessions, React Query, and in-memory DTOs |
@@ -81,7 +81,7 @@ Silva separates operational commands from read-heavy cross-domain queries:
   - **When to use:** You are reading, filtering, searching, viewing dashboards, mapping GIS layers, or generating reports.
   - **What it does:** Queries 100% local PostgreSQL tables and read projections pre-synced from external systems.
   - **Why:** Remote network calls and REST APIs are slow ($N+1$ latency trap), PostGIS spatial queries cannot execute over external REST endpoints, and displaying data does not require authoritative locking.
-  - **Concrete Example:** When a user searches for *"all openings filtered by tenure X"*, Silva queries the local `silva.cut_block_open_admin` read projection (candidate pattern pending [#1519](https://github.com/bcgov/nr-silva/issues/1519)), delivering sub-millisecond responses and PostGIS vector tile rendering without ever making remote calls to FTA.
+  - **Concrete Example:** When a user searches for *"all openings filtered by tenure X"*, Silva queries the local `silva.cut_block_open_admin` read projection (pattern formalized in [#1519](https://github.com/bcgov/nr-silva/issues/1519)), delivering sub-millisecond responses and PostGIS vector tile rendering without ever making remote calls to FTA.
 
 ```mermaid
 flowchart TD
@@ -137,7 +137,7 @@ These tables belong to external ministry systems. Under the Anti-Corruption Laye
 | :--- | :--- | :--- |
 | `BLOCK_STATUS_CODE` | Cut block operational status lookup (e.g., Active, Complete, Logged) | Cut block eligibility and operational status check |
 | `CORP_CAPTURE_METHOD` | Spatial coordinate capture methodology for tenure mapping | Spatial coordinate capture metadata |
-| `CUT_BLOCK_AUDIT` | Historical audit log of cut block modifications in FTA | Cut block geometry/attribute modification history; opening tenure linkage changes are governed separately via `silva.cut_block_open_admin` and reviewed in #1519 |
+| `CUT_BLOCK_AUDIT` | Historical audit log of cut block modifications in FTA | Cut block geometry/attribute modification history; opening tenure linkage changes are governed separately via `silva.cut_block_open_admin` and audited in #1519 |
 | `CUT_BLOCK_CLIENT` | Cut block licensee client and billing association | Licensee client validation against cut block |
 | `CUT_BLOCK_GEOM` | Spatial polygon geometry and boundary mapping for harvested cut blocks | Spatial boundary and cut block mapping |
 | `DIST_TENR_DEFLT` | Natural resource district default tenure administration parameters | Default district administrative parameters |
@@ -517,23 +517,48 @@ Lookup code tables representing forestry standards, status codes, and operationa
 
 ---
 
-## 8. Boundary Hotspots & Shared Tables (Issue #1519 Review Scope)
+## 8. Boundary Hotspots & Shared Tables (Issue #1519 Audited & Finalized)
 
-Eleven boundary tables sit at the intersection between Silva and external systems. These tables require formal cross-system boundary alignment and data ownership contracts under **[Issue #1519](https://github.com/bcgov/nr-silva/issues/1519)**.
+Eleven boundary tables sit directly at the intersection between Silva and external systems. In **[Issue #1519](https://github.com/bcgov/nr-silva/issues/1519)**, these tables underwent an exhaustive audit against the Oracle database (`THE` schema), analyzing table structures, foreign keys, and write contention.
 
-| Table Name | System Boundary | Primary Ownership Conflict & Architectural Remediation |
-| :--- | :---: | :--- |
-| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Shared Bridge Table (Conditional Candidate Pattern pending #1519):** Under Integration Spec §6.1 (Silva exclusive ownership of opening-cut block linkages), Silva manages `silva.cut_block_open_admin` as the local authority. Under the illustrative scenario in §6.3 (FTA tenure mastership), it functions as a CQRS read projection updated via event hooks. The final command-side persistence model and consistency guarantees will be formally established in Issue #1519. |
-| `CUT_BLOCK` | FTA | **External Master:** Owned by FTA. Legacy RESULTS executed direct updates against this table. In modern Silva, `CUT_BLOCK` is **strictly Read-Only** via `TenureProvider`. Mutations are delegated to FTA via REST/events under RFC-001. |
-| `ORG_UNIT` | Corporate BCGW / Silva | **Corporate Hierarchy:** Shared ministry organizational structure. Decoupled via `OrgUnitProvider` with in-memory caching. |
-| `EUSER` | Corporate / Silva | **Legacy User Registry:** Replaced by Keycloak / OIDC identity tokens (BCeID / IDIR) and a modern `silva.user_profile` table for user preferences and roles. |
-| `CLIENT_LOCATION_DEFAULT` | CLIENT / Silva | **Client Preferences:** Decoupled into Forest Client API or local user preference storage. |
-| `CODE_LIST_TABLE` | Shared Utility | **Generic Dictionary:** Replaced by typed Flyway domain code tables and Java enums. |
-| `CODE_SUBSET_TBL` | Shared Utility | **Generic Subsets:** Replaced by typed Flyway domain code tables. |
-| `FEATURE_CLASSES` | GIS Utility | **Spatial Configuration:** Managed via Spring Boot application configuration and PostGIS metadata. |
-| `DATA_SOURCE_CODE` | Shared Code | **Origin Tracking:** Seeded via Flyway into `silva.code_data_source_code`. |
-| `MIME_TYPE_CODE` | Utility Code | **Attachment Handling:** Replaced by standard Spring / HTTP MIME type handling and validation. |
-| `REPORT_GROUP_PARAMETER` | Reporting Utility | **Report Parameters:** Replaced by modern Spring report service DTOs and OpenAPI schemas. |
+> [!TIP]
+> **Complete DDL, Foreign Key & Field-Level Audit Document**  
+> For full Oracle column-by-column data dictionary definitions, constraints, indexes, table comments, and the complete 24-constraint foreign key catalog, see the internal project Confluence specification:  
+> **_Cross-System Foreign Keys, Boundary Hotspots & DDL Audit_** (available in the internal Silva Confluence Architecture repository space).
+
+### 8.1 Boundary Ownership & Synchronization Matrix
+
+| Table Name | System Boundary | System of Record (SoR) | Modern Architecture & Integration Pattern |
+| :--- | :---: | :---: | :--- |
+| `CUT_BLOCK_OPEN_ADMIN` | FTA / Silva | **Split Ownership**<br/>• Silva: Opening linkages (`opening_id`, `opening_prime_licence_ind`), opening area copy (`opening_gross_area`), and derived disturbance metrics (`disturbance_gross_area`, `disturbance_start_date`, `disturbance_end_date`)<br/>• FTA: Cut block identity (`forest_file_id`, `cutting_permit_id`, `cut_block_id`, `timber_mark`, `cb_skey`) & planned harvesting metrics (`planned_gross_block_area`, `planned_net_block_area`, `planned_harvest_date`) | **Shared Bridge (CQRS Read Model & Local Persistence):**<br/>• **Command Path:** Validated via `TenureProvider.verifyCutBlock()` against FTA master.<br/>• **Silva Derivation (Disturbance Fields):** `disturbance_gross_area`, `disturbance_start_date`, and `disturbance_end_date` are derived within Silva from silviculture disturbance (`DN`) `ACTIVITY_TREATMENT_UNIT` records via `OpeningTenureAssociationService.reconcile()`. FTA does not write to these fields, eliminating competing writers.<br/>• **Query Path:** Maintained in PostgreSQL as `silva.cut_block_open_admin` for sub-millisecond opening searches and PostGIS joins.<br/>• **Async Sync:** Silva emits `TenureAssociationHandler` events (`onTenureAssociated`, `onTenureRemoved`) to notify FTA; FTA cut block updates sync via CDC / event stream without overwriting Silva-derived disturbance attributes. |
+| `CUT_BLOCK` | FTA | **FTA Master**<br/>(100% External) | **External Master (Strictly Read-Only):**<br/>• Legacy direct `UPDATE` queries from RESULTS are eliminated.<br/>• Silva domain services only perform read-only lookups via `TenureProvider`. Mutations are delegated to FTA via REST/events under RFC-001. |
+| `ORG_UNIT` | Corporate BCGW / Silva | **Corporate MOF**<br/>(100% External) | **Corporate Hierarchy (Port & Caffeine Caching):**<br/>• Decoupled behind `OrgUnitProvider`.<br/>• In-memory Caffeine cache (`ttl = 60m`). Logical foreign key `org_unit_no` stored in Silva PostgreSQL entities. |
+| `EUSER` | Corporate / Silva | **eServices (Legacy)** | **DEPRECATE & ELIMINATE:**<br/>• Replaced by standard OIDC / Keycloak authentication (BCeID / IDIR) and JWT access tokens.<br/>• User preferences and application roles persist in a modern `silva.user_profile` PostgreSQL table. |
+| `CLIENT_LOCATION_DEFAULT` | CLIENT / Silva | **Silva Local Preferences** | **DEPRECATE & REPLACE:**<br/>• Decoupled into local PostgreSQL user preferences (`silva.user_preference`) or client session state. |
+| `CODE_LIST_TABLE` | Shared Utility | **Shared (Legacy)** | **DEPRECATE & REPLACE:**<br/>• Decomposed into dedicated, strongly-typed Flyway migration scripts seeding `silva.code_*` tables in PostgreSQL. |
+| `CODE_SUBSET_TBL` | Shared Utility | **Shared (Legacy)** | **DEPRECATE & REPLACE:**<br/>• Decomposed into dedicated, strongly-typed Flyway migration scripts seeding `silva.code_*` tables in PostgreSQL. |
+| `FEATURE_CLASSES` | GIS Utility | **Corporate GIS (Legacy)** | **DEPRECATE & ELIMINATE:**<br/>• Replaced by native PostGIS spatial tables (`GEOMETRY(MultiPolygon, 3005)`), PostGIS metadata views, and Spring Boot application configuration. |
+| `DATA_SOURCE_CODE` | Shared Code | **Silva Reference** | **Flyway Seeded & Caffeine Cached:**<br/>• Seeded via Flyway into `silva.code_data_source` and cached in Caffeine (`ttl = 60m`). |
+| `MIME_TYPE_CODE` | Utility Code | **Utility (Legacy)** | **DEPRECATE & ELIMINATE:**<br/>• Replaced by standard IANA MIME types (e.g. `application/pdf`) validated in Spring Boot and AWS S3 object metadata. |
+| `REPORT_GROUP_PARAMETER` | Reporting Utility | **Reporting (Legacy)** | **DEPRECATE & ELIMINATE:**<br/>• Replaced by modern Spring report service query DTOs and OpenAPI-documented REST request parameters. |
+
+### 8.2 Cross-System Foreign Key Reconciliation Summary
+
+The audit identified **24 cross-system foreign key constraints** in the Oracle database that link Silva silviculture entities with external tables. Under the target PostgreSQL architecture, physical database constraints across system boundaries are replaced by domain patterns:
+
+1. **Internal Bridge Foreign Keys (Preserved in PostgreSQL):**
+   - `OPENING(opening_id)` &larr; `CUT_BLOCK_OPEN_ADMIN(opening_id)` (`CBOA_O_FK`)
+   - `CUT_BLOCK_OPEN_ADMIN(cut_block_open_admin_id)` &larr; `ACTIVITY_TREATMENT_UNIT(cut_block_open_admin_id)` (`ATU_CBOA_FK`)
+2. **External Relational Checks &rarr; Domain Provider Ports (Command Path):**
+   - `CUT_BLOCK_OPEN_ADMIN(cb_skey)` &rarr; `CUT_BLOCK(cb_skey)` (`CBOA_CB_FK`) &rarr; Validated by `TenureProvider.verifyCutBlock()`.
+   - `PLANTING_RSLT(request_skey, item_id)` &rarr; `REQUEST_ITEM` (`PR_SPARRI_FK`) &rarr; Validated by `SparProvider`.
+   - `OPENING(admin_district_no, geo_district_no)` &rarr; `ORG_UNIT` (`O_OU_FK`, `O_OU_RESIDES_WITHIN_FK`) &rarr; Validated by `OrgUnitProvider`.
+   - `SILVICULTURE_PROJECT(client_number)` &rarr; `FOREST_CLIENT` (`PROJ_FC2_FK`) &rarr; Validated by `ForestClientProvider`.
+3. **External Projections & Reverse Dependencies:**
+   - `FSP_STANDARDS_REGIME_XREF` &rarr; `STANDARDS_REGIME` (`FSPSRX_SR_FK`) &rarr; Maintained in PostgreSQL read projection `silva.fsp_standards_regime_xref` synced via FSP events.
+   - `SPAR_REQUEST(opening_id)` &rarr; `OPENING` (`SPR_SR1_O_FK`) &rarr; SPAR accesses Opening information via Silva REST API (`GET /api/openings/{id}`).
+4. **Retired Spatial & Format Constraints:**
+   - Spatial geometry references to `FEATURE_CLASSES` and `MIME_TYPE_CODE` are fully retired in favor of native PostGIS geometries and standard IANA MIME handling.
 
 ---
 
@@ -552,7 +577,8 @@ This integration matrix contains strictly architectural taxonomy, domain relatio
 
 - **[ADR-001: Anti-Corruption Layer for External Systems](./adr/ADR-001-external-systems-anti-corruption-layer.md)**
 - **[External Systems Integration Spec](./external-systems-integration-spec.md)**
+- **_Cross-System Foreign Keys, Boundary Hotspots & DDL Audit_** (Internal Silva Confluence Architecture Specification)
 - **[Parent Epic #1517](https://github.com/bcgov/nr-silva/issues/1517)**
-- **[Sub-Issue 1.2 (#1519)](https://github.com/bcgov/nr-silva/issues/1519):** Audit cross-system foreign keys, dual-writes, and boundary ownership.
+- **[Sub-Issue 1.2 (#1519)](https://github.com/bcgov/nr-silva/issues/1519):** Audit cross-system foreign keys, dual-writes, and boundary ownership (Completed).
 - **[Sub-Issue 1.3 (#1520)](https://github.com/bcgov/nr-silva/issues/1520):** Establish cross-team interface RFC process and template.
 - **Sub-Issues 2.1–3.5 ([#1521](https://github.com/bcgov/nr-silva/issues/1521)–[#1527](https://github.com/bcgov/nr-silva/issues/1527)):** Core infrastructure configuration and FTA pilot delivery.
