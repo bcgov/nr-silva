@@ -211,7 +211,10 @@ Events should comply with the **CNCF CloudEvents 1.0** specification over Apache
 - **Delivery Semantic:** At-least-once delivery. Silva consumers are implemented to be idempotent using the event `id` and entity version/timestamp.
 - **Partitioning & Ordering:** Events keyed by the primary domain identifier (e.g. `forestFileId` or `externalKey`) to guarantee in-order delivery per entity.
 - **Dead-Letter Queue (DLQ):** Unprocessable events routed to `<topic>-silva-dlq` after 3 retries with exponential backoff.
-- **Consumer Replay & Catchup:** Target system supports event retention (minimum 7 days) to enable Silva to replay events during initial projection sync or disaster recovery.
+- **Projection Bootstrapping & Catch-Up Strategy:**
+  - *Baseline Initialization:* Bounded change-event streams cannot initialize a complete read projection because entities unmodified during the retention window are omitted. The target system must provide a full snapshot baseline (e.g., bulk export endpoint, paginated sync API, or compacted Kafka topic) with an agreed checkpoint timestamp or offset.
+  - *Incremental Catch-Up:* Silva seeds the local projection from the baseline snapshot, then consumes retained change events forward from the snapshot checkpoint.
+  - *Event Retention Window:* Target system maintains event retention (minimum 7–14 days) to allow consumer catch-up following extended maintenance or disaster recovery.
 
 ---
 
