@@ -87,6 +87,6 @@ stateDiagram-v2
 - **[ADR-001: Anti-Corruption Layer for External System Dependencies](../adr/ADR-001-external-systems-anti-corruption-layer.md)**
 - **[External Systems Integration Specification](../external-systems-integration-spec.md)**
 - **[Data Integration Matrix](../data-integration-matrix.md)**
-- **[Backend Integration Patterns Reference Guide](../../.agents/skills/backend-patterns/references/integration-patterns.md)**
+- **[Backend Integration Patterns Reference Guide](../../../.agents/skills/backend-patterns/references/integration-patterns.md)**
 - **[Epic #1517: Decouple Silva from Monolithic Oracle Database](https://github.com/bcgov/nr-silva/issues/1517)**
 
