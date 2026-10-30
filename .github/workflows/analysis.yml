@@ -17,7 +17,7 @@ jobs:
   tests-backend-oracle:
     name: Tests Backend Oracle
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
 
@@ -49,7 +49,7 @@ jobs:
   tests-backend-postgres:
     name: Tests Backend Postgres
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
 
@@ -82,7 +82,7 @@ jobs:
     name: Combine Backend Coverage
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     needs: [tests-backend-oracle, tests-backend-postgres]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
 
@@ -272,7 +272,7 @@ jobs:
   lint-frontend:
     name: Lint (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: bcgov/action-test-and-analyse@8f699e3fd3fadd9a6adf6f4b1f2638ef7ecfefb9 # v2.0.0
         with:
@@ -287,7 +287,7 @@ jobs:
   tests-frontend:
     name: Tests (Frontend)
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
     steps:
@@ -332,7 +332,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     permissions:
       security-events: write
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
 
@@ -362,7 +362,7 @@ jobs:
     name: Analysis Results
     needs: [lint-frontend, tests-frontend, tests-backend-oracle, tests-backend-postgres, combine-backend-coverage] # Include trivy when/if it gets back to being reliable
     if: always()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     steps:
       - uses: bcgov/actions/workflow-results@122a9b1c6c082b1b1f18c300020fbdc417b6b0b2 # v0.10.0
