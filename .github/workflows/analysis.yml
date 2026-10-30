@@ -289,7 +289,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-26.04
     container:
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
     steps:
       - name: Fix safe.directory for GitHub Actions
         run: git config --global --add safe.directory /__w/nr-silva/nr-silva
