@@ -28,7 +28,7 @@ services:
   frontend:
     container_name: frontend
     entrypoint: sh -c "npm ci --ignore-scripts && npm run start"
-    image: node:24-bullseye
+    image: node:26-bullseye
     ports: ["3000:3000"]
     volumes: ["./frontend:/app", "/app/node_modules"]
     working_dir: "/app"
