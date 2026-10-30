@@ -143,6 +143,82 @@ To switch an external dependency from Oracle to a REST API:
 
 ---
 
+## Cross-Team Interface RFC Process & Lifecycle
+
+When an external ministry system (e.g. FTA, Forest Client, Org Units) needs to expose a modern interface to Silva, Silva engineers author a formal **Request for Comments (RFC)** to negotiate the contract. This ensures that interfaces are **consumer-driven**—designed to fulfill Silva's specific functional requirements, performance budgets, and data freshness needs, rather than forcing Silva to adapt to arbitrary external endpoint designs or legacy database structures.
+
+The RFC template and registry are maintained in:
+- Template: [`docs/architecture/rfc/template.md`](../../../../docs/architecture/rfc/template.md)
+- Registry & Index: [`docs/architecture/rfc/README.md`](../../../../docs/architecture/rfc/README.md)
+
+### RFC Lifecycle States
+
+Each RFC document tracks its status using MADR-style YAML frontmatter:
+
+```
+  +------------+       +-------------+       +------------+       +---------------+
+  |  proposed  | ----> |  in_review  | ----> |  accepted  | ----> |  implemented  |
+  +------------+       +-------------+       +------------+       +---------------+
+                             |
+                             v
+                       +------------+
+                       |  rejected  |
+                       +------------+
+```
+
+1. **`proposed`**:
+   - The Silva engineering team authors the RFC using [`template.md`](../../../../docs/architecture/rfc/template.md).
+   - Specifies Silva's consumer needs, proposed REST endpoints (paths, methods, request/response DTO schemas) or domain event schemas (CloudEvents 1.0), operational SLAs, and security requirements.
+   - Silva domain Port (`XxxProvider`) and clean domain records are committed, accompanied by an offline `MockXxxAdapter` and an interim `OracleXxxJdbcAdapter`.
+2. **`in_review`**:
+   - The RFC is submitted to the external engineering team (e.g. Forest Tenures Administration team) and Product Owner.
+   - Both teams review payload schemas, query parameters, error responses (RFC 7807), latency budgets, and security tokens in GitHub pull requests or architecture reviews.
+3. **`accepted`**:
+   - Both teams formally sign off on the contract, field mapping, operational SLAs, and target delivery milestones.
+   - The external team schedules the implementation of the REST API / event publisher in their backlog.
+4. **`implemented`**:
+   - The external team deploys the API or event stream in staging/production.
+   - Silva engineers complete integration based on `interface_type`:
+     - **`synchronous_rest`:** Implement `RestApiXxxAdapter` using Spring `RestClient`, write contract tests using WireMock, and activate in OpenShift via `SILVA_INTEGRATION_<DOMAIN>_PROVIDER=api`.
+     - **`asynchronous_event`:** Implement domain event consumers (e.g. Kafka / CloudEvents handlers) that update or invalidate local PostgreSQL read projections (`silva.*`), with contract tests verifying message deserialization and idempotency.
+     - **`hybrid`:** Implement both the REST adapter and event-driven read projection listeners.
+5. **`rejected`**:
+   - The proposed contract is rejected or superseded by an alternative architecture (e.g. event stream instead of polling REST API).
+
+### How the RFC Process Fits the Dual-Track Architecture
+
+Silva does **not** wait for external systems to finish modernizing before delivering business features. Instead, Silva follows a parallel dual-track approach:
+
+```mermaid
+flowchart TD
+    subgraph ImmediateDelivery ["Silva Immediate Delivery (Track B)"]
+        A1["Define Port: TenureProvider"] --> A2["Interim OracleJdbcAdapter (5s timeout)"]
+        A2 --> A3["Deliver Business Features (AddTenure, etc.)"]
+    end
+
+    subgraph CrossTeamNegotiation ["Cross-Team Contract Negotiation (Track A)"]
+        B1["Draft RFC (template.md)"] --> B2["Publish RFC to External Team"]
+        B2 --> B3["In-Review & Acceptance"]
+        B3 --> B4["External Team Implements API"]
+    end
+
+    subgraph FutureCutover ["Zero-Code Cutover"]
+        A3 -.-> C1["Implement RestApiAdapter"]
+        B4 -.-> C1
+        C1 --> C2["Set SILVA_INTEGRATION_TENURE_PROVIDER=api in OpenShift"]
+    end
+
+    style ImmediateDelivery fill:#e8f4fd,stroke:#2082f7
+    style CrossTeamNegotiation fill:#fef3e8,stroke:#f0883e
+    style FutureCutover fill:#eefbe8,stroke:#40c463
+```
+
+- **Immediate Feature Delivery:** Silva builds the domain port interface, clean domain DTOs, and an interim `OracleXxxJdbcAdapter` to run against the secondary read-only Oracle connection pool. Silva features (e.g. opening creation, tenure validation) ship immediately.
+- **Contract Negotiation:** Concurrently, Silva publishes the RFC (e.g. `RFC-001`) to the external team.
+- **Seamless Cutover:** When the external API is live, Silva adds the `RestApiXxxAdapter` and toggles the environment variable. Core domain services require zero modifications.
+
+---
+
 ## CQRS & Read Model Projections Across External Domains
 
 When building features that interact across Silva and external domain boundaries:

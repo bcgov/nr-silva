@@ -580,5 +580,5 @@ This integration matrix contains strictly architectural taxonomy, domain relatio
 - **_Cross-System Foreign Keys, Boundary Hotspots & DDL Audit_** (Internal Silva Confluence Architecture Specification)
 - **[Parent Epic #1517](https://github.com/bcgov/nr-silva/issues/1517)**
 - **[Sub-Issue 1.2 (#1519)](https://github.com/bcgov/nr-silva/issues/1519):** Audit cross-system foreign keys, dual-writes, and boundary ownership (Completed).
-- **[Sub-Issue 1.3 (#1520)](https://github.com/bcgov/nr-silva/issues/1520):** Establish cross-team interface RFC process and template.
+- **[Sub-Issue 1.3 (#1520)](https://github.com/bcgov/nr-silva/issues/1520):** Establish cross-team interface RFC process and template ([RFC Template](./rfc/template.md), [RFC Registry](./rfc/README.md)) (Completed).
 - **Sub-Issues 2.1–3.5 ([#1521](https://github.com/bcgov/nr-silva/issues/1521)–[#1527](https://github.com/bcgov/nr-silva/issues/1527)):** Core infrastructure configuration and FTA pilot delivery.
