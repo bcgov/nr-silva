@@ -19,7 +19,7 @@ jobs:
     outputs:
       hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
       postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - name: Allocate FAM routes
@@ -53,7 +53,7 @@ jobs:
     name: Validate Results
     needs: [init, validate]
     if: always()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     steps:
       - uses: bcgov/actions/workflow-results@122a9b1c6c082b1b1f18c300020fbdc417b6b0b2 # v0.10.0

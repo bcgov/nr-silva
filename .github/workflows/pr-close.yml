@@ -14,7 +14,7 @@ permissions: {}
 jobs:
   cleanup_configmap:
     name: Cleanup FAM Route Allocations
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - name: Remove FAM route allocations for PR

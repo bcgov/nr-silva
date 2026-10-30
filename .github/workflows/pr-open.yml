@@ -13,7 +13,7 @@ permissions: {}
 jobs:
   builds:
     name: Builds
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       attestations: write
       id-token: write
@@ -54,7 +54,7 @@ jobs:
     concurrency:
       group: fam-routes-global
       cancel-in-progress: false
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
       postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
@@ -98,7 +98,7 @@ jobs:
     name: Cleanup ConfigMap After Deployment (${{ github.event.number }})
     needs: [fam_routes, deploys]
     if: success()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - name: Remove route reservations from ConfigMap
@@ -139,7 +139,7 @@ jobs:
     name: Load Dev Test Data (${{ github.event.number }})
     needs: [deploys]
     if: success()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -164,7 +164,7 @@ jobs:
     name: PR Results
     needs: [builds, fam_routes, deploys, load_test_data]
     if: always()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     steps:
       - uses: bcgov/actions/workflow-results@122a9b1c6c082b1b1f18c300020fbdc417b6b0b2 # v0.10.0
