@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.mock.env.MockEnvironment;
 
 @DisplayName("Unit Test | ExternalOracleConfiguration")
 class ExternalOracleConfigurationTest {
@@ -98,17 +100,21 @@ class ExternalOracleConfigurationTest {
   }
 
   @Test
-  @DisplayName("Should not register any beans when enabled=false, attempting zero connections")
-  void doesNotRegisterWhenEnabledIsFalse() {
+  @DisplayName(
+      "Should block connection acquisition when silva.integrations.external-oracle.enabled is"
+          + " false")
+  void blocksConnectionWhenPropertyEnabledIsFalse() {
     contextRunner
         .withPropertyValues(
-            "server.primary-db=postgres",
-            "silva.integrations.external-oracle.enabled=false")
+            "server.primary-db=postgres", "silva.integrations.external-oracle.enabled=false")
         .run(
             context -> {
-              assertThat(context).doesNotHaveBean("externalOracleDataSource");
-              assertThat(context).doesNotHaveBean("externalOracleJdbcTemplate");
-              assertThat(context).doesNotHaveBean(ExternalOracleConfiguration.class);
+              assertThat(context).hasBean("externalOracleDataSource");
+              HikariDataSource ds =
+                  context.getBean("externalOracleDataSource", HikariDataSource.class);
+              assertThatThrownBy(ds::getConnection)
+                  .isInstanceOf(SQLException.class)
+                  .hasMessageContaining("External Oracle integration is disabled at runtime");
             });
   }
 
@@ -138,6 +144,24 @@ class ExternalOracleConfigurationTest {
               assertThat(context).doesNotHaveBean("externalOracleJdbcTemplate");
               assertThat(context).doesNotHaveBean(ExternalOracleConfiguration.class);
             });
+  }
+
+  @Test
+  @DisplayName("Should block connection acquisition at runtime when EXTERNAL_ORACLE_ENABLED is false")
+  void blocksConnectionAcquisitionWhenRuntimeDisabled() {
+    MockEnvironment mockEnv = new MockEnvironment();
+    mockEnv.setProperty("EXTERNAL_ORACLE_ENABLED", "false");
+
+    ExternalOracleConfiguration config = new ExternalOracleConfiguration();
+    HikariDataSource ds = config.externalOracleDataSource(mockEnv);
+
+    assertThatThrownBy(ds::getConnection)
+        .isInstanceOf(SQLException.class)
+        .hasMessageContaining("External Oracle integration is disabled at runtime");
+
+    assertThatThrownBy(() -> ds.getConnection("user", "pass"))
+        .isInstanceOf(SQLException.class)
+        .hasMessageContaining("External Oracle integration is disabled at runtime");
   }
 
   @Test

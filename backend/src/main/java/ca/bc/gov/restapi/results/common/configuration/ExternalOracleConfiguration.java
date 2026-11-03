@@ -1,15 +1,17 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /**
@@ -19,22 +21,35 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
-@ConditionalOnProperty(
-    prefix = "silva.integrations.external-oracle",
-    name = "enabled",
-    havingValue = "true",
-    matchIfMissing = true)
 public class ExternalOracleConfiguration {
 
   /**
    * Dedicated read-only Oracle DataSource for querying external schemas.
    *
-   * @return read-only HikariDataSource configured with secondary pool parameters
+   * <p>Gates connection acquisition at runtime against {@code EXTERNAL_ORACLE_ENABLED} and
+   * {@code silva.integrations.external-oracle.enabled} to support runtime toggling in
+   * GraalVM native images where build-time bean definitions cannot be dynamically pruned.
+   *
+   * @param env the Spring environment to check runtime enablement
+   * @return read-only HikariDataSource configured with secondary pool parameters and runtime gating
    */
   @Bean(name = "externalOracleDataSource")
   @ConfigurationProperties(prefix = "silva.integrations.external-oracle.hikari")
-  public HikariDataSource externalOracleDataSource() {
-    HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
+  public HikariDataSource externalOracleDataSource(Environment env) {
+    HikariDataSource dataSource =
+        new HikariDataSource() {
+          @Override
+          public Connection getConnection() throws SQLException {
+            checkRuntimeEnabled(env);
+            return super.getConnection();
+          }
+
+          @Override
+          public Connection getConnection(String username, String password) throws SQLException {
+            checkRuntimeEnabled(env);
+            return super.getConnection(username, password);
+          }
+        };
     dataSource.setReadOnly(true);
     return dataSource;
   }
@@ -53,5 +68,16 @@ public class ExternalOracleConfiguration {
     NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
     template.getJdbcTemplate().setQueryTimeout(queryTimeout);
     return template;
+  }
+
+  private static void checkRuntimeEnabled(Environment env) throws SQLException {
+    String enabled =
+        env.getProperty(
+            "EXTERNAL_ORACLE_ENABLED",
+            env.getProperty("silva.integrations.external-oracle.enabled", "true"));
+    if ("false".equalsIgnoreCase(enabled)) {
+      throw new SQLException(
+          "External Oracle integration is disabled at runtime (EXTERNAL_ORACLE_ENABLED=false).");
+    }
   }
 }
