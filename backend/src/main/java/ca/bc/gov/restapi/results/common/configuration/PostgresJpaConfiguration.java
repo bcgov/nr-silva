@@ -3,6 +3,7 @@ package ca.bc.gov.restapi.results.common.configuration;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -78,6 +79,20 @@ public class PostgresJpaConfiguration {
       @Qualifier("postgresEntityManagerFactory") final EntityManagerFactory entityManagerFactory
   ) {
     return new JpaTransactionManager(entityManagerFactory);
+  }
+
+  /**
+   * Dedicated database health indicator for PostgreSQL mode. Ensures Actuator health probes
+   * monitor only the primary PostgreSQL database and do not fail the pod on secondary external
+   * Oracle outages or initialize the lazy external Oracle connection pool during probe checks.
+   *
+   * @param dataSource the primary PostgreSQL data source
+   * @return configured DataSourceHealthIndicator
+   */
+  @Bean(name = "dbHealthIndicator")
+  public DataSourceHealthIndicator dbHealthIndicator(
+      @Qualifier("postgresHikariDataSource") HikariDataSource dataSource) {
+    return new DataSourceHealthIndicator(dataSource, "SELECT 1");
   }
 
 }
