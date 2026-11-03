@@ -131,7 +131,7 @@ class ExternalOracleConfigurationTest {
   @DisplayName("Should not register ExternalOracleConfiguration when primary-db is missing")
   void doesNotRegisterWithoutPrimaryDb() {
     contextRunner
-        .withPropertyValues("silva.integrations.external-oracle.enabled=true")
+        .withPropertyValues("server.primary-db=", "silva.integrations.external-oracle.enabled=true")
         .run(
             context -> {
               assertThat(context).doesNotHaveBean("externalOracleDataSource");
