@@ -167,6 +167,25 @@ ca:
               - DELETE
             age: 5m
 
+# Silva Custom Application Settings & External Integrations
+silva:
+  integrations:
+    external-oracle:
+      enabled: ${EXTERNAL_ORACLE_ENABLED:true}
+      query-timeout: ${EXTERNAL_ORACLE_QUERY_TIMEOUT:5}
+      hikari:
+        driver-class-name: oracle.jdbc.OracleDriver
+        jdbc-url: ${spring.oracle.jdbcUrl}
+        username: ${spring.oracle.username}
+        password: ${spring.oracle.password}
+        pool-name: SilvaExternalOracleConnPool
+        maximum-pool-size: 3
+        minimum-idle: 0
+        connection-timeout: 15000
+        idle-timeout: 60000
+        connection-test-query: SELECT 1 FROM DUAL
+        read-only: true
+
 # Logging
 logging:
   level:

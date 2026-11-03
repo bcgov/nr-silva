@@ -11,6 +11,11 @@ spring:
   jpa:
     show-sql: true
 
+silva:
+  integrations:
+    external-oracle:
+      enabled: false
+
 # Users allowed to see and download WMS layers information
 ca:
   bc:
