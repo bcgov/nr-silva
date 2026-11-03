@@ -1,12 +1,14 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,10 +16,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mock.env.MockEnvironment;
 
 @DisplayName("Unit Test | PrimaryOracleTemplateConfiguration")
 class PrimaryOracleTemplateConfigurationTest {
@@ -37,11 +43,16 @@ class PrimaryOracleTemplateConfigurationTest {
         .run(
             context -> {
               assertThat(context).hasBean("externalOracleJdbcTemplate");
+              assertThat(context).hasBean("primaryOracleTemplateStartupLogger");
 
               NamedParameterJdbcTemplate template =
                   context.getBean("externalOracleJdbcTemplate", NamedParameterJdbcTemplate.class);
               assertThat(template.getJdbcTemplate().getQueryTimeout()).isEqualTo(5);
               assertThat(template.getJdbcTemplate().getDataSource())
+                  .isInstanceOf(DelegatingDataSource.class);
+              assertThat(
+                      ((DelegatingDataSource) template.getJdbcTemplate().getDataSource())
+                          .getTargetDataSource())
                   .isSameAs(primaryOracleDataSource);
             });
   }
@@ -59,6 +70,46 @@ class PrimaryOracleTemplateConfigurationTest {
                   context.getBean("externalOracleJdbcTemplate", NamedParameterJdbcTemplate.class);
               assertThat(template.getJdbcTemplate().getQueryTimeout()).isEqualTo(12);
             });
+  }
+
+  @Test
+  @DisplayName("Should execute startup logger without error when enabled or disabled")
+  void executesStartupLogger() {
+    MockEnvironment env = new MockEnvironment();
+    PrimaryOracleTemplateConfiguration config = new PrimaryOracleTemplateConfiguration();
+    ApplicationRunner runner = config.primaryOracleTemplateStartupLogger(env, 5);
+
+    // Enabled state
+    env.setProperty("silva.integrations.external-oracle.enabled", "true");
+    assertThatCode(() -> runner.run(new DefaultApplicationArguments()))
+        .doesNotThrowAnyException();
+
+    // Disabled state
+    env.setProperty("EXTERNAL_ORACLE_ENABLED", "false");
+    assertThatCode(() -> runner.run(new DefaultApplicationArguments()))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  @DisplayName("Should block connection acquisition in oracle mode when runtime disabled")
+  void blocksConnectionAcquisitionWhenRuntimeDisabled() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("EXTERNAL_ORACLE_ENABLED", "false");
+
+    PrimaryOracleTemplateConfiguration config = new PrimaryOracleTemplateConfiguration();
+    NamedParameterJdbcTemplate template =
+        config.externalOracleJdbcTemplate(primaryOracleDataSource, env, 5);
+
+    DataSource ds = template.getJdbcTemplate().getDataSource();
+    assertThat(ds).isNotNull();
+
+    assertThatThrownBy(ds::getConnection)
+        .isInstanceOf(SQLException.class)
+        .hasMessageContaining("External Oracle integration is disabled at runtime");
+
+    assertThatThrownBy(() -> ds.getConnection("user", "pass"))
+        .isInstanceOf(SQLException.class)
+        .hasMessageContaining("External Oracle integration is disabled at runtime");
   }
 
   @Test
@@ -138,7 +189,8 @@ class PrimaryOracleTemplateConfigurationTest {
                 });
 
     PrimaryOracleTemplateConfiguration config = new PrimaryOracleTemplateConfiguration();
-    NamedParameterJdbcTemplate template = config.externalOracleJdbcTemplate(dataSourceProxy, 5);
+    NamedParameterJdbcTemplate template =
+        config.externalOracleJdbcTemplate(dataSourceProxy, new MockEnvironment(), 5);
 
     template.queryForList("SELECT 1 FROM DUAL", Map.of());
     assertThat(timeoutCaptured.get()).isEqualTo(5);
