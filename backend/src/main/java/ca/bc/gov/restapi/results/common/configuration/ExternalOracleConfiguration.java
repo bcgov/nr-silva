@@ -4,8 +4,10 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * Secondary Oracle connection pool and JdbcTemplate configuration for external integrations
  * active strictly in PostgreSQL mode.
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
@@ -70,12 +73,37 @@ public class ExternalOracleConfiguration {
     return template;
   }
 
-  private static void checkRuntimeEnabled(Environment env) throws SQLException {
+  /**
+   * Non-blocking startup logger that logs the external Oracle integration configuration state
+   * without eagerly opening any physical database connections.
+   *
+   * @param env the Spring environment to check runtime enablement
+   * @return ApplicationRunner executing on application startup
+   */
+  @Bean
+  public ApplicationRunner externalOracleStartupLogger(Environment env) {
+    return args -> {
+      if (isRuntimeEnabled(env)) {
+        log.info(
+            "External Oracle integration is enabled (read-only, lazy pool ready; 0 active"
+                + " connections).");
+      } else {
+        log.info(
+            "External Oracle integration is disabled at runtime (EXTERNAL_ORACLE_ENABLED=false).");
+      }
+    };
+  }
+
+  private static boolean isRuntimeEnabled(Environment env) {
     String enabled =
         env.getProperty(
             "EXTERNAL_ORACLE_ENABLED",
             env.getProperty("silva.integrations.external-oracle.enabled", "true"));
-    if ("false".equalsIgnoreCase(enabled)) {
+    return !"false".equalsIgnoreCase(enabled);
+  }
+
+  private static void checkRuntimeEnabled(Environment env) throws SQLException {
+    if (!isRuntimeEnabled(env)) {
       throw new SQLException(
           "External Oracle integration is disabled at runtime (EXTERNAL_ORACLE_ENABLED=false).");
     }

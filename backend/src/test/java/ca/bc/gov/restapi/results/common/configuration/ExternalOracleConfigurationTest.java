@@ -1,6 +1,7 @@
 package ca.bc.gov.restapi.results.common.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -16,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -42,6 +45,7 @@ class ExternalOracleConfigurationTest {
             context -> {
               assertThat(context).hasBean("externalOracleDataSource");
               assertThat(context).hasBean("externalOracleJdbcTemplate");
+              assertThat(context).hasBean("externalOracleStartupLogger");
 
               HikariDataSource ds =
                   context.getBean("externalOracleDataSource", HikariDataSource.class);
@@ -144,6 +148,24 @@ class ExternalOracleConfigurationTest {
               assertThat(context).doesNotHaveBean("externalOracleJdbcTemplate");
               assertThat(context).doesNotHaveBean(ExternalOracleConfiguration.class);
             });
+  }
+
+  @Test
+  @DisplayName("Should execute startup logger without error when enabled or disabled")
+  void executesStartupLogger() {
+    MockEnvironment env = new MockEnvironment();
+    ExternalOracleConfiguration config = new ExternalOracleConfiguration();
+    ApplicationRunner runner = config.externalOracleStartupLogger(env);
+
+    // Enabled state
+    env.setProperty("silva.integrations.external-oracle.enabled", "true");
+    assertThatCode(() -> runner.run(new DefaultApplicationArguments()))
+        .doesNotThrowAnyException();
+
+    // Disabled state
+    env.setProperty("EXTERNAL_ORACLE_ENABLED", "false");
+    assertThatCode(() -> runner.run(new DefaultApplicationArguments()))
+        .doesNotThrowAnyException();
   }
 
   @Test
