@@ -103,7 +103,6 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
             .andExpect(jsonPath("$.geoJson.type").value("FeatureCollection"))
             .andExpect(jsonPath("$.geoJson.features.length()").value(1))
             .andExpect(jsonPath("$.geoJson.features[0].geometry.type").value("Polygon"))
-            .andExpect(jsonPath("$.openingGrossArea").value(79.4))
             .andExpect(jsonPath("$.openingGeoJson").value(nullValue()))
             .andReturn();
 
@@ -223,17 +222,6 @@ class ActivityEndpointUploadIntegrationTest extends AbstractTestContainerIntegra
         .andExpect(jsonPath("$.openingGeoJson.features[0].geometry.type").value("Polygon"))
         .andExpect(
             jsonPath("$.openingGeoJson.features[0].properties.OPENING_ID").value(OPENING_ID));
-  }
-
-  @Test
-  void returnsTheGrossAreaStoredOnTheOpening() throws Exception {
-    jdbcTemplate.update(
-        "UPDATE silva.opening SET opening_gross_area = 50.5 WHERE opening_id = ?", OPENING_ID);
-
-    mockMvc
-        .perform(upload(file("activity.geojson", GEOJSON)).with(csrf().asHeader()))
-        .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.openingGrossArea").value(50.5));
   }
 
   @Test

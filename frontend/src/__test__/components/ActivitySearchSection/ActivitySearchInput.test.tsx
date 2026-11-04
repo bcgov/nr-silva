@@ -311,7 +311,7 @@ describe('ActivitySearchInput', () => {
       expect(screen.getByText('File ID')).toBeInTheDocument();
       expect(screen.getByTestId('forest-client-multiselect')).toBeInTheDocument();
       expect(screen.getByText('Opening status')).toBeInTheDocument();
-      expect(screen.getByText('Inter-agency number')).toBeInTheDocument();
+      expect(screen.getByText('project number')).toBeInTheDocument();
     });
   });
 
@@ -422,7 +422,7 @@ describe('ActivitySearchInput', () => {
     });
   });
 
-  it('handles Inter-agency number input change', async () => {
+  it('handles project number input change', async () => {
     const user = userEvent.setup();
     const { wrapper } = renderWithProviders();
     render(
@@ -443,7 +443,7 @@ describe('ActivitySearchInput', () => {
 
     await waitFor(() => {
       const interAgencyInput = screen.getByPlaceholderText(
-        'Enter inter-agency number'
+        'Enter project number'
       );
       expect(interAgencyInput).toBeInTheDocument();
     });

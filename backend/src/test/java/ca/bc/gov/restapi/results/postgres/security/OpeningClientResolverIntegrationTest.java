@@ -19,8 +19,8 @@ class OpeningClientResolverIntegrationTest extends AbstractTestContainerIntegrat
   // Opening with forest file TFL47 (licensee 00010003) and cut block 189945, no O/R clients
   private static final Long OPENING_ID = 1004185L;
   private static final long CUT_BLOCK = 189945L;
-  // Opening without any client
-  private static final Long OPENING_WITHOUT_CLIENTS = 1480130L;
+  // Opening that does not exist, so it has no client
+  private static final Long OPENING_WITHOUT_CLIENTS = 999999999L;
 
   @Autowired private OpeningClientResolver resolver;
   @Autowired private JdbcTemplate jdbcTemplate;
