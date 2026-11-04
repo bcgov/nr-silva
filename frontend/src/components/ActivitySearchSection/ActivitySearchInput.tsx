@@ -260,14 +260,14 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
               onChange={(statuses) => handleSearchFieldChange('openingStatuses', statuses)}
             />
 
-            {/* Inter-agency number */}
+            {/* project number */}
             <Column sm={4} md={4} lg={6} max={4}>
               <TextInput
                 ref={intraAgencyNumberInputRef}
                 id="inter-agency-number-input"
                 name="inter-agency-number"
-                labelText="Inter-agency number"
-                placeholder="Enter inter-agency number"
+                labelText="project number"
+                placeholder="Enter project number"
                 defaultValue={searchParams?.intraAgencyNumber ?? ''}
                 onInput={(e) => handleAutoUpperInput(e, INTRA_AGENCY_NUMBER_MAX_LENGTH, true)}
                 onPaste={(e) => handleAutoUpperPaste(e, INTRA_AGENCY_NUMBER_MAX_LENGTH, true)}
