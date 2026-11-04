@@ -46,7 +46,7 @@ import TableSkeleton from "../../TableSkeleton";
 
 import { ActivityTableHeaders, DefaultFilter } from "./constants";
 import { ActivityFilterType } from "./definitions";
-import { formatActivityObjective } from "./utils";
+import { formatActivityFundingSources, formatActivityObjective } from "./utils";
 
 import "./styles.scss";
 
@@ -160,7 +160,7 @@ const ActivityRow = ({
         {ActivityTableHeaders.map((header) => (
           <TableCell key={header.key}>
             {renderCellContent(
-              header.key === "objective1" ? row : row[header.key],
+              header.key === "objective1" || header.key === "funding" ? row : row[header.key],
               header.key,
               isLastElement
             )}
@@ -348,8 +348,11 @@ const ActivityAccordion = ({
         );
       } else if (columnKey === "base") {
         return codeDescriptionToDisplayText(codeDescription);
-      } else if (columnKey === "objective1") {
-        const { tooltipDefinition, displayText } = formatActivityObjective(data as OpeningDetailsActivitiesActivitiesDto);
+      } else if (columnKey === "objective1" || columnKey === "funding") {
+        const row = data as OpeningDetailsActivitiesActivitiesDto;
+        const { tooltipDefinition, displayText } = columnKey === "objective1"
+          ? formatActivityObjective(row)
+          : formatActivityFundingSources(row);
 
         if (displayText === PLACE_HOLDER) return PLACE_HOLDER;
 

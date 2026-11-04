@@ -65,10 +65,7 @@ class ActivityEndpointTest {
     MockMultipartFile file = new MockMultipartFile("file", "activity.geojson", null, FILE_BYTES);
     ActivitySpatialUploadResponseDto expected =
         new ActivitySpatialUploadResponseDto(
-            new BigDecimal("4.3"),
-            new ObjectMapper().createObjectNode(),
-            new BigDecimal("79.4"),
-            null);
+            new BigDecimal("4.3"), new ObjectMapper().createObjectNode(), null);
     when(uploadService.process(eq(OPENING_ID), eq("activity.geojson"), aryEq(FILE_BYTES)))
         .thenReturn(expected);
 

@@ -107,8 +107,9 @@ public class CreateActivityService {
         openingRepository
             .findByIdForUpdate(openingId)
             .orElseThrow(() -> new NotFoundGenericException("Opening"));
-    validationService.validate(opening, dto);
-    var geometry = fileBytes == null ? null : geometryService.process(fileName, fileBytes);
+    validationService.validate(dto);
+    var geometry =
+        fileBytes == null ? null : geometryService.process(openingId, fileName, fileBytes);
     String userId = loggedUserHelper.getAuditUserId();
     LocalDateTime now = DateUtil.nowInVancouver();
     String resultsInd = dto.status() == ActivityStatus.COMPLETED ? ACTUAL_SET : PLANNED_SET;

@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -107,6 +108,22 @@ public class SpatialFileService {
    * @throws ResponseStatusException if the file is invalid, unsupported, or exceeds size limits
    */
   public ExtractedGeoDataDto processSpatialFile(String fileName, byte[] fileBytes) {
+    return processSpatialFile(fileName, fileBytes, geometry3005 -> {});
+  }
+
+  /**
+   * Same as {@link #processSpatialFile(String, byte[])}, with an extra check on the geometry the
+   * user provided. The check receives each feature geometry in EPSG:3005 before vertex thinning, so
+   * it validates the user's data and not the simplified result.
+   *
+   * @param fileName the original file name
+   * @param fileBytes the uploaded file contents
+   * @param rawGeometry3005Check throws a {@link ResponseStatusException} to reject a geometry
+   * @return ExtractedGeoDataDto containing processed geometry and area
+   * @throws ResponseStatusException if the file is invalid, unsupported, or rejected by the check
+   */
+  public ExtractedGeoDataDto processSpatialFile(
+      String fileName, byte[] fileBytes, Consumer<Geometry> rawGeometry3005Check) {
     if (fileName == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uploaded file has no name");
     }
@@ -123,9 +140,9 @@ public class SpatialFileService {
 
     ExtractedGeoDataDto result;
     if (lowerName.endsWith(".gml")) {
-      result = processGml(fileName, fileBytes);
+      result = processGml(fileName, fileBytes, rawGeometry3005Check);
     } else if (lowerName.endsWith(".geojson") || lowerName.endsWith(".json")) {
-      result = processGeojson(fileName, fileBytes);
+      result = processGeojson(fileName, fileBytes, rawGeometry3005Check);
     } else {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported file type: " + fileName);
@@ -150,7 +167,8 @@ public class SpatialFileService {
    * @return ExtractedGeoDataDto with geometry and area
    * @throws ResponseStatusException if the file is invalid or fails validation
    */
-  private ExtractedGeoDataDto processGeojson(String fileName, byte[] fileBytes) {
+  private ExtractedGeoDataDto processGeojson(
+      String fileName, byte[] fileBytes, Consumer<Geometry> rawGeometry3005Check) {
     log.info("Processing GeoJSON file: {}", fileName);
     try {
       String geojson = new String(fileBytes);
@@ -164,7 +182,7 @@ public class SpatialFileService {
             HttpStatus.BAD_REQUEST, "GeoJSON CRS must be EPSG:4326 or EPSG:3005 (BC Albers)");
       }
 
-      return processGeojsonContent(geojson, crsCode);
+      return processGeojsonContent(geojson, crsCode, rawGeometry3005Check);
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
@@ -179,14 +197,17 @@ public class SpatialFileService {
    * both the GeoJSON upload path and the GML upload path (GML geometries are converted to a
    * FeatureCollection before this method is called).
    *
-   * <p>Steps: geometry type/topology → BC extents → vertex thinning → area → reproject to 4326.
+   * <p>Steps: geometry type/topology → BC extents → caller check on the raw geometry → vertex
+   * thinning → area → reproject to 4326.
    *
    * @param geojson the GeoJSON FeatureCollection string in the native CRS
    * @param crsCode the EPSG code as a string ("3005" or "4326")
+   * @param rawGeometry3005Check check run on each feature geometry in EPSG:3005 before thinning
    * @return ExtractedGeoDataDto with geometry and area
    * @throws ResponseStatusException if any validation step fails
    */
-  private ExtractedGeoDataDto processGeojsonContent(String geojson, String crsCode) {
+  private ExtractedGeoDataDto processGeojsonContent(
+      String geojson, String crsCode, Consumer<Geometry> rawGeometry3005Check) {
     try {
       // Steps 2, 3: Geometry Validity (OGC/ESRI), Simple Features (No Curves)
       validateGeoJsonGeometry(geojson);
@@ -194,11 +215,14 @@ public class SpatialFileService {
       // Step 4: Province of BC Extents
       validateGeoJsonWithinBcBoundary(geojson, crsCode);
 
-      // Step 5: Vertex Thinning
+      // Step 5: Caller checks on the geometry as provided, before it is simplified
+      checkRawGeometries(geojson, crsCode, rawGeometry3005Check);
+
+      // Step 6: Vertex Thinning
       String thinnedGeojson = geoJsonThinning(geojson, crsCode);
       JsonNode thinnedNode = mapper.readTree(thinnedGeojson);
 
-      // Step 6: Validate area, accumulate hectares, reproject to EPSG:4326 if needed
+      // Step 7: Validate area, accumulate hectares, reproject to EPSG:4326 if needed
       GeoJsonReader gjsonReader = new GeoJsonReader();
       GeoJsonWriter gjsonWriter = new GeoJsonWriter();
       ArrayNode features = (ArrayNode) thinnedNode.get(JSON_FEATURES);
@@ -234,7 +258,8 @@ public class SpatialFileService {
    * @return ExtractedGeoDataDto with geometry and area
    * @throws ResponseStatusException if the file is invalid or contains no valid geometry
    */
-  private ExtractedGeoDataDto processGml(String fileName, byte[] fileBytes) {
+  private ExtractedGeoDataDto processGml(
+      String fileName, byte[] fileBytes, Consumer<Geometry> rawGeometry3005Check) {
     log.info("Processing GML file: {}", fileName);
     try {
       // Step 1: Detect CRS
@@ -292,7 +317,7 @@ public class SpatialFileService {
       ObjectNode fc = mapper.createObjectNode();
       fc.put("type", "FeatureCollection");
       fc.set(JSON_FEATURES, featuresArray);
-      return processGeojsonContent(mapper.writeValueAsString(fc), crsCode);
+      return processGeojsonContent(mapper.writeValueAsString(fc), crsCode, rawGeometry3005Check);
     } catch (ResponseStatusException e) {
       throw e;
     } catch (Exception e) {
@@ -654,6 +679,16 @@ public class SpatialFileService {
     } catch (Exception e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "BC boundary validation failed: " + e.getMessage());
+    }
+  }
+
+  private void checkRawGeometries(
+      String geojson, String crsCode, Consumer<Geometry> rawGeometry3005Check)
+      throws IOException, ParseException {
+    GeoJsonReader reader = new GeoJsonReader();
+    for (JsonNode feature : mapper.readTree(geojson).get(JSON_FEATURES)) {
+      Geometry geometry = reader.read(feature.get(JSON_GEOMETRY).toString());
+      rawGeometry3005Check.accept("3005".equals(crsCode) ? geometry : reprojectTo3005(geometry));
     }
   }
 

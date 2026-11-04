@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.service.OpeningGeometryService;
 import ca.bc.gov.restapi.results.postgres.dto.ActivitySpatialUploadResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
-import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.repository.OpeningPostgresRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +21,8 @@ import org.springframework.stereotype.Service;
 public class ActivitySpatialUploadService {
 
   private final SpatialFileService spatialFileService;
+  private final ActivityGeometryService geometryService;
   private final OpeningPostgresRepository openingRepository;
-  private final OpeningGrossAreaResolver grossAreaResolver;
   private final OpeningGeometryService openingGeometryService;
   private final ObjectMapper objectMapper;
 
@@ -33,22 +32,24 @@ public class ActivitySpatialUploadService {
    * @param openingId the opening the activity is created under
    * @param fileName the original file name
    * @param fileBytes the file content, already scanned for viruses
-   * @return the processed activity geometry with the opening gross area and geometry
+   * @return the processed activity geometry with the opening geometry to compare it with
    * @throws NotFoundGenericException when the opening does not exist
+   * @throws org.springframework.web.server.ResponseStatusException with status 400 when the file is
+   *     invalid or its geometry is not within the opening geometry
    */
   public ActivitySpatialUploadResponseDto process(
       Long openingId, String fileName, byte[] fileBytes) {
-    OpeningEntity opening =
-        openingRepository
-            .findById(openingId)
-            .orElseThrow(() -> new NotFoundGenericException("Opening"));
-    ExtractedGeoDataDto activity = spatialFileService.processSpatialFile(fileName, fileBytes);
+    if (!openingRepository.existsById(openingId)) {
+      throw new NotFoundGenericException("Opening");
+    }
+    ExtractedGeoDataDto activity =
+        spatialFileService.processSpatialFile(
+            fileName,
+            fileBytes,
+            geometry -> geometryService.validateWithinOpening(openingId, geometry));
 
     return new ActivitySpatialUploadResponseDto(
-        activity.geometryArea(),
-        activity.geoJson(),
-        grossAreaResolver.resolve(opening),
-        openingGeoJson(openingId));
+        activity.geometryArea(), activity.geoJson(), openingGeoJson(openingId));
   }
 
   private JsonNode openingGeoJson(Long openingId) {

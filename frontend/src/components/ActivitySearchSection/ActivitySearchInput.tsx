@@ -79,28 +79,28 @@ const ActivitySearchInput = ({ searchParams, handleSearchFieldChange }: props) =
 
   const silvBaseCodeQuery = useQuery({
     queryKey: ['codes', 'silv-base'],
-    queryFn: API.CodesEndpointService.getSilvBaseCodes,
+    queryFn: () => API.CodesEndpointService.getSilvBaseCodes(false),
     select: (data) => data.filter((code) => code.code !== 'DN'), // Code 'DN' is considered as a disturbance
   });
 
   const silvTechniqueCodeQuery = useQuery({
     queryKey: ['codes', 'silv-technique'],
-    queryFn: API.CodesEndpointService.getSilvTechniqueCodes,
+    queryFn: () => API.CodesEndpointService.getSilvTechniqueCodes(false),
   });
 
   const silvMethodCodeQuery = useQuery({
     queryKey: ['codes', 'silv-method'],
-    queryFn: API.CodesEndpointService.getSilvMethodCodes,
+    queryFn: () => API.CodesEndpointService.getSilvMethodCodes(false),
   });
 
   const silvObjectiveCodeQuery = useQuery({
     queryKey: ['codes', 'silv-objective'],
-    queryFn: API.CodesEndpointService.getSilvObjectiveCodes,
+    queryFn: () => API.CodesEndpointService.getSilvObjectiveCodes(false),
   });
 
   const silvFundSourceCodeQuery = useQuery({
     queryKey: ['codes', 'silv-fund-source'],
-    queryFn: API.CodesEndpointService.getSilvFundSourceCodes,
+    queryFn: () => API.CodesEndpointService.getSilvFundSourceCodes(false),
   });
 
   const handleMultiSelectChange = (field: keyof ActivitySearchParams) =>

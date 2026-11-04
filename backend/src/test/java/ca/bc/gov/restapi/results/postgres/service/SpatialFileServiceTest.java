@@ -43,6 +43,50 @@ class SpatialFileServiceTest {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
+  private static final String SQUARE_WITH_EXTRA_VERTICES =
+      """
+      {"type":"FeatureCollection","crs":{"properties":{"name":"EPSG:3005"}},
+       "features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon",
+       "coordinates":[[[850000,1500000],[850050,1500000],[850100,1500000],[850100,1500050],
+                       [850100,1500100],[850050,1500100],[850000,1500100],[850000,1500050],
+                       [850000,1500000]]]}}]}
+      """;
+
+  @Test
+  @DisplayName("Runs the caller check on the raw EPSG:3005 geometry, before vertex thinning")
+  void processSpatialFile_rawGeometryCheck_runsBeforeThinning() {
+    java.util.List<Geometry> checked = new java.util.ArrayList<>();
+
+    ExtractedGeoDataDto result =
+        service.processSpatialFile(
+            "square.geojson",
+            SQUARE_WITH_EXTRA_VERTICES.getBytes(StandardCharsets.UTF_8),
+            checked::add);
+
+    assertThat(checked).hasSize(1);
+    assertThat(checked.get(0).getCoordinates()).hasSize(9);
+    assertThat(checked.get(0).getCoordinate().x).isEqualTo(850000.0);
+    assertThat(result.geoJson().at("/features/0/geometry/coordinates/0").size()).isLessThan(9);
+  }
+
+  @Test
+  @DisplayName("Rejects the file when the caller check rejects the raw geometry")
+  void processSpatialFile_rawGeometryCheckRejects_propagates() {
+    byte[] bytes = SQUARE_WITH_EXTRA_VERTICES.getBytes(StandardCharsets.UTF_8);
+
+    assertThatThrownBy(
+            () ->
+                service.processSpatialFile(
+                    "square.geojson",
+                    bytes,
+                    geometry -> {
+                      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "rejected");
+                    }))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e -> assertThat(e.getReason()).isEqualTo("rejected"));
+  }
+
   @Test
   @DisplayName("Should throw when file is null or empty")
   void shouldThrowOnNullOrEmpty() {

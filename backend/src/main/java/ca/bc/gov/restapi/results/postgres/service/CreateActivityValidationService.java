@@ -4,7 +4,6 @@ import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
@@ -12,7 +11,6 @@ import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepos
 import ca.bc.gov.restapi.results.postgres.repository.SilvObjectiveCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvTechniqueCodePostgresRepository;
 import jakarta.validation.Validator;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,15 +44,8 @@ public class CreateActivityValidationService {
   private static final String COMPLETION_DATE = "completionDate";
   private static final String PLANNED_AREA = "plannedArea";
   private static final String TREATED_AREA = "treatedArea";
-  private static final BigDecimal AREA_TOLERANCE_FACTOR = new BigDecimal("1.25");
-  private static final String NO_REQUIREMENT_CATEGORY = "NREQ";
-  // RESULTS exempts these bases from the area tolerance; more bases are exempt for NREQ openings
-  private static final Set<String> AREA_EXEMPT_BASES = Set.of("PC", "FE");
-  private static final Set<String> AREA_EXEMPT_BASES_NO_REQUIREMENT =
-      Set.of("FE", "PC", "JS", "PR", "RC", "RD", "EP", "CC", "CM", "SX", "AU", "BR");
 
   private final Validator validator;
-  private final OpeningGrossAreaResolver grossAreaResolver;
   private final SilvBaseCodePostgresRepository baseCodeRepository;
   private final SilvTechniqueCodePostgresRepository techniqueCodeRepository;
   private final SilvMethodCodePostgresRepository methodCodeRepository;
@@ -64,11 +55,10 @@ public class CreateActivityValidationService {
   /**
    * Validates the request.
    *
-   * @param opening the opening the activity is created under
    * @param dto the request
    * @throws ResponseStatusException with status 400 listing every violation
    */
-  public void validate(OpeningEntity opening, CreateActivityRequestDto dto) {
+  public void validate(CreateActivityRequestDto dto) {
     List<String> errors = new ArrayList<>();
     if (dto == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "data: must not be null");
@@ -78,7 +68,6 @@ public class CreateActivityValidationService {
         .sorted()
         .forEach(errors::add);
 
-    validateAreas(dto, opening, errors);
     validateStatusFields(dto, errors);
     validateBase(dto, errors);
     validateCodes(dto, errors);
@@ -188,46 +177,6 @@ public class CreateActivityValidationService {
         && !dto.plannedDate().isAfter(DateUtil.todayInVancouver())) {
       errors.add("plannedDate: must be later than the current date");
     }
-  }
-
-  private void validateAreas(
-      CreateActivityRequestDto dto, OpeningEntity opening, List<String> errors) {
-    BigDecimal grossArea = grossAreaResolver.resolve(opening);
-    if (grossArea == null || isAreaExempt(dto.baseCode(), opening.getCategory())) {
-      return;
-    }
-    BigDecimal maxArea = grossArea.multiply(AREA_TOLERANCE_FACTOR);
-    checkArea(PLANNED_AREA, "Planned area", dto.plannedArea(), maxArea, grossArea, errors);
-    if (dto.status() == ActivityStatus.COMPLETED) {
-      checkArea(TREATED_AREA, "Treated area", dto.treatedArea(), maxArea, grossArea, errors);
-    }
-  }
-
-  private void checkArea(
-      String field,
-      String label,
-      BigDecimal area,
-      BigDecimal maxArea,
-      BigDecimal grossArea,
-      List<String> errors) {
-    if (area != null && !hasError(errors, field) && area.compareTo(maxArea) > 0) {
-      errors.add(
-          String.format(
-              "%s: %s (%s ha) cannot exceed %s ha (125%% of the Opening's gross area of %s ha)",
-              field, label, plain(area), plain(maxArea), plain(grossArea)));
-    }
-  }
-
-  private boolean isAreaExempt(String baseCode, String openingCategory) {
-    Set<String> exempt =
-        NO_REQUIREMENT_CATEGORY.equals(openingCategory)
-            ? AREA_EXEMPT_BASES_NO_REQUIREMENT
-            : AREA_EXEMPT_BASES;
-    return baseCode != null && exempt.contains(baseCode);
-  }
-
-  private String plain(BigDecimal value) {
-    return value.stripTrailingZeros().toPlainString();
   }
 
   private boolean hasError(List<String> errors, String field) {

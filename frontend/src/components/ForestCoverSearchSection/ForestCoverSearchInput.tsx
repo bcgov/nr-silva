@@ -28,17 +28,17 @@ const ForestCoverSearchInput = ({ searchParams, handleSearchFieldChange }: props
 
   const stockingTypeQuery = useQuery({
     queryKey: ["codes", "stocking-type"],
-    queryFn: () => API.CodesEndpointService.getStockingTypeCodes(),
+    queryFn: () => API.CodesEndpointService.getStockingTypeCodes(false),
   });
 
   const stockingStatusQuery = useQuery({
     queryKey: ["codes", "stocking-status"],
-    queryFn: () => API.CodesEndpointService.getStockingStatusCodes(),
+    queryFn: () => API.CodesEndpointService.getStockingStatusCodes(false),
   });
 
   const silvDamageAgentQuery = useQuery({
     queryKey: ["codes", "silv-damage-agent"],
-    queryFn: () => API.CodesEndpointService.getSilvDamageAgentCodes(),
+    queryFn: () => API.CodesEndpointService.getSilvDamageAgentCodes(false),
   });
 
   const handleMultiSelectChange = (field: keyof ForestCoverSearchParams) =>

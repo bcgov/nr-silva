@@ -530,7 +530,7 @@ describe("OpeningActivities", () => {
           "Planting",
           expect.any(Number),
           expect.any(Number),
-          undefined
+          ["lastUpdate,DESC"]
         );
       });
 

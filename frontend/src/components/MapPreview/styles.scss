@@ -1,0 +1,25 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+
+.map-preview {
+  position: relative;
+  height: 294px;
+  width: 100%;
+
+  &__overlay-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    user-select: none;
+  }
+
+  &__hold-btn {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

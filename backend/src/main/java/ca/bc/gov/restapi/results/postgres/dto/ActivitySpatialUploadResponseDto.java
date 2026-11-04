@@ -5,12 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 /**
- * Result of processing the spatial file of an activity, with the opening data needed to compare
- * the activity area with the opening.
+ * Result of processing the spatial file of an activity, with the opening geometry needed to
+ * compare it with the activity.
  *
  * @param geometryArea area of the activity geometry in hectares
  * @param geoJson activity geometry as GeoJSON in EPSG:4326
- * @param openingGrossArea gross area of the opening in hectares, when known
  * @param openingGeoJson geometry of the opening as a GeoJSON feature collection in EPSG:4326, when
  *     the opening has one
  */
@@ -21,11 +20,6 @@ public record ActivitySpatialUploadResponseDto(
             minimum = "0.0")
         BigDecimal geometryArea,
     @Schema(description = "Activity geometry as GeoJSON in EPSG:4326") JsonNode geoJson,
-    @Schema(
-            description = "Opening gross area in hectares; null when not known",
-            example = "79.4",
-            nullable = true)
-        BigDecimal openingGrossArea,
     @Schema(
             description = "Opening geometry as a GeoJSON feature collection in EPSG:4326; "
                 + "null when the opening has no geometry",
