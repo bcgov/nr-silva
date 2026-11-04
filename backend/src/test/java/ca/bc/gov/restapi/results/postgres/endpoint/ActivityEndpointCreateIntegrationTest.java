@@ -150,23 +150,6 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   }
 
   @Test
-  @DisplayName("Returns the opening gross area when the area is over the tolerance")
-  void create_areaOverTolerance_reportsGrossArea() throws Exception {
-    String data =
-        data("HC", "[\"BCP\"]").replace("\"plannedArea\":12.5", "\"plannedArea\":200");
-
-    mockMvc
-        .perform(create(OPENING_ID, data).with(csrf().asHeader()))
-        .andExpect(status().isBadRequest())
-        .andExpect(
-            jsonPath("$.detail")
-                .value(
-                    containsString(
-                        "plannedArea: Planned area (200 ha) cannot exceed 99.25 ha "
-                            + "(125% of the Opening's gross area of 79.4 ha)")));
-  }
-
-  @Test
   @DisplayName("Returns not found when the opening does not exist")
   void create_unknownOpening_returnsNotFound() throws Exception {
     mockMvc

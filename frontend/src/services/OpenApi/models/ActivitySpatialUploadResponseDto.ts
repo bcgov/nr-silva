@@ -13,10 +13,6 @@ export type ActivitySpatialUploadResponseDto = {
      */
     geoJson?: JsonNode;
     /**
-     * Opening gross area in hectares; null when not known
-     */
-    openingGrossArea?: number | null;
-    /**
      * Opening geometry as a GeoJSON feature collection in EPSG:4326; null when the opening has no geometry
      */
     openingGeoJson?: JsonNode;

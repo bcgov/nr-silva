@@ -46,17 +46,21 @@ const OpeningActivities = ({
   const activityQuery = useQuery({
     queryKey: ['opening', openingId, 'activities', DefaultFilter],
     queryFn: () => {
-      const { page, size } = DefaultFilter;
+      const { page, size, sortField, sortDirection } = DefaultFilter;
 
       return API.OpeningEndpointService.getOpeningActivities(
         openingId,
         undefined,
         page,
         size,
-        undefined
+        [`${sortField},${sortDirection}`]
       );
     },
   });
+
+  const navToCreateActivity = () => (
+    navigate(generatePath(CREATE_ACTIVITY_PATH, { openingId: String(openingId) }))
+  );
 
   // Loading case
   if (disturbanceQuery.isLoading || activityQuery.isLoading) {
@@ -74,7 +78,22 @@ const OpeningActivities = ({
       <EmptySection
         pictogram="Summit"
         title="Nothing to show yet!"
-        description="No Activities have been added to this opening yet"
+        description={
+          <Stack orientation="vertical" gap={8}>
+            <div>
+              <p>No Activities have been added to this opening yet</p>
+            </div>
+            <Stack orientation="horizontal" gap={8}>
+              <Button disabled kind="tertiary" renderIcon={Add}>
+                Add disturbance
+              </Button>
+
+              <Button kind="tertiary" renderIcon={Add} onClick={navToCreateActivity}>
+                Add activity
+              </Button>
+            </Stack>
+          </Stack>
+        }
       />
     )
   }
@@ -130,7 +149,7 @@ const OpeningActivities = ({
                       iconDescription="Add activity"
                       size="2xl"
                       className="add-activity-button"
-                      onClick={() => navigate(generatePath(CREATE_ACTIVITY_PATH, { openingId: String(openingId) }))}
+                      onClick={navToCreateActivity}
                     />
                   </div>
                 )}

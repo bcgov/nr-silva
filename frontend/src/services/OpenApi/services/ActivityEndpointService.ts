@@ -36,7 +36,7 @@ export class ActivityEndpointService {
             formData: formData,
             mediaType: 'multipart/form-data',
             errors: {
-                400: `Invalid request or spatial file; every violation is listed as 'field: message'`,
+                400: `Invalid request or spatial file, or the activity geometry is not within the opening geometry; every violation is listed as 'field: message'`,
                 403: `The user has no role for the licensee or obligation holder clients of the opening`,
                 404: `Opening not found`,
                 422: `Upload rejected by the virus scanner`,
@@ -45,7 +45,7 @@ export class ActivityEndpointService {
     }
     /**
      * Upload an activity spatial file
-     * Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. Returns the geometry in EPSG:4326 and its area in hectares, with the gross area and the geometry of the opening, without persisting data.
+     * Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. Returns the geometry in EPSG:4326 and its area in hectares, with the gross area and the geometry of the opening, without persisting data. The geometry must be within the opening geometry (touching its boundary is allowed); the check is skipped when the opening has no geometry.
      * @param openingId Opening the activity is created under
      * @param formData
      * @returns ActivitySpatialUploadResponseDto Processed spatial geometry and opening data
@@ -69,7 +69,7 @@ export class ActivityEndpointService {
             formData: formData,
             mediaType: 'multipart/form-data',
             errors: {
-                400: `Invalid spatial file`,
+                400: `Invalid spatial file, or geometry not within the opening geometry`,
                 404: `Opening not found`,
                 422: `Upload rejected by the virus scanner`,
             },

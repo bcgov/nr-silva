@@ -25,7 +25,7 @@ const StandardsUnitSearchInput = ({ searchParams, handleSearchFieldChange }: pro
 
   const preferredSpeciesQuery = useQuery({
     queryKey: ["codes", "silv-tree-species"],
-    queryFn: API.CodesEndpointService.getSilvTreeSpeciesCodes,
+    queryFn: () => API.CodesEndpointService.getSilvTreeSpeciesCodes(false),
   });
 
   const handleMultiSelectChange = handleMultiSelectChangeHelper<StandardsUnitSearchParams>(

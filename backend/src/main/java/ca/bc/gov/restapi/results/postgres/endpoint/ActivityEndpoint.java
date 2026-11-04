@@ -61,7 +61,8 @@ public class ActivityEndpoint {
   @ApiResponse(
       responseCode = "400",
       description =
-          "Invalid request or spatial file; every violation is listed as 'field: message'",
+          "Invalid request or spatial file, or the activity geometry is not within the opening "
+              + "geometry; every violation is listed as 'field: message'",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
       responseCode = "403",
@@ -118,11 +119,13 @@ public class ActivityEndpoint {
       description =
           "Validates and processes one Polygon or MultiPolygon feature from a GeoJSON or GML file. "
               + "Returns the geometry in EPSG:4326 and its area in hectares, with the gross area "
-              + "and the geometry of the opening, without persisting data.")
+              + "and the geometry of the opening, without persisting data. The geometry must be "
+              + "within the opening geometry (touching its boundary is allowed); the check is "
+              + "skipped when the opening has no geometry.")
   @ApiResponse(responseCode = "202", description = "Processed spatial geometry and opening data")
   @ApiResponse(
       responseCode = "400",
-      description = "Invalid spatial file",
+      description = "Invalid spatial file, or geometry not within the opening geometry",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
       responseCode = "404",

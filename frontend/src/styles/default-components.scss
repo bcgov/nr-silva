@@ -446,18 +446,22 @@ ul.default-tab-accordion {
   #end-date-picker-input-id {
     inline-size: 100%;
   }
+}
 
-  .#{vars.$bcgov-prefix}--date-picker {
-    height: 100%;
+.#{vars.$bcgov-prefix}--date-picker {
+  height: 100%;
+  width: 100%;
+
+  .#{vars.$bcgov-prefix}--date-picker-container {
     width: 100%;
 
-    .#{vars.$bcgov-prefix}--date-picker-container {
+    .#{vars.$bcgov-prefix}--date-picker-input__wrapper {
       width: 100%;
 
-      .#{vars.$bcgov-prefix}--date-picker-input__wrapper {
+      span {
         width: 100%;
 
-        span {
+        input {
           width: 100%;
         }
       }
@@ -623,5 +627,20 @@ ul.default-tab-accordion {
 
   .Toastify__toast-theme--colored.Toastify__toast--success {
     background: var(--#{vars.$bcgov-prefix}-support-success);
+  }
+}
+
+
+.default-radio-tile {
+  border-radius: 1rem;
+
+  &.#{vars.$bcgov-prefix}--tile--is-selected {
+    border: 1px solid var(--#{vars.$bcgov-prefix}-border-interactive);
+  }
+
+  .#{vars.$bcgov-prefix}--tile__checkmark {
+    svg {
+      fill: var(--#{vars.$bcgov-prefix}-interactive);
+    }
   }
 }
