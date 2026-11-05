@@ -27,6 +27,13 @@ public class DelegatingProviderRouter<T> {
   public static final String PROPERTY_PREFIX = "silva.integrations.";
   public static final String PROPERTY_SUFFIX = ".provider";
 
+  private static final String PROVIDER_API = "api";
+  private static final String PROVIDER_REST = "rest";
+  private static final String PROVIDER_REST_API = "restapi";
+  private static final String PROVIDER_MOCK = "mock";
+  private static final String PREFIX_ORACLE_JDBC = "oracleJdbc";
+  private static final String PREFIX_REST_API = "restApi";
+
   private static final String ADAPTER_SUFFIX = "Adapter";
   private static final String JDBC_ADAPTER_SUFFIX = "JdbcAdapter";
 
@@ -175,14 +182,14 @@ public class DelegatingProviderRouter<T> {
     String capitalizedDomain = capitalize(toCamelCase(domain));
     return switch (provider) {
       case DEFAULT_PROVIDER -> List.of(
-          "oracle" + capitalizedDomain + JDBC_ADAPTER_SUFFIX,
-          "oracle" + capitalizedDomain + ADAPTER_SUFFIX,
-          "oracleJdbc" + capitalizedDomain + ADAPTER_SUFFIX);
-      case "api", "rest", "restapi" -> List.of(
-          "restApi" + capitalizedDomain + ADAPTER_SUFFIX,
-          "api" + capitalizedDomain + ADAPTER_SUFFIX,
-          "rest" + capitalizedDomain + ADAPTER_SUFFIX);
-      case "mock" -> List.of("mock" + capitalizedDomain + ADAPTER_SUFFIX);
+          DEFAULT_PROVIDER + capitalizedDomain + JDBC_ADAPTER_SUFFIX,
+          DEFAULT_PROVIDER + capitalizedDomain + ADAPTER_SUFFIX,
+          PREFIX_ORACLE_JDBC + capitalizedDomain + ADAPTER_SUFFIX);
+      case PROVIDER_API, PROVIDER_REST, PROVIDER_REST_API -> List.of(
+          PREFIX_REST_API + capitalizedDomain + ADAPTER_SUFFIX,
+          PROVIDER_API + capitalizedDomain + ADAPTER_SUFFIX,
+          PROVIDER_REST + capitalizedDomain + ADAPTER_SUFFIX);
+      case PROVIDER_MOCK -> List.of(PROVIDER_MOCK + capitalizedDomain + ADAPTER_SUFFIX);
       default -> List.of(
           provider + capitalizedDomain + ADAPTER_SUFFIX,
           provider + capitalizedDomain + JDBC_ADAPTER_SUFFIX,
