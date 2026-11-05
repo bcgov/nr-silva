@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.common.provider;
 
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.springframework.core.env.Environment;
 
 /**
@@ -50,16 +50,15 @@ public abstract class AbstractDelegatingProvider<T> {
    * @param defaultProvider the default provider when unconfigured (e.g. "oracle")
    * @param customBeanNameResolver optional custom mapping function from provider name to bean name
    */
-  @SuppressWarnings("unchecked")
   protected AbstractDelegatingProvider(
       String domain,
       Map<String, T> adapters,
       Environment environment,
       String defaultProvider,
-      Function<String, String> customBeanNameResolver) {
+      UnaryOperator<String> customBeanNameResolver) {
     this.router =
         new DelegatingProviderRouter<>(
-            domain, adapters, environment, defaultProvider, (T) this, customBeanNameResolver);
+            domain, adapters, environment, defaultProvider, this, customBeanNameResolver);
   }
 
   /**

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 
@@ -27,6 +27,9 @@ public class DelegatingProviderRouter<T> {
   public static final String PROPERTY_PREFIX = "silva.integrations.";
   public static final String PROPERTY_SUFFIX = ".provider";
 
+  private static final String ADAPTER_SUFFIX = "Adapter";
+  private static final String JDBC_ADAPTER_SUFFIX = "JdbcAdapter";
+
   private final String domain;
   private final String propertyKey;
   private final List<String> envKeyVariants;
@@ -34,7 +37,7 @@ public class DelegatingProviderRouter<T> {
   private final Environment environment;
   private final String defaultProvider;
   private final Object self;
-  private final Function<String, String> customBeanNameResolver;
+  private final UnaryOperator<String> customBeanNameResolver;
 
   /**
    * Constructs a DelegatingProviderRouter with standard convention routing.
@@ -72,7 +75,7 @@ public class DelegatingProviderRouter<T> {
       Environment environment,
       String defaultProvider,
       Object self,
-      Function<String, String> customBeanNameResolver) {
+      UnaryOperator<String> customBeanNameResolver) {
     this.domain = Objects.requireNonNull(domain, "Domain must not be null").trim();
     this.adapters = adapters != null ? adapters : Collections.emptyMap();
     this.environment = Objects.requireNonNull(environment, "Environment must not be null");
@@ -171,18 +174,18 @@ public class DelegatingProviderRouter<T> {
   private List<String> buildCandidateBeanNames(String provider) {
     String capitalizedDomain = capitalize(toCamelCase(domain));
     return switch (provider) {
-      case "oracle" -> List.of(
-          "oracle" + capitalizedDomain + "JdbcAdapter",
-          "oracle" + capitalizedDomain + "Adapter",
-          "oracleJdbc" + capitalizedDomain + "Adapter");
+      case DEFAULT_PROVIDER -> List.of(
+          "oracle" + capitalizedDomain + JDBC_ADAPTER_SUFFIX,
+          "oracle" + capitalizedDomain + ADAPTER_SUFFIX,
+          "oracleJdbc" + capitalizedDomain + ADAPTER_SUFFIX);
       case "api", "rest", "restapi" -> List.of(
-          "restApi" + capitalizedDomain + "Adapter",
-          "api" + capitalizedDomain + "Adapter",
-          "rest" + capitalizedDomain + "Adapter");
-      case "mock" -> List.of("mock" + capitalizedDomain + "Adapter");
+          "restApi" + capitalizedDomain + ADAPTER_SUFFIX,
+          "api" + capitalizedDomain + ADAPTER_SUFFIX,
+          "rest" + capitalizedDomain + ADAPTER_SUFFIX);
+      case "mock" -> List.of("mock" + capitalizedDomain + ADAPTER_SUFFIX);
       default -> List.of(
-          provider + capitalizedDomain + "Adapter",
-          provider + capitalizedDomain + "JdbcAdapter",
+          provider + capitalizedDomain + ADAPTER_SUFFIX,
+          provider + capitalizedDomain + JDBC_ADAPTER_SUFFIX,
           provider);
     };
   }

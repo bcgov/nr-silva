@@ -89,10 +89,10 @@ class GlobalErrorResponseEndpointTest {
     assertThat(response.getStatus()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
     assertThat(response.getDetail()).isEqualTo("FTA service is currently unavailable");
     assertThat(response.getTitle()).isEqualTo("External Service Error");
-    assertThat(response.getProperties()).isNotNull();
-    assertThat(response.getProperties().get("code"))
-        .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name());
-    assertThat(response.getProperties().get("serviceName")).isEqualTo("FTA");
+    assertThat(response.getProperties())
+        .isNotNull()
+        .containsEntry("code", ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name())
+        .containsEntry("serviceName", "FTA");
   }
 
   @Test
@@ -109,9 +109,10 @@ class GlobalErrorResponseEndpointTest {
     assertThat(response.getStatus()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
     assertThat(response.getDetail()).isEqualTo("Oracle query timed out after 5000ms");
     assertThat(response.getTitle()).isEqualTo("External Service Error");
-    assertThat(response.getProperties().get("code"))
-        .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT.name());
-    assertThat(response.getProperties().get("serviceName")).isEqualTo("Oracle");
+    assertThat(response.getProperties())
+        .isNotNull()
+        .containsEntry("code", ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT.name())
+        .containsEntry("serviceName", "Oracle");
   }
 
   @Test
@@ -130,9 +131,10 @@ class GlobalErrorResponseEndpointTest {
     assertThat(response.getDetail())
         .isEqualTo("Cut block validation cannot be processed due to downstream dependency");
     assertThat(response.getTitle()).isEqualTo("External Service Error");
-    assertThat(response.getProperties().get("code"))
-        .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name());
-    assertThat(response.getProperties().get("serviceName")).isEqualTo("FTA");
+    assertThat(response.getProperties())
+        .isNotNull()
+        .containsEntry("code", ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name())
+        .containsEntry("serviceName", "FTA");
   }
 
   @Test
@@ -147,8 +149,9 @@ class GlobalErrorResponseEndpointTest {
 
     assertThat(response.getStatus()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
     assertThat(response.getDetail()).isEqualTo("Downstream error");
-    assertThat(response.getProperties().get("code"))
-        .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name());
-    assertThat(response.getProperties().get("serviceName")).isNull();
+    assertThat(response.getProperties())
+        .isNotNull()
+        .containsEntry("code", ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE.name())
+        .doesNotContainKey("serviceName");
   }
 }
