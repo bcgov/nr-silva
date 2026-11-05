@@ -76,7 +76,18 @@ vi.mock('../../../components/AddActivityForm', () => ({
         fill-valid
       </button>
       <button onClick={() => setForm((f) => ({ ...f, comment: { ...f.comment, value: 'x' } }))}>fill-comment</button>
-      <button onClick={() => onFileAdded(new File(['{}'], 'a.geojson'))}>add-file</button>
+      <button
+        onClick={() => {
+          const file = new File(['{}'], 'a.geojson');
+          setForm((f) => ({ ...f, file: { ...f.file, value: file, validatedObj: undefined, isInvalid: false } }));
+          onFileAdded(file);
+        }}
+      >
+        add-file
+      </button>
+      <button onClick={() => setForm((f) => ({ ...f, file: { ...f.file, value: undefined, validatedObj: undefined } }))}>
+        remove-file
+      </button>
       <button onClick={onUploadErrorDismiss}>dismiss-upload</button>
     </div>
   ),
@@ -281,6 +292,20 @@ describe('CreateActivity screen', () => {
       await user.click(screen.getByText('pick-planned'));
       await user.click(screen.getByText('add-file'));
       await waitFor(() => expect(screen.getByTestId('validated').textContent).toBe('true'));
+    });
+
+    it('ignores a completed upload whose file was removed meanwhile', async () => {
+      let resolveUpload: (v: never) => void = () => {};
+      vi.mocked(API.ActivityEndpointService.uploadActivitySpatial).mockReturnValue(
+        new Promise((r) => { resolveUpload = r as never; }) as never,
+      );
+      const user = userEvent.setup();
+      renderScreen();
+      await user.click(screen.getByText('add-file'));
+      await user.click(screen.getByText('remove-file'));
+      resolveUpload({ geoJson: {} } as never);
+      await waitFor(() => expect(screen.getByTestId('uploading').textContent).toBe('false'));
+      expect(screen.getByTestId('validated').textContent).toBe('false');
     });
 
     it('shows API error detail and can dismiss it', async () => {
