@@ -1,0 +1,177 @@
+package ca.bc.gov.restapi.results.common.provider;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.env.MockEnvironment;
+
+@DisplayName("Unit Test | DelegatingProviderRouter")
+class DelegatingProviderRouterTest {
+
+  interface DummyPort {
+    String call();
+  }
+
+  @Test
+  @DisplayName("Should validate required constructor arguments")
+  void shouldValidateConstructorArguments() {
+    MockEnvironment env = new MockEnvironment();
+    Map<String, DummyPort> map = Map.of();
+
+    assertThatThrownBy(() -> new DelegatingProviderRouter<>(null, map, env, "oracle", null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessageContaining("Domain must not be null");
+
+    assertThatThrownBy(() -> new DelegatingProviderRouter<>("tenure", map, null, "oracle", null))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessageContaining("Environment must not be null");
+  }
+
+  @Test
+  @DisplayName("Should populate properties and handle null or empty adapters map")
+  void shouldHandleNullAdaptersMap() {
+    MockEnvironment env = new MockEnvironment();
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", null, env, null, null);
+
+    assertThat(router.getDomain()).isEqualTo("tenure");
+    assertThat(router.getDefaultProvider()).isEqualTo(DelegatingProviderRouter.DEFAULT_PROVIDER);
+    assertThat(router.getPropertyKey()).isEqualTo("silva.integrations.tenure.provider");
+    assertThat(router.getAdapters()).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Should resolve secondary environment variable variant (SILVA_INTEGRATIONS_...)")
+  void shouldResolveSecondaryEnvVarVariant() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("SILVA_INTEGRATIONS_TENURE_PROVIDER", "mock");
+
+    DummyPort mockPort = () -> "mock";
+    Map<String, DummyPort> adapters = Map.of("mockTenureAdapter", mockPort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThat(router.resolveProviderName()).isEqualTo("mock");
+    assertThat(router.getDelegate()).isSameAs(mockPort);
+  }
+
+  @Test
+  @DisplayName("Should support custom bean name resolver function")
+  void shouldSupportCustomBeanNameResolver() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.tenure.provider", "cloud");
+
+    DummyPort cloudPort = () -> "cloud";
+    Map<String, DummyPort> adapters = Map.of("mySpecialCloudAdapter", cloudPort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>(
+            "tenure",
+            adapters,
+            env,
+            "oracle",
+            null,
+            provider -> "cloud".equals(provider) ? "mySpecialCloudAdapter" : null);
+
+    assertThat(router.getDelegate()).isSameAs(cloudPort);
+  }
+
+  @Test
+  @DisplayName("Should resolve alternate convention names for oracle and rest adapters")
+  void shouldResolveAlternateConventionNames() {
+    MockEnvironment env = new MockEnvironment();
+
+    DummyPort oraclePort = () -> "oracle";
+    // Using oracleTenureAdapter instead of oracleTenureJdbcAdapter
+    Map<String, DummyPort> oracleMap = Map.of("oracleTenureAdapter", oraclePort);
+    DelegatingProviderRouter<DummyPort> oracleRouter =
+        new DelegatingProviderRouter<>("tenure", oracleMap, env, "oracle", null);
+    assertThat(oracleRouter.getDelegate()).isSameAs(oraclePort);
+
+    // Using apiTenureAdapter instead of restApiTenureAdapter
+    env.setProperty("silva.integrations.tenure.provider", "restapi");
+    DummyPort apiPort = () -> "api";
+    Map<String, DummyPort> apiMap = Map.of("apiTenureAdapter", apiPort);
+    DelegatingProviderRouter<DummyPort> apiRouter =
+        new DelegatingProviderRouter<>("tenure", apiMap, env, "oracle", null);
+    assertThat(apiRouter.getDelegate()).isSameAs(apiPort);
+  }
+
+  @Test
+  @DisplayName("Should resolve via fallback match when convention name is slightly different")
+  void shouldResolveViaFallbackMatch() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.tenure.provider", "oracle");
+
+    DummyPort port = () -> "oracle-fallback";
+    Map<String, DummyPort> adapters = Map.of("customOracleTenureService", port);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThat(router.getDelegate()).isSameAs(port);
+  }
+
+  @Test
+  @DisplayName("Should detect circular delegation if resolved bean is identical to self")
+  void shouldDetectCircularDelegationWhenResolvedBeanIsSelf() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.tenure.provider", "oracle");
+
+    class SelfPort implements DummyPort {
+      @Override
+      public String call() {
+        return "self";
+      }
+    }
+
+    SelfPort selfInstance = new SelfPort();
+    Map<String, DummyPort> adapters = new HashMap<>();
+    adapters.put("oracleTenureJdbcAdapter", selfInstance);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", selfInstance);
+
+    assertThatThrownBy(router::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("Circular delegation detected");
+  }
+
+  @Test
+  @DisplayName("Should throw IllegalStateException if adapter value in map is null")
+  void shouldThrowWhenAdapterInMapIsNull() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.tenure.provider", "oracle");
+
+    Map<String, DummyPort> adapters = new HashMap<>();
+    adapters.put("oracleTenureJdbcAdapter", null);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThatThrownBy(router::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("was null in adapters map");
+  }
+
+  @Test
+  @DisplayName("Should handle kebab-case domain in candidate name building")
+  void shouldHandleKebabCaseDomain() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.forest-client.provider", "mock");
+
+    DummyPort mockPort = () -> "mock";
+    Map<String, DummyPort> adapters = Map.of("mockForestClientAdapter", mockPort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("forest-client", adapters, env, "oracle", null);
+
+    assertThat(router.getDelegate()).isSameAs(mockPort);
+  }
+}
+
