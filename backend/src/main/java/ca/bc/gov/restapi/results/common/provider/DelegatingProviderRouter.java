@@ -1,13 +1,18 @@
 package ca.bc.gov.restapi.results.common.provider;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertySource;
 
 /**
  * Reusable routing utility that dynamically resolves concrete adapter beans from a collection of
@@ -36,10 +41,12 @@ public class DelegatingProviderRouter<T> {
 
   private static final String ADAPTER_SUFFIX = "Adapter";
   private static final String JDBC_ADAPTER_SUFFIX = "JdbcAdapter";
+  private static final Pattern TOKEN_SPLIT_PATTERN =
+      Pattern.compile("(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|[-_]");
 
   private final String domain;
   private final String propertyKey;
-  private final List<String> envKeyVariants;
+  private final List<String> candidatePropertyKeys;
   private final Map<String, T> adapters;
   private final Environment environment;
   private final String defaultProvider;
@@ -97,10 +104,12 @@ public class DelegatingProviderRouter<T> {
     this.propertyKey = PROPERTY_PREFIX + normalizedDomain + PROPERTY_SUFFIX;
 
     String envDomain = normalizedDomain.replace("-", "_").toUpperCase(Locale.ROOT);
-    this.envKeyVariants =
-        List.of(
-            "SILVA_INTEGRATION_" + envDomain + "_PROVIDER",
-            "SILVA_INTEGRATIONS_" + envDomain + "_PROVIDER");
+    String singularPropertyKey = "silva.integration." + normalizedDomain + ".provider";
+    String singularEnvKey = "SILVA_INTEGRATION_" + envDomain + "_PROVIDER";
+    String pluralEnvKey = "SILVA_INTEGRATIONS_" + envDomain + "_PROVIDER";
+
+    this.candidatePropertyKeys =
+        List.of(propertyKey, singularPropertyKey, singularEnvKey, pluralEnvKey);
   }
 
   /**
@@ -109,15 +118,23 @@ public class DelegatingProviderRouter<T> {
    * @return the normalized provider name (e.g. "oracle", "api", "mock")
    */
   public String resolveProviderName() {
-    String value = environment.getProperty(propertyKey);
-    if (value != null && !value.isBlank()) {
-      return value.trim().toLowerCase(Locale.ROOT);
-    }
-
-    for (String envKey : envKeyVariants) {
-      value = environment.getProperty(envKey);
-      if (value != null && !value.isBlank()) {
-        return value.trim().toLowerCase(Locale.ROOT);
+    if (environment instanceof ConfigurableEnvironment configurableEnv) {
+      for (PropertySource<?> propertySource : configurableEnv.getPropertySources()) {
+        for (String key : candidatePropertyKeys) {
+          if (propertySource.containsProperty(key)) {
+            Object value = propertySource.getProperty(key);
+            if (value != null && !value.toString().isBlank()) {
+              return value.toString().trim().toLowerCase(Locale.ROOT);
+            }
+          }
+        }
+      }
+    } else {
+      for (String key : candidatePropertyKeys) {
+        String value = environment.getProperty(key);
+        if (value != null && !value.isBlank()) {
+          return value.trim().toLowerCase(Locale.ROOT);
+        }
       }
     }
 
@@ -160,9 +177,8 @@ public class DelegatingProviderRouter<T> {
         continue;
       }
 
-      String lowerBeanName = beanName.toLowerCase(Locale.ROOT);
-      String strippedBeanName = stripDomainAndSuffixes(lowerBeanName);
-      if (matchesProviderToken(strippedBeanName, provider)) {
+      Set<String> providerTokens = extractProviderTokens(beanName);
+      if (matchesProviderTokens(providerTokens, provider)) {
         log.debug(
             "Resolved adapter '{}' for domain '{}' and provider '{}' via fallback match",
             beanName,
@@ -243,25 +259,39 @@ public class DelegatingProviderRouter<T> {
     return sb.toString();
   }
 
-  private String stripDomainAndSuffixes(String lowerBeanName) {
-    String normalizedDomain = domain.toLowerCase(Locale.ROOT);
-    String compactDomain = normalizedDomain.replace("-", "").replace("_", "");
-    String snakeDomain = normalizedDomain.replace("-", "_");
-    return lowerBeanName
-        .replace(normalizedDomain, "")
-        .replace(snakeDomain, "")
-        .replace(compactDomain, "")
-        .replace(JDBC_ADAPTER_SUFFIX.toLowerCase(Locale.ROOT), "")
-        .replace(ADAPTER_SUFFIX.toLowerCase(Locale.ROOT), "");
+  private Set<String> extractProviderTokens(String beanName) {
+    Set<String> domainTokens = tokenize(domain);
+    Set<String> beanTokens = tokenize(beanName);
+    beanTokens.removeAll(domainTokens);
+    beanTokens.remove(ADAPTER_SUFFIX.toLowerCase(Locale.ROOT));
+    beanTokens.remove(JDBC_ADAPTER_SUFFIX.toLowerCase(Locale.ROOT));
+    beanTokens.remove("jdbc");
+    return beanTokens;
   }
 
-  private boolean matchesProviderToken(String beanToken, String provider) {
+  private static Set<String> tokenize(String text) {
+    if (text == null || text.isBlank()) {
+      return Collections.emptySet();
+    }
+    String[] parts = TOKEN_SPLIT_PATTERN.split(text);
+    Set<String> result = new HashSet<>();
+    for (String part : parts) {
+      if (!part.isBlank()) {
+        result.add(part.toLowerCase(Locale.ROOT));
+      }
+    }
+    return result;
+  }
+
+  private boolean matchesProviderTokens(Set<String> tokens, String provider) {
     return switch (provider) {
       case PROVIDER_API, PROVIDER_REST, PROVIDER_REST_API ->
-          beanToken.contains(PROVIDER_REST) || beanToken.contains(PROVIDER_API);
-      case DEFAULT_PROVIDER -> beanToken.contains(DEFAULT_PROVIDER);
-      case PROVIDER_MOCK -> beanToken.contains(PROVIDER_MOCK);
-      default -> beanToken.contains(provider);
+          tokens.contains(PROVIDER_REST)
+              || tokens.contains(PROVIDER_API)
+              || tokens.contains(PROVIDER_REST_API);
+      case DEFAULT_PROVIDER -> tokens.contains(DEFAULT_PROVIDER);
+      case PROVIDER_MOCK -> tokens.contains(PROVIDER_MOCK);
+      default -> tokens.contains(provider);
     };
   }
 
@@ -278,6 +308,10 @@ public class DelegatingProviderRouter<T> {
 
   public String getPropertyKey() {
     return propertyKey;
+  }
+
+  public List<String> getCandidatePropertyKeys() {
+    return Collections.unmodifiableList(candidatePropertyKeys);
   }
 
   public String getDefaultProvider() {

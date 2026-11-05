@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
+import org.springframework.mock.env.MockPropertySource;
 
 @DisplayName("Unit Test | DelegatingProviderRouter")
 class DelegatingProviderRouterTest {
@@ -210,6 +211,65 @@ class DelegatingProviderRouterTest {
     assertThatThrownBy(router::getDelegate)
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("No adapter bean found for provider 'unsupported'");
+  }
+
+  @Test
+  @DisplayName("Should throw when partial provider name is configured (no partial substring match)")
+  void shouldThrowWhenPartialProviderNameIsConfigured() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.tenure.provider", "or");
+
+    DummyPort oraclePort = () -> "oracle";
+    Map<String, DummyPort> adapters = Map.of("oracleTenureJdbcAdapter", oraclePort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThatThrownBy(router::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("No adapter bean found for provider 'or'");
+
+    // Also test 'moc' against mock adapter
+    env.setProperty("silva.integrations.tenure.provider", "moc");
+    DummyPort mockPort = () -> "mock";
+    Map<String, DummyPort> mockAdapters = Map.of("mockTenureAdapter", mockPort);
+
+    DelegatingProviderRouter<DummyPort> mockRouter =
+        new DelegatingProviderRouter<>("tenure", mockAdapters, env, "oracle", null);
+
+    assertThatThrownBy(mockRouter::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("No adapter bean found for provider 'moc'");
+  }
+
+  @Test
+  @DisplayName("Should allow environment variable to override configuration property default")
+  void shouldAllowEnvVarToOverrideConfigurationPropertyDefault() {
+    MockEnvironment env = new MockEnvironment();
+    // Simulate lower-precedence application.yml setting default to oracle
+    env.getPropertySources()
+        .addLast(
+            new MockPropertySource("applicationConfig")
+                .withProperty("silva.integrations.tenure.provider", "oracle"));
+
+    // Simulate higher-precedence OpenShift environment variable setting to api
+    env.getPropertySources()
+        .addFirst(
+            new MockPropertySource("systemEnvironment")
+                .withProperty("SILVA_INTEGRATION_TENURE_PROVIDER", "api"));
+
+    DummyPort apiPort = () -> "api";
+    DummyPort oraclePort = () -> "oracle";
+    Map<String, DummyPort> adapters =
+        Map.of(
+            "restApiTenureAdapter", apiPort,
+            "oracleTenureJdbcAdapter", oraclePort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThat(router.resolveProviderName()).isEqualTo("api");
+    assertThat(router.getDelegate()).isSameAs(apiPort);
   }
 }
 
