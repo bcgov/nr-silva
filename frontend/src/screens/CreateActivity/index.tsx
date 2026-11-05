@@ -63,19 +63,20 @@ const CreateActivity = () => {
 
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.ActivityEndpointService.uploadActivitySpatial(Number(openingId), { file }),
-    onSuccess: (data) => {
+    // Ignore results for files that were removed, replaced, or cleared by a form reset.
+    onSuccess: (data, uploadedFile) => {
       setUploadError(undefined);
       setForm((f) => ({
         ...f,
-        file: f.file ? { ...f.file, validatedObj: data, isInvalid: false } : f.file,
+        file: f.file?.value === uploadedFile ? { ...f.file, validatedObj: data, isInvalid: false } : f.file,
       }));
     },
-    onError: (err) => {
+    onError: (err, uploadedFile) => {
       const status = err instanceof ApiError ? err.status : 0;
       if (status === 401) return;
       setForm((f) => ({
         ...f,
-        file: f.file ? { ...f.file, validatedObj: undefined, isInvalid: true } : f.file,
+        file: f.file?.value === uploadedFile ? { ...f.file, validatedObj: undefined, isInvalid: true } : f.file,
       }));
       setUploadError(getApiErrorMessage(err, 'File upload failed. Please try again.'));
     },
