@@ -161,7 +161,8 @@ public class DelegatingProviderRouter<T> {
       }
 
       String lowerBeanName = beanName.toLowerCase(Locale.ROOT);
-      if (lowerBeanName.contains(provider)) {
+      String strippedBeanName = stripDomainAndSuffixes(lowerBeanName);
+      if (matchesProviderToken(strippedBeanName, provider)) {
         log.debug(
             "Resolved adapter '{}' for domain '{}' and provider '{}' via fallback match",
             beanName,
@@ -240,6 +241,28 @@ public class DelegatingProviderRouter<T> {
       }
     }
     return sb.toString();
+  }
+
+  private String stripDomainAndSuffixes(String lowerBeanName) {
+    String normalizedDomain = domain.toLowerCase(Locale.ROOT);
+    String compactDomain = normalizedDomain.replace("-", "").replace("_", "");
+    String snakeDomain = normalizedDomain.replace("-", "_");
+    return lowerBeanName
+        .replace(normalizedDomain, "")
+        .replace(snakeDomain, "")
+        .replace(compactDomain, "")
+        .replace(JDBC_ADAPTER_SUFFIX.toLowerCase(Locale.ROOT), "")
+        .replace(ADAPTER_SUFFIX.toLowerCase(Locale.ROOT), "");
+  }
+
+  private boolean matchesProviderToken(String beanToken, String provider) {
+    return switch (provider) {
+      case PROVIDER_API, PROVIDER_REST, PROVIDER_REST_API ->
+          beanToken.contains(PROVIDER_REST) || beanToken.contains(PROVIDER_API);
+      case DEFAULT_PROVIDER -> beanToken.contains(DEFAULT_PROVIDER);
+      case PROVIDER_MOCK -> beanToken.contains(PROVIDER_MOCK);
+      default -> beanToken.contains(provider);
+    };
   }
 
   private static String capitalize(String text) {

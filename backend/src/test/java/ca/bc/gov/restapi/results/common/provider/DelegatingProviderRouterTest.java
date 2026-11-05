@@ -173,5 +173,43 @@ class DelegatingProviderRouterTest {
 
     assertThat(router.getDelegate()).isSameAs(mockPort);
   }
+
+  @Test
+  @DisplayName("Should not match domain substring when configured provider adapter is absent")
+  void shouldNotMatchDomainSubstringWhenProviderAdapterIsAbsent() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.forest-client.provider", "rest");
+
+    DummyPort oraclePort = () -> "oracle";
+    DummyPort mockPort = () -> "mock";
+    Map<String, DummyPort> adapters =
+        Map.of(
+            "oracleForestClientJdbcAdapter", oraclePort,
+            "mockForestClientAdapter", mockPort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("forest-client", adapters, env, "oracle", null);
+
+    assertThatThrownBy(router::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("No adapter bean found for provider 'rest'");
+  }
+
+  @Test
+  @DisplayName("Should throw IllegalStateException when configured provider is unknown")
+  void shouldThrowWhenConfiguredProviderIsUnknown() {
+    MockEnvironment env = new MockEnvironment();
+    env.setProperty("silva.integrations.forest-client.provider", "unsupported");
+
+    DummyPort oraclePort = () -> "oracle";
+    Map<String, DummyPort> adapters = Map.of("oracleForestClientJdbcAdapter", oraclePort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("forest-client", adapters, env, "oracle", null);
+
+    assertThatThrownBy(router::getDelegate)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("No adapter bean found for provider 'unsupported'");
+  }
 }
 
