@@ -12,14 +12,16 @@ const mockMapBounds = {
   contains: mockContains,
 };
 
+const mockMap = {
+  fitBounds: mockFitBounds,
+  getBounds: () => mockMapBounds,
+};
+
 vi.mock('react-leaflet', () => ({
   MapContainer: ({ children }: any) => <div data-testid="map-container">{children}</div>,
   TileLayer: () => <div data-testid="tile-layer" />,
   ZoomControl: () => <div data-testid="zoom-control" />,
-  useMap: () => ({
-    fitBounds: mockFitBounds,
-    getBounds: () => mockMapBounds,
-  }),
+  useMap: () => mockMap,
   GeoJSON: ({ data, style }: any) => (
     <div
       data-testid="geojson-layer"
@@ -257,9 +259,17 @@ describe('MapPreview', () => {
     expect(screen.getByRole('button', { name: /hold to show opening spatial/i })).toBeInTheDocument();
   });
 
-  it('skips fitBounds when target bounds are already contained in current map bounds', () => {
+  it('always fits bounds on initial display even when already inside the viewport', () => {
     mockFitBounds.mockClear();
     mockContains.mockReturnValue(true);
+
+    render(<MapPreview geojson={sampleActivityGeojson} mapType="activity" />);
+
+    expect(mockFitBounds).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not refit when toggling the hold button', () => {
+    mockFitBounds.mockClear();
 
     render(
       <MapPreview
@@ -268,7 +278,10 @@ describe('MapPreview', () => {
         mapType="activity"
       />
     );
+    const button = screen.getByRole('button', { name: /hold to show opening spatial/i });
+    fireEvent.mouseDown(button);
+    fireEvent.mouseUp(button);
 
-    expect(mockFitBounds).not.toHaveBeenCalled();
+    expect(mockFitBounds).toHaveBeenCalledTimes(1);
   });
 });

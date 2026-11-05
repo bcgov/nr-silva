@@ -14,7 +14,7 @@ type MapPreviewProps = {
   mapType?: MapPreviewType;
 };
 
-/** Fits the map to the geojson bounds when not already visible in current viewport. */
+/** Fits the map to the geojson bounds whenever the geojson changes. */
 const FitBoundsLayer = ({ geojson }: { geojson: GeoJSON.FeatureCollection }) => {
   const map = useMap();
   useEffect(() => {
@@ -29,11 +29,7 @@ const FitBoundsLayer = ({ geojson }: { geojson: GeoJSON.FeatureCollection }) => 
     const temp = geoJSON(normalized);
     const bounds = temp.getBounds();
     if (bounds?.isValid()) {
-      const currentBounds = map.getBounds?.();
-      const isAlreadyVisible = currentBounds?.isValid() && currentBounds.contains(bounds);
-      if (!isAlreadyVisible) {
-        map.fitBounds(bounds, { padding: [24, 24] });
-      }
+      map.fitBounds(bounds, { padding: [24, 24] });
     }
     temp.remove();
   }, [map, geojson]);
@@ -51,6 +47,9 @@ const MapPreview = ({
 
   const hasOpeningSpatial = Boolean(openingGeojson?.features && openingGeojson.features.length > 0);
   const showHoldButton = mapType === 'activity' && hasOpeningSpatial;
+
+  // Validated activity geometry lies within the opening, so fit to the opening when it has spatial data.
+  const fitGeojson = hasOpeningSpatial && openingGeojson ? openingGeojson : geojson;
 
   const activeGeojson = isHoldingOpening && openingGeojson ? openingGeojson : geojson;
   const activeStyle = isHoldingOpening
@@ -117,7 +116,7 @@ const MapPreview = ({
           data={activeGeojson}
           style={activeStyle}
         />
-        <FitBoundsLayer geojson={activeGeojson} />
+        <FitBoundsLayer geojson={fitGeojson} />
       </MapContainer>
     </div>
   );
