@@ -88,10 +88,16 @@ const CreateActivity = () => {
         data: buildCreateActivityPayload(form),
         file: form.file?.value,
       }),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       bypassBlockerRef.current = true;
       showToast.success(`Activity ${res.activityId} created`);
-      void queryClient.invalidateQueries({ queryKey: ['opening', openingId, 'activities'] });
+      // Query keys use numeric opening IDs; refetchType 'all' also refreshes inactive queries
+      // (global refetchOnMount is false, so they would otherwise stay stale after navigating back).
+      const numericOpeningId = Number(openingId);
+      await Promise.allSettled([
+        queryClient.invalidateQueries({ queryKey: ['opening', numericOpeningId, 'activities'], refetchType: 'all' }),
+        queryClient.invalidateQueries({ queryKey: ['opening', 'map', numericOpeningId], refetchType: 'all' }),
+      ]);
       const deepLink = res.activityId
         ? `${openingDetailsActivitiesPath}&${DEEP_LINK_PARAMS.activityId}=${res.activityId}`
         : openingDetailsActivitiesPath;

@@ -233,7 +233,8 @@ describe('CreateActivity screen', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/openings/123?tab=activities&activityId=77')
     );
     expect(showToast.success).toHaveBeenCalledWith('Activity 77 created');
-    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['opening', '123', 'activities'] });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['opening', 123, 'activities'], refetchType: 'all' });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['opening', 'map', 123], refetchType: 'all' });
     expect(API.ActivityEndpointService.createActivity).toHaveBeenCalledWith(
       123,
       expect.objectContaining({ data: expect.objectContaining({ status: 'COMPLETED', baseCode: 'BR' }) })
