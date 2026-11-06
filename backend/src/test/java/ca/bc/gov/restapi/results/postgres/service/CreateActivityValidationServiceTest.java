@@ -64,6 +64,9 @@ class CreateActivityValidationServiceTest {
     LocalDate completionDate = null;
     BigDecimal treatedArea = null;
     BigDecimal actualCost = null;
+    Integer targetPreparedSpots = null;
+    Integer surveyNumPlots = null;
+    Long surveyMinPlotsPerStratum = null;
 
     CreateActivityRequestDto build() {
       return new CreateActivityRequestDto(
@@ -81,7 +84,10 @@ class CreateActivityValidationServiceTest {
           plannedCost,
           completionDate,
           treatedArea,
-          actualCost);
+          actualCost,
+          targetPreparedSpots,
+          surveyNumPlots,
+          surveyMinPlotsPerStratum);
     }
   }
 
@@ -236,9 +242,38 @@ class CreateActivityValidationServiceTest {
   }
 
   @Test
+  @DisplayName("Accepts SP and SU with their own fields")
+  void validate_spAndSu_passWithOwnFields() {
+    Request sp = new Request();
+    sp.baseCode = "SP";
+    sp.targetPreparedSpots = 12;
+    assertValid(sp);
+
+    Request su = new Request();
+    su.baseCode = "SU";
+    su.surveyNumPlots = 5;
+    su.surveyMinPlotsPerStratum = 2L;
+    assertValid(su);
+  }
+
+  @Test
+  @DisplayName("Rejects SP and SU fields on other bases")
+  void validate_baseSpecificFieldsOnOtherBase_rejected() {
+    Request request = new Request();
+    request.targetPreparedSpots = 1;
+    request.surveyNumPlots = 1;
+    request.surveyMinPlotsPerStratum = 1L;
+
+    assertThat(errorOf(request))
+        .contains("targetPreparedSpots: only allowed when the base is SP")
+        .contains("surveyNumPlots: only allowed when the base is SU")
+        .contains("surveyMinPlotsPerStratum: only allowed when the base is SU");
+  }
+
+  @Test
   @DisplayName("Rejects non-basic and unknown base codes")
   void validate_nonBasicBase_rejected() {
-    for (String base : List.of("PL", "DS", "SP", "SU", "DN", "ZZ")) {
+    for (String base : List.of("PL", "DS", "DN", "ZZ")) {
       Request request = new Request();
       request.baseCode = base;
       assertThat(errorOf(request)).contains("baseCode: must be one of");

@@ -80,6 +80,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         new BigDecimal("1500"),
         null,
         null,
+        null,
+        null,
+        null,
         null);
   }
 
@@ -99,7 +102,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         null,
         LocalDate.now().minusDays(5),
         new BigDecimal("28.5"),
-        new BigDecimal("1200"));
+        new BigDecimal("1200"),
+        null,
+        null,
+        null);
   }
 
   private Map<String, Object> activityRow(Long activityId) {
@@ -274,6 +280,69 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThat(id).isGreaterThan(maxId);
   }
 
+  private CreateActivityRequestDto withBaseFields(
+      ActivityStatus status, String base, Integer spots, Integer plots, Long minPlots) {
+    boolean completed = status == ActivityStatus.COMPLETED;
+    return new CreateActivityRequestDto(
+        status,
+        base,
+        null,
+        null,
+        null,
+        List.of("BCP"),
+        null,
+        null,
+        null,
+        completed ? null : LocalDate.now().plusDays(30),
+        completed ? null : new BigDecimal("5.0"),
+        null,
+        completed ? LocalDate.now().minusDays(1) : null,
+        completed ? new BigDecimal("5.0") : null,
+        null,
+        spots,
+        plots,
+        minPlots);
+  }
+
+  @Test
+  @DisplayName("Saves SP target prepared spots")
+  void createActivity_sp_savesTargetPreparedSpots() {
+    Map<String, Object> row =
+        activityRow(
+            service
+                .createActivity(
+                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SP", 25, null, null))
+                .activityId());
+
+    assertThat(row).containsEntry("silv_base_code", "SP").containsEntry("target_prepared_spots", 25);
+  }
+
+  @Test
+  @DisplayName("Saves SU number of plots as planned when planned and actual when completed")
+  void createActivity_su_routesNumPlotsByStatus() {
+    Map<String, Object> planned =
+        activityRow(
+            service
+                .createActivity(
+                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SU", null, 7, 3L))
+                .activityId());
+    Map<String, Object> completed =
+        activityRow(
+            service
+                .createActivity(
+                    OPENING_ID, withBaseFields(ActivityStatus.COMPLETED, "SU", null, 8, 4L))
+                .activityId());
+
+    assertThat(planned)
+        .containsEntry("survey_planned_num_plots", 7)
+        .containsEntry("survey_min_plots_per_stratum", 3L);
+    assertThat(planned.get("survey_actual_num_plots")).isNull();
+    assertThat(completed)
+        .containsEntry("survey_actual_num_plots", 8)
+        .containsEntry("survey_min_plots_per_stratum", 4L);
+    assertThat(completed.get("survey_planned_num_plots")).isNull();
+  }
+
   @Test
   @DisplayName("Creates a completed activity without planned date, area and cost")
   void createActivity_completedWithoutPlannedValues_saves() {
@@ -293,6 +362,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             null,
             LocalDate.now().plusDays(3),
             new BigDecimal("5.0"),
+            null,
+            null,
+            null,
             null);
 
     Map<String, Object> row =
