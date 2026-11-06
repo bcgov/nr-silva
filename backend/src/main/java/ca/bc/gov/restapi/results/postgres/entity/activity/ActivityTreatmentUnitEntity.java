@@ -76,6 +76,18 @@ public class ActivityTreatmentUnitEntity implements Persistable<Long> {
   @Column(name = "atu_completion_date")
   private LocalDateTime atuCompletionDate;
 
+  @Column(name = "target_prepared_spots")
+  private Integer targetPreparedSpots;
+
+  @Column(name = "survey_planned_num_plots")
+  private Integer surveyPlannedNumPlots;
+
+  @Column(name = "survey_actual_num_plots")
+  private Integer surveyActualNumPlots;
+
+  @Column(name = "survey_min_plots_per_stratum")
+  private Long surveyMinPlotsPerStratum;
+
   @Column(name = "results_ind", length = 1)
   private String resultsInd;
 

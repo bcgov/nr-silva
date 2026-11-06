@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,16 @@ public class CreateActivityValidationService {
               Set.of(
                   "AU", "BR", "CC", "CM", "EP", "FE", "HC", "HI", "JS", "LB", "PC", "PR", "RC",
                   "RD", "ST", "SX")));
+
+  public static final String SITE_PREPARATION = "SP";
+  public static final String SURVEY = "SU";
+
+  /** Bases accepted by the create endpoint: the basic ones plus those with extra fields. */
+  public static final Set<String> SUPPORTED_BASE_CODES =
+      Collections.unmodifiableSortedSet(
+          new TreeSet<>(
+              Stream.concat(BASIC_BASE_CODES.stream(), Stream.of(SITE_PREPARATION, SURVEY))
+                  .collect(Collectors.toSet())));
 
   private static final String COMPLETION_DATE = "completionDate";
   private static final String PLANNED_AREA = "plannedArea";
@@ -112,11 +124,26 @@ public class CreateActivityValidationService {
     if (dto.baseCode() == null || hasError(errors, "baseCode")) {
       return;
     }
-    if (!BASIC_BASE_CODES.contains(dto.baseCode())) {
-      errors.add("baseCode: must be one of " + BASIC_BASE_CODES);
+    if (!SUPPORTED_BASE_CODES.contains(dto.baseCode())) {
+      errors.add("baseCode: must be one of " + SUPPORTED_BASE_CODES);
       return;
     }
+    rejectBaseSpecific(dto, errors);
     checkInEffect("baseCode", List.of(dto.baseCode()), baseCodeRepository, errors);
+  }
+
+  private void rejectBaseSpecific(CreateActivityRequestDto dto, List<String> errors) {
+    if (!SITE_PREPARATION.equals(dto.baseCode()) && dto.targetPreparedSpots() != null) {
+      errors.add("targetPreparedSpots: only allowed when the base is SP");
+    }
+    if (!SURVEY.equals(dto.baseCode())) {
+      if (dto.surveyNumPlots() != null) {
+        errors.add("surveyNumPlots: only allowed when the base is SU");
+      }
+      if (dto.surveyMinPlotsPerStratum() != null) {
+        errors.add("surveyMinPlotsPerStratum: only allowed when the base is SU");
+      }
+    }
   }
 
   private void validateCodes(CreateActivityRequestDto dto, List<String> errors) {

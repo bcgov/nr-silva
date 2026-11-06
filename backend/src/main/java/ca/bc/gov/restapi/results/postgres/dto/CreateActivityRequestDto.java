@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.postgres.dto;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,11 +14,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Request body (the {@code data} part) for creating a basic activity under an opening. The opening
+ * Request body (the {@code data} part) for creating an activity under an opening. The opening
  * is given by the request path.
  *
  * @param status whether the activity is planned or completed
- * @param baseCode the activity base code; only the basic bases are accepted
+ * @param baseCode the activity base code; the basic bases plus SP and SU are accepted
  * @param techniqueCode optional technique code
  * @param methodCode optional method code
  * @param objectiveCodes up to five objective codes
@@ -34,6 +36,10 @@ import java.util.List;
  * @param treatedArea treated area in hectares; required for completed activities and not allowed
  *     for planned ones
  * @param actualCost optional actual cost in whole dollars; not allowed for planned activities
+ * @param targetPreparedSpots optional target prepared spots (4 digits); only for base SP
+ * @param surveyNumPlots optional number of plots (4 digits); only for base SU. Stored as planned or
+ *     actual number of plots depending on the status
+ * @param surveyMinPlotsPerStratum optional minimum plots per stratum; only for base SU
  */
 public record CreateActivityRequestDto(
     @NotNull ActivityStatus status,
@@ -56,4 +62,7 @@ public record CreateActivityRequestDto(
         BigDecimal treatedArea,
     @DecimalMin("0")
         @Digits(integer = 9, fraction = 0, message = "must be a whole number of dollars")
-        BigDecimal actualCost) {}
+        BigDecimal actualCost,
+    @Min(0) @Max(9999) Integer targetPreparedSpots,
+    @Min(0) @Max(9999) Integer surveyNumPlots,
+    @Min(0) @Max(9999999999L) Long surveyMinPlotsPerStratum) {}

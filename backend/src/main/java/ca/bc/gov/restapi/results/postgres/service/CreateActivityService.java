@@ -155,7 +155,11 @@ public class CreateActivityService {
             .updateTimestamp(now)
             .revisionCount(1);
 
+    activity.targetPreparedSpots(dto.targetPreparedSpots());
+    activity.surveyMinPlotsPerStratum(dto.surveyMinPlotsPerStratum());
+
     if (dto.status() == ActivityStatus.COMPLETED) {
+      activity.surveyActualNumPlots(dto.surveyNumPlots());
       activity
           .silvTechniqueCode(dto.techniqueCode())
           .silvMethodCode(dto.methodCode())
@@ -163,6 +167,7 @@ public class CreateActivityService {
           .actualTreatmentCost(toWholeDollars(dto.actualCost()))
           .atuCompletionDate(dto.completionDate().atStartOfDay());
     } else {
+      activity.surveyPlannedNumPlots(dto.surveyNumPlots());
       activity.planSilvTechniqueCode(dto.techniqueCode()).planSilvMethodCode(dto.methodCode());
     }
     return activity.build();
