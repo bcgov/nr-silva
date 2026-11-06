@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.common.endpoint;
 
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -74,6 +75,44 @@ public class GlobalErrorResponseEndpoint extends ResponseEntityExceptionHandler 
   public ProblemDetail handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
     log.warn("Access denied: {}", ex.getMessage());
     return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+  }
+
+  /**
+   * Handle external service integration exceptions when downstream dependencies (e.g. FTA, Oracle,
+   * ForestClient) fail, time out, or cannot process a request.
+   *
+   * @param exception the ExternalServiceException thrown
+   * @param request the current web request
+   * @return a ProblemDetail with the appropriate HTTP status (e.g. 503 or 422), title, code, and
+   *     details
+   */
+  @ExceptionHandler(ExternalServiceException.class)
+  public ProblemDetail handleExternalServiceException(
+      ExternalServiceException exception, WebRequest request) {
+    HttpStatusCode errorStatus = exception.getStatusCode();
+    String errorMessage = exception.getReason();
+    if (StringUtils.isBlank(errorMessage)) {
+      errorMessage = exception.getMessage();
+    }
+
+    log.error(
+        "External service failure [code={}, service={}] - {} - {}",
+        exception.getErrorCode(),
+        exception.getServiceName(),
+        errorStatus,
+        errorMessage,
+        exception);
+
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(errorStatus, errorMessage);
+    problemDetail.setTitle("External Service Error");
+    if (exception.getErrorCode() != null) {
+      problemDetail.setProperty("code", exception.getErrorCode().name());
+    }
+    if (StringUtils.isNotBlank(exception.getServiceName())) {
+      problemDetail.setProperty("serviceName", exception.getServiceName());
+    }
+
+    return problemDetail;
   }
 
   @ExceptionHandler(ConstraintViolationException.class)

@@ -35,6 +35,7 @@ import ca.bc.gov.restapi.results.common.enums.ForestClientTypeEnum;
 import ca.bc.gov.restapi.results.common.enums.OpeningCategoryEnum;
 import ca.bc.gov.restapi.results.common.enums.OpeningStatusEnum;
 import ca.bc.gov.restapi.results.common.enums.YesNoEnum;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceErrorCode;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityBaseProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityJuvenileProjection;
 import ca.bc.gov.restapi.results.common.projection.activity.OpeningActivityPruningProjection;
@@ -227,6 +228,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   DuplicateConflictDto.class,
   TenureValidationResponseDto.class,
   TenureValidationErrorCode.class,
+  ExternalServiceErrorCode.class,
   TenureUpdateItemDto.class,
   TenureUpdateValidationResponseDto.class,
   TenureRemovalValidationResultDto.class,
