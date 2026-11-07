@@ -1,0 +1,12 @@
+package ca.bc.gov.restapi.results.postgres.repository;
+
+import ca.bc.gov.restapi.results.postgres.entity.activity.ActivityTreatmentGeometryEntity;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/** Repository for the {@code silva.activity_treatment_geometry} table. */
+@Repository
+@ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
+public interface ActivityTreatmentGeometryPostgresRepository
+    extends JpaRepository<ActivityTreatmentGeometryEntity, Long> {}

@@ -43,6 +43,35 @@ public interface ActivityTreatmentUnitPostgresRepository
   List<ActivityTreatmentUnitEntity> findByOpeningIdAndSilvBaseCode(
       Long openingId, String silvBaseCode);
 
+  /**
+   * Allocates the id of a new activity. The sequence is first moved past the highest id in the
+   * table because the ETL loads rows with their original ids without advancing the sequence, so a
+   * plain nextval could return an id that already exists. The advisory lock keeps concurrent
+   * allocations from computing the same value.
+   */
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+          WITH lock AS (SELECT pg_advisory_xact_lock(hashtext('silva.activity_treatment_unit_id_seq')))
+          SELECT setval('silva.activity_treatment_unit_id_seq',
+                 GREATEST((SELECT COALESCE(MAX(activity_treatment_unit_id), 0)
+                           FROM silva.activity_treatment_unit),
+                          (SELECT last_value FROM silva.activity_treatment_unit_id_seq)) + 1)
+          FROM lock
+          """)
+  Long nextActivityId();
+
+  /**
+   * Returns the sequence number of the next activity under an opening. Callers must hold the lock
+   * on the opening row (see {@code OpeningPostgresRepository#findByIdForUpdate}), otherwise two
+   * concurrent creates can get the same number.
+   */
+  @Query(
+      "SELECT COALESCE(MAX(a.activityTuSeqNo), 0) + 1 FROM ActivityTreatmentUnitEntity a "
+          + "WHERE a.openingId = :openingId")
+  Integer nextSequenceNumber(@Param("openingId") Long openingId);
+
   @Override
   @Query(
       nativeQuery = true,
