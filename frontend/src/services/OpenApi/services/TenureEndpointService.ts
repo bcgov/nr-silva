@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { TenureRequestDto } from '../models/TenureRequestDto';
 import type { TenureUpdateItemDto } from '../models/TenureUpdateItemDto';
-import type { TenureUpdateValidationResponseDto } from '../models/TenureUpdateValidationResponseDto';
 import type { TenureValidationResponseDto } from '../models/TenureValidationResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -14,14 +13,14 @@ export class TenureEndpointService {
      * @param openingId
      * @param clientNumber
      * @param requestBody
-     * @returns TenureUpdateValidationResponseDto OK
+     * @returns void
      * @throws ApiError
      */
     public static updateTenures(
         openingId: number,
         clientNumber: string,
         requestBody: Array<TenureUpdateItemDto>,
-    ): CancelablePromise<TenureUpdateValidationResponseDto> {
+    ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/openings/{openingId}/tenures',
@@ -33,6 +32,9 @@ export class TenureEndpointService {
             },
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation failed`,
+            },
         });
     }
     /**

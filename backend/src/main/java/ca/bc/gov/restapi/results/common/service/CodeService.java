@@ -4,35 +4,92 @@ import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
 import java.util.List;
 
 public interface CodeService {
-  List<CodeDescriptionDto> getAllSilvBaseCode();
+  List<CodeDescriptionDto> getAllSilvBaseCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllSilvTechniqueCode();
+  default List<CodeDescriptionDto> getAllSilvBaseCode() {
+    return getAllSilvBaseCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllSilvMethodCode();
+  List<CodeDescriptionDto> getAllSilvTechniqueCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllSilvObjectiveCode();
+  default List<CodeDescriptionDto> getAllSilvTechniqueCode() {
+    return getAllSilvTechniqueCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllSilvFundSrceCode();
+  List<CodeDescriptionDto> getAllSilvMethodCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvMethodCode() {
+    return getAllSilvMethodCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllSilvObjectiveCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvObjectiveCode() {
+    return getAllSilvObjectiveCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllSilvFundSrceCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvFundSrceCode() {
+    return getAllSilvFundSrceCode(false);
+  }
 
   List<CodeDescriptionDto> findAllCategories(boolean includeExpired);
 
   List<CodeDescriptionDto> findAllOrgUnits(boolean districtsOnly);
 
-  List<CodeDescriptionDto> getAllOpenStatusCode();
+  List<CodeDescriptionDto> getAllOpenStatusCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllDisturbanceCode();
+  default List<CodeDescriptionDto> getAllOpenStatusCode() {
+    return getAllOpenStatusCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllSilvSystemCode();
+  List<CodeDescriptionDto> getAllDisturbanceCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllSilvSystemVariantCode();
+  default List<CodeDescriptionDto> getAllDisturbanceCode() {
+    return getAllDisturbanceCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllSilvCutPhaseCode();
+  List<CodeDescriptionDto> getAllSilvSystemCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllSilvDamageAgentCode();
+  default List<CodeDescriptionDto> getAllSilvSystemCode() {
+    return getAllSilvSystemCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllStockingStatusCode();
+  List<CodeDescriptionDto> getAllSilvSystemVariantCode(boolean effectiveOnly);
 
-  List<CodeDescriptionDto> getAllStockingTypeCode();
+  default List<CodeDescriptionDto> getAllSilvSystemVariantCode() {
+    return getAllSilvSystemVariantCode(false);
+  }
 
-  List<CodeDescriptionDto> getAllSilvTreeSpeciesCode();
+  List<CodeDescriptionDto> getAllSilvCutPhaseCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvCutPhaseCode() {
+    return getAllSilvCutPhaseCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllSilvDamageAgentCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvDamageAgentCode() {
+    return getAllSilvDamageAgentCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllStockingStatusCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllStockingStatusCode() {
+    return getAllStockingStatusCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllStockingTypeCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllStockingTypeCode() {
+    return getAllStockingTypeCode(false);
+  }
+
+  List<CodeDescriptionDto> getAllSilvTreeSpeciesCode(boolean effectiveOnly);
+
+  default List<CodeDescriptionDto> getAllSilvTreeSpeciesCode() {
+    return getAllSilvTreeSpeciesCode(false);
+  }
 }
+

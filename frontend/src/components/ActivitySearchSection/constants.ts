@@ -13,7 +13,7 @@ export const defaultActivitySearchTableHeaders: ActivityHeaderType[] = [
   { key: 'isComplete', header: 'Activity status', selected: true },
   { key: 'treatmentAmountArea', header: 'Area (ha)', selected: false },
   { key: 'fundingSource', header: 'Funding source', selected: true },
-  { key: 'intraAgencyNumber', header: 'Intra-agency number', selected: false },
+  { key: 'intraAgencyNumber', header: 'Project number', selected: false },
   { key: 'openingCategory', header: 'Opening category', selected: false },
   { key: 'orgUnit', header: 'Org unit', selected: false },
   { key: 'openingClient', header: 'Client', selected: false },

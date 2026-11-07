@@ -13,11 +13,13 @@ import ca.bc.gov.restapi.results.extensions.WiremockLogNotifier;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.util.Map;
+import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -273,5 +275,52 @@ class OpenMapsServiceIntegrationTest {
 
     Assertions.assertThrows(
         ResponseStatusException.class, () -> openMapsService.getMapsheetForPoint(-125.0, 50.0));
+  }
+
+  @Test
+  @DisplayName("Activity kind in postgres mode merges local activities with BCGW disturbances")
+  void getOpeningPolygonAndProperties_activityKindPostgres_shouldMergeLocalAndBcgwDn() {
+    String kind = "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW";
+    FeatureCollection local = new FeatureCollection();
+    Feature localFeature = new Feature();
+    localFeature.setId("1");
+    local.add(localFeature);
+
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/"))
+            .withQueryParam("typeName", equalTo(kind))
+            .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=123 AND SILV_BASE_CODE='DN'"))
+            .willReturn(
+                okJson(
+                    "{\"type\":\"FeatureCollection\",\"features\":"
+                        + "[{\"type\":\"Feature\",\"id\":\"2\",\"properties\":{}}]}")));
+
+    ActivityGeometryReadService activityService = id -> local;
+    ReflectionTestUtils.setField(openMapsService, "activityGeometryService", activityService);
+    try {
+      FeatureCollection response = openMapsService.getOpeningPolygonAndProperties(123L, kind);
+
+      Assertions.assertEquals(2, response.getFeatures().size());
+    } finally {
+      ReflectionTestUtils.setField(openMapsService, "activityGeometryService", null);
+    }
+  }
+
+  @Test
+  @DisplayName("Activity kind in oracle mode reads everything from BCGW")
+  void getOpeningPolygonAndProperties_activityKindOracle_shouldQueryWfsWithoutDnFilter() {
+    String kind = "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW";
+    clientApiStub.stubFor(
+        get(urlPathEqualTo("/"))
+            .withQueryParam("typeName", equalTo(kind))
+            .withQueryParam("CQL_FILTER", equalTo("OPENING_ID=124"))
+            .willReturn(
+                okJson(
+                    "{\"type\":\"FeatureCollection\",\"features\":"
+                        + "[{\"type\":\"Feature\",\"id\":\"9\",\"properties\":{}}]}")));
+
+    FeatureCollection response = openMapsService.getOpeningPolygonAndProperties(124L, kind);
+
+    Assertions.assertEquals(1, response.getFeatures().size());
   }
 }
