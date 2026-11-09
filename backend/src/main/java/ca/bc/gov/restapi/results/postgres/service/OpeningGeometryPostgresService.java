@@ -62,7 +62,8 @@ public class OpeningGeometryPostgresService implements OpeningGeometryService {
         buildProperties(openingId, openingOpt.orElse(null), district, region);
 
     Feature feature = new Feature();
-    feature.setId(String.valueOf(openingId));
+    // WFS-style id so the frontend can match the feature to its layer by prefix
+    feature.setId("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW." + openingId);
     feature.setProperties(properties);
 
     FeatureCollection fc = buildFeatureCollection();
