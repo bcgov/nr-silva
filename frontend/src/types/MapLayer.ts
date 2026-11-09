@@ -326,6 +326,7 @@ export const openingStyle: PathOptions = {
   ...defaultStyle,
   color: '#00A5C699',
   fillColor: '#00A5C6',
+  weight: 1,
 };
 
 export const activityStyle: PathOptions = {

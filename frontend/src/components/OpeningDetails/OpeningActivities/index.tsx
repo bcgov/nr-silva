@@ -111,8 +111,8 @@ const OpeningActivities = ({
         gatePostgresFeature()
           ? null
           : (
-            <Column sm={4} md={4} lg={4} max={2}>
-              <Stack orientation="horizontal" gap={4}>
+            <Column className="add-button-container-col" sm={4} md={4} lg={4} max={4}>
+              <Stack className="add-button-stack" orientation="horizontal" gap={4}>
                 <Button
                   kind="primary"
                   disabled
