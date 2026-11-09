@@ -7,12 +7,6 @@ import ActivityAccordion from '../../../../components/OpeningDetails/OpeningActi
 import API from '../../../../services/API';
 import { OpeningDetailsActivitiesActivitiesDto } from '../../../../services/OpenApi';
 
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
-  return { ...actual, useNavigate: () => mockNavigate };
-});
-
 vi.mock('../../../../services/API', () => ({
   default: { OpeningEndpointService: { getOpeningActivities: vi.fn() } },
 }));
@@ -104,19 +98,6 @@ describe('ActivityAccordion', () => {
     expect(screen.getByText('Planned')).toBeDefined();
     expect(screen.getByText('Complete')).toBeDefined();
     expect(screen.getAllByText('--').length).toBeGreaterThan(3);
-  });
-
-  it('navigates to the create activity page when Add activity is clicked', async () => {
-    renderAccordion();
-    await userEvent.click(await screen.findByRole('button', { name: 'Add activity' }));
-    expect(mockNavigate).toHaveBeenCalledWith('/openings/55/create-activity');
-  });
-
-  it('reports open state changes', async () => {
-    const onOpenChange = vi.fn();
-    renderAccordion({ targetActivityId: undefined, onOpenChange });
-    await userEvent.click(screen.getByText('Silviculture activities'));
-    expect(onOpenChange).toHaveBeenCalledWith(true);
   });
 
   it('sorts ascending, descending, then clears', async () => {

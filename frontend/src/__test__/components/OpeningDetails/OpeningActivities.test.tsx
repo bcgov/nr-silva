@@ -11,6 +11,20 @@ import {
   OpeningDetailsActivitiesDisturbanceDto,
   PagedModelOpeningDetailsActivitiesActivitiesDto,
 } from "@/services/OpenApi";
+import * as featureFlags from "@/utils/featureFlags";
+
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("@/utils/featureFlags", () => ({
+  gatePostgresFeature: vi.fn(),
+}));
 
 vi.mock("@/services/API", () => ({
   default: {
@@ -183,6 +197,7 @@ describe("OpeningActivities", () => {
       },
     });
     vi.clearAllMocks();
+    vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(false);
     mockUsePolygonAvailability.mockReturnValue({
       isAvailable: true,
       isLoading: false,
@@ -291,6 +306,45 @@ describe("OpeningActivities", () => {
       expect(screen.getByText("Total disturbance: 1")).toBeInTheDocument();
       expect(screen.getByText("Silviculture activities")).toBeInTheDocument();
       expect(screen.getByText("Total activities: 2")).toBeInTheDocument();
+    });
+
+    it("renders action buttons and handles navigate when gatePostgresFeature is false", async () => {
+      vi.mocked(API.OpeningEndpointService.getOpeningDisturbances).mockResolvedValue({
+        content: mockDisturbances,
+      });
+      vi.mocked(API.OpeningEndpointService.getOpeningActivities).mockResolvedValue(
+        mockPagedActivities
+      );
+
+      renderComponent(101);
+
+      const addDisturbanceBtn = await screen.findByRole("button", { name: "Add disturbance" });
+      expect(addDisturbanceBtn).toBeDisabled();
+
+      const addActivityBtn = await screen.findByRole("button", { name: "Add activity" });
+      expect(addActivityBtn).toBeEnabled();
+
+      fireEvent.click(addActivityBtn);
+      expect(mockNavigate).toHaveBeenCalledWith("/openings/101/create-activity");
+    });
+
+    it("does not render header action buttons when gatePostgresFeature is true", async () => {
+      vi.mocked(featureFlags.gatePostgresFeature).mockReturnValue(true);
+      vi.mocked(API.OpeningEndpointService.getOpeningDisturbances).mockResolvedValue({
+        content: mockDisturbances,
+      });
+      vi.mocked(API.OpeningEndpointService.getOpeningActivities).mockResolvedValue(
+        mockPagedActivities
+      );
+
+      renderComponent(101);
+
+      await waitFor(() => {
+        expect(screen.getByText(/3\s+activities in the opening area/i)).toBeInTheDocument();
+      });
+
+      expect(screen.queryByRole("button", { name: "Add disturbance" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Add activity" })).not.toBeInTheDocument();
     });
   });
 

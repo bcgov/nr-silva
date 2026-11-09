@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { AccordionSkeleton, Button, Column, Grid, Stack } from "@carbon/react";
 import { Add } from "@carbon/icons-react";
 import { generatePath, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
-import useBreakpoint from "@/hooks/UseBreakpoint";
 import { CREATE_ACTIVITY_PATH } from "@/routes/paths";
 import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
+import { gatePostgresFeature } from "@/utils/featureFlags";
 
 import EmptySection from "../../EmptySection";
 import DisturbanceAccordion from "./DisturbanceAccordion";
@@ -32,11 +32,8 @@ const OpeningActivities = ({
 }: OpeningActivitiesProps) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const breakPoint = useBreakpoint();
   const targetDisturbanceId = searchParams.get(DEEP_LINK_PARAMS.disturbanceId);
   const targetActivityId = searchParams.get(DEEP_LINK_PARAMS.activityId);
-  const [isActivityAccordionOpen, setIsActivityAccordionOpen] = useState(!!targetActivityId);
-  const showAddActivityButton = !isActivityAccordionOpen && breakPoint !== "sm" && breakPoint !== "md";
 
   const disturbanceQuery = useQuery({
     queryKey: ['opening', openingId, 'disturbance'],
@@ -100,7 +97,7 @@ const OpeningActivities = ({
 
   return (
     <Grid className="opening-activities-grid default-grid">
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={8} max={12}>
         <h3 className="default-tab-content-title">
           {
             `
@@ -110,6 +107,33 @@ const OpeningActivities = ({
           }
         </h3>
       </Column>
+      {
+        gatePostgresFeature()
+          ? null
+          : (
+            <Column sm={4} md={4} lg={4} max={2}>
+              <Stack orientation="horizontal" gap={4}>
+                <Button
+                  kind="primary"
+                  disabled
+                  size="sm"
+                  renderIcon={Add}
+                >
+                  Add disturbance
+                </Button>
+                <Button
+                  kind="primary"
+                  size="sm"
+                  renderIcon={Add}
+                  onClick={navToCreateActivity}
+                >
+                  Add activity
+                </Button>
+              </Stack>
+            </Column>
+          )
+      }
+
       {
         (disturbanceQuery.data?.content?.length ?? 0) > 0
           ? (
@@ -137,22 +161,7 @@ const OpeningActivities = ({
                   selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
                   setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
                   targetActivityId={targetActivityId}
-                  onOpenChange={setIsActivityAccordionOpen}
                 />
-
-                {showAddActivityButton && (
-                  <div className="add-activity-button-wrapper">
-                    <Button
-                      kind="tertiary"
-                      hasIconOnly
-                      renderIcon={() => <Add size={24} />}
-                      iconDescription="Add activity"
-                      size="2xl"
-                      className="add-activity-button"
-                      onClick={navToCreateActivity}
-                    />
-                  </div>
-                )}
               </Stack>
             </Column>
           )

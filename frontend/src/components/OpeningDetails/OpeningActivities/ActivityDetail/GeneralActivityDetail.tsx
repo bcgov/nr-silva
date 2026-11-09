@@ -1,5 +1,4 @@
 import { Column, Grid, SkeletonText } from "@carbon/react";
-import { UNIQUE_CHARACTERS_UNICODE } from "@/constants";
 import { CardItem } from "../../../Card";
 import { ActivityDetailProps } from "./definitions";
 
