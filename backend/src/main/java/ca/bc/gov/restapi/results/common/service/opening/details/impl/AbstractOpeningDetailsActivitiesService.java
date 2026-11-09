@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.dto.activity.*;
 import ca.bc.gov.restapi.results.common.dto.comment.CommentDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsActivitiesActivitiesDto;
 import ca.bc.gov.restapi.results.common.dto.opening.OpeningDetailsActivitiesDisturbanceDto;
+import ca.bc.gov.restapi.results.common.projection.opening.OpeningActivitiesActivitiesProjection;
 import ca.bc.gov.restapi.results.common.repository.ActivityTreatmentUnitRepository;
 import ca.bc.gov.restapi.results.common.repository.SilvicultureCommentRepository;
 import ca.bc.gov.restapi.results.common.service.ForestClientService;
@@ -14,9 +15,11 @@ import ca.bc.gov.restapi.results.common.util.PaginationUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -100,38 +103,66 @@ public abstract class AbstractOpeningDetailsActivitiesService
   @Override
   public Page<OpeningDetailsActivitiesActivitiesDto> getOpeningActivitiesActivities(
       Long openingId, String mainSearchTerm, Pageable pageable) {
-    return activityRepository
-        .getOpeningActivitiesActivitiesByOpeningId(
-            openingId,
-            Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null),
-            PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                PaginationUtil.resolveSort(
-                    pageable.getSort(), "ACTIVITY_TU_SEQ_NO", ACTIVITIES_SORT_FIELDS)))
-        .map(
-            projection ->
-                new OpeningDetailsActivitiesActivitiesDto(
-                    projection.getAtuId(),
-                    new CodeDescriptionDto(
-                        projection.getStatusCode(),
-                        getStatusDescription(projection.getStatusCode())),
-                    new CodeDescriptionDto(projection.getBaseCode(), projection.getBaseName()),
-                    new CodeDescriptionDto(projection.getTechCode(), projection.getTechName()),
-                    new CodeDescriptionDto(projection.getMethodCode(), projection.getMethodName()),
-                    new CodeDescriptionDto(
-                        projection.getObjective1Code(), projection.getObjective1Name()),
-                    new CodeDescriptionDto(
-                        projection.getObjective2Code(), projection.getObjective2Name()),
-                    new CodeDescriptionDto(
-                        projection.getObjective3Code(), projection.getObjective3Name()),
-                    projection.getArea(),
-                    new CodeDescriptionDto(
-                        projection.getFundingCode(), projection.getFundingName()),
-                    projection.getProjectId(),
-                    projection.getLastUpdate(),
-                    projection.getPlannedDate(),
-                    projection.getEndDate()));
+    Page<OpeningDetailsActivitiesActivitiesDto> page =
+        activityRepository
+            .getOpeningActivitiesActivitiesByOpeningId(
+                openingId,
+                Optional.ofNullable(mainSearchTerm).map(String::toUpperCase).orElse(null),
+                PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    PaginationUtil.resolveSort(
+                        pageable.getSort(), "ACTIVITY_TU_SEQ_NO", activitiesSortFields())))
+            .map(this::toActivitiesDto);
+    return new PageImpl<>(
+        addAdditionalActivityCodes(page.getContent()), page.getPageable(), page.getTotalElements());
+  }
+
+  /**
+   * Maps the sortable activity properties to the database fields. Implementations whose activity
+   * values are not fully held by the legacy columns override it so the sort follows the values
+   * displayed.
+   */
+  protected Map<String, String> activitiesSortFields() {
+    return ACTIVITIES_SORT_FIELDS;
+  }
+
+  private OpeningDetailsActivitiesActivitiesDto toActivitiesDto(
+      OpeningActivitiesActivitiesProjection projection) {
+    var objective1 =
+        new CodeDescriptionDto(projection.getObjective1Code(), projection.getObjective1Name());
+    var objective2 =
+        new CodeDescriptionDto(projection.getObjective2Code(), projection.getObjective2Name());
+    var objective3 =
+        new CodeDescriptionDto(projection.getObjective3Code(), projection.getObjective3Name());
+    var funding = new CodeDescriptionDto(projection.getFundingCode(), projection.getFundingName());
+    return new OpeningDetailsActivitiesActivitiesDto(
+        projection.getAtuId(),
+        new CodeDescriptionDto(
+            projection.getStatusCode(), getStatusDescription(projection.getStatusCode())),
+        new CodeDescriptionDto(projection.getBaseCode(), projection.getBaseName()),
+        new CodeDescriptionDto(projection.getTechCode(), projection.getTechName()),
+        new CodeDescriptionDto(projection.getMethodCode(), projection.getMethodName()),
+        objective1,
+        objective2,
+        objective3,
+        projection.getArea(),
+        funding,
+        projection.getProjectId(),
+        projection.getLastUpdate(),
+        projection.getPlannedDate(),
+        projection.getEndDate(),
+        Stream.of(objective1, objective2, objective3).filter(code -> code.code() != null).toList(),
+        Stream.of(funding).filter(code -> code.code() != null).toList());
+  }
+
+  /**
+   * Hook to add objectives and funding sources stored outside the legacy activity columns. The
+   * default keeps the values read from the legacy columns.
+   */
+  protected List<OpeningDetailsActivitiesActivitiesDto> addAdditionalActivityCodes(
+      List<OpeningDetailsActivitiesActivitiesDto> activities) {
+    return activities;
   }
 
   @Override

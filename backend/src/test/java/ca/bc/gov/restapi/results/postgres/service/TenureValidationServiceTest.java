@@ -5,10 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
@@ -18,6 +19,8 @@ import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockClientPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
+import ca.bc.gov.restapi.results.postgres.security.OperationAccessPolicy;
+import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +39,7 @@ import org.springframework.web.server.ResponseStatusException;
 @DisplayName("Unit Test | TenureValidationService")
 class TenureValidationServiceTest {
 
-  @Mock private LoggedUserHelper loggedUserHelper;
+  @Mock private OperationAccessPolicy accessPolicy;
   @Mock private CutBlockPostgresRepository cutBlockRepository;
   @Mock private CutBlockClientPostgresRepository cutBlockClientRepository;
   @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
@@ -50,12 +54,11 @@ class TenureValidationServiceTest {
   void setUp() {
     service =
         new TenureValidationService(
-            loggedUserHelper,
+            accessPolicy,
             cutBlockRepository,
             cutBlockClientRepository,
             cutBlockOpenAdminRepository);
-    // happy-path stubs
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(true);
+    // happy-path stubs; the access policy mock allows the operation unless a test says otherwise
     when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
         .thenReturn(Optional.of(DUMMY_BLOCK));
     when(cutBlockClientRepository.existsByCbSkeyAndClientNumber(anyLong(), anyString()))
@@ -205,15 +208,26 @@ class TenureValidationServiceTest {
   // ========== validateTenures() — auth ==========
 
   @Test
-  @DisplayName("JWT without matching client role should throw 403")
+  @DisplayName("Role mismatch for the client should throw 403 before any data check")
   void validateTenures_jwtRoleMismatch_throws403() {
-    when(loggedUserHelper.hasRoleMatching(any())).thenReturn(false);
+    doThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorised"))
+        .when(accessPolicy)
+        .requireClientRole(ProtectedOperation.CREATE_OPENING, CLIENT_NUMBER);
 
     List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
 
     assertThatThrownBy(() -> service.validateTenures(tenures, CLIENT_NUMBER))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("403");
+    verifyNoInteractions(cutBlockRepository, cutBlockClientRepository, cutBlockOpenAdminRepository);
+  }
+
+  @Test
+  @DisplayName("Checks access with the create opening rule for the client")
+  void validateTenures_checksCreateOpeningAccess() {
+    service.validateTenures(List.of(), CLIENT_NUMBER);
+
+    verify(accessPolicy).requireClientRole(ProtectedOperation.CREATE_OPENING, CLIENT_NUMBER);
   }
 
   // ========== validateTenures() — DB checks ==========

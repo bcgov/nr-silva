@@ -10,7 +10,9 @@ import ca.bc.gov.restapi.results.postgres.SilvaPostgresQueryConstants;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import java.util.List;
 import java.util.Optional;
+import jakarta.persistence.LockModeType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 @ConditionalOnProperty(prefix = "server", name = "primary-db", havingValue = "postgres")
 public interface OpeningPostgresRepository extends OpeningRepository<OpeningEntity> {
+
+  /**
+   * Loads the opening and locks its row until the transaction ends, so that writers that derive
+   * values from the opening's current state (next activity sequence number, revision count) run
+   * one at a time per opening.
+   */
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT o FROM OpeningEntity o WHERE o.id = :openingId")
+  Optional<OpeningEntity> findByIdForUpdate(@Param("openingId") Long openingId);
 
   @Override
   @Query(value = SilvaPostgresQueryConstants.SILVICULTURE_SEARCH_EXACT, nativeQuery = true)
