@@ -40,22 +40,22 @@ const DisturbanceSearchInput = ({ searchParams, handleSearchFieldChange }: props
 
   const disturbanceCodeQuery = useQuery({
     queryKey: ['codes', 'disturbance'],
-    queryFn: API.CodesEndpointService.getDisturbanceCodes,
+    queryFn: () => API.CodesEndpointService.getDisturbanceCodes(false),
   });
 
   const silvSystemCodeQuery = useQuery({
     queryKey: ['codes', 'silv-system'],
-    queryFn: API.CodesEndpointService.getSilvSystemCodes,
+    queryFn: () => API.CodesEndpointService.getSilvSystemCodes(false),
   });
 
   const silvVariantCodeQuery = useQuery({
     queryKey: ['codes', 'silv-system-variant'],
-    queryFn: API.CodesEndpointService.getSilvSystemVariantCodes,
+    queryFn: () => API.CodesEndpointService.getSilvSystemVariantCodes(false),
   });
 
   const silvCutPhaseQuery = useQuery({
     queryKey: ['codes', 'silv-cut-phase'],
-    queryFn: API.CodesEndpointService.getSilvCutPhaseCodes,
+    queryFn: () => API.CodesEndpointService.getSilvCutPhaseCodes(false),
   });
 
   const handleMultiSelectChange = (field: keyof DisturbanceSearchParams) =>

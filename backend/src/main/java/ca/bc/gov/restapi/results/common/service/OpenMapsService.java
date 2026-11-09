@@ -17,11 +17,18 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class OpenMapsService {
 
+  private static final String ACTIVITY_TREATMENT_KIND =
+      "WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW";
+
   private final RestClient restClient;
 
   // null in oracle mode; present in postgres mode to read geometry from the local DB
   @Autowired(required = false)
   private OpeningGeometryService openingGeometryService;
+
+  // null in oracle mode; present in postgres mode to read activity geometry from the local DB
+  @Autowired(required = false)
+  private ActivityGeometryReadService activityGeometryService;
 
   /**
    * Instantiates a new Open maps service.
@@ -42,6 +49,15 @@ public class OpenMapsService {
     if (openingGeometryService != null && isOpeningSvwKind(kind)) {
       return openingGeometryService.getOpeningGeometry(openingId);
     }
+    if (activityGeometryService != null && ACTIVITY_TREATMENT_KIND.equals(kind)) {
+      return mergeFeatures(
+          activityGeometryService.getActivityGeometries(openingId),
+          fetchFromWfs(openingId, kind, " AND SILV_BASE_CODE='DN'"));
+    }
+    return fetchFromWfs(openingId, kind, "");
+  }
+
+  private FeatureCollection fetchFromWfs(Long openingId, String kind, String extraFilter) {
     try {
       return restClient
           .get()
@@ -58,7 +74,7 @@ public class OpenMapsService {
                       .queryParam("outputFormat", "application/json")
                       .queryParam("SrsName", "EPSG:4326")
                       .queryParam("PROPERTYNAME", getPropertyName(kind))
-                      .queryParam("CQL_FILTER", "OPENING_ID=" + openingId)
+                      .queryParam("CQL_FILTER", "OPENING_ID=" + openingId + extraFilter)
                       .build(Map.of()))
           .retrieve()
           .body(FeatureCollection.class);
@@ -130,6 +146,15 @@ public class OpenMapsService {
       throw new ResponseStatusException(
           HttpStatus.UNPROCESSABLE_ENTITY, "Unable to derive mapsheet for the provided geometry");
     }
+  }
+
+  /** Disturbances (DN) are not stored locally, so they are still read from BCGW. */
+  private FeatureCollection mergeFeatures(FeatureCollection local, FeatureCollection bcgw) {
+    if (bcgw == null || bcgw.getFeatures() == null) {
+      return local;
+    }
+    bcgw.getFeatures().forEach(local::add);
+    return local;
   }
 
   private boolean isOpeningSvwKind(String kind) {

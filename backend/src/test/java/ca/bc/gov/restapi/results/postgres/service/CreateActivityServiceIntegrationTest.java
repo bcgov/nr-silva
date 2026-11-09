@@ -410,6 +410,56 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThat(after).isEqualTo(before);
   }
 
+  private void givenOpeningGeometry(Long openingId, String wkt3005) {
+    jdbcTemplate.update("DELETE FROM silva.opening_geometry WHERE opening_id = ?", openingId);
+    jdbcTemplate.update(
+        "INSERT INTO silva.opening_geometry (opening_id, geometry, feature_area, "
+            + "feature_perimeter, feature_class_skey, entry_userid, entry_timestamp, "
+            + "update_userid, update_timestamp, revision_count) "
+            + "VALUES (?, ST_GeomFromText(?, 3005), 1, 1, 2409, 'TEST', now(), 'TEST', now(), 1)",
+        openingId,
+        wkt3005);
+  }
+
+  @Test
+  @DisplayName("Saves the activity when its geometry is within the opening geometry")
+  void createActivity_withinOpeningGeometry_saves() {
+    givenOpeningGeometry(
+        OPENING_ID,
+        "POLYGON((849000 1499000, 851000 1499000, 851000 1501000, 849000 1501000, 849000 1499000))");
+
+    Long id =
+        service
+            .createActivity(
+                OPENING_ID,
+                planned("HC", null),
+                "activity.geojson",
+                () -> SQUARE_GEOJSON.getBytes(UTF_8))
+            .activityId();
+
+    assertThat(id).isNotNull();
+  }
+
+  @Test
+  @DisplayName("Saves nothing when the activity geometry is outside the opening geometry")
+  void createActivity_outsideOpeningGeometry_savesNothing() {
+    givenOpeningGeometry(
+        OPENING_ID,
+        "POLYGON((800000 1400000, 800100 1400000, 800100 1400100, 800000 1400100, 800000 1400000))");
+    int before = activityCount();
+    CreateActivityRequestDto request = planned("HC", null);
+    Supplier<byte[]> file = () -> SQUARE_GEOJSON.getBytes(UTF_8);
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request, "activity.geojson", file))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            e ->
+                assertThat(e.getReason())
+                    .startsWith("Activity geometry must be within the opening geometry"));
+
+    assertThat(activityCount()).isEqualTo(before);
+  }
+
   private int activityCount() {
     entityManager.flush();
     return jdbcTemplate.queryForObject(

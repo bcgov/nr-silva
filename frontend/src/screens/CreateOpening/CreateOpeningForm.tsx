@@ -57,27 +57,34 @@ export const CreateOpeningForm = ({ type: _type, currentStep, setCurrentStep }: 
 
   const fileMutation = useMutation({
     mutationFn: (file: Blob) => API.OpeningCreateEndpointService.uploadOpeningSpatialFile({ file }),
-    onSuccess: (data) => {
+    // Ignore results for files that were removed or replaced while uploading.
+    onSuccess: (data, uploadedFile) => {
       setUploadError(undefined);
-      setForm((f: CreateOpeningFormType) => ({
-        ...f,
-        file: f.file ? { ...f.file, validatedObj: data } : f.file,
-        openingGrossArea: f.openingGrossArea
-          ? {
-            ...f.openingGrossArea,
-            value: data?.geometryArea ? String(data.geometryArea) : f.openingGrossArea.value,
-            isInvalid: false,
-          }
-          : f.openingGrossArea,
-      }));
+      setForm((f: CreateOpeningFormType) => {
+        if (f.file?.value !== uploadedFile) return f;
+        return {
+          ...f,
+          file: { ...f.file, validatedObj: data },
+          openingGrossArea: f.openingGrossArea
+            ? {
+              ...f.openingGrossArea,
+              value: data?.geometryArea ? String(data.geometryArea) : f.openingGrossArea.value,
+              isInvalid: false,
+            }
+            : f.openingGrossArea,
+        };
+      });
       scrollToSection(form.openingGrossArea?.id);
     },
-    onError: (err) => {
+    onError: (err, uploadedFile) => {
       const status = err instanceof ApiError ? err.status : 0;
       if (status === 401) return;
       const body = err instanceof ApiError ? err.body : undefined;
       const message = body?.detail ?? body?.message;
-      setForm((f: CreateOpeningFormType) => ({ ...f, file: f.file ? { ...f.file, validatedObj: undefined } : f.file }));
+      setForm((f: CreateOpeningFormType) => ({
+        ...f,
+        file: f.file?.value === uploadedFile ? { ...f.file, validatedObj: undefined } : f.file,
+      }));
       setUploadError(message || 'File upload failed. Please try again.');
     }
   });

@@ -270,7 +270,7 @@ export const getStyleForFeature = (
   };
 }
 
-const colorMap: Record<string, string[]> = {
+export const colorMap: Record<string, string[]> = {
   red: [
     '#FFF6F4',
     '#FFE9E4',
@@ -314,12 +314,25 @@ const colorMap: Record<string, string[]> = {
   default: [defaultStyle.fillColor],
 }
 
-const outlineColorMap: Record<string, string> = {
+export const outlineColorMap: Record<string, string> = {
   red: '#801701',
   purple: '#6202C5',
   orange: '#E64F02',
   pink: '#B3035C',
   grey: '#939395',
+};
+
+export const openingStyle: PathOptions = {
+  ...defaultStyle,
+  color: '#00A5C699',
+  fillColor: '#00A5C6',
+  weight: 1,
+};
+
+export const activityStyle: PathOptions = {
+  ...defaultStyle,
+  color: outlineColorMap.orange,
+  fillColor: outlineColorMap.orange,
 };
 
 export const kindWeightMap: Record<MapKindType, number> = {

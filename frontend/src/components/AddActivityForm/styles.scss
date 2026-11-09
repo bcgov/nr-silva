@@ -1,0 +1,37 @@
+@use '@bcgov-nr/nr-theme/design-tokens/variables.scss' as vars;
+@use '@/styles/type' as type;
+
+.add-activity-form-grid {
+  .activity-information-grid {
+    row-gap: 1.5rem;
+    column-gap: 2rem;
+
+
+    .capped-multiselect-item--disabled {
+      color: var(--#{vars.$bcgov-prefix}-text-disabled);
+      pointer-events: none;
+    }
+  }
+
+  .file-uploader-container {
+    .#{vars.$bcgov-prefix}--file-browse-btn {
+      max-inline-size: 100%;
+    }
+
+    .file-uploader-title {
+      label {
+        @include type.type-style('heading-compact-01');
+      }
+
+      .file-type-p {
+        margin-top: 0.5rem;
+        @include type.type-style('body-compact-01');
+        color: var(--#{vars.$bcgov-prefix}-text-secondary);
+      }
+    }
+  }
+
+  .activity-status-tile-group-grid {
+    column-gap: 2rem;
+  }
+}

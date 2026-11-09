@@ -18,5 +18,13 @@ export type OpeningDetailsActivitiesActivitiesDto = {
     lastUpdate: string | null;
     plannedDate: string | null;
     endDate: string | null;
+    /**
+     * All objectives of the activity. objective1..3 repeat the first three.
+     */
+    objectives: Array<CodeDescriptionDto>;
+    /**
+     * All funding sources of the activity. funding repeats the first one.
+     */
+    fundingSources: Array<CodeDescriptionDto>;
 };
 

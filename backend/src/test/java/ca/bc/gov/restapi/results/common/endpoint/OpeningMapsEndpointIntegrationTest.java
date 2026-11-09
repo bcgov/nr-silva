@@ -61,7 +61,9 @@ class OpeningMapsEndpointIntegrationTest extends AbstractTestContainerIntegratio
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features[0].type").value("Feature"))
-        .andExpect(jsonPath("$.features[0].id").value(String.valueOf(openingId)))
+        .andExpect(
+            jsonPath("$.features[0].id")
+                .value("WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW." + openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_ID").value(openingId))
         .andExpect(jsonPath("$.features[0].properties.OPENING_CATEGORY_CODE").isEmpty())
         .andExpect(jsonPath("$.features[0].properties.OPENING_STATUS_CODE").isEmpty())

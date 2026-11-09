@@ -50,7 +50,7 @@ const StockingStandardsSearchInput = ({ searchParams, queryParams, handleSearchF
 
   const preferredSpeciesQuery = useQuery({
     queryKey: ["codes", "silv-tree-species"],
-    queryFn: API.CodesEndpointService.getSilvTreeSpeciesCodes,
+    queryFn: () => API.CodesEndpointService.getSilvTreeSpeciesCodes(false),
   });
 
   const handleMultiSelectChange = (field: keyof StockingStandardsSearchParams) =>

@@ -67,7 +67,7 @@ INSERT INTO silva.cut_block (
 INSERT INTO silva.forest_client (
   client_number, client_name, legal_first_name, legal_middle_name, client_status_code, client_type_code, birthdate, client_id_type_code, client_identification, registry_company_type_code, corp_regn_nmbr, client_acronym, wcb_firm_number, ocg_supplier_nmbr, client_comment, add_timestamp, add_userid, add_org_unit, update_timestamp, update_userid, update_org_unit, revision_count
 ) VALUES
-  ('00012797', 'SILVA TEST CLIENT 101 CORP', 'UNQ000000000000', 'UNQ000000000000', 'ACT', 'C', NULL, NULL, NULL, NULL, NULL, 'STC1', NULL, NULL, NULL, '2015-01-01 00:00:00', 'IDIR\HEATHER77', 1, '2015-01-01 00:00:00', 'IDIR\HEATHER77', 1, 1),
+  ('00012797', 'MINISTRY OF FOREST', 'UNQ000000000000', 'UNQ000000000000', 'ACT', 'C', NULL, NULL, NULL, NULL, NULL, 'STC1', NULL, NULL, NULL, '2015-01-01 00:00:00', 'IDIR\HEATHER77', 1, '2015-01-01 00:00:00', 'IDIR\HEATHER77', 1, 1),
   ('00032699', 'SILVA SYNTHETIC FORESTRY LTD', 'UNQ000000000100', 'UNQ000000000100', 'ACT', 'C', NULL, NULL, NULL, NULL, NULL, 'SSFL', NULL, NULL, NULL, '2015-01-18 03:07:00', 'IDIR\TIMOTHY51', 2, '2015-01-18 03:07:00', 'IDIR\TIMOTHY51', 2, 1),
   ('00045503', 'MOCK SAMPLE TIMBER CORP', 'UNQ000000000200', 'UNQ000000000200', 'ACT', 'C', NULL, NULL, NULL, NULL, NULL, 'MSTC', NULL, NULL, NULL, '2015-02-04 06:14:00', 'IDIR\WUSHAWN', 70, '2015-02-04 06:14:00', 'IDIR\WUSHAWN', 70, 1),
   ('00146886', 'SAMPLE SEEDING AND HARVESTING INC', 'UNQ000000000300', 'UNQ000000000300', 'ACT', 'C', NULL, NULL, NULL, NULL, NULL, 'SSHI', NULL, NULL, NULL, '2015-02-21 09:21:00', 'IDIR\MICHELLE49', 10, '2015-02-21 09:21:00', 'IDIR\MICHELLE49', 10, 1),
@@ -135,6 +135,11 @@ INSERT INTO silva.cut_block_client (
   (40000047, 10000007, 'O', '2020-01-01 00:00:00', NULL, '00', '00045503', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000048, 10000038, 'O', '2020-01-01 00:00:00', NULL, '00', '00146886', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00'),
   (40000049, 10000019, 'O', '2020-01-01 00:00:00', NULL, '00', '00149237', 1, 'SILVA_LOAD', '2025-01-01 00:00:00', 'SILVA_LOAD', '2025-01-01 00:00:00');
+
+-- Openings without a cut block (cb_skey NULL) get one so that client 00012797 is their opening client.
+UPDATE silva.cut_block_open_admin SET cb_skey = 10000000 WHERE opening_id = 1796497 AND cb_skey IS NULL;
+UPDATE silva.cut_block_open_admin SET cb_skey = 10000005 WHERE opening_id = 1524010 AND cb_skey IS NULL;
+UPDATE silva.cut_block_open_admin SET cb_skey = 10000010 WHERE opening_id = 1480130 AND cb_skey IS NULL;
 
 -- biogeoclimatic_catalogue / site_series_catalogue seed, sourced from real BC BEC zone/subzone/site-series
 -- combinations (BC MOF WFP ecosystem mapping crosswalk tables) for BEC validation testing.

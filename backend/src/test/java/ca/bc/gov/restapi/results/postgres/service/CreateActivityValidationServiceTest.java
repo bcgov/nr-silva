@@ -8,15 +8,12 @@ import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvBaseCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvFundSrceCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvMethodCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvObjectiveCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvTechniqueCodePostgresEntity;
-import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -45,9 +42,6 @@ import org.springframework.web.server.ResponseStatusException;
 @DisplayName("Unit Test | CreateActivityValidationService")
 class CreateActivityValidationServiceTest {
 
-  private static final Long OPENING_ID = 1001L;
-
-  @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
   @Mock private SilvBaseCodePostgresRepository baseCodeRepository;
   @Mock private SilvTechniqueCodePostgresRepository techniqueCodeRepository;
   @Mock private SilvMethodCodePostgresRepository methodCodeRepository;
@@ -55,7 +49,6 @@ class CreateActivityValidationServiceTest {
   @Mock private SilvFundSrceCodePostgresRepository fundSrceCodeRepository;
 
   private CreateActivityValidationService service;
-  private OpeningEntity opening;
 
   /** Mutable copy of the request so each test only changes what it cares about. */
   private static class Request {
@@ -112,19 +105,11 @@ class CreateActivityValidationServiceTest {
     service =
         new CreateActivityValidationService(
             Validation.buildDefaultValidatorFactory().getValidator(),
-            new OpeningGrossAreaResolver(cutBlockOpenAdminRepository),
             baseCodeRepository,
             techniqueCodeRepository,
             methodCodeRepository,
             objectiveCodeRepository,
             fundSrceCodeRepository);
-
-    opening =
-        OpeningEntity.builder()
-            .id(OPENING_ID)
-            .category("FTML")
-            .openingGrossArea(new BigDecimal("100.0000"))
-            .build();
 
     when(baseCodeRepository.findAllById(any()))
         .thenAnswer(
@@ -162,14 +147,14 @@ class CreateActivityValidationServiceTest {
     CreateActivityRequestDto dto = request.build();
     ResponseStatusException exception =
         org.junit.jupiter.api.Assertions.assertThrows(
-            ResponseStatusException.class, () -> service.validate(opening, dto));
+            ResponseStatusException.class, () -> service.validate(dto));
     assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     return exception.getReason();
   }
 
   private void assertValid(Request request) {
     CreateActivityRequestDto dto = request.build();
-    assertThatCode(() -> service.validate(opening, dto)).doesNotThrowAnyException();
+    assertThatCode(() -> service.validate(dto)).doesNotThrowAnyException();
   }
 
   @Test
@@ -372,113 +357,5 @@ class CreateActivityValidationServiceTest {
     assertThat(errorOf(request))
         .contains("objectiveCodes: duplicate values are not allowed")
         .contains("fundingSourceCodes: duplicate values are not allowed");
-  }
-
-  @Test
-  @DisplayName("Allows an area up to 125% of the opening gross area")
-  void validate_areaWithinTolerance_passes() {
-    Request request = new Request();
-    request.plannedArea = new BigDecimal("125.0");
-
-    assertValid(request);
-  }
-
-  @Test
-  @DisplayName("Rejects a planned area over 125% and reports the gross area")
-  void validate_plannedAreaOverTolerance_rejectedWithGrossArea() {
-    Request request = new Request();
-    request.plannedArea = new BigDecimal("125.1");
-
-    assertThat(errorOf(request))
-        .isEqualTo(
-            "plannedArea: Planned area (125.1 ha) cannot exceed 125 ha "
-                + "(125% of the Opening's gross area of 100 ha)");
-  }
-
-  @Test
-  @DisplayName("Rejects a treated area over 125% and reports the gross area")
-  void validate_treatedAreaOverTolerance_rejectedWithGrossArea() {
-    Request request = new Request();
-    request.status = ActivityStatus.COMPLETED;
-    request.completionDate = LocalDate.now();
-    request.treatedArea = new BigDecimal("130.0");
-
-    assertThat(errorOf(request))
-        .isEqualTo(
-            "treatedArea: Treated area (130 ha) cannot exceed 125 ha "
-                + "(125% of the Opening's gross area of 100 ha)");
-  }
-
-  @Test
-  @DisplayName("Exempts PC and FE from the area tolerance")
-  void validate_exemptBases_skipAreaCheck() {
-    for (String base : List.of("PC", "FE")) {
-      Request request = new Request();
-      request.baseCode = base;
-      request.plannedArea = new BigDecimal("900.0");
-      assertValid(request);
-    }
-  }
-
-  @Test
-  @DisplayName("Exempts more bases for NREQ openings, but still checks HC, HI, LB and ST")
-  void validate_noRequirementOpening_exemptsMoreBases() {
-    opening.setCategory("NREQ");
-
-    for (String base : List.of("JS", "PR", "RC", "RD", "EP", "CC", "CM", "SX", "AU", "BR")) {
-      Request request = new Request();
-      request.baseCode = base;
-      request.plannedArea = new BigDecimal("900.0");
-      assertValid(request);
-    }
-    for (String base : List.of("HC", "HI", "LB", "ST")) {
-      Request request = new Request();
-      request.baseCode = base;
-      request.plannedArea = new BigDecimal("900.0");
-      assertThat(errorOf(request)).contains("plannedArea: Planned area (900 ha) cannot exceed");
-    }
-  }
-
-  @Test
-  @DisplayName("JS is only exempt for NREQ openings")
-  void validate_jsOnRegularOpening_checked() {
-    Request request = new Request();
-    request.baseCode = "JS";
-    request.plannedArea = new BigDecimal("900.0");
-
-    assertThat(errorOf(request)).contains("plannedArea: Planned area (900 ha) cannot exceed");
-  }
-
-  @Test
-  @DisplayName("Falls back to the prime licence gross area when the opening has none")
-  void validate_noOpeningGrossArea_usesPrimeTenure() {
-    opening.setOpeningGrossArea(null);
-    CutBlockOpenAdminEntity secondary =
-        CutBlockOpenAdminEntity.builder()
-            .openingPrimeLicenceInd("N")
-            .openingGrossArea(new BigDecimal("999.0"))
-            .build();
-    CutBlockOpenAdminEntity prime =
-        CutBlockOpenAdminEntity.builder()
-            .openingPrimeLicenceInd("Y")
-            .openingGrossArea(new BigDecimal("100.0"))
-            .build();
-    when(cutBlockOpenAdminRepository.findAllByOpeningId(OPENING_ID))
-        .thenReturn(List.of(secondary, prime));
-    Request request = new Request();
-    request.plannedArea = new BigDecimal("126.0");
-
-    assertThat(errorOf(request)).contains("125% of the Opening's gross area of 100 ha");
-  }
-
-  @Test
-  @DisplayName("Skips the area check when no gross area is known")
-  void validate_noGrossAreaAnywhere_skipsAreaCheck() {
-    opening.setOpeningGrossArea(null);
-    when(cutBlockOpenAdminRepository.findAllByOpeningId(OPENING_ID)).thenReturn(List.of());
-    Request request = new Request();
-    request.plannedArea = new BigDecimal("900.0");
-
-    assertValid(request);
   }
 }
