@@ -1,15 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?><database name="default" schema="silva" type="PostgreSQL - 17.0 (Debian 17.0-1.pgdg110+1)">
    <sequences>
+      <sequence increment="1" name="activity_treatment_unit_id_seq" startValue="1"/>
       <sequence increment="1" name="cut_block_open_admin_id_seq" startValue="1"/>
       <sequence increment="1" name="opening_id_seq" startValue="1"/>
+      <sequence increment="1" name="silviculture_comment_id_seq" startValue="1"/>
       <sequence increment="1" name="standard_regime_site_series_id_seq" startValue="1"/>
       <sequence increment="1" name="standards_regime_id_seq" startValue="1"/>
       <sequence increment="1" name="standards_regime_layer_id_seq" startValue="1"/>
    </sequences>
    <tables>
+      <table name="activity_treatment_geometry" remarks="The spatial polygon component of an Activity Treatment Unit." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="activity_treatment_unit_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="activity_treatment_unit_id" foreignKey="atug_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="geometry" nullable="false" remarks="Spatial coordinate representation of the activity area, in BC Albers (EPSG:3005)." size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="4" id="2" name="feature_area" nullable="false" remarks="The area of the activity polygon measured in hectares." size="11" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="4" id="3" name="feature_perimeter" nullable="false" remarks="The perimeter of the activity polygon measured in metres." size="11" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="capture_method_code" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="feature_class_skey" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="feature_class_skey" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="feature_classes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="data_source_code" nullable="true" remarks="" size="10" type="varchar" typeCode="12">
+            <parent column="data_source_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="data_source_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="observation_date" nullable="true" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="data_quality_comment" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="update_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="update_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="revision_count" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="activity_treatment_unit_id" sequenceNumberInPK="1"/>
+         <index name="activity_treatment_geometry_pkey" unique="true">
+            <column ascending="true" name="activity_treatment_unit_id"/>
+         </index>
+         <index name="atug_geometry_i" unique="false">
+            <column ascending="true" name="geometry"/>
+         </index>
+      </table>
       <table name="activity_treatment_unit" remarks="An Activity Treatment Unit is a Silvicultural treatment that is performed on a mappable area which deliniates a specific area of land. ATUs may not span opening boundaries but an opening may have more than one ATU associated with it." schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="activity_treatment_unit_id" nullable="false" remarks="System generated value uniquely identifying the Activity Treatment Unit." size="19" type="int8" typeCode="-5">
+            <child column="activity_treatment_unit_id" foreignKey="atug_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_geometry"/>
             <child column="activity_treatment_unit_id" foreignKey="acl_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_tu_comment_link"/>
+            <child column="activity_treatment_unit_id" foreignKey="atufs_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_tu_fund_srce"/>
+            <child column="activity_treatment_unit_id" foreignKey="atuo_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_tu_objective"/>
             <child column="activity_treatment_unit_id" foreignKey="pr_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="planting_rslt"/>
             <child column="activity_treatment_unit_id" foreignKey="sra_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_relief_application"/>
          </column>
@@ -164,6 +198,48 @@
             <column ascending="true" name="activity_treatment_unit_id"/>
             <column ascending="true" name="silviculture_comment_id"/>
          </index>
+      </table>
+      <table name="activity_tu_fund_srce" remarks="Funding sources of an Activity Treatment Unit, one row per funding source for the planned or actual set." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="activity_treatment_unit_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="activity_treatment_unit_id" foreignKey="atufs_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="results_ind" nullable="false" remarks="N for the planned set of funding sources, Y for the actual set." size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="silv_fund_srce_code" nullable="false" remarks="" size="3" type="varchar" typeCode="12">
+            <parent column="silv_fund_srce_code" foreignKey="atufs_sfsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_fund_srce_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="fund_srce_order" nullable="false" remarks="Position of the funding source as entered by the user, starting at 1." size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <primaryKey column="activity_treatment_unit_id" sequenceNumberInPK="1"/>
+         <primaryKey column="results_ind" sequenceNumberInPK="2"/>
+         <primaryKey column="silv_fund_srce_code" sequenceNumberInPK="3"/>
+         <index name="activity_tu_fund_srce_pkey" unique="true">
+            <column ascending="true" name="activity_treatment_unit_id"/>
+            <column ascending="true" name="results_ind"/>
+            <column ascending="true" name="silv_fund_srce_code"/>
+         </index>
+         <checkConstraint constraint="((results_ind)::text = ANY ((ARRAY['Y'::character varying, 'N'::character varying])::text[]))" name="atufs_results_ind_ck"/>
+      </table>
+      <table name="activity_tu_objective" remarks="Silviculture objectives of an Activity Treatment Unit, one row per objective for the planned or actual set." schema="silva" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="activity_treatment_unit_id" nullable="false" remarks="" size="19" type="int8" typeCode="-5">
+            <parent column="activity_treatment_unit_id" foreignKey="atuo_atu_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="results_ind" nullable="false" remarks="N for the planned set of objectives, Y for the actual set." size="1" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="silv_objective_code" nullable="false" remarks="" size="3" type="varchar" typeCode="12">
+            <parent column="silv_objective_code" foreignKey="atuo_soc_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_objective_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="objective_order" nullable="false" remarks="Position of the objective as entered by the user, starting at 1." size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="entry_userid" nullable="false" remarks="" size="30" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="entry_timestamp" nullable="false" remarks="" size="22" type="timestamp" typeCode="93"/>
+         <primaryKey column="activity_treatment_unit_id" sequenceNumberInPK="1"/>
+         <primaryKey column="results_ind" sequenceNumberInPK="2"/>
+         <primaryKey column="silv_objective_code" sequenceNumberInPK="3"/>
+         <index name="activity_tu_objective_pkey" unique="true">
+            <column ascending="true" name="activity_treatment_unit_id"/>
+            <column ascending="true" name="results_ind"/>
+            <column ascending="true" name="silv_objective_code"/>
+         </index>
+         <checkConstraint constraint="((results_ind)::text = ANY ((ARRAY['Y'::character varying, 'N'::character varying])::text[]))" name="atuo_results_ind_ck"/>
       </table>
       <table name="age_class_code" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="age_class_code" nullable="false" remarks="The age classification of the primary tree species in the previous stand (for the area under the prescription)." size="1" type="varchar" typeCode="12">
@@ -343,8 +419,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="forest_file_id" nullable="false" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="cutting_permit_id" nullable="true" remarks="Identifier for a cutting permit associated with a harvesting tenure." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12">
-            <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
             <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
+            <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cut_block_id" nullable="false" remarks="Identifier for a cut block of a harvesting tenure (within a cutting permit for tenures with cp&quot;s)." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="6" name="sp_exempt_ind" nullable="false" remarks="Only set to &quot;Y&quot; for &quot;Exemption for silviculture Prescriptions&quot; under sec. 30 of the Forest Practices Code of British Columbia Act, eg cut blocks under one hectare, or the use of the land will be incompatible with the establishment of a free growing stand." size="1" type="varchar" typeCode="12"/>
@@ -540,6 +616,7 @@
       </table>
       <table name="data_source_code" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="data_source_code" nullable="false" remarks="Describes the origin of a feature image. E.g. Air Photo, Forest Cover Maps, Satelite." size="10" type="varchar" typeCode="12">
+            <child column="data_source_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="activity_treatment_geometry"/>
             <child column="data_source_code" foreignKey="fcag_dsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="forest_cover_archive_geometry"/>
             <child column="data_source_code" foreignKey="fcg_dsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="forest_cover_geometry"/>
             <child column="data_source_code" foreignKey="og_dsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_geometry"/>
@@ -568,6 +645,7 @@
       </table>
       <table name="feature_classes" remarks="" schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="feature_class_skey" nullable="false" remarks="The unique key assigned to a Feature Class by the Ministry of Forests." size="19" type="int8" typeCode="-5">
+            <child column="feature_class_skey" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="activity_treatment_geometry"/>
             <child column="feature_class_skey" foreignKey="fcag_corpfcc_fk" implied="false" onDeleteCascade="false" schema="silva" table="forest_cover_archive_geometry"/>
             <child column="feature_class_skey" foreignKey="fcg_corpfcc_fk" implied="false" onDeleteCascade="false" schema="silva" table="forest_cover_geometry"/>
             <child column="feature_class_skey" foreignKey="og_corpfcc_fk" implied="false" onDeleteCascade="false" schema="silva" table="opening_geometry"/>
@@ -2655,6 +2733,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="silv_fund_srce_code" nullable="false" remarks="A code indicating which Funding Program will be the primary funding source for silviculture activities on the opening." size="3" type="varchar" typeCode="12">
             <child column="plan_silv_fund_srce_code" foreignKey="atu_sfsc_plnd_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
             <child column="silv_fund_srce_code" foreignKey="atu_sfsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+            <child column="silv_fund_srce_code" foreignKey="atufs_sfsc_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_tu_fund_srce"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="description" nullable="false" remarks="Full description of code value." size="120" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="effective_date" nullable="false" remarks="The date the value is available for use." size="22" type="timestamp" typeCode="93"/>
@@ -2700,6 +2779,7 @@
             <child column="silv_objective_code_1" foreignKey="atu_soc1_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
             <child column="silv_objective_code_2" foreignKey="atu_soc2_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
             <child column="silv_objective_code_3" foreignKey="atu_soc3_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_treatment_unit"/>
+            <child column="silv_objective_code" foreignKey="atuo_soc_fk" implied="false" onDeleteCascade="false" schema="silva" table="activity_tu_objective"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="description" nullable="false" remarks="The full description of the code value." size="120" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="effective_date" nullable="false" remarks="The date the value is available for use." size="22" type="timestamp" typeCode="93"/>
@@ -2933,8 +3013,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="fiscal_year" nullable="false" remarks="The fiscal year in which the project commenced, or, in the case of a planned project, is expected to commence. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="5" type="int2" typeCode="5"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="org_unit_no" nullable="false" remarks="Unique physical identifier for the storage of organizational unit codes for the Ministry of Forests&quot; offices. Values stored here are for the computer&quot;s use only, and are not to be used by people as &quot;ministry codes&quot;." size="19" type="int8" typeCode="-5">
-            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
             <parent column="org_unit_no" foreignKey="proj_saz_fk" implied="false" onDeleteCascade="false" schema="silva" table="silv_admin_zone"/>
+            <parent column="org_unit_no" foreignKey="proj_ou_fk" implied="false" onDeleteCascade="false" schema="silva" table="org_unit"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="project_sequence" nullable="false" remarks="A one to four character identifier that is meaningful to the user and assists in distinguishing one Project from another within the same SILV BASE CODE, FISCAL YEAR, ORG UNIT CODE. A component of the concatenated business key which consists of: SILV BASE CODE FISCAL YEAR ORG UNIT CODE PROJECT SEQUENCE e.g. PL2006DCR035A" size="4" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="project_location" nullable="true" remarks="A comment regarding the general location of the project." size="30" type="varchar" typeCode="12"/>

@@ -147,6 +147,11 @@
                                                 <td class="constraint detail">atu_soc3_fk</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="activity_tu_objective.silv_objective_code references silv_objective_code.silv_objective_code via atuo_soc_fk"><a href='activity_tu_objective.html'>activity_tu_objective</a><span class='relatedKey'>.silv_objective_code</span></td>
+                                                <td class="constraint detail">atuo_soc_fk</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -283,32 +288,36 @@
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="364,5,669,944">
-<area shape="rect" id="node2" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="5,384,320,600">
+<area shape="rect" id="node2" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="5,501,320,717">
+<area shape="rect" id="node3" href="activity_tu_objective.html" target="_top" title="activity_tu_objective" alt="" coords="713,435,972,611">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/silv_objective_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1175,161,1480,1100">
-<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="833,1453,1092,1541">
-<area shape="rect" id="node3" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="853,1032,1072,1120">
-<area shape="rect" id="node4" href="opening.html" target="_top" title="opening" alt="" coords="581,232,725,320">
-<area shape="rect" id="node5" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,190,151,278">
-<area shape="rect" id="node6" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="846,446,1079,534">
-<area shape="rect" id="node7" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="853,341,1073,429">
-<area shape="rect" id="node8" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="805,657,1120,873">
-<area shape="rect" id="node9" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="844,236,1081,324">
-<area shape="rect" id="node10" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,272,512,360">
-<area shape="rect" id="node11" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="795,552,1131,640">
-<area shape="rect" id="node12" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="556,126,751,214">
-<area shape="rect" id="node13" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="844,1348,1081,1436">
-<area shape="rect" id="node14" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="855,1137,1070,1225">
-<area shape="rect" id="node15" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="823,1242,1102,1330">
-<area shape="rect" id="node16" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="835,890,1090,978">
-<area shape="rect" id="node17" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="847,58,1079,146">
-<area shape="rect" id="node18" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1524,217,1807,305">
-<area shape="rect" id="node19" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1575,701,1755,789">
-<area shape="rect" id="node20" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1540,112,1791,200">
+<area shape="rect" id="node1" href="activity_treatment_geometry.html" target="_top" title="activity_treatment_geometry" alt="" coords="1487,779,1799,867">
+<area shape="rect" id="node2" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1175,887,1443,975">
+<area shape="rect" id="node3" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="833,1061,1092,1149">
+<area shape="rect" id="node4" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="853,252,1072,340">
+<area shape="rect" id="node5" href="opening.html" target="_top" title="opening" alt="" coords="581,1025,725,1113">
+<area shape="rect" id="node6" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1011,151,1099">
+<area shape="rect" id="node7" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="846,5,1079,93">
+<area shape="rect" id="node8" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="853,357,1073,445">
+<area shape="rect" id="node9" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="805,1203,1120,1419">
+<area shape="rect" id="node10" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="844,463,1081,551">
+<area shape="rect" id="node11" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,1092,512,1180">
+<area shape="rect" id="node12" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="795,568,1131,656">
+<area shape="rect" id="node13" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="556,181,751,269">
+<area shape="rect" id="node14" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="844,673,1081,761">
+<area shape="rect" id="node15" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="855,779,1070,867">
+<area shape="rect" id="node16" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="823,884,1102,972">
+<area shape="rect" id="node17" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="835,1436,1090,1524">
+<area shape="rect" id="node18" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="847,111,1079,199">
+<area shape="rect" id="node19" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1501,884,1784,972">
+<area shape="rect" id="node20" href="activity_tu_fund_srce.html" target="_top" title="activity_tu_fund_srce" alt="" coords="1519,507,1766,595">
+<area shape="rect" id="node21" href="activity_tu_objective.html" target="_top" title="activity_tu_objective" alt="" coords="1521,1152,1764,1240">
+<area shape="rect" id="node22" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1553,1375,1733,1463">
+<area shape="rect" id="node23" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1517,989,1768,1077">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/silv_objective_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

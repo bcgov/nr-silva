@@ -1,11 +1,12 @@
 org_unit
-stocking_status_code
 silv_objective_code
+stocking_status_code
 stocking_type_code
 tree_species_code
 silv_tree_species_code
-corp_capture_method
 data_source_code
+corp_capture_method
+silv_fund_srce_code
 site_class_code
 site_index_source_code
 stocking_class_code
@@ -27,7 +28,6 @@ salvage_type_code
 sb_category_code
 silv_base_code
 silv_damage_agent_code
-silv_fund_srce_code
 silv_method_code
 silv_reserve_code
 silv_reserve_objective_code
@@ -91,11 +91,11 @@ silviculture_project
 forest_cover
 cut_block_open_admin
 forest_cover_layer_archive
-silviculture_comment
-forest_cover_layer
-feature_classes
-stocking_layer_archive
 activity_treatment_unit
+silviculture_comment
+feature_classes
+forest_cover_layer
+stocking_layer_archive
 forest_stewardship_plan
 stocking_milestone
 results_audit_event
@@ -107,6 +107,8 @@ site_series_catalogue
 standards_regime_site_series
 stocking_standard_unit_amd
 activity_tu_comment_link
+activity_tu_fund_srce
+activity_tu_objective
 open_viewable_category
 opening_attachment
 opening_comment_link
@@ -120,6 +122,7 @@ stocking_comment_link
 stocking_ecology
 stocking_ecology_archive
 stocking_layer_species
+activity_treatment_geometry
 forest_cover_layer_species
 forest_cover_non_mapped_area
 fsp_standards_regime_xref
