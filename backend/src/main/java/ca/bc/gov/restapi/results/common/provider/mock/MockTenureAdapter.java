@@ -89,6 +89,12 @@ public class MockTenureAdapter implements TenureProvider {
           new SeedCutBlock(10000048L, "TFL05", "149", "49", "AU6001", "HRS", "00146886"),
           new SeedCutBlock(10000049L, "TFL05", "150", "50", "FA9145", "AP", "00149237"));
 
+  private static final List<SeedCutBlock> SYNTHETIC_CUT_BLOCKS =
+      List.of(
+          new SeedCutBlock(1001L, "TFL001", "CP1", "CB001", "47/12K", "ACT", "00010003"),
+          new SeedCutBlock(1002L, "TFL002", null, "CB002", "47/12M", "ACT", "00010003"),
+          new SeedCutBlock(1003L, "TFL003", "CP03", "CB003", "47/12N", "ACT", "99999999"));
+
   private final Map<String, SeedCutBlock> seedDataMap = new ConcurrentHashMap<>();
   private final Map<String, ExternalCutBlockDetails> fixtures = new ConcurrentHashMap<>();
   private final Map<String, ExternalTenureSummary> summaryFixtures = new ConcurrentHashMap<>();
@@ -106,39 +112,14 @@ public class MockTenureAdapter implements TenureProvider {
     }
 
     // 2. Synthetic baseline fixtures used by unit and contract integration tests
-    registerFixture(
-        "TFL001",
-        "CP1",
-        "CB001",
-        ExternalCutBlockDetails.of(1001L, true, "47/12K", "ACT"));
-    registerSummaryFixture(
-        "TFL001",
-        "CP1",
-        "CB001",
-        new ExternalTenureSummary("TFL001", "CP1", "CB001", "47/12K", "00010003", "ACT", 1001L));
-
-    registerFixture(
-        "TFL002",
-        null,
-        "CB002",
-        ExternalCutBlockDetails.of(1002L, true, "47/12M", "ACT"));
-    registerSummaryFixture(
-        "TFL002",
-        null,
-        "CB002",
-        new ExternalTenureSummary("TFL002", null, "CB002", "47/12M", "00010003", "ACT", 1002L));
-
-    // Valid cut block, but client not a licensee
-    registerFixture(
-        "TFL003",
-        "CP03",
-        "CB003",
-        ExternalCutBlockDetails.of(1003L, false, "47/12N", "ACT"));
-    registerSummaryFixture(
-        "TFL003",
-        "CP03",
-        "CB003",
-        new ExternalTenureSummary("TFL003", "CP03", "CB003", "47/12N", "99999999", "ACT", 1003L));
+    for (SeedCutBlock synthetic : SYNTHETIC_CUT_BLOCKS) {
+      seedDataMap.put(
+          buildKey(
+              synthetic.forestFileId(),
+              synthetic.cuttingPermitId(),
+              synthetic.cutBlockId()),
+          synthetic);
+    }
 
     // Explicit non-existent cut block fixture
     registerFixture("TFL999", null, "CB999", ExternalCutBlockDetails.notFound());

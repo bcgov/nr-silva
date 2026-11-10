@@ -37,6 +37,19 @@ class MockTenureAdapterTest {
   }
 
   @Test
+  @DisplayName("verifyCutBlock returns clientIsLicensee=false for baseline fixture TFL001 when client is not licensee")
+  void verifyCutBlock_baselineTfl001_unauthorizedClient_returnsFalseLicensee() {
+    ExternalCutBlockDetails details =
+        adapter.verifyCutBlock("TFL001", "CP1", "CB001", "99999999");
+
+    assertThat(details.exists()).isTrue();
+    assertThat(details.cbSkey()).isEqualTo(1001L);
+    assertThat(details.clientIsLicensee()).isFalse();
+    assertThat(details.timberMark()).isEqualTo("47/12K");
+    assertThat(details.status()).isEqualTo("ACT");
+  }
+
+  @Test
   @DisplayName("verifyCutBlock returns valid details for baseline fixture TFL002 with null cuttingPermit")
   void verifyCutBlock_baselineTfl002_returnsValidDetails() {
     ExternalCutBlockDetails details =
@@ -50,7 +63,7 @@ class MockTenureAdapterTest {
   }
 
   @Test
-  @DisplayName("verifyCutBlock returns clientIsLicensee=false for baseline fixture TFL003/CP03/CB003")
+  @DisplayName("verifyCutBlock returns clientIsLicensee=false for baseline fixture TFL003/CP03/CB003 with non-licensee client")
   void verifyCutBlock_baselineTfl003_returnsUnauthorizedClient() {
     ExternalCutBlockDetails details =
         adapter.verifyCutBlock("TFL003", "CP03", "CB003", "00010003");
@@ -58,6 +71,18 @@ class MockTenureAdapterTest {
     assertThat(details.exists()).isTrue();
     assertThat(details.cbSkey()).isEqualTo(1003L);
     assertThat(details.clientIsLicensee()).isFalse();
+    assertThat(details.timberMark()).isEqualTo("47/12N");
+  }
+
+  @Test
+  @DisplayName("verifyCutBlock returns clientIsLicensee=true for baseline fixture TFL003/CP03/CB003 with licensee client")
+  void verifyCutBlock_baselineTfl003_returnsAuthorizedClient() {
+    ExternalCutBlockDetails details =
+        adapter.verifyCutBlock("TFL003", "CP03", "CB003", "99999999");
+
+    assertThat(details.exists()).isTrue();
+    assertThat(details.cbSkey()).isEqualTo(1003L);
+    assertThat(details.clientIsLicensee()).isTrue();
     assertThat(details.timberMark()).isEqualTo("47/12N");
   }
 
