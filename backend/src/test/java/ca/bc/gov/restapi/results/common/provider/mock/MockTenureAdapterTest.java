@@ -280,6 +280,33 @@ class MockTenureAdapterTest {
   }
 
   @Test
+  @DisplayName("registerSummaryFixture restores summary after registerSummaryNotFound")
+  void registerSummaryFixture_afterRegisterSummaryNotFound_restoresSummary() {
+    adapter.registerSummaryNotFound("TFL001", "CP1", "CB001");
+    assertThat(adapter.getTenureSummary("TFL001", "CP1", "CB001")).isEmpty();
+
+    ExternalTenureSummary restored =
+        new ExternalTenureSummary("TFL001", "CP1", "CB001", "47/12K", "00010003", "ACT", 1001L);
+    adapter.registerSummaryFixture("TFL001", "CP1", "CB001", restored);
+
+    assertThat(adapter.getTenureSummary("TFL001", "CP1", "CB001")).contains(restored);
+  }
+
+  @Test
+  @DisplayName("registerSummaryFixture with raw key restores summary after registerSummaryNotFound")
+  void registerSummaryFixture_withRawKeyAfterRegisterSummaryNotFound_restoresSummary() {
+    String key = MockTenureAdapter.buildKey("TFL002", null, "CB002");
+    adapter.registerSummaryNotFound("TFL002", null, "CB002");
+    assertThat(adapter.getTenureSummary("TFL002", null, "CB002")).isEmpty();
+
+    ExternalTenureSummary restored =
+        new ExternalTenureSummary("TFL002", null, "CB002", "47/12M", "00010003", "ACT", 1002L);
+    adapter.registerSummaryFixture(key, restored);
+
+    assertThat(adapter.getTenureSummary("TFL002", null, "CB002")).contains(restored);
+  }
+
+  @Test
   @DisplayName("getTenureSummary returns custom summary when registered by components")
   void getTenureSummary_customRegistered_returnsCustomSummary() {
     ExternalTenureSummary custom =

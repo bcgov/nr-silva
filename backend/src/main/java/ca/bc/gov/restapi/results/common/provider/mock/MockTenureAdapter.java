@@ -240,7 +240,9 @@ public class MockTenureAdapter implements TenureProvider {
       String cuttingPermitId,
       String cutBlockId,
       ExternalTenureSummary summary) {
-    summaryFixtures.put(buildKey(forestFileId, cuttingPermitId, cutBlockId), summary);
+    String key = buildKey(forestFileId, cuttingPermitId, cutBlockId);
+    summaryFixtures.remove(key + ":NOT_FOUND");
+    summaryFixtures.put(key, summary);
   }
 
   /**
@@ -250,6 +252,7 @@ public class MockTenureAdapter implements TenureProvider {
    * @param summary summary details to return
    */
   public void registerSummaryFixture(String key, ExternalTenureSummary summary) {
+    summaryFixtures.remove(key + ":NOT_FOUND");
     summaryFixtures.put(key, summary);
   }
 
@@ -320,7 +323,13 @@ public class MockTenureAdapter implements TenureProvider {
 
     String key = buildKey(forestFileId, cuttingPermitId, cutBlockId);
 
-    // Check if explicitly marked as not found
+    // 1. Check if an explicit summary fixture was registered
+    ExternalTenureSummary registered = summaryFixtures.get(key);
+    if (registered != null) {
+      return Optional.of(registered);
+    }
+
+    // 2. Check if explicitly marked as not found
     if (summaryFixtures.containsKey(key + ":NOT_FOUND")) {
       return Optional.empty();
     }
@@ -330,12 +339,7 @@ public class MockTenureAdapter implements TenureProvider {
       return Optional.empty();
     }
 
-    ExternalTenureSummary registered = summaryFixtures.get(key);
-    if (registered != null) {
-      return Optional.of(registered);
-    }
-
-    // Check baseline seed data from V999.3.0__seed_data.sql
+    // 3. Check baseline seed data from V999.3.0__seed_data.sql or synthetic baselines
     SeedCutBlock seed = seedDataMap.get(key);
     if (seed != null) {
       return Optional.of(
