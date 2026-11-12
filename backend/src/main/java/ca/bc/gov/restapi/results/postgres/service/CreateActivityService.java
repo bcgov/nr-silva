@@ -80,19 +80,13 @@ public class CreateActivityService {
    */
   @Transactional
   public CreateActivityResponseDto createActivity(
-      Long openingId,
-      CreateActivityRequestDto dto,
-      String fileName,
-      Supplier<byte[]> fileReader) {
+      Long openingId, CreateActivityRequestDto dto, String fileName, Supplier<byte[]> fileReader) {
     return create(openingId, dto, fileName, fileReader);
   }
 
   // Shared by both transactional entry points so one does not call the other through 'this'
   private CreateActivityResponseDto create(
-      Long openingId,
-      CreateActivityRequestDto dto,
-      String fileName,
-      Supplier<byte[]> fileReader) {
+      Long openingId, CreateActivityRequestDto dto, String fileName, Supplier<byte[]> fileReader) {
     // 404 for an unknown opening first, then 403, then the file is read and scanned; only then the
     // opening row is locked and the request validated, so users without access can neither make
     // the server process a file nor hold the lock
@@ -155,7 +149,12 @@ public class CreateActivityService {
             .updateTimestamp(now)
             .revisionCount(1);
 
+    activity.targetPreparedSpots(dto.targetPreparedSpots());
+    activity.surveyMinPlotsPerStratum(dto.surveyMinPlotsPerStratum());
+    activity.surveyPlannedNumPlots(dto.surveyPlannedNumPlots());
+
     if (dto.status() == ActivityStatus.COMPLETED) {
+      activity.surveyActualNumPlots(dto.surveyActualNumPlots());
       activity
           .silvTechniqueCode(dto.techniqueCode())
           .silvMethodCode(dto.methodCode())

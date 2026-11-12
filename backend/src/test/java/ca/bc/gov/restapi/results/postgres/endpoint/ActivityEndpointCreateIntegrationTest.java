@@ -27,6 +27,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -203,6 +205,28 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
         .perform(create(OPENING_ID, "{not json").with(csrf().asHeader()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.detail").value(containsString("Invalid JSON in 'data'")));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "targetPreparedSpots,12.9",
+    "targetPreparedSpots,-0.5",
+    "surveyPlannedNumPlots,5.5",
+    "surveyActualNumPlots,5.5",
+    "surveyMinPlotsPerStratum,2.5"
+  })
+  @DisplayName("Rejects a fractional value for a whole-number field instead of truncating it")
+  void create_fractionalWholeNumber_returnsBadRequest(String field, String value)
+      throws Exception {
+    int before = activityCount();
+    String json = data("SU", "[\"BCP\"]").replaceFirst("\\}\\s*$", ",\"" + field + "\":" + value + "}");
+
+    mockMvc
+        .perform(create(OPENING_ID, json).with(csrf().asHeader()))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.detail").value(containsString("Invalid JSON in 'data'")));
+
+    assertThat(activityCount()).isEqualTo(before);
   }
 
   @Test

@@ -8,6 +8,7 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
 import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -92,7 +93,12 @@ public class ActivityEndpoint {
           MultipartFile file) {
     CreateActivityRequestDto dto;
     try {
-      dto = objectMapper.readValue(rawData, CreateActivityRequestDto.class);
+      // Fractional numbers must be rejected, not truncated, for the whole-number fields
+      dto =
+          objectMapper
+              .readerFor(CreateActivityRequestDto.class)
+              .without(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+              .readValue(rawData);
     } catch (JsonProcessingException e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getOriginalMessage());
