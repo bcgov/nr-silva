@@ -5,7 +5,7 @@
 import type { PageMetadata } from './PageMetadata';
 import type { StandardUnitSearchResponseDto } from './StandardUnitSearchResponseDto';
 export type PagedModelStandardUnitSearchResponseDto = {
-    content?: Array<StandardUnitSearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<StandardUnitSearchResponseDto>;
+    page: PageMetadata;
 };
 

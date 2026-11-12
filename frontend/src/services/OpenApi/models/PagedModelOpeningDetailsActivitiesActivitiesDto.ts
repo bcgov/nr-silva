@@ -5,7 +5,7 @@
 import type { OpeningDetailsActivitiesActivitiesDto } from './OpeningDetailsActivitiesActivitiesDto';
 import type { PageMetadata } from './PageMetadata';
 export type PagedModelOpeningDetailsActivitiesActivitiesDto = {
-    content?: Array<OpeningDetailsActivitiesActivitiesDto>;
-    page?: PageMetadata;
+    content: Array<OpeningDetailsActivitiesActivitiesDto>;
+    page: PageMetadata;
 };
 

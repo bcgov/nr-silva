@@ -5,7 +5,7 @@
 import type { ActivitySearchResponseDto } from './ActivitySearchResponseDto';
 import type { PageMetadata } from './PageMetadata';
 export type PagedModelActivitySearchResponseDto = {
-    content?: Array<ActivitySearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<ActivitySearchResponseDto>;
+    page: PageMetadata;
 };
 

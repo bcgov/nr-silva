@@ -5,7 +5,7 @@
 import type { DisturbanceSearchResponseDto } from './DisturbanceSearchResponseDto';
 import type { PageMetadata } from './PageMetadata';
 export type PagedModelDisturbanceSearchResponseDto = {
-    content?: Array<DisturbanceSearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<DisturbanceSearchResponseDto>;
+    page: PageMetadata;
 };
 

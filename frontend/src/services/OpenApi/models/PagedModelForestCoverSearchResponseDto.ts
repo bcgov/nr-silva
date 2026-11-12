@@ -5,7 +5,7 @@
 import type { ForestCoverSearchResponseDto } from './ForestCoverSearchResponseDto';
 import type { PageMetadata } from './PageMetadata';
 export type PagedModelForestCoverSearchResponseDto = {
-    content?: Array<ForestCoverSearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<ForestCoverSearchResponseDto>;
+    page: PageMetadata;
 };
 

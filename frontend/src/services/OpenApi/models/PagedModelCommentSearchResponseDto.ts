@@ -5,7 +5,7 @@
 import type { CommentSearchResponseDto } from './CommentSearchResponseDto';
 import type { PageMetadata } from './PageMetadata';
 export type PagedModelCommentSearchResponseDto = {
-    content?: Array<CommentSearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<CommentSearchResponseDto>;
+    page: PageMetadata;
 };
 

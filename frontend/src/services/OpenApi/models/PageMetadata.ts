@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type PageMetadata = {
-    size?: number;
-    number?: number;
-    totalElements?: number;
-    totalPages?: number;
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
 };
 

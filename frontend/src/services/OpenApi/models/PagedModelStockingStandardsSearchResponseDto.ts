@@ -5,7 +5,7 @@
 import type { PageMetadata } from './PageMetadata';
 import type { StockingStandardsSearchResponseDto } from './StockingStandardsSearchResponseDto';
 export type PagedModelStockingStandardsSearchResponseDto = {
-    content?: Array<StockingStandardsSearchResponseDto>;
-    page?: PageMetadata;
+    content: Array<StockingStandardsSearchResponseDto>;
+    page: PageMetadata;
 };
 

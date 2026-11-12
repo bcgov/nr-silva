@@ -90,18 +90,15 @@ public class SearchEndpoint {
   @GetMapping("/openings")
   public Page<OpeningSearchResponseDto> searchOpeningExact(
       @RequestParam(value = SilvaConstants.OPENING_ID, required = false) Long openingId,
-      @RequestParam(value = SilvaConstants.CATEGORIES, required = false)
-          List<String> categories,
+      @RequestParam(value = SilvaConstants.CATEGORIES, required = false) List<String> categories,
       @RequestParam(value = SilvaConstants.OPENING_STATUSES, required = false)
           List<String> openingStatuses,
-      @RequestParam(value = SilvaConstants.LICENSE_NUMBER, required = false)
-          String licenseNumber,
+      @RequestParam(value = SilvaConstants.LICENSE_NUMBER, required = false) String licenseNumber,
       @RequestParam(value = SilvaConstants.LICENSEE_OPENING_ID, required = false)
           String licenseeOpeningId,
       @RequestParam(value = SilvaConstants.UPDATE_DATE_START, required = false)
           String updateDateStart,
-      @RequestParam(value = SilvaConstants.UPDATE_DATE_END, required = false)
-          String updateDateEnd,
+      @RequestParam(value = SilvaConstants.UPDATE_DATE_END, required = false) String updateDateEnd,
       @RequestParam(value = SilvaConstants.CUT_BLOCK_ID, required = false) String cutBlockId,
       @RequestParam(value = SilvaConstants.CUTTING_PERMIT_ID, required = false)
           String cuttingPermitId,
@@ -113,18 +110,13 @@ public class SearchEndpoint {
           Boolean isCreatedByUser,
       @RequestParam(value = SilvaConstants.SUBMITTED_TO_FRPA, required = false)
           Boolean submittedToFrpa,
-      @RequestParam(value = SilvaConstants.MAPSHEET_GRID, required = false)
-          String mapsheetGrid,
-      @RequestParam(value = SilvaConstants.MAPSHEET_LETTER, required = false)
-          String mapsheetLetter,
-      @RequestParam(value = SilvaConstants.MAPSHEET_SQUARE, required = false)
-          String mapsheetSquare,
-      @RequestParam(value = SilvaConstants.MAPSHEET_QUAD, required = false)
-          String mapsheetQuad,
+      @RequestParam(value = SilvaConstants.MAPSHEET_GRID, required = false) String mapsheetGrid,
+      @RequestParam(value = SilvaConstants.MAPSHEET_LETTER, required = false) String mapsheetLetter,
+      @RequestParam(value = SilvaConstants.MAPSHEET_SQUARE, required = false) String mapsheetSquare,
+      @RequestParam(value = SilvaConstants.MAPSHEET_QUAD, required = false) String mapsheetQuad,
       @RequestParam(value = SilvaConstants.MAPSHEET_SUB_QUAD, required = false)
           String mapsheetSubQuad,
-      @RequestParam(value = SilvaConstants.OPENING_NUMBER, required = false)
-          String openingNumber,
+      @RequestParam(value = SilvaConstants.OPENING_NUMBER, required = false) String openingNumber,
       @ParameterObject Pageable paginationParameters) {
 
     OpeningSearchExactFiltersDto filtersDto =

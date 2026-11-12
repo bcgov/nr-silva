@@ -21,6 +21,10 @@ export type CreateActivityRequestDto = {
     completionDate?: string;
     treatedArea?: number;
     actualCost?: number;
+    targetPreparedSpots?: number;
+    surveyPlannedNumPlots?: number;
+    surveyActualNumPlots?: number;
+    surveyMinPlotsPerStratum?: number;
 };
 export namespace CreateActivityRequestDto {
     export enum status {
