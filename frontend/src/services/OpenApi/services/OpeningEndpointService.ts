@@ -104,6 +104,36 @@ export class OpeningEndpointService {
     }
     /**
      * @param openingId
+     * @param filter
+     * @param page Zero-based page index (0..N)
+     * @param size The size of the page to be returned
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @returns PagedModelOpeningDetailsActivitiesActivitiesDto OK
+     * @throws ApiError
+     */
+    public static getOpeningActivities(
+        openingId: number,
+        filter?: string,
+        page?: number,
+        size: number = 20,
+        sort?: Array<string>,
+    ): CancelablePromise<PagedModelOpeningDetailsActivitiesActivitiesDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openings/{openingId}/activities',
+            path: {
+                'openingId': openingId,
+            },
+            query: {
+                'filter': filter,
+                'page': page,
+                'size': size,
+                'sort': sort,
+            },
+        });
+    }
+    /**
+     * @param openingId
      * @returns OpeningDetailsTombstoneOverviewDto OK
      * @throws ApiError
      */
@@ -332,36 +362,6 @@ export class OpeningEndpointService {
             path: {
                 'openingId': openingId,
                 'guid': guid,
-            },
-        });
-    }
-    /**
-     * @param openingId
-     * @param filter
-     * @param page Zero-based page index (0..N)
-     * @param size The size of the page to be returned
-     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @returns PagedModelOpeningDetailsActivitiesActivitiesDto OK
-     * @throws ApiError
-     */
-    public static getOpeningActivities(
-        openingId: number,
-        filter?: string,
-        page?: number,
-        size: number = 20,
-        sort?: Array<string>,
-    ): CancelablePromise<PagedModelOpeningDetailsActivitiesActivitiesDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/openings/{openingId}/activities',
-            path: {
-                'openingId': openingId,
-            },
-            query: {
-                'filter': filter,
-                'page': page,
-                'size': size,
-                'sort': sort,
             },
         });
     }

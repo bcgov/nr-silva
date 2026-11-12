@@ -354,3 +354,17 @@ label.#{variables.$bcgov-prefix}--label,
 legend.#{variables.$bcgov-prefix}--label {
   color: var(--#{variables.$bcgov-prefix}-text-primary);
 }
+
+fieldset.#{variables.$bcgov-prefix}--radio-button-group,
+fieldset.cds--radio-button-group {
+  flex-wrap: wrap;
+
+  > legend.#{variables.$bcgov-prefix}--label,
+  > legend.cds--label,
+  > legend {
+    width: 100%;
+    flex: 0 0 100%;
+    margin-block-end: 0.5rem;
+  }
+}
+

@@ -1,9 +1,12 @@
 import React from "react";
-import { AccordionSkeleton, Column, Grid } from "@carbon/react";
-import { useSearchParams } from "react-router-dom";
+import { AccordionSkeleton, Button, Column, Grid, Stack } from "@carbon/react";
+import { Add } from "@carbon/icons-react";
+import { generatePath, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import API from "@/services/API";
+import { CREATE_ACTIVITY_PATH } from "@/routes/paths";
 import { DEEP_LINK_PARAMS } from "@/constants/deepLinkConstants";
+import { gatePostgresFeature } from "@/utils/featureFlags";
 
 import EmptySection from "../../EmptySection";
 import DisturbanceAccordion from "./DisturbanceAccordion";
@@ -28,6 +31,7 @@ const OpeningActivities = ({
   setSelectedDisturbanceIds
 }: OpeningActivitiesProps) => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const targetDisturbanceId = searchParams.get(DEEP_LINK_PARAMS.disturbanceId);
   const targetActivityId = searchParams.get(DEEP_LINK_PARAMS.activityId);
 
@@ -39,17 +43,21 @@ const OpeningActivities = ({
   const activityQuery = useQuery({
     queryKey: ['opening', openingId, 'activities', DefaultFilter],
     queryFn: () => {
-      const { page, size } = DefaultFilter;
+      const { page, size, sortField, sortDirection } = DefaultFilter;
 
       return API.OpeningEndpointService.getOpeningActivities(
         openingId,
         undefined,
         page,
         size,
-        undefined
+        [`${sortField},${sortDirection}`]
       );
     },
   });
+
+  const navToCreateActivity = () => (
+    navigate(generatePath(CREATE_ACTIVITY_PATH, { openingId: String(openingId) }))
+  );
 
   // Loading case
   if (disturbanceQuery.isLoading || activityQuery.isLoading) {
@@ -67,14 +75,29 @@ const OpeningActivities = ({
       <EmptySection
         pictogram="Summit"
         title="Nothing to show yet!"
-        description="No Activities have been added to this opening yet"
+        description={
+          <Stack orientation="vertical" gap={8}>
+            <div>
+              <p>No Activities have been added to this opening yet</p>
+            </div>
+            <Stack orientation="horizontal" gap={8}>
+              <Button disabled kind="tertiary" renderIcon={Add}>
+                Add disturbance
+              </Button>
+
+              <Button kind="tertiary" renderIcon={Add} onClick={navToCreateActivity}>
+                Add activity
+              </Button>
+            </Stack>
+          </Stack>
+        }
       />
     )
   }
 
   return (
     <Grid className="opening-activities-grid default-grid">
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={8} max={12}>
         <h3 className="default-tab-content-title">
           {
             `
@@ -84,6 +107,33 @@ const OpeningActivities = ({
           }
         </h3>
       </Column>
+      {
+        gatePostgresFeature()
+          ? null
+          : (
+            <Column className="add-button-container-col" sm={4} md={4} lg={4} max={4}>
+              <Stack className="add-button-stack" orientation="horizontal" gap={4}>
+                <Button
+                  kind="primary"
+                  disabled
+                  size="sm"
+                  renderIcon={Add}
+                >
+                  Add disturbance
+                </Button>
+                <Button
+                  kind="primary"
+                  size="sm"
+                  renderIcon={Add}
+                  onClick={navToCreateActivity}
+                >
+                  Add activity
+                </Button>
+              </Stack>
+            </Column>
+          )
+      }
+
       {
         (disturbanceQuery.data?.content?.length ?? 0) > 0
           ? (
@@ -104,13 +154,15 @@ const OpeningActivities = ({
         (activityQuery.data?.page?.totalElements ?? 0) > 0
           ? (
             <Column sm={4} md={8} lg={16}>
-              <ActivityAccordion
-                openingId={openingId}
-                totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
-                selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
-                setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
-                targetActivityId={targetActivityId}
-              />
+              <Stack gap={4} orientation="horizontal" className="opening-activities-stack">
+                <ActivityAccordion
+                  openingId={openingId}
+                  totalUnfiltered={activityQuery.data?.page?.totalElements ?? 0}
+                  selectedSilvicultureActivityIds={selectedSilvicultureActivityIds}
+                  setSelectedSilvicultureActivityIds={setSelectedSilvicultureActivityIds}
+                  targetActivityId={targetActivityId}
+                />
+              </Stack>
             </Column>
           )
           : null

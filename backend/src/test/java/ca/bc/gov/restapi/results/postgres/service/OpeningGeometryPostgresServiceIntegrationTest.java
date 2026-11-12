@@ -46,7 +46,10 @@ class OpeningGeometryPostgresServiceIntegrationTest
 
     Feature feature = result.getFeatures().get(0);
     assertNotNull(feature, "Feature should not be null");
-    assertEquals(String.valueOf(testOpeningId), feature.getId(), "Feature ID should match opening ID");
+    assertEquals(
+        "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW." + testOpeningId,
+        feature.getId(),
+        "Feature ID should match WFS opening id format");
     assertNotNull(feature.getProperties(), "Feature properties should not be null");
     assertEquals(
         testOpeningId, feature.getProperties().get("OPENING_ID"), "OPENING_ID should match");
@@ -87,7 +90,7 @@ class OpeningGeometryPostgresServiceIntegrationTest
 
     Feature feature = result.getFeatures().get(0);
     assertEquals(
-        String.valueOf(nonExistentOpeningId),
+        "WHSE_FOREST_VEGETATION.RSLT_OPENING_SVW." + nonExistentOpeningId,
         feature.getId(),
         "Feature ID should be set regardless");
     assertEquals(

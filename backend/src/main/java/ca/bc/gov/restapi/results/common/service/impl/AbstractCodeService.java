@@ -35,88 +35,83 @@ public abstract class AbstractCodeService implements CodeService {
   protected GenericCodeRepository<?> silvTreeSpeciesCodeRepository;
   protected OrgUnitRepository orgUnitRepository;
 
-  @Override
-  public List<CodeDescriptionDto> getAllSilvBaseCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvBaseCodeRepository.findAllByOrderByExpiryDateDesc());
+  private List<CodeDescriptionDto> getCodes(
+      GenericCodeRepository<?> repository, boolean effectiveOnly) {
+    List<? extends GenericCodeEntity> entities = repository.findAllByOrderByExpiryDateDesc();
+    if (effectiveOnly) {
+      entities = entities.stream().filter(GenericCodeEntity::isEffective).toList();
+    }
+    return CodeConverterUtil.toCodeDescriptionDtos(entities);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvTechniqueCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvTechniqueCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvBaseCode(boolean effectiveOnly) {
+    return getCodes(silvBaseCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvMethodCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvMethodCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvTechniqueCode(boolean effectiveOnly) {
+    return getCodes(silvTechniqueCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvObjectiveCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvObjectiveCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvMethodCode(boolean effectiveOnly) {
+    return getCodes(silvMethodCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvFundSrceCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvFundSrceCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvObjectiveCode(boolean effectiveOnly) {
+    return getCodes(silvObjectiveCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvSystemCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvSystemCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvFundSrceCode(boolean effectiveOnly) {
+    return getCodes(silvFundSrceCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvSystemVariantCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvSystemVariantCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvSystemCode(boolean effectiveOnly) {
+    return getCodes(silvSystemCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvCutPhaseCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvCutPhaseCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvSystemVariantCode(boolean effectiveOnly) {
+    return getCodes(silvSystemVariantCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllDisturbanceCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        disturbanceCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvCutPhaseCode(boolean effectiveOnly) {
+    return getCodes(silvCutPhaseCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllOpenStatusCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        openingStatusCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllDisturbanceCode(boolean effectiveOnly) {
+    return getCodes(disturbanceCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvDamageAgentCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvDamageAgentCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllOpenStatusCode(boolean effectiveOnly) {
+    return getCodes(openingStatusCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllStockingStatusCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        stockingStatusCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllSilvDamageAgentCode(boolean effectiveOnly) {
+    return getCodes(silvDamageAgentCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllStockingTypeCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        stockingTypeCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllStockingStatusCode(boolean effectiveOnly) {
+    return getCodes(stockingStatusCodeRepository, effectiveOnly);
   }
 
   @Override
-  public List<CodeDescriptionDto> getAllSilvTreeSpeciesCode() {
-    return CodeConverterUtil.toCodeDescriptionDtos(
-        silvTreeSpeciesCodeRepository.findAllByOrderByExpiryDateDesc());
+  public List<CodeDescriptionDto> getAllStockingTypeCode(boolean effectiveOnly) {
+    return getCodes(stockingTypeCodeRepository, effectiveOnly);
+  }
+
+  @Override
+  public List<CodeDescriptionDto> getAllSilvTreeSpeciesCode(boolean effectiveOnly) {
+    return getCodes(silvTreeSpeciesCodeRepository, effectiveOnly);
   }
 
   @Override

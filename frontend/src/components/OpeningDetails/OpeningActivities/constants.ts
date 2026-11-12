@@ -38,5 +38,7 @@ export const ActivityTableHeaders: TableHeaderType<keyof OpeningDetailsActivitie
 export const DefaultFilter: ActivityFilterType = {
   page: DEFAULT_PAGE_NUM,
   size: OddPageSizesConfig[0]!,
+  sortField: "lastUpdate",
+  sortDirection: "DESC",
 } as const;
 

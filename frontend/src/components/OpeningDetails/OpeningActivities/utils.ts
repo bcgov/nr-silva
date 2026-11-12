@@ -1,11 +1,11 @@
 import { PLACE_HOLDER, UNIQUE_CHARACTERS_UNICODE } from "@/constants";
-import { OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
+import { CodeDescriptionDto, OpeningDetailsActivitiesActivitiesDto } from "@/services/OpenApi";
 import { codeDescriptionToDisplayText, extractCodesFromCodeDescriptionArr } from "@/utils/multiSelectUtils";
 
 /**
  * Generates tooltip definitions and display text for objectives.
  *
- * This function processes up to three objectives (`objective1`, `objective2`, `objective3`)
+ * This function processes all objectives (`objectives`, falling back to `objective1..3`)
  * from the provided data object and returns a formatted tooltip definition and display text.
  *
  * @param data - The data object containing objectives. Expected to conform to the `OpeningDetailsActivitiesActivitiesDto` type.
@@ -23,22 +23,45 @@ export const formatActivityObjective = (
     }
   }
 
-  const objectives = [data.objective1, data.objective2, data.objective3];
+  return formatCodeDescriptionList(
+    data.objectives?.length ? data.objectives : [data.objective1, data.objective2, data.objective3]
+  );
+};
 
-  const validObjectives = objectives.filter(
-    (obj): obj is NonNullable<typeof obj> => obj != null && codeDescriptionToDisplayText(obj) !== PLACE_HOLDER
+/**
+ * Generates tooltip definitions and display text for funding sources, using `fundingSources`
+ * and falling back to the single `funding` value.
+ */
+export const formatActivityFundingSources = (
+  data: OpeningDetailsActivitiesActivitiesDto | null,
+): { tooltipDefinition: string[] | null; displayText: string } => {
+  if (!data) {
+    return {
+      tooltipDefinition: null,
+      displayText: PLACE_HOLDER
+    }
+  }
+
+  return formatCodeDescriptionList(
+    data.fundingSources?.length ? data.fundingSources : [data.funding]
+  );
+};
+
+const formatCodeDescriptionList = (
+  items: (CodeDescriptionDto | null | undefined)[],
+): { tooltipDefinition: string[]; displayText: string } => {
+  const validItems = items.filter(
+    (item): item is CodeDescriptionDto => item != null && codeDescriptionToDisplayText(item) !== PLACE_HOLDER
   );
 
-  const tooltipDefinition: string[] = validObjectives.map((obj) => codeDescriptionToDisplayText(obj));
+  const tooltipDefinition: string[] = validItems.map((item) => codeDescriptionToDisplayText(item));
 
-  let displayText = extractCodesFromCodeDescriptionArr(validObjectives)
+  const displayText = extractCodesFromCodeDescriptionArr(validItems)
     .filter((code) => code != null && code !== '')
     .join(` ${UNIQUE_CHARACTERS_UNICODE.BULLET} `);
 
-  displayText = displayText.length ? displayText : PLACE_HOLDER
-
   return {
     tooltipDefinition,
-    displayText,
+    displayText: displayText.length ? displayText : PLACE_HOLDER,
   };
 };
