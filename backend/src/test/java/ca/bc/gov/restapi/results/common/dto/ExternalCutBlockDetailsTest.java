@@ -56,7 +56,7 @@ class ExternalCutBlockDetailsTest {
         new ExternalCutBlockDetails(true, 1002L, true, "TM1", "ACT");
 
     assertThat(details1).isEqualTo(details2);
-    assertThat(details1.hashCode()).isEqualTo(details2.hashCode());
+    assertThat(details1).hasSameHashCodeAs(details2);
     assertThat(details1).isNotEqualTo(details3);
   }
 

@@ -49,7 +49,7 @@ class ExternalTenureSummaryTest {
         new ExternalTenureSummary("TFL001", "CP1", "CB001", "47/12K", "00010003", "ACT");
 
     assertThat(summary1).isEqualTo(summary2);
-    assertThat(summary1.hashCode()).isEqualTo(summary2.hashCode());
+    assertThat(summary1).hasSameHashCodeAs(summary2);
     assertThat(summary1).isNotEqualTo(summary3);
   }
 

@@ -26,6 +26,10 @@ import org.springframework.stereotype.Component;
 @Component("mockTenureAdapter")
 public class MockTenureAdapter implements TenureProvider {
 
+  private static final String NOT_FOUND_SUFFIX = ":NOT_FOUND";
+  private static final String STATUS_ACT = "ACT";
+  private static final String CLIENT_00010003 = "00010003";
+
   private record SeedCutBlock(
       Long cbSkey,
       String forestFileId,
@@ -35,65 +39,65 @@ public class MockTenureAdapter implements TenureProvider {
       String status,
       String licenseeClientNumber) {}
 
-  private static final List<SeedCutBlock> SEED_CUT_BLOCKS =
-      List.of(
-          // --- Sourced directly from V999.3.0__seed_data.sql ---
-          new SeedCutBlock(10000000L, "TFL01", null, "01", "47/12K", "HRS", "00012797"),
-          new SeedCutBlock(10000001L, "TFL01", null, "02", "47/6AK", "AP", "00032699"),
-          new SeedCutBlock(10000002L, "TFL01", null, "03", "47/12U", "DD", "00045503"),
-          new SeedCutBlock(10000003L, "TFL01", "104", "04", "44/270", "EE", "00146886"),
-          new SeedCutBlock(10000004L, "TFL01", "105", "05", "K1AEEE", "HB", "00149237"),
-          new SeedCutBlock(10000005L, "TFL01", "106", "06", "EZ7210", "HD", "00012797"),
-          new SeedCutBlock(10000006L, "TFL01", "107", "07", "77623", "HS", "00032699"),
-          new SeedCutBlock(10000007L, "TFL01", "108", "08", "A1687", "HX", "00045503"),
-          new SeedCutBlock(10000008L, "TFL01", "109", "09", "AY5001", "ID", "00146886"),
-          new SeedCutBlock(10000009L, "TFL01", "110", "10", "AU6001", "LC", "00149237"),
-          new SeedCutBlock(10000010L, "TFL02", null, "11", "FA9145", "PD", "00012797"),
-          new SeedCutBlock(10000011L, "TFL02", null, "12", "39/27Y", "PE", "00032699"),
-          new SeedCutBlock(10000012L, "TFL02", null, "13", "ER4055", "PL", "00045503"),
-          new SeedCutBlock(10000013L, "TFL02", "114", "14", "47/12K", "PP", "00146886"),
-          new SeedCutBlock(10000014L, "TFL02", "115", "15", "47/6AK", "S", "00149237"),
-          new SeedCutBlock(10000015L, "TFL02", "116", "16", "47/12U", "SP", "00012797"),
-          new SeedCutBlock(10000016L, "TFL02", "117", "17", "44/270", "HRS", "00032699"),
-          new SeedCutBlock(10000017L, "TFL02", "118", "18", "K1AEEE", "AP", "00045503"),
-          new SeedCutBlock(10000018L, "TFL02", "119", "19", "EZ7210", "DD", "00146886"),
-          new SeedCutBlock(10000019L, "TFL02", "120", "20", "77623", "EE", "00149237"),
-          new SeedCutBlock(10000020L, "TFL03", null, "21", "A1687", "HB", "00012797"),
-          new SeedCutBlock(10000021L, "TFL03", null, "22", "AY5001", "HD", "00032699"),
-          new SeedCutBlock(10000022L, "TFL03", null, "23", "AU6001", "HS", "00045503"),
-          new SeedCutBlock(10000023L, "TFL03", "124", "24", "FA9145", "HX", "00146886"),
-          new SeedCutBlock(10000024L, "TFL03", "125", "25", "39/27Y", "ID", "00149237"),
-          new SeedCutBlock(10000025L, "TFL03", "126", "26", "ER4055", "LC", "00012797"),
-          new SeedCutBlock(10000026L, "TFL03", "127", "27", "47/12K", "PD", "00032699"),
-          new SeedCutBlock(10000027L, "TFL03", "128", "28", "47/6AK", "PE", "00045503"),
-          new SeedCutBlock(10000028L, "TFL03", "129", "29", "47/12U", "PL", "00146886"),
-          new SeedCutBlock(10000029L, "TFL03", "130", "30", "44/270", "PP", "00149237"),
-          new SeedCutBlock(10000030L, "TFL04", null, "31", "K1AEEE", "S", "00012797"),
-          new SeedCutBlock(10000031L, "TFL04", null, "32", "EZ7210", "SP", "00032699"),
-          new SeedCutBlock(10000032L, "TFL04", null, "33", "77623", "HRS", "00045503"),
-          new SeedCutBlock(10000033L, "TFL04", "134", "34", "A1687", "AP", "00146886"),
-          new SeedCutBlock(10000034L, "TFL04", "135", "35", "AY5001", "DD", "00149237"),
-          new SeedCutBlock(10000035L, "TFL04", "136", "36", "AU6001", "EE", "00012797"),
-          new SeedCutBlock(10000036L, "TFL04", "137", "37", "FA9145", "HB", "00032699"),
-          new SeedCutBlock(10000037L, "TFL04", "138", "38", "39/27Y", "HD", "00045503"),
-          new SeedCutBlock(10000038L, "TFL04", "139", "39", "ER4055", "HS", "00146886"),
-          new SeedCutBlock(10000039L, "TFL04", "140", "40", "47/12K", "HX", "00149237"),
-          new SeedCutBlock(10000040L, "TFL05", null, "41", "47/6AK", "ID", "00012797"),
-          new SeedCutBlock(10000041L, "TFL05", null, "42", "47/12U", "LC", "00032699"),
-          new SeedCutBlock(10000042L, "TFL05", null, "43", "44/270", "PD", "00045503"),
-          new SeedCutBlock(10000043L, "TFL05", "144", "44", "K1AEEE", "PE", "00146886"),
-          new SeedCutBlock(10000044L, "TFL05", "145", "45", "EZ7210", "PL", "00149237"),
-          new SeedCutBlock(10000045L, "TFL05", "146", "46", "77623", "PP", "00012797"),
-          new SeedCutBlock(10000046L, "TFL05", "147", "47", "A1687", "S", "00032699"),
-          new SeedCutBlock(10000047L, "TFL05", "148", "48", "AY5001", "SP", "00045503"),
-          new SeedCutBlock(10000048L, "TFL05", "149", "49", "AU6001", "HRS", "00146886"),
-          new SeedCutBlock(10000049L, "TFL05", "150", "50", "FA9145", "AP", "00149237"));
+  private static final String SEED_DATA_CSV =
+      """
+      10000000,TFL01,,01,47/12K,HRS,00012797
+      10000001,TFL01,,02,47/6AK,AP,00032699
+      10000002,TFL01,,03,47/12U,DD,00045503
+      10000003,TFL01,104,04,44/270,EE,00146886
+      10000004,TFL01,105,05,K1AEEE,HB,00149237
+      10000005,TFL01,106,06,EZ7210,HD,00012797
+      10000006,TFL01,107,07,77623,HS,00032699
+      10000007,TFL01,108,08,A1687,HX,00045503
+      10000008,TFL01,109,09,AY5001,ID,00146886
+      10000009,TFL01,110,10,AU6001,LC,00149237
+      10000010,TFL02,,11,FA9145,PD,00012797
+      10000011,TFL02,,12,39/27Y,PE,00032699
+      10000012,TFL02,,13,ER4055,PL,00045503
+      10000013,TFL02,114,14,47/12K,PP,00146886
+      10000014,TFL02,115,15,47/6AK,S,00149237
+      10000015,TFL02,116,16,47/12U,SP,00012797
+      10000016,TFL02,117,17,44/270,HRS,00032699
+      10000017,TFL02,118,18,K1AEEE,AP,00045503
+      10000018,TFL02,119,19,EZ7210,DD,00146886
+      10000019,TFL02,120,20,77623,EE,00149237
+      10000020,TFL03,,21,A1687,HB,00012797
+      10000021,TFL03,,22,AY5001,HD,00032699
+      10000022,TFL03,,23,AU6001,HS,00045503
+      10000023,TFL03,124,24,FA9145,HX,00146886
+      10000024,TFL03,125,25,39/27Y,ID,00149237
+      10000025,TFL03,126,26,ER4055,LC,00012797
+      10000026,TFL03,127,27,47/12K,PD,00032699
+      10000027,TFL03,128,28,47/6AK,PE,00045503
+      10000028,TFL03,129,29,47/12U,PL,00146886
+      10000029,TFL03,130,30,44/270,PP,00149237
+      10000030,TFL04,,31,K1AEEE,S,00012797
+      10000031,TFL04,,32,EZ7210,SP,00032699
+      10000032,TFL04,,33,77623,HRS,00045503
+      10000033,TFL04,134,34,A1687,AP,00146886
+      10000034,TFL04,135,35,AY5001,DD,00149237
+      10000035,TFL04,136,36,AU6001,EE,00012797
+      10000036,TFL04,137,37,FA9145,HB,00032699
+      10000037,TFL04,138,38,39/27Y,HD,00045503
+      10000038,TFL04,139,39,ER4055,HS,00146886
+      10000039,TFL04,140,40,47/12K,HX,00149237
+      10000040,TFL05,,41,47/6AK,ID,00012797
+      10000041,TFL05,,42,47/12U,LC,00032699
+      10000042,TFL05,,43,44/270,PD,00045503
+      10000043,TFL05,144,44,K1AEEE,PE,00146886
+      10000044,TFL05,145,45,EZ7210,PL,00149237
+      10000045,TFL05,146,46,77623,PP,00012797
+      10000046,TFL05,147,47,A1687,S,00032699
+      10000047,TFL05,148,48,AY5001,SP,00045503
+      10000048,TFL05,149,49,AU6001,HRS,00146886
+      10000049,TFL05,150,50,FA9145,AP,00149237
+      """;
 
   private static final List<SeedCutBlock> SYNTHETIC_CUT_BLOCKS =
       List.of(
-          new SeedCutBlock(1001L, "TFL001", "CP1", "CB001", "47/12K", "ACT", "00010003"),
-          new SeedCutBlock(1002L, "TFL002", null, "CB002", "47/12M", "ACT", "00010003"),
-          new SeedCutBlock(1003L, "TFL003", "CP03", "CB003", "47/12N", "ACT", "99999999"));
+          new SeedCutBlock(1001L, "TFL001", "CP1", "CB001", "47/12K", STATUS_ACT, CLIENT_00010003),
+          new SeedCutBlock(1002L, "TFL002", null, "CB002", "47/12M", STATUS_ACT, CLIENT_00010003),
+          new SeedCutBlock(1003L, "TFL003", "CP03", "CB003", "47/12N", STATUS_ACT, "99999999"));
 
   private final Map<String, SeedCutBlock> seedDataMap = new ConcurrentHashMap<>();
   private final Map<String, ExternalCutBlockDetails> fixtures = new ConcurrentHashMap<>();
@@ -104,9 +108,26 @@ public class MockTenureAdapter implements TenureProvider {
     loadDefaultFixtures();
   }
 
+  private static List<SeedCutBlock> loadSeedCutBlocks() {
+    return SEED_DATA_CSV.lines()
+        .filter(line -> !line.isBlank())
+        .map(line -> line.split(",", -1))
+        .map(
+            parts ->
+                new SeedCutBlock(
+                    Long.parseLong(parts[0]),
+                    parts[1],
+                    parts[2].isEmpty() ? null : parts[2],
+                    parts[3],
+                    parts[4],
+                    parts[5],
+                    parts[6]))
+        .toList();
+  }
+
   private void loadDefaultFixtures() {
     // 1. Seed data from V999.3.0__seed_data.sql
-    for (SeedCutBlock seed : SEED_CUT_BLOCKS) {
+    for (SeedCutBlock seed : loadSeedCutBlocks()) {
       seedDataMap.put(
           buildKey(seed.forestFileId(), seed.cuttingPermitId(), seed.cutBlockId()), seed);
     }
@@ -241,7 +262,7 @@ public class MockTenureAdapter implements TenureProvider {
       String cutBlockId,
       ExternalTenureSummary summary) {
     String key = buildKey(forestFileId, cuttingPermitId, cutBlockId);
-    summaryFixtures.remove(key + ":NOT_FOUND");
+    summaryFixtures.remove(key + NOT_FOUND_SUFFIX);
     summaryFixtures.put(key, summary);
   }
 
@@ -252,7 +273,7 @@ public class MockTenureAdapter implements TenureProvider {
    * @param summary summary details to return
    */
   public void registerSummaryFixture(String key, ExternalTenureSummary summary) {
-    summaryFixtures.remove(key + ":NOT_FOUND");
+    summaryFixtures.remove(key + NOT_FOUND_SUFFIX);
     summaryFixtures.put(key, summary);
   }
 
@@ -267,7 +288,7 @@ public class MockTenureAdapter implements TenureProvider {
       String forestFileId, String cuttingPermitId, String cutBlockId) {
     summaryFixtures.remove(buildKey(forestFileId, cuttingPermitId, cutBlockId));
     summaryFixtures.put(
-        buildKey(forestFileId, cuttingPermitId, cutBlockId) + ":NOT_FOUND",
+        buildKey(forestFileId, cuttingPermitId, cutBlockId) + NOT_FOUND_SUFFIX,
         new ExternalTenureSummary(null, null, null, null, null, null, null));
   }
 
@@ -330,7 +351,7 @@ public class MockTenureAdapter implements TenureProvider {
     }
 
     // 2. Check if explicitly marked as not found
-    if (summaryFixtures.containsKey(key + ":NOT_FOUND")) {
+    if (summaryFixtures.containsKey(key + NOT_FOUND_SUFFIX)) {
       return Optional.empty();
     }
 
