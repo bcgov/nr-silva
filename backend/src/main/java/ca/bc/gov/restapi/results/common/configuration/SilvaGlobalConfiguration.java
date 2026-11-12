@@ -3,6 +3,8 @@ package ca.bc.gov.restapi.results.common.configuration;
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 import ca.bc.gov.restapi.results.common.dto.CodeDescriptionDto;
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.dto.ExternalTenureSummary;
 import ca.bc.gov.restapi.results.common.dto.ForestClientAutocompleteResultDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientDto;
 import ca.bc.gov.restapi.results.common.dto.ForestClientLocationDto;
@@ -236,6 +238,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
   DuplicateConflictDto.class,
   TenureValidationResponseDto.class,
   TenureValidationErrorCode.class,
+  ExternalCutBlockDetails.class,
+  ExternalTenureSummary.class,
   ExternalServiceErrorCode.class,
   TenureUpdateItemDto.class,
   TenureUpdateValidationResponseDto.class,
