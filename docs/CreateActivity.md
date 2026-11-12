@@ -256,18 +256,19 @@ One additional field is shown in the Activity Information section. It applies to
 
 Survey uses the common Activity Information and Spatial Information sections, with the same Cancel and Create activity actions as a basic activity (section 7).
 
-Two additional fields are shown in the Activity Information section. They apply to both Planned and Completed activities.
+Three additional fields are shown in the Activity Information section.
 
 | Field | Requirement | Input | Business rules |
 |---|---|---|---|
-| Number of plots | Optional | Whole number | Maximum 4 digits (0 to 9999). |
-| Min plots per stratum | Optional | Whole number | Maximum 10 digits (0 to 9999999999). |
+| Planned number of plots | Optional | Whole number | Maximum 4 digits (0 to 9999). Planned and Completed. |
+| Actual number of plots | Optional | Whole number | Maximum 4 digits (0 to 9999). Completed only; rejected when Planned. |
+| Min plots per stratum | Optional | Whole number | Maximum 10 digits (0 to 9999999999). Planned and Completed. |
 
 ### 9.1 RESULTS Behaviour
 
 - RESULTS screen: Results 317 (Maintain Activity Results), SU section.
 - Saved by `RESULTS_317_MNT_ACT_RSLTS.SAVE` through `RESULTS_ATU`.
-- Number of plots is stored in `ACTIVITY_TREATMENT_UNIT.SURVEY_PLANNED_NUM_PLOTS` for a Planned activity and in `SURVEY_ACTUAL_NUM_PLOTS` for a Completed activity. Only one of the two is written.
+- Planned number of plots is stored in `ACTIVITY_TREATMENT_UNIT.SURVEY_PLANNED_NUM_PLOTS` and actual number of plots in `SURVEY_ACTUAL_NUM_PLOTS`. Actual is only accepted for a Completed activity.
 - Min plots per stratum is stored in `ACTIVITY_TREATMENT_UNIT.SURVEY_MIN_PLOTS_PER_STRATUM` for both statuses.
 
 ---
@@ -413,7 +414,8 @@ Request body fields:
 | `completionDate`, `treatedArea` | Completed required; not allowed when Planned | Treated area greater than 0 |
 | `actualCost` | Completed only | Optional, whole dollars |
 | `targetPreparedSpots` | `SP` only | Optional, 0 to 9999 |
-| `surveyNumPlots` | `SU` only | Optional, 0 to 9999 |
+| `surveyPlannedNumPlots` | `SU` only | Optional, 0 to 9999; accepted for Planned and Completed |
+| `surveyActualNumPlots` | `SU` and Completed only | Optional, 0 to 9999; not allowed when Planned |
 | `surveyMinPlotsPerStratum` | `SU` only | Optional, 0 to 9999999999 |
 
 Responses: `201` created, `400` validation errors (each listed as `field: message`), `403` no access to the opening's clients, `404` opening not found, `422` file rejected by the virus scanner.
@@ -421,7 +423,9 @@ Responses: `201` created, `400` validation errors (each listed as `field: messag
 Validation errors for the base-specific fields:
 
 - `targetPreparedSpots: only allowed when the base is SP`
-- `surveyNumPlots: only allowed when the base is SU`
+- `surveyPlannedNumPlots: only allowed when the base is SU`
+- `surveyActualNumPlots: only allowed when the base is SU`
+- `surveyActualNumPlots: only allowed when the status is COMPLETED`
 - `surveyMinPlotsPerStratum: only allowed when the base is SU`
 
 ### 14.1 Storage
@@ -431,8 +435,8 @@ All values are saved on `silva.activity_treatment_unit`.
 | Request field | Column | Condition |
 |---|---|---|
 | `targetPreparedSpots` | `target_prepared_spots` | SP |
-| `surveyNumPlots` | `survey_planned_num_plots` | SU, status Planned |
-| `surveyNumPlots` | `survey_actual_num_plots` | SU, status Completed |
+| `surveyPlannedNumPlots` | `survey_planned_num_plots` | SU, any status |
+| `surveyActualNumPlots` | `survey_actual_num_plots` | SU, status Completed |
 | `surveyMinPlotsPerStratum` | `survey_min_plots_per_stratum` | SU |
 
 ---

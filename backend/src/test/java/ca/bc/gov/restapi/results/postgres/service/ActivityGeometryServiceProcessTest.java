@@ -87,7 +87,8 @@ class ActivityGeometryServiceProcessTest {
     @SuppressWarnings("unchecked")
     ArgumentCaptor<java.util.function.Consumer<Geometry>> check =
         ArgumentCaptor.forClass(java.util.function.Consumer.class);
-    verify(spatialFileService).processSpatialFile(eq("a.geojson"), any(byte[].class), check.capture());
+    verify(spatialFileService)
+        .processSpatialFile(eq("a.geojson"), any(byte[].class), check.capture());
     check.getValue().accept(new GeometryFactory().createPoint());
     verify(openingGeometryRepository).findById(OPENING_ID);
   }

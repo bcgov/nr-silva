@@ -105,6 +105,7 @@ public class CreateActivityValidationService {
       rejectValue(dto.completionDate() != null, COMPLETION_DATE, errors);
       rejectValue(dto.treatedArea() != null, TREATED_AREA, errors);
       rejectValue(dto.actualCost() != null, "actualCost", errors);
+      rejectValue(dto.surveyActualNumPlots() != null, "surveyActualNumPlots", errors);
     }
   }
 
@@ -137,8 +138,11 @@ public class CreateActivityValidationService {
       errors.add("targetPreparedSpots: only allowed when the base is SP");
     }
     if (!SURVEY.equals(dto.baseCode())) {
-      if (dto.surveyNumPlots() != null) {
-        errors.add("surveyNumPlots: only allowed when the base is SU");
+      if (dto.surveyPlannedNumPlots() != null) {
+        errors.add("surveyPlannedNumPlots: only allowed when the base is SU");
+      }
+      if (dto.surveyActualNumPlots() != null) {
+        errors.add("surveyActualNumPlots: only allowed when the base is SU");
       }
       if (dto.surveyMinPlotsPerStratum() != null) {
         errors.add("surveyMinPlotsPerStratum: only allowed when the base is SU");

@@ -83,6 +83,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         null,
         null,
         null,
+        null,
         null);
   }
 
@@ -105,6 +106,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         new BigDecimal("1200"),
         null,
         null,
+        null,
         null);
   }
 
@@ -118,8 +120,12 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   private List<String> codes(String table, String column, String order, Long id, String ind) {
     entityManager.flush();
     return jdbcTemplate.queryForList(
-        "SELECT " + column + " FROM silva." + table
-            + " WHERE activity_treatment_unit_id = ? AND results_ind = ? ORDER BY " + order,
+        "SELECT "
+            + column
+            + " FROM silva."
+            + table
+            + " WHERE activity_treatment_unit_id = ? AND results_ind = ? ORDER BY "
+            + order,
         String.class,
         id,
         ind);
@@ -232,8 +238,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Saves the comment as an activity comment")
   void createActivity_withComment_savesLinkedComment() {
-    Long id =
-        service.createActivity(OPENING_ID, planned("HC", "  first comment ")).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("HC", "  first comment ")).activityId();
     entityManager.flush();
 
     var comments = commentRepository.getCommentById(null, id, null, null, null);
@@ -273,7 +278,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT MAX(activity_treatment_unit_id) FROM silva.activity_treatment_unit",
             Long.class);
-    jdbcTemplate.queryForObject("SELECT setval('silva.activity_treatment_unit_id_seq', 1)", Long.class);
+    jdbcTemplate.queryForObject(
+        "SELECT setval('silva.activity_treatment_unit_id_seq', 1)", Long.class);
 
     Long id = service.createActivity(OPENING_ID, planned("HC", "note")).activityId();
 
@@ -281,7 +287,12 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   }
 
   private CreateActivityRequestDto withBaseFields(
-      ActivityStatus status, String base, Integer spots, Integer plots, Long minPlots) {
+      ActivityStatus status,
+      String base,
+      Integer spots,
+      Integer plannedPlots,
+      Integer actualPlots,
+      Long minPlots) {
     boolean completed = status == ActivityStatus.COMPLETED;
     return new CreateActivityRequestDto(
         status,
@@ -300,7 +311,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         completed ? new BigDecimal("5.0") : null,
         null,
         spots,
-        plots,
+        plannedPlots,
+        actualPlots,
         minPlots);
   }
 
@@ -311,26 +323,28 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         activityRow(
             service
                 .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SP", 25, null, null))
+                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SP", 25, null, null, null))
                 .activityId());
 
-    assertThat(row).containsEntry("silv_base_code", "SP").containsEntry("target_prepared_spots", 25);
+    assertThat(row)
+        .containsEntry("silv_base_code", "SP")
+        .containsEntry("target_prepared_spots", 25);
   }
 
   @Test
-  @DisplayName("Saves SU number of plots as planned when planned and actual when completed")
-  void createActivity_su_routesNumPlotsByStatus() {
+  @DisplayName("Saves SU planned plots when planned, and planned plus actual plots when completed")
+  void createActivity_su_savesPlotCountsByStatus() {
     Map<String, Object> planned =
         activityRow(
             service
                 .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SU", null, 7, 3L))
+                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SU", null, 7, null, 3L))
                 .activityId());
     Map<String, Object> completed =
         activityRow(
             service
                 .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.COMPLETED, "SU", null, 8, 4L))
+                    OPENING_ID, withBaseFields(ActivityStatus.COMPLETED, "SU", null, 5, 8, 4L))
                 .activityId());
 
     assertThat(planned)
@@ -338,9 +352,9 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         .containsEntry("survey_min_plots_per_stratum", 3L);
     assertThat(planned.get("survey_actual_num_plots")).isNull();
     assertThat(completed)
+        .containsEntry("survey_planned_num_plots", 5)
         .containsEntry("survey_actual_num_plots", 8)
         .containsEntry("survey_min_plots_per_stratum", 4L);
-    assertThat(completed.get("survey_planned_num_plots")).isNull();
   }
 
   @Test
@@ -365,10 +379,10 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             null,
             null,
             null,
+            null,
             null);
 
-    Map<String, Object> row =
-        activityRow(service.createActivity(OPENING_ID, request).activityId());
+    Map<String, Object> row = activityRow(service.createActivity(OPENING_ID, request).activityId());
 
     assertThat(row.get("planned_date")).isNull();
     assertThat(row.get("planned_treatment_amount")).isNull();
@@ -433,7 +447,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     byte[] file = new ClassPathResource("spatial/activity-1527650.geojson").getContentAsByteArray();
 
     Long id =
-        service.createActivity(OPENING_ID, planned("HC", null), "activity.geojson", () -> file)
+        service
+            .createActivity(OPENING_ID, planned("HC", null), "activity.geojson", () -> file)
             .activityId();
     entityManager.flush();
 
@@ -498,7 +513,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   void createActivity_withinOpeningGeometry_saves() {
     givenOpeningGeometry(
         OPENING_ID,
-        "POLYGON((849000 1499000, 851000 1499000, 851000 1501000, 849000 1501000, 849000 1499000))");
+        "POLYGON((849000 1499000, 851000 1499000, 851000 1501000, 849000 1501000, 849000"
+            + " 1499000))");
 
     Long id =
         service
@@ -517,7 +533,8 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   void createActivity_outsideOpeningGeometry_savesNothing() {
     givenOpeningGeometry(
         OPENING_ID,
-        "POLYGON((800000 1400000, 800100 1400000, 800100 1400100, 800000 1400100, 800000 1400000))");
+        "POLYGON((800000 1400000, 800100 1400000, 800100 1400100, 800000 1400100, 800000"
+            + " 1400000))");
     int before = activityCount();
     CreateActivityRequestDto request = planned("HC", null);
     Supplier<byte[]> file = () -> SQUARE_GEOJSON.getBytes(UTF_8);
