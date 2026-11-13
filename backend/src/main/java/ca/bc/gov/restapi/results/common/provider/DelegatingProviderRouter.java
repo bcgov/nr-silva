@@ -123,8 +123,12 @@ public class DelegatingProviderRouter<T> {
         for (String key : candidatePropertyKeys) {
           if (propertySource.containsProperty(key)) {
             Object value = propertySource.getProperty(key);
-            if (value != null && !value.toString().isBlank()) {
-              return value.toString().trim().toLowerCase(Locale.ROOT);
+            String raw = value != null ? value.toString() : null;
+            if (raw != null && !raw.isBlank()) {
+              String resolved = configurableEnv.resolvePlaceholders(raw);
+              if (resolved != null && !resolved.isBlank() && !isUnresolvedPlaceholder(resolved)) {
+                return resolved.trim().toLowerCase(Locale.ROOT);
+              }
             }
           }
         }
@@ -139,6 +143,11 @@ public class DelegatingProviderRouter<T> {
     }
 
     return defaultProvider;
+  }
+
+  private static boolean isUnresolvedPlaceholder(String value) {
+    String trimmed = value.trim();
+    return trimmed.startsWith("${") && trimmed.endsWith("}");
   }
 
   /**

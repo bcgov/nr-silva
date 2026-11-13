@@ -170,6 +170,8 @@ ca:
 # Silva Custom Application Settings & External Integrations
 silva:
   integrations:
+    tenure:
+      provider: ${SILVA_INTEGRATION_TENURE_PROVIDER:mock}
     external-oracle:
       enabled: ${EXTERNAL_ORACLE_ENABLED:true}
       query-timeout: ${EXTERNAL_ORACLE_QUERY_TIMEOUT:5}
