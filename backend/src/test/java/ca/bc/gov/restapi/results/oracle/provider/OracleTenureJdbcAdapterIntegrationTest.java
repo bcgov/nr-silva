@@ -11,6 +11,7 @@ import ca.bc.gov.restapi.results.extensions.AbstractTestContainerIntegrationTest
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,13 +41,16 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
   @Autowired private OracleTenureJdbcAdapter adapter;
 
   @Autowired
-  @Qualifier("externalOracleJdbcTemplate")
-  private NamedParameterJdbcTemplate externalOracleJdbcTemplate;
+  @Qualifier("oracleDataSource")
+  private DataSource oracleDataSource;
 
   @Autowired private ConfigurableEnvironment environment;
 
+  private NamedParameterJdbcTemplate testContainerOracleJdbcTemplate;
+
   @BeforeEach
   void configureTenureTestEnvironment() {
+    testContainerOracleJdbcTemplate = new NamedParameterJdbcTemplate(oracleDataSource);
     setExternalOracleEnabled("true");
     cleanupSyntheticClients();
   }
@@ -127,10 +131,10 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
   @DisplayName(
       "Multiple CUT_BLOCK_CLIENT rows do not duplicate results and summary prioritizes R > O > A")
   void multipleClients_doNotDuplicateRowsAndSummaryPrioritizesResponsibleClient() {
-    insertSyntheticClient(9990001L, TEST_CB_SKEY_NO_CLIENTS, "L", "00010001");
+    insertSyntheticClient(9990001L, TEST_CB_SKEY_NO_CLIENTS, "L", "00010008", "00");
 
     ExternalCutBlockDetails authorized =
-        adapter.verifyCutBlock("TFL47", "12K", "12-11", "00010001");
+        adapter.verifyCutBlock("TFL47", "12K", "12-11", "00010008");
     assertThat(authorized.exists()).isTrue();
     assertThat(authorized.cbSkey()).isEqualTo(TEST_CB_SKEY_NO_CLIENTS);
     assertThat(authorized.clientIsLicensee()).isTrue();
@@ -148,7 +152,7 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
         .get()
         .satisfies(item -> assertThat(item.licenseeClientNumber()).isEqualTo("00010003"));
 
-    insertSyntheticClient(9990002L, TEST_CB_SKEY_NO_CLIENTS, "O", "00010002");
+    insertSyntheticClient(9990002L, TEST_CB_SKEY_NO_CLIENTS, "O", "00010002", "03");
     Optional<ExternalTenureSummary> obligationSummary =
         adapter.getTenureSummary("TFL47", "12K", "12-11");
     assertThat(obligationSummary)
@@ -156,7 +160,7 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
         .get()
         .satisfies(item -> assertThat(item.licenseeClientNumber()).isEqualTo("00010002"));
 
-    insertSyntheticClient(9990003L, TEST_CB_SKEY_NO_CLIENTS, "R", "00010004");
+    insertSyntheticClient(9990003L, TEST_CB_SKEY_NO_CLIENTS, "R", "00010004", "00");
     Optional<ExternalTenureSummary> responsibleSummary =
         adapter.getTenureSummary("TFL47", "12K", "12-11");
     assertThat(responsibleSummary)
@@ -196,7 +200,11 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
   }
 
   private void insertSyntheticClient(
-      long cblkClientSkey, long cbSkey, String clientTypeCode, String clientNumber) {
+      long cblkClientSkey,
+      long cbSkey,
+      String clientTypeCode,
+      String clientNumber,
+      String clientLocnCode) {
     String sql =
         """
         INSERT INTO THE.CUT_BLOCK_CLIENT (
@@ -216,7 +224,7 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
             :cbSkey,
             :typeCode,
             SYSDATE,
-            '00',
+            :clientLocnCode,
             :clientNumber,
             1,
             'TEST_USER',
@@ -225,17 +233,18 @@ class OracleTenureJdbcAdapterIntegrationTest extends AbstractTestContainerIntegr
             SYSDATE
         )
         """;
-    externalOracleJdbcTemplate.update(
+    testContainerOracleJdbcTemplate.update(
         sql,
         Map.of(
             "skey", cblkClientSkey,
             "cbSkey", cbSkey,
             "typeCode", clientTypeCode,
+            "clientLocnCode", clientLocnCode,
             "clientNumber", clientNumber));
   }
 
   private void cleanupSyntheticClients() {
     String sql = "DELETE FROM THE.CUT_BLOCK_CLIENT WHERE CBLK_CLIENT_SKEY IN (:skeys)";
-    externalOracleJdbcTemplate.update(sql, Map.of("skeys", TEMP_CLIENT_SKEYS));
+    testContainerOracleJdbcTemplate.update(sql, Map.of("skeys", TEMP_CLIENT_SKEYS));
   }
 }

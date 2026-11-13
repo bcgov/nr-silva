@@ -271,5 +271,38 @@ class DelegatingProviderRouterTest {
     assertThat(router.resolveProviderName()).isEqualTo("api");
     assertThat(router.getDelegate()).isSameAs(apiPort);
   }
+
+  @Test
+  @DisplayName("Should resolve Spring placeholder defaults in property source values")
+  void shouldResolvePlaceholderDefaultsInPropertySourceValues() {
+    MockEnvironment env = new MockEnvironment();
+    env.getPropertySources()
+        .addLast(
+            new MockPropertySource("applicationConfig")
+                .withProperty(
+                    "silva.integrations.tenure.provider",
+                    "${SILVA_INTEGRATION_TENURE_PROVIDER:mock}"));
+
+    DummyPort mockPort = () -> "mock";
+    DummyPort oraclePort = () -> "oracle";
+    Map<String, DummyPort> adapters =
+        Map.of(
+            "mockTenureAdapter", mockPort,
+            "oracleTenureJdbcAdapter", oraclePort);
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", adapters, env, "oracle", null);
+
+    assertThat(router.resolveProviderName()).isEqualTo("mock");
+    assertThat(router.getDelegate()).isSameAs(mockPort);
+
+    env.getPropertySources()
+        .addFirst(
+            new MockPropertySource("systemEnvironment")
+                .withProperty("SILVA_INTEGRATION_TENURE_PROVIDER", "oracle"));
+
+    assertThat(router.resolveProviderName()).isEqualTo("oracle");
+    assertThat(router.getDelegate()).isSameAs(oraclePort);
+  }
 }
 
