@@ -29,6 +29,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -289,7 +290,8 @@ class OracleTenureJdbcAdapterTest {
         .contains("THE.FOREST_FILE_CLIENT")
         .contains("FOREST_FILE_CLIENT_TYPE_CODE = 'A'")
         .contains("DENSE_RANK FIRST")
-        .doesNotContain("WHEN 'L'");
+        .doesNotContain("WHEN 'L'")
+        .doesNotContain("FETCH FIRST 1 ROWS ONLY");
   }
 
   @Test
@@ -394,6 +396,36 @@ class OracleTenureJdbcAdapterTest {
               assertThat(ese.getServiceName()).isEqualTo(SERVICE_FTA);
               assertThat(ese.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
             });
+  }
+
+  @Test
+  @DisplayName(
+      "verifyCutBlock propagates IncorrectResultSizeDataAccessException on ambiguous cut block")
+  @SuppressWarnings("unchecked")
+  void verifyCutBlock_whenMultipleCutBlocksMatch_propagatesIncorrectResultSize() {
+    when(externalOracleJdbcTemplate.queryForObject(
+            anyString(), any(SqlParameterSource.class), any(RowMapper.class)))
+        .thenThrow(new IncorrectResultSizeDataAccessException(1, 2));
+
+    assertThatThrownBy(
+            () ->
+                adapter.verifyCutBlock(
+                    FOREST_FILE_ID, CUTTING_PERMIT_ID, CUT_BLOCK_ID, CLIENT_NUMBER))
+        .isInstanceOf(IncorrectResultSizeDataAccessException.class);
+  }
+
+  @Test
+  @DisplayName(
+      "getTenureSummary propagates IncorrectResultSizeDataAccessException on ambiguous cut block")
+  @SuppressWarnings("unchecked")
+  void getTenureSummary_whenMultipleCutBlocksMatch_propagatesIncorrectResultSize() {
+    when(externalOracleJdbcTemplate.queryForObject(
+            anyString(), any(SqlParameterSource.class), any(RowMapper.class)))
+        .thenThrow(new IncorrectResultSizeDataAccessException(1, 2));
+
+    assertThatThrownBy(
+            () -> adapter.getTenureSummary(FOREST_FILE_ID, CUTTING_PERMIT_ID, CUT_BLOCK_ID))
+        .isInstanceOf(IncorrectResultSizeDataAccessException.class);
   }
 
   private static Stream<Arguments> blankIdentifierPairs() {

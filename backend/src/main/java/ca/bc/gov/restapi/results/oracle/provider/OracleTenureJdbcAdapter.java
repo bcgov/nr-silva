@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.QueryTimeoutException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -67,8 +68,6 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
           (:cuttingPermitId IS NULL AND TRIM(cb.CUTTING_PERMIT_ID) IS NULL)
           OR TRIM(cb.CUTTING_PERMIT_ID) = :cuttingPermitId
         )
-      ORDER BY cb.CB_SKEY
-      FETCH FIRST 1 ROWS ONLY
       """;
 
   private static final String SQL_GET_TENURE_SUMMARY =
@@ -110,8 +109,6 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
           (:cuttingPermitId IS NULL AND TRIM(cb.CUTTING_PERMIT_ID) IS NULL)
           OR TRIM(cb.CUTTING_PERMIT_ID) = :cuttingPermitId
         )
-      ORDER BY cb.CB_SKEY
-      FETCH FIRST 1 ROWS ONLY
       """;
 
   private final NamedParameterJdbcTemplate externalOracleJdbcTemplate;
@@ -198,6 +195,12 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
     } catch (EmptyResultDataAccessException e) {
       log.debug("Cut block not found in external Oracle FTA while {}", operation);
       return notFoundValue;
+    } catch (IncorrectResultSizeDataAccessException e) {
+      log.error(
+          "Ambiguous cut block match in external Oracle FTA while {}: {}",
+          operation,
+          e.getMessage());
+      throw e;
     } catch (QueryTimeoutException e) {
       log.error("External Oracle query timed out while {}: {}", operation, e.getMessage());
       throw new ExternalServiceException(
