@@ -135,7 +135,9 @@ public class LoggedUserHelper {
       return true;
     }
     CssRoleNaming.ScopedRoleName parsed = CssRoleNaming.parse(upperAuth);
-    return matchesRoleName(parsed.baseRoleName(), role)
+    // Reject grants with extra scopes (e.g. DISTRICT/REGION) until policy checks enforce them.
+    return parsed.scopes().size() == 1
+        && matchesRoleName(parsed.baseRoleName(), role)
         && parsed
             .scopeValue(CssRoleNaming.SCOPE_FOREST_CLIENT)
             .map(expectedClientId::equals)

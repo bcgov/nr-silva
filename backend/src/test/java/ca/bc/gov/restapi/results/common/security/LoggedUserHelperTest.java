@@ -48,12 +48,14 @@ class LoggedUserHelperTest {
   }
 
   @Test
-  @DisplayName("Recognizes abstract roles in CSS FOREST_CLIENT, multi-scope, and legacy formats")
+  @DisplayName("Recognizes abstract roles in CSS FOREST_CLIENT and legacy formats, rejecting multi-scope grants")
   void shouldMatchAbstractRoles() {
     setAuth(
         jwt("azureidir", "rhowell", "rhowell@gov.bc.ca"),
         "SUBMITTER_FOREST_CLIENT-00012797",
-        "SILVA_PLANNER_FOREST_CLIENT-00001012_REGION-KOOTENAY_BOUNDARY",
+        "SILVA_PLANNER_FOREST_CLIENT-00001012",
+        "SILVA_PLANNER_DISTRICT-DCC_FOREST_CLIENT-00002176",
+        "SILVA_PLANNER_FOREST_CLIENT-00003333_REGION-KOOTENAY_BOUNDARY",
         "Approver_00099999",
         "PLANNER_DISTRICT-DRM",
         "FAM:LABEL:Planner");
@@ -61,6 +63,8 @@ class LoggedUserHelperTest {
     assertTrue(helper.hasAbstractRole(Role.SUBMITTER, "00012797"));
     assertTrue(helper.hasAbstractRole(Role.PLANNER, "00001012"));
     assertTrue(helper.hasAbstractRole(Role.APPROVER, "00099999"));
+    assertFalse(helper.hasAbstractRole(Role.PLANNER, "00002176"));
+    assertFalse(helper.hasAbstractRole(Role.PLANNER, "00003333"));
     assertFalse(helper.hasAbstractRole(Role.PLANNER, "00012797"));
     assertFalse(helper.hasAbstractRole(Role.VIEWER, "00012797"));
     assertFalse(helper.hasAbstractRole(Role.PLANNER, ""));

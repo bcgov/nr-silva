@@ -48,15 +48,15 @@ describe('parsePrivileges', () => {
     expect(parsePrivileges(['VIEWER'])).toEqual({ Viewer: null });
   });
 
-  it('parses CSS FOREST_CLIENT scoped roles and compound scoped roles', () => {
+  it('parses CSS FOREST_CLIENT scoped roles and rejects compound multi-scope roles', () => {
     const input = [
       'SUBMITTER_FOREST_CLIENT-00012797',
       'SILVA_PLANNER_FOREST_CLIENT-00001012_REGION-KOOTENAY_BOUNDARY',
+      'SILVA_PLANNER_DISTRICT-DCC_FOREST_CLIENT-00001012',
       'SILVA_APPROVER_FOREST_CLIENT-00002176',
     ];
     expect(parsePrivileges(input)).toEqual({
       Submitter: ['00012797'],
-      Planner: ['00001012'],
       Approver: ['00002176'],
     });
   });
@@ -104,12 +104,13 @@ describe('parsePrivileges', () => {
 });
 
 describe('extractUniqueClients & hasCreateOpeningPrivilege', () => {
-  it('extracts unique client numbers while skipping FAM sidecars and non-client scopes', () => {
+  it('extracts unique client numbers while skipping FAM sidecars, non-client scopes, and compound scopes', () => {
     expect(
       extractUniqueClients([
         'SILVA_VIEWER',
         'SUBMITTER_FOREST_CLIENT-00012797',
-        'PLANNER_FOREST_CLIENT-00001012_REGION-RKO',
+        'PLANNER_FOREST_CLIENT-00001012',
+        'PLANNER_FOREST_CLIENT-00003333_REGION-RKO',
         'SUBMITTER_FOREST_CLIENT-00012797',
         'PLANNER_DISTRICT-DRM',
         'FAM:EXPIRES:2026-01-01',

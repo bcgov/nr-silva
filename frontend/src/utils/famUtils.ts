@@ -90,6 +90,9 @@ function parseRoleAndClient(roleString: string): { roleName: string; clientId?: 
 
   const parsedCss = parseCssRole(roleString);
   if (parsedCss.scopes.length > 0) {
+    if (parsedCss.scopes.length !== 1) {
+      return { roleName: '' };
+    }
     const forestClientScope = parsedCss.scopes.find(
       (scope) => scope.type.toUpperCase() === SCOPE_FOREST_CLIENT
     );
