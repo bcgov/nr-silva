@@ -116,4 +116,51 @@ describe('keycloak service', () => {
     expect(result).toBeNull();
     expect(mockInstance.removeUser).toHaveBeenCalledTimes(1);
   });
+
+  it('coordinates renewal via navigator.locks and avoids wiping a newer session saved by another tab', async () => {
+    const lockRequest = vi.fn(
+      async (_name: string, cb: () => Promise<unknown>) => cb()
+    );
+    const originalLocks = navigator.locks;
+    Object.defineProperty(navigator, 'locks', {
+      configurable: true,
+      value: { request: lockRequest },
+    });
+
+    try {
+      const freshFromOtherTab = {
+        access_token: 'other-tab-fresh',
+        expired: false,
+        expires_in: 300,
+      } as User;
+      mockInstance.getUser.mockResolvedValueOnce(freshFromOtherTab);
+
+      const skippedResult = await forceRenew();
+      expect(lockRequest).toHaveBeenCalledWith('silva_oidc_renewal', expect.any(Function));
+      expect(mockInstance.signinSilent).not.toHaveBeenCalled();
+      expect(skippedResult).toBe(freshFromOtherTab);
+
+      // When renewal runs for a rejected token and fails after another tab already updated storage,
+      // preserve the newer session instead of calling removeUser().
+      const rejectedUser = {
+        access_token: 'rejected-tok',
+        expired: false,
+        expires_in: 240,
+      } as User;
+      mockInstance.getUser
+        .mockResolvedValueOnce(rejectedUser)
+        .mockResolvedValueOnce(freshFromOtherTab);
+      mockInstance.signinSilent.mockRejectedValueOnce(new Error('Rotated token already spent'));
+
+      const recovered = await forceRenew('rejected-tok');
+      expect(mockInstance.signinSilent).toHaveBeenCalledTimes(1);
+      expect(mockInstance.removeUser).not.toHaveBeenCalled();
+      expect(recovered).toBe(freshFromOtherTab);
+    } finally {
+      Object.defineProperty(navigator, 'locks', {
+        configurable: true,
+        value: originalLocks,
+      });
+    }
+  });
 });

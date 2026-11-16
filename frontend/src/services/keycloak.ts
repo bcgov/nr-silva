@@ -65,31 +65,70 @@ export const loadStoredUser = async (): Promise<User | null> => {
   return user;
 };
 
+const RENEWAL_LOCK_NAME = 'silva_oidc_renewal';
+
+const withCrossTabRenewalLock = async <T>(task: () => Promise<T>): Promise<T> => {
+  if (typeof navigator !== 'undefined' && typeof navigator.locks?.request === 'function') {
+    return navigator.locks.request(RENEWAL_LOCK_NAME, task);
+  }
+  return task();
+};
+
+const clearIfUnchanged = async (
+  manager: UserManager,
+  attemptedAccessToken: string | undefined
+): Promise<User | null> => {
+  const latestUser = await manager.getUser().catch(() => null);
+  // Never wipe out a newer valid session written by another tab.
+  if (
+    latestUser?.access_token &&
+    latestUser.access_token !== attemptedAccessToken &&
+    !needsRenewal(latestUser)
+  ) {
+    return latestUser;
+  }
+
+  await manager.removeUser().catch(() => undefined);
+  return null;
+};
+
 /**
- * Forces a deduplicated silent token renewal using `UserManager.signinSilent()`.
- * Clears stale stored user state and returns `null` if renewal fails.
+ * Forces a deduplicated silent token renewal using `UserManager.signinSilent()`, coordinated
+ * across browser tabs so rotated refresh tokens are not double-spent or overwritten on failure.
+ *
+ * @param rejectedAccessToken Optional token rejected by the server (forces renewal even when local
+ *   `expires_in` is outside the renewal window, unless another tab has already replaced it).
  */
-export const forceRenew = async (): Promise<User | null> => {
+export const forceRenew = async (rejectedAccessToken?: string): Promise<User | null> => {
   if (inFlightRenewal) {
     return inFlightRenewal;
   }
 
   const manager = getUserManager();
-  inFlightRenewal = (async () => {
+  inFlightRenewal = withCrossTabRenewalLock(async () => {
+    const currentUser = await manager.getUser().catch(() => null);
+    const hasFreshReplacement =
+      !!currentUser?.access_token &&
+      !needsRenewal(currentUser) &&
+      (!rejectedAccessToken || currentUser.access_token !== rejectedAccessToken);
+
+    if (hasFreshReplacement) {
+      return currentUser;
+    }
+
+    const attemptedAccessToken = currentUser?.access_token ?? rejectedAccessToken;
     try {
       const renewedUser = await manager.signinSilent();
       if (!renewedUser?.access_token) {
-        await manager.removeUser().catch(() => undefined);
-        return null;
+        return clearIfUnchanged(manager, attemptedAccessToken);
       }
       return renewedUser;
     } catch {
-      await manager.removeUser().catch(() => undefined);
-      return null;
-    } finally {
-      inFlightRenewal = null;
+      return clearIfUnchanged(manager, attemptedAccessToken);
     }
-  })();
+  }).finally(() => {
+    inFlightRenewal = null;
+  });
 
   return inFlightRenewal;
 };
