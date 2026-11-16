@@ -59,8 +59,11 @@ parameters:
   - name: ORACLEDB_KEYSTORE
     description: Keystore location path
     value: /app/jssecacerts
-  - name: AWS_COGNITO_ISSUER_URI
-    description: AWS Cognito JWT Server URI
+  - name: KEYCLOAK_ISSUER_URI
+    description: BC Gov SSO Keycloak realm issuer URI
+    required: true
+  - name: KEYCLOAK_CLIENT_ID
+    description: BC Gov SSO Keycloak client ID (expected azp claim)
     required: true
   - name: DASHBOARD_JOB_IDIR_USERS
     description: List of IDIR usernames allowed to manually trigger jobs
@@ -189,8 +192,10 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-service
-                - name: AWS_COGNITO_ISSUER_URI
-                  value: ${AWS_COGNITO_ISSUER_URI}
+                - name: KEYCLOAK_ISSUER_URI
+                  value: ${KEYCLOAK_ISSUER_URI}
+                - name: KEYCLOAK_CLIENT_ID
+                  value: ${KEYCLOAK_CLIENT_ID}
                 - name: DASHBOARD_JOB_IDIR_USERS
                   value: ${DASHBOARD_JOB_IDIR_USERS}
                 - name: ALLOWED_ORIGINS

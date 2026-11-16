@@ -13,32 +13,16 @@ permissions:
   checks: write # This workflow requires checks permission which must be granted by the caller
 
 jobs:
-  fam-routing:
-    runs-on: ubuntu-26.04
-    name: Generate FAM routing
-    outputs:
-      route: ${{ steps.route.outputs.route }}
-    steps:
-      - name: FAM routing
-        id: route
-        run: |
-          if [ ${{ github.event_name }} == 'pull_request' ]; then
-            echo "route=$(( ${{ inputs.target }} % 50 ))" >> $GITHUB_OUTPUT
-          else
-            echo "route=${{ inputs.target }}" >> $GITHUB_OUTPUT
-          fi
-
   tests-frontend-e2e-built:
     name: E2E Tests on Build - All Browsers
     if: inputs.target != 'prod' && inputs.target != 'PROD'
-    needs: [fam-routing]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
       image: mcr.microsoft.com/playwright:v1.64.1-noble
     env:
       HOME: /root
-      BASE_URL: https://${{ github.event.repository.name }}-${{ needs.fam-routing.outputs.route }}-frontend.apps.silver.devops.gov.bc.ca
+      BASE_URL: https://${{ github.event.repository.name }}-${{ inputs.target }}-frontend.apps.silver.devops.gov.bc.ca
       TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
       TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
       CI: true

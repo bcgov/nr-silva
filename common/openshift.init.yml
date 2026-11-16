@@ -31,11 +31,11 @@ parameters:
   - name: FORESTCLIENTAPI_KEY
     description:
     required: true
-  - name: VITE_USER_POOLS_WEB_CLIENT_ID
-    description: Cognito user pools web client ID
+  - name: VITE_KEYCLOAK_CLIENT_ID
+    description: BC Gov SSO Keycloak public client ID
     required: true
-  - name: VITE_USER_POOLS_ID
-    description: Cognito user pools ID
+  - name: VITE_KEYCLOAK_URL
+    description: BC Gov SSO Keycloak realm authority URL
     required: true
   - name: S3_BUCKET
     description: S3 bucket for RESULTS
@@ -81,8 +81,8 @@ objects:
       labels:
         app: ${NAME}-${ZONE}
     stringData:
-      vite-user-pools-web-client-id: ${VITE_USER_POOLS_WEB_CLIENT_ID}
-      vite-user-pools-id: ${VITE_USER_POOLS_ID}
+      vite-keycloak-client-id: ${VITE_KEYCLOAK_CLIENT_ID}
+      vite-keycloak-url: ${VITE_KEYCLOAK_URL}
   - kind: NetworkPolicy
     apiVersion: networking.k8s.io/v1
     metadata:

@@ -13,8 +13,8 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
-  - name: FAM_ROUTE
-    description: Custom route ZONE for FAM
+  - name: FRONTEND_ROUTE
+    description: Frontend route zone override (defaults to target in CI)
     required: true
   - name: IMAGE_TAG
     description: Image tag to use
@@ -85,16 +85,16 @@ objects:
                   value: "${DEPLOYMENT_MODEL}"
                 - name: RANDOM_EXPRESSION
                   value: ${RANDOM_EXPRESSION}
-                - name: VITE_USER_POOLS_WEB_CLIENT_ID
+                - name: VITE_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-frontend
-                      key: vite-user-pools-web-client-id
-                - name: VITE_USER_POOLS_ID
+                      key: vite-keycloak-client-id
+                - name: VITE_KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-frontend
-                      key: vite-user-pools-id
+                      key: vite-keycloak-url
               ports:
                 - containerPort: 3000
                   protocol: TCP
@@ -143,7 +143,7 @@ objects:
         app: "${NAME}-${ZONE}"
       name: "${NAME}-${ZONE}-${COMPONENT}"
     spec:
-      host: "${NAME}-${FAM_ROUTE}-${COMPONENT}.${DOMAIN}"
+      host: "${NAME}-${FRONTEND_ROUTE}-${COMPONENT}.${DOMAIN}"
       port:
         targetPort: 3000-tcp
       to:
