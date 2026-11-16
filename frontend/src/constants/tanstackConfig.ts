@@ -6,9 +6,9 @@ import {
   type Query,
   type Mutation
 } from "@tanstack/react-query";
-import { setCookie, deleteCookie } from "@/utils/CookieUtils";
+import { deleteCookie, getCookie, setCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
-import { ensureFreshUser } from "@/services/keycloak";
+import { forceRenew } from "@/services/keycloak";
 import { ACCESS_TOKEN_KEY } from ".";
 
 // === Refresh Token Management ===
@@ -16,6 +16,16 @@ import { ACCESS_TOKEN_KEY } from ".";
 let isRefreshing = false;
 let isRedirecting = false;
 const authRefreshListeners = new Set<() => void>();
+const retriedTargets = new WeakSet<object>();
+
+const triggerAuthRedirect = () => {
+  deleteCookie(ACCESS_TOKEN_KEY);
+
+  if (!isRedirecting) {
+    isRedirecting = true;
+    window.location.href = "/";
+  }
+};
 
 const setAuthRefreshInProgress = (refreshing: boolean) => {
   if (isRefreshing === refreshing) {
@@ -39,24 +49,20 @@ const failedQueue: {
 }[] = [];
 
 async function refreshAccessToken(): Promise<string | null> {
+  const rejectedToken = getCookie(ACCESS_TOKEN_KEY) ?? undefined;
   try {
-    const freshUser = await ensureFreshUser();
+    const freshUser = await forceRenew(rejectedToken);
     const newAccess = freshUser?.access_token ?? null;
 
-    if (newAccess) {
+    if (newAccess && newAccess !== rejectedToken) {
       setCookie(ACCESS_TOKEN_KEY, newAccess);
       return newAccess;
     }
 
-    throw new Error("No token returned from Keycloak session");
+    throw new Error("No fresh token returned from Keycloak session");
   } catch (err) {
     console.error("Token refresh failed:", err);
-    deleteCookie(ACCESS_TOKEN_KEY);
-
-    if (!isRedirecting) {
-      isRedirecting = true;
-      window.location.href = "/";
-    }
+    triggerAuthRedirect();
 
     return null;
   }
@@ -65,9 +71,11 @@ async function refreshAccessToken(): Promise<string | null> {
 function processFailedQueue() {
   failedQueue.forEach(({ query, mutation, variables }) => {
     if (mutation) {
+      retriedTargets.add(mutation);
       void mutation.execute(variables); // this safely retries the mutation
     }
     if (query) {
+      retriedTargets.add(query);
       void query.fetch(undefined, { cancelRefetch: true }); // force a fresh refetch after token refresh
     }
   });
@@ -81,6 +89,14 @@ function refreshTokenAndRetry(
   mutation?: Mutation<unknown, unknown, unknown, unknown>,
   variables?: unknown
 ) {
+  const target: object | undefined = query ?? mutation;
+  if (target && retriedTargets.has(target)) {
+    failedQueue.length = 0;
+    setAuthRefreshInProgress(false);
+    triggerAuthRedirect();
+    return;
+  }
+
   failedQueue.push({ query, mutation, variables });
 
   if (!isRefreshing) {
@@ -176,10 +192,16 @@ export const queryClientConfig: QueryClientConfig = {
     }
   },
   queryCache: new QueryCache({
-    onError: queryErrorHandler
+    onError: queryErrorHandler,
+    onSuccess: (_data, query) => {
+      retriedTargets.delete(query);
+    },
   }),
   mutationCache: new MutationCache({
-    onError: mutationErrorHandler
+    onError: mutationErrorHandler,
+    onSuccess: (_data, _variables, _context, mutation) => {
+      retriedTargets.delete(mutation);
+    },
   })
 };
 

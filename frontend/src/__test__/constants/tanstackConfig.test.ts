@@ -7,16 +7,17 @@ import {
   queryClientConfig,
   subscribeAuthRefresh,
 } from '@/constants/tanstackConfig';
-import { ensureFreshUser } from '@/services/keycloak';
-import { deleteCookie, setCookie } from '@/utils/CookieUtils';
+import { forceRenew } from '@/services/keycloak';
+import { deleteCookie, getCookie, setCookie } from '@/utils/CookieUtils';
 
 vi.mock('@/services/keycloak', () => ({
-  ensureFreshUser: vi.fn(),
+  forceRenew: vi.fn(),
 }));
 
 vi.mock('@/utils/CookieUtils', () => ({
   setCookie: vi.fn(),
   deleteCookie: vi.fn(),
+  getCookie: vi.fn(() => 'expired-token'),
 }));
 
 type CacheErrorHandler = (...args: unknown[]) => void;
@@ -73,11 +74,11 @@ describe('tanstackConfig', () => {
 
       queryErrorHandler({ status: 500 }, mockQuery);
 
-      expect(ensureFreshUser).not.toHaveBeenCalled();
+      expect(forceRenew).not.toHaveBeenCalled();
       expect(mockQuery.fetch).not.toHaveBeenCalled();
     });
 
-    it('handles 401 error on queryCache: refreshes token via Keycloak and refetches query', async () => {
+    it('handles 401 error on queryCache: forces renewal and refetches query', async () => {
       const queryErrorHandler = (
         queryClientConfig.queryCache as unknown as { config: { onError: CacheErrorHandler } }
       ).config.onError;
@@ -86,7 +87,7 @@ describe('tanstackConfig', () => {
         setState: vi.fn(),
       };
 
-      vi.mocked(ensureFreshUser).mockResolvedValueOnce({
+      vi.mocked(forceRenew).mockResolvedValueOnce({
         access_token: 'new-access-token-123',
       } as User);
 
@@ -98,13 +99,14 @@ describe('tanstackConfig', () => {
       });
 
       await vi.waitFor(() => {
+        expect(forceRenew).toHaveBeenCalledWith('expired-token');
         expect(setCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY, 'new-access-token-123');
         expect(mockQuery.fetch).toHaveBeenCalledWith(undefined, { cancelRefetch: true });
         expect(isAuthRefreshInProgress()).toBe(false);
       });
     });
 
-    it('handles 401 error on mutationCache: refreshes token and retries mutation', async () => {
+    it('handles 401 error on mutationCache: forces renewal and retries mutation', async () => {
       const mutationErrorHandler = (
         queryClientConfig.mutationCache as unknown as { config: { onError: CacheErrorHandler } }
       ).config.onError;
@@ -113,7 +115,7 @@ describe('tanstackConfig', () => {
       };
       const variables = { id: 101, name: 'Test' };
 
-      vi.mocked(ensureFreshUser).mockResolvedValueOnce({
+      vi.mocked(forceRenew).mockResolvedValueOnce({
         access_token: 'mutation-token-456',
       } as User);
 
@@ -126,7 +128,7 @@ describe('tanstackConfig', () => {
       });
     });
 
-    it('handles refresh failure when ensureFreshUser throws', async () => {
+    it('handles refresh failure when forceRenew throws', async () => {
       const queryErrorHandler = (
         queryClientConfig.queryCache as unknown as { config: { onError: CacheErrorHandler } }
       ).config.onError;
@@ -135,7 +137,7 @@ describe('tanstackConfig', () => {
         setState: vi.fn(),
       };
 
-      vi.mocked(ensureFreshUser).mockRejectedValueOnce(new Error('Keycloak session expired'));
+      vi.mocked(forceRenew).mockRejectedValueOnce(new Error('Keycloak session expired'));
 
       queryErrorHandler({ response: { statusCode: 401 } }, mockQuery);
 
@@ -146,7 +148,7 @@ describe('tanstackConfig', () => {
       });
     });
 
-    it('handles refresh failure when ensureFreshUser returns null', async () => {
+    it('handles refresh failure when forceRenew returns null or the same rejected token', async () => {
       const queryErrorHandler = (
         queryClientConfig.queryCache as unknown as { config: { onError: CacheErrorHandler } }
       ).config.onError;
@@ -155,7 +157,7 @@ describe('tanstackConfig', () => {
         setState: vi.fn(),
       };
 
-      vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+      vi.mocked(forceRenew).mockResolvedValueOnce(null);
 
       queryErrorHandler({ status: 401 }, mockQuery);
 
@@ -163,6 +165,54 @@ describe('tanstackConfig', () => {
         expect(deleteCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY);
         expect(isAuthRefreshInProgress()).toBe(false);
       });
+
+      vi.clearAllMocks();
+      vi.mocked(getCookie).mockReturnValue('stale-token');
+      vi.mocked(forceRenew).mockResolvedValueOnce({ access_token: 'stale-token' } as User);
+      const mockQuery2 = { fetch: vi.fn(), setState: vi.fn() };
+
+      queryErrorHandler({ status: 401 }, mockQuery2);
+
+      await vi.waitFor(() => {
+        expect(deleteCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY);
+        expect(mockQuery2.fetch).not.toHaveBeenCalled();
+        expect(isAuthRefreshInProgress()).toBe(false);
+      });
+    });
+
+    it('stops retrying when a replayed query receives another 401 and resets after success', async () => {
+      const cacheConfig = (
+        queryClientConfig.queryCache as unknown as {
+          config: { onError: CacheErrorHandler; onSuccess: CacheErrorHandler };
+        }
+      ).config;
+      const mockQuery = {
+        fetch: vi.fn(),
+        setState: vi.fn(),
+      };
+
+      vi.mocked(getCookie).mockReturnValue('initial-token');
+      vi.mocked(forceRenew).mockResolvedValueOnce({ access_token: 'fresh-token-1' } as User);
+
+      cacheConfig.onError({ status: 401 }, mockQuery);
+      await vi.waitFor(() => expect(mockQuery.fetch).toHaveBeenCalledTimes(1));
+
+      // Second consecutive 401 on the already-retried query aborts without renewing again.
+      vi.mocked(forceRenew).mockClear();
+      vi.mocked(deleteCookie).mockClear();
+      cacheConfig.onError({ status: 401 }, mockQuery);
+
+      expect(forceRenew).not.toHaveBeenCalled();
+      expect(deleteCookie).toHaveBeenCalledWith(ACCESS_TOKEN_KEY);
+      expect(mockQuery.fetch).toHaveBeenCalledTimes(1);
+
+      // Once a fetch succeeds, future 401 recovery is re-enabled for that query.
+      cacheConfig.onSuccess({}, mockQuery);
+      vi.mocked(getCookie).mockReturnValue('fresh-token-1');
+      vi.mocked(forceRenew).mockResolvedValueOnce({ access_token: 'fresh-token-2' } as User);
+
+      cacheConfig.onError({ status: 401 }, mockQuery);
+      await vi.waitFor(() => expect(mockQuery.fetch).toHaveBeenCalledTimes(2));
     });
 
     it('notifies subscribers when auth refresh state transitions', async () => {
@@ -177,7 +227,7 @@ describe('tanstackConfig', () => {
         setState: vi.fn(),
       };
 
-      vi.mocked(ensureFreshUser).mockResolvedValueOnce({
+      vi.mocked(forceRenew).mockResolvedValueOnce({
         access_token: 'token',
       } as User);
 
@@ -196,7 +246,7 @@ describe('tanstackConfig', () => {
         resolveSession = resolve;
       });
 
-      vi.mocked(ensureFreshUser).mockImplementationOnce(() => sessionPromise);
+      vi.mocked(forceRenew).mockImplementationOnce(() => sessionPromise);
 
       const queryErrorHandler = (
         queryClientConfig.queryCache as unknown as { config: { onError: CacheErrorHandler } }
