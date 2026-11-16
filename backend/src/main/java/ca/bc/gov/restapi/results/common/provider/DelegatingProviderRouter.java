@@ -124,19 +124,30 @@ public class DelegatingProviderRouter<T> {
           if (propertySource.containsProperty(key)) {
             Object value = propertySource.getProperty(key);
             String raw = value != null ? value.toString() : null;
-            if (raw != null && !raw.isBlank()) {
-              String resolved = configurableEnv.resolvePlaceholders(raw);
-              if (resolved != null && !resolved.isBlank() && !isUnresolvedPlaceholder(resolved)) {
-                return resolved.trim().toLowerCase(Locale.ROOT);
-              }
+            String resolved = raw != null ? configurableEnv.resolvePlaceholders(raw) : null;
+            if (resolved != null && isUnresolvedPlaceholder(resolved)) {
+              continue;
             }
+            if (resolved == null || resolved.isBlank()) {
+              throw new IllegalStateException(
+                  String.format(
+                      "Configured provider for domain '%s' via '%s' must not be blank",
+                      domain, key));
+            }
+            return resolved.trim().toLowerCase(Locale.ROOT);
           }
         }
       }
     } else {
       for (String key : candidatePropertyKeys) {
-        String value = environment.getProperty(key);
-        if (value != null && !value.isBlank()) {
+        if (environment.containsProperty(key)) {
+          String value = environment.getProperty(key);
+          if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Configured provider for domain '%s' via '%s' must not be blank",
+                    domain, key));
+          }
           return value.trim().toLowerCase(Locale.ROOT);
         }
       }
