@@ -9,32 +9,6 @@ export const test = base.extend<{
   page: Page;
 }>({
   page: async ({ page }, use, testInfo) => {
-    const storageStatePath = testInfo.project.use.storageState;
-    if (typeof storageStatePath === 'string') {
-      const resolvedStoragePath = path.isAbsolute(storageStatePath)
-        ? storageStatePath
-        : path.resolve(process.cwd(), storageStatePath);
-      const sessionFile = resolvedStoragePath.replace(/\.json$/, '.session.json');
-      if (fs.existsSync(sessionFile)) {
-        const sessionEntries = JSON.parse(fs.readFileSync(sessionFile, 'utf-8')) as Record<string, string>;
-        const baseURL = testInfo.project.use.baseURL;
-        const targetOrigin = baseURL ? new URL(baseURL).origin : null;
-        await page.context().addInitScript(
-          ({ entries, origin }: { entries: Record<string, string>; origin: string | null }) => {
-            if (origin && window.location.origin !== origin) {
-              return;
-            }
-            if (window.sessionStorage.length === 0) {
-              for (const [key, value] of Object.entries(entries)) {
-                window.sessionStorage.setItem(key, value);
-              }
-            }
-          },
-          { entries: sessionEntries, origin: targetOrigin }
-        );
-      }
-    }
-
     const isChromium = testInfo.project.name === 'chromium';
 
     if (isChromium) {
