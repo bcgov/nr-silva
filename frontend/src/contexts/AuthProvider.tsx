@@ -4,9 +4,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
+import type { User } from 'oidc-client-ts';
 
 import { ACCESS_TOKEN_KEY, REDIRECT_KEY } from '@/constants';
 import { AUTH_CALLBACK_PATH } from '@/routes/paths';
@@ -16,6 +18,7 @@ import { FamLoginUser, IdpProviderType } from '@/types/AuthTypes';
 import { deleteCookie, setCookie } from '@/utils/CookieUtils';
 
 const SILENT_LOGIN_ATTEMPTED_KEY = 'silent_login_attempted';
+const OIDC_USER_STORAGE_PREFIX = 'oidc.user:';
 
 interface AuthContextType {
   user: FamLoginUser | undefined;
@@ -28,6 +31,7 @@ interface AuthContextType {
 
 interface AuthProviderProps {
   children: ReactNode;
+  onIdentityChange?: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,9 +40,44 @@ const resolveKcIdpHint = (provider: IdpProviderType): string => {
   return provider === 'IDIR' ? 'azureidir' : 'bceidbusiness';
 };
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children, onIdentityChange }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const currentUserRef = useRef<FamLoginUser | undefined>(undefined);
+  const isCompletingLoginRef = useRef(false);
+  const onIdentityChangeRef = useRef(onIdentityChange);
+  onIdentityChangeRef.current = onIdentityChange;
+
+  const commitUserState = useCallback((nextUser: FamLoginUser | undefined) => {
+    const prevUser = currentUserRef.current;
+    const identityChanged =
+      prevUser !== undefined &&
+      (nextUser === undefined || prevUser.providerUsername !== nextUser.providerUsername);
+
+    currentUserRef.current = nextUser;
+    setUser(nextUser);
+
+    if (identityChanged) {
+      onIdentityChangeRef.current?.();
+    }
+  }, []);
+
+  const syncFromOidcUser = useCallback(
+    (oidcUser: User | null | undefined): FamLoginUser | undefined => {
+      if (oidcUser?.access_token && !oidcUser.expired) {
+        setCookie(ACCESS_TOKEN_KEY, oidcUser.access_token);
+        const parsedUser = parseToken(oidcUser);
+        commitUserState(parsedUser);
+        return parsedUser;
+      }
+
+      deleteCookie(ACCESS_TOKEN_KEY);
+      setAuthIdToken(null);
+      commitUserState(undefined);
+      return undefined;
+    },
+    [commitUserState]
+  );
 
   const login = useCallback(async (provider: IdpProviderType, redirectPath?: string) => {
     const targetPath = redirectPath ?? `${window.location.pathname}${window.location.search}`;
@@ -55,18 +94,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const completeLogin = useCallback(
     async (onBeforeStateUpdate?: () => void | Promise<void>): Promise<FamLoginUser | undefined> => {
-      const oidcUser = await getUserManager().signinRedirectCallback();
-      if (oidcUser?.access_token) {
-        setCookie(ACCESS_TOKEN_KEY, oidcUser.access_token);
-      }
+      isCompletingLoginRef.current = true;
+      try {
+        const oidcUser = await getUserManager().signinRedirectCallback();
+        if (oidcUser?.access_token) {
+          setCookie(ACCESS_TOKEN_KEY, oidcUser.access_token);
+        }
 
-      const parsedUser = parseToken(oidcUser);
-      sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
-      await onBeforeStateUpdate?.();
-      setUser(parsedUser);
-      return parsedUser;
+        const parsedUser = parseToken(oidcUser);
+        sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
+        await onBeforeStateUpdate?.();
+        commitUserState(parsedUser);
+        return parsedUser;
+      } finally {
+        isCompletingLoginRef.current = false;
+      }
     },
-    []
+    [commitUserState]
   );
 
   const logout = useCallback(async () => {
@@ -80,9 +124,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await getUserManager()
         .removeUser()
         .catch(() => undefined);
-      setUser(undefined);
+      commitUserState(undefined);
     }
-  }, []);
+  }, [commitUserState]);
+
+  useEffect(() => {
+    const manager = getUserManager();
+    const events = manager.events;
+
+    const handleUserLoaded = (loadedUser: User) => {
+      if (isCompletingLoginRef.current) {
+        return;
+      }
+      syncFromOidcUser(loadedUser);
+    };
+
+    const handleUserUnloaded = () => {
+      if (isCompletingLoginRef.current) {
+        return;
+      }
+      syncFromOidcUser(null);
+    };
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (
+        event.storageArea === window.localStorage &&
+        (event.key === null || event.key.startsWith(OIDC_USER_STORAGE_PREFIX))
+      ) {
+        void manager
+          .getUser()
+          .then((storedUser) => {
+            syncFromOidcUser(storedUser);
+          })
+          .catch(() => {
+            syncFromOidcUser(null);
+          });
+      }
+    };
+
+    events?.addUserLoaded?.(handleUserLoaded);
+    events?.addUserUnloaded?.(handleUserUnloaded);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      events?.removeUserLoaded?.(handleUserLoaded);
+      events?.removeUserUnloaded?.(handleUserUnloaded);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [syncFromOidcUser]);
 
   useEffect(() => {
     let mounted = true;
@@ -100,9 +189,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         if (storedUser?.access_token) {
-          setCookie(ACCESS_TOKEN_KEY, storedUser.access_token);
-          const parsedUser = parseToken(storedUser);
-          setUser(parsedUser);
+          syncFromOidcUser(storedUser);
           sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
 
           const searchParams = new URLSearchParams(window.location.search);
@@ -115,9 +202,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           return;
         }
 
-        deleteCookie(ACCESS_TOKEN_KEY);
-        setAuthIdToken(null);
-        setUser(undefined);
+        syncFromOidcUser(null);
 
         const searchParams = new URLSearchParams(window.location.search);
         const idpHint = searchParams.get('idp_hint')?.toLowerCase();
@@ -142,9 +227,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         }
       } catch {
-        deleteCookie(ACCESS_TOKEN_KEY);
-        setAuthIdToken(null);
-        setUser(undefined);
+        syncFromOidcUser(null);
       } finally {
         if (mounted && !redirected) {
           setIsLoading(false);
@@ -155,7 +238,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       mounted = false;
     };
-  }, [login]);
+  }, [login, syncFromOidcUser]);
 
   const contextValue: AuthContextType = useMemo(
     () => ({

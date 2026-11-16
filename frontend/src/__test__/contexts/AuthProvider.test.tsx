@@ -1,6 +1,9 @@
 import { render, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const userLoadedListeners = new Set<(user: User) => void>();
+const userUnloadedListeners = new Set<() => void>();
+
 const mockUserManager = {
   getUser: vi.fn(),
   signinRedirect: vi.fn(),
@@ -8,6 +11,20 @@ const mockUserManager = {
   signoutRedirect: vi.fn(),
   signinSilent: vi.fn(),
   removeUser: vi.fn(),
+  events: {
+    addUserLoaded: vi.fn((cb: (user: User) => void) => {
+      userLoadedListeners.add(cb);
+    }),
+    removeUserLoaded: vi.fn((cb: (user: User) => void) => {
+      userLoadedListeners.delete(cb);
+    }),
+    addUserUnloaded: vi.fn((cb: () => void) => {
+      userUnloadedListeners.add(cb);
+    }),
+    removeUserUnloaded: vi.fn((cb: () => void) => {
+      userUnloadedListeners.delete(cb);
+    }),
+  },
 };
 
 vi.mock('@/services/keycloak', () => ({
@@ -51,6 +68,8 @@ const createSampleOidcUser = (overrides: Record<string, unknown> = {}): User => 
 describe('AuthProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    userLoadedListeners.clear();
+    userUnloadedListeners.clear();
     sessionStorage.clear();
     localStorage.clear();
     document.cookie = `${ACCESS_TOKEN_KEY}=; path=/; max-age=0`;
@@ -346,6 +365,97 @@ describe('AuthProvider', () => {
       expect(mockUserManager.signinRedirect).not.toHaveBeenCalled();
       expect(window.location.search).toBe('');
       expect(window.location.pathname).toBe('/openings');
+    });
+  });
+
+  describe('Session synchronization', () => {
+    it('syncs updated roles on userLoaded without clearing query cache, and clears on userUnloaded', async () => {
+      const initialUser = createSampleOidcUser({ client_roles: ['SILVA_VIEWER'] });
+      vi.mocked(ensureFreshUser).mockResolvedValueOnce(initialUser);
+      const onIdentityChange = vi.fn();
+
+      const TestComponent = () => {
+        const { user, isLoggedIn } = useAuth();
+        return (
+          <div>
+            <span>{isLoggedIn ? user?.roles?.join(',') : 'SignedOut'}</span>
+          </div>
+        );
+      };
+
+      const { getByText } = render(
+        <AuthProvider onIdentityChange={onIdentityChange}>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      await waitFor(() => expect(getByText('SILVA_VIEWER')).toBeInTheDocument());
+
+      const renewedSameUser = createSampleOidcUser({
+        client_roles: ['SILVA_VIEWER', 'SILVA_SUBMITTER_FOREST_CLIENT-00012797'],
+      });
+      await act(async () => {
+        userLoadedListeners.forEach((cb) => cb(renewedSameUser));
+      });
+
+      expect(getByText('SILVA_VIEWER,SILVA_SUBMITTER_FOREST_CLIENT-00012797')).toBeInTheDocument();
+      expect(onIdentityChange).not.toHaveBeenCalled();
+
+      await act(async () => {
+        userUnloadedListeners.forEach((cb) => cb());
+      });
+
+      expect(getByText('SignedOut')).toBeInTheDocument();
+      expect(onIdentityChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('syncs cross-tab localStorage changes and notifies onIdentityChange when account switches or signs out', async () => {
+      const firstAccount = createSampleOidcUser({ idir_username: 'ALICE' });
+      vi.mocked(ensureFreshUser).mockResolvedValueOnce(firstAccount);
+      const onIdentityChange = vi.fn();
+
+      const TestComponent = () => {
+        const { user, isLoggedIn } = useAuth();
+        return (
+          <span>{isLoggedIn ? `User:${user?.userName}` : 'SignedOut'}</span>
+        );
+      };
+
+      const { getByText } = render(
+        <AuthProvider onIdentityChange={onIdentityChange}>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      await waitFor(() => expect(getByText('User:ALICE')).toBeInTheDocument());
+
+      const secondAccount = createSampleOidcUser({ idir_username: 'BOB' });
+      mockUserManager.getUser.mockResolvedValueOnce(secondAccount);
+      await act(async () => {
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: 'oidc.user:https://dev.loginproxy.gov.bc.ca/auth/realms/standard:silva-6737',
+            storageArea: window.localStorage,
+          })
+        );
+      });
+
+      await waitFor(() => expect(getByText('User:BOB')).toBeInTheDocument());
+      expect(document.cookie).toContain(`${ACCESS_TOKEN_KEY}=${secondAccount.access_token}`);
+      expect(onIdentityChange).toHaveBeenCalledTimes(1);
+
+      mockUserManager.getUser.mockResolvedValueOnce(null);
+      await act(async () => {
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: 'oidc.user:https://dev.loginproxy.gov.bc.ca/auth/realms/standard:silva-6737',
+            storageArea: window.localStorage,
+          })
+        );
+      });
+
+      await waitFor(() => expect(getByText('SignedOut')).toBeInTheDocument());
+      expect(onIdentityChange).toHaveBeenCalledTimes(2);
     });
   });
 });

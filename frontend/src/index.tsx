@@ -20,7 +20,7 @@ if (container) {
   root.render(
     <React.StrictMode>
       <ClassPrefix prefix={CARBON_CLASS_PREFIX}>
-        <AuthProvider>
+        <AuthProvider onIdentityChange={() => queryClient.clear()}>
           <QueryClientProvider client={queryClient}>
             <ToastProvider>
               <PreferenceProvider>
