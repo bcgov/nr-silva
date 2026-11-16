@@ -1,4 +1,5 @@
 import { chromium, firefox, webkit, expect } from '@playwright/test';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -38,7 +39,20 @@ async function loginAndSaveStorage(browserTypeName: keyof typeof browserMap) {
   const authFile = path.join(__dirname, `./user.${browserTypeName}.json`);
   await page.context().storageState({ path: authFile });
 
-  console.log(`[globalSetup] Created: ${authFile}`);
+  const sessionStorageEntries = await page.evaluate(() => {
+    const entries: Record<string, string> = {};
+    for (let i = 0; i < window.sessionStorage.length; i += 1) {
+      const key = window.sessionStorage.key(i);
+      if (key) {
+        entries[key] = window.sessionStorage.getItem(key) ?? '';
+      }
+    }
+    return entries;
+  });
+  const sessionFile = path.join(__dirname, `./user.${browserTypeName}.session.json`);
+  fs.writeFileSync(sessionFile, JSON.stringify(sessionStorageEntries, null, 2));
+
+  console.log(`[globalSetup] Created: ${authFile} and ${sessionFile}`);
   await browser.close();
 }
 

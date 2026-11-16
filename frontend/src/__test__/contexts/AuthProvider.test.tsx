@@ -1,267 +1,76 @@
-import React from "react";
-import { AuthProvider, useAuth } from "../../contexts/AuthProvider";
-import { render, act, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { env } from "../../env";
+import { render, act, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Provide spies and a fetchAuthSession mock for tests
-vi.mock("aws-amplify/auth", async () => {
-  const original = await vi.importActual<any>("aws-amplify/auth");
-  const spySignIn = vi.fn();
-  const spySignOut = vi.fn();
-  return {
-    ...original,
-    signInWithRedirect: spySignIn,
-    signOut: spySignOut,
-    fetchAuthSession: async () => {
-      const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
-      const idToken = document.cookie
-        .split(";")
-        .find((c) => c.trim().startsWith(`${cookieName}.abci21.idToken=`))?.split("=")[1];
-      if (idToken) {
-        try {
-          const parts = idToken.split(".");
-          const body = parts[1] ?? "";
-          const jwtBody = body ? JSON.parse(atob(body)) : {};
-          const jwtObj = {
-            payload: jwtBody,
-            toString: () => idToken,
-          };
-          return { tokens: { idToken: jwtObj } };
-        } catch (e) {
-          return { tokens: { idToken } };
-        }
-      }
-      return { tokens: {} };
-    },
+const mockUserManager = {
+  getUser: vi.fn(),
+  signinRedirect: vi.fn(),
+  signinRedirectCallback: vi.fn(),
+  signoutRedirect: vi.fn(),
+  signinSilent: vi.fn(),
+  removeUser: vi.fn(),
+};
+
+vi.mock('@/services/keycloak', () => ({
+  getUserManager: () => mockUserManager,
+  ensureFreshUser: vi.fn(),
+}));
+
+import { ACCESS_TOKEN_KEY, REDIRECT_KEY } from '@/constants';
+import { AuthProvider, useAuth } from '@/contexts/AuthProvider';
+import { ensureFreshUser } from '@/services/keycloak';
+import type { User } from 'oidc-client-ts';
+
+const toBase64Url = (obj: Record<string, unknown>): string => {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join('');
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+const createSampleOidcUser = (overrides: Record<string, unknown> = {}): User => {
+  const payload = {
+    identity_provider: 'azureidir',
+    idir_username: 'JRYAN',
+    display_name: 'Ryan, Jack CIA:IN',
+    email: 'jack.ryan@gov.bc.ca',
+    given_name: 'Jack',
+    family_name: 'Ryan',
+    client_roles: ['SILVA_VIEWER', 'SILVA_SUBMITTER_FOREST_CLIENT-00001012'],
+    ...overrides,
   };
-});
+  const header = toBase64Url({ alg: 'RS256' });
+  const body = toBase64Url(payload);
+  return {
+    access_token: `${header}.${body}.sig`,
+    profile: {},
+    expires_at: 1999999999,
+    expires_in: 300,
+    expired: false,
+  } as unknown as User;
+};
 
-
-function setAuthCookies(value: string | null) {
-  const cookieName = `CognitoIdentityServiceProvider.${env.VITE_USER_POOLS_WEB_CLIENT_ID}`;
-  document.cookie = `${cookieName}.LastAuthUser=; path=/; max-age=0`;
-  document.cookie = `${cookieName}.abci21.idToken=; path=/; max-age=0`;
-
-  if (value) {
-    document.cookie = `${cookieName}.LastAuthUser=abci21; path=/`;
-    document.cookie = `${cookieName}.abci21.idToken=${value}; path=/`;
-  }
-}
-
-const sampleAuthToken =
-  "eyJhbGciOiJIUzI1NiJ9.eyJjb2duaXRvOmdyb3VwcyI6WyJQbGFubmVyXzAwMDEyNzk3IiwiUGxhbm5lcl8wMDAwMTAxMiIsIlBsYW5uZXJfMDAwMDIxNzYiLCJWaWV3ZXIiLCJTdWJtaXR0ZXJfMDAwMDEwMTIiXSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYjVlY2RiMDk0ZGZiNDE0OWE2YTg0NDVhMDFhOTZiZjBAaWRpciIsImN1c3RvbTppZHBfdXNlcl9pZCI6IkI1RUNEQjA5NERGQjQxNDlBNkE4NDQ1QTAxQTk2QkYwIiwiY3VzdG9tOmlkcF91c2VybmFtZSI6IkpSWUFOIiwiY3VzdG9tOmlkcF9kaXNwbGF5X25hbWUiOiJSeWFuLCBKYWNrIENJQTpJTiIsImVtYWlsIjoiamFjay5yeWFuQGdvdi5iYy5jYSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY3VzdG9tOmlkcF9uYW1lIjoiaWRpciIsImdpdmVuX25hbWUiOiJKYWNrIiwibmFtZSI6IkphY2sgUnlhbiIsImZhbWlseV9uYW1lIjoiUnlhbiJ9.cLEC8Yh08HErgP2x33pgt2koYJlFNRfi7ja7etcabrM";
-
-describe("AuthProvider", () => {
+describe('AuthProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionStorage.clear();
+    localStorage.clear();
+    document.cookie = `${ACCESS_TOKEN_KEY}=; path=/; max-age=0`;
+    window.history.replaceState({}, '', '/');
+    mockUserManager.removeUser.mockResolvedValue(undefined);
   });
 
-  it("should initialize correctly", async () => {
-    setAuthCookies(sampleAuthToken);
+  it('initializes logged-in user and persists access token cookie', async () => {
+    const oidcUser = createSampleOidcUser();
+    vi.mocked(ensureFreshUser).mockResolvedValueOnce(oidcUser);
 
     const TestComponent = () => {
       const { user, isLoggedIn, isLoading } = useAuth();
       return (
         <div>
-          <span>{isLoading ? "Loading" : "Loaded"}</span>
-          <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
+          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
+          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
           <span>{user?.firstName}</span>
+          <span>{user?.idpProvider}</span>
         </div>
-      );
-    };
-
-    let getByText;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    await waitFor(() => expect(getByText("Loaded")).toBeDefined());
-    expect(getByText("Logged In")).toBeDefined();
-    expect(getByText("Jack")).toBeDefined();
-  });
-
-  it("should find no token", async () => {
-    setAuthCookies(null);
-
-    const TestComponent = () => {
-      const { user, isLoggedIn, isLoading } = useAuth();
-      return (
-        <div>
-          <span>{isLoading ? "Loading" : "Loaded"}</span>
-          <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
-          <span>Welcome {user?.firstName || "nobody"}</span>
-        </div>
-      );
-    };
-
-    let getByText;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    await waitFor(() => expect(getByText("Loaded")).toBeDefined());
-    expect(getByText("Logged Out")).toBeDefined();
-    expect(getByText("Welcome nobody")).toBeDefined();
-  });
-
-  it("should handle login correctly", async () => {
-    setAuthCookies(sampleAuthToken);
-    const provider = "IDIR";
-    const envProvider = `${env.VITE_ZONE ?? "TEST"}-IDIR`;
-
-    const TestComponent = () => {
-      const { login } = useAuth();
-      return <button onClick={() => login(provider)}>Login</button>;
-    };
-
-    let getByText;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    act(() => {
-      getByText("Login").click();
-    });
-
-    // signInWithRedirect is mocked above; verify the spy was called
-    const authModule = await import("aws-amplify/auth");
-    expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
-      provider: { custom: envProvider.toUpperCase() },
-    });
-  });
-
-  it("should handle logout correctly", async () => {
-    setAuthCookies(sampleAuthToken);
-
-    const TestComponent = () => {
-      const { logout } = useAuth();
-      return <button onClick={logout}>Logout</button>;
-    };
-
-    let getByText;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    await act(async () => {
-      getByText("Logout").click();
-    });
-
-    const authModule = await import("aws-amplify/auth");
-    await waitFor(() => expect(authModule.signOut).toHaveBeenCalled());
-  });
-
-  it("should handle userDetails correctly", async () => {
-    setAuthCookies(sampleAuthToken);
-
-    const TestComponent = () => {
-      const { user } = useAuth();
-      return <div>{user ? user.firstName : "No User"}</div>;
-    };
-
-    let getByText;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    await waitFor(() => expect(getByText("Jack")).toBeDefined());
-  });
-
-  it("should throw error if useAuth is used outside AuthProvider", () => {
-    const TestComponent = () => {
-      useAuth();
-      return <div>Test</div>;
-    };
-
-    expect(() => render(<TestComponent />)).toThrow(
-      "useAuth must be used within an AuthProvider"
-    );
-  });
-
-  it("should sign out and retry when UserAlreadyAuthenticatedException is thrown", async () => {
-    setAuthCookies(sampleAuthToken);
-    const provider = "IDIR";
-    const envProvider = `${env.VITE_ZONE ?? "TEST"}-IDIR`;
-
-    const authModule = await import("aws-amplify/auth");
-    const alreadyAuthError = new Error("There is already a signed in user.");
-    alreadyAuthError.name = "UserAlreadyAuthenticatedException";
-
-    // First call throws, second call succeeds
-    (authModule.signInWithRedirect as ReturnType<typeof vi.fn>)
-      .mockRejectedValueOnce(alreadyAuthError)
-      .mockResolvedValueOnce(undefined);
-    (authModule.signOut as ReturnType<typeof vi.fn>).mockResolvedValueOnce(undefined);
-
-    const TestComponent = () => {
-      const { login } = useAuth();
-      return <button onClick={() => login(provider)}>Login</button>;
-    };
-
-    let getByText: any;
-    await act(async () => {
-      ({ getByText } = render(
-        <AuthProvider>
-          <TestComponent />
-        </AuthProvider>
-      ));
-    });
-
-    await act(async () => {
-      getByText("Login").click();
-    });
-
-    await waitFor(() => {
-      expect(authModule.signOut).toHaveBeenCalled();
-      expect(authModule.signInWithRedirect).toHaveBeenCalledTimes(2);
-      expect(authModule.signInWithRedirect).toHaveBeenLastCalledWith({
-        provider: { custom: envProvider.toUpperCase() },
-      });
-    });
-  });
-
-  it("should rethrow error when login error is not UserAlreadyAuthenticatedException", async () => {
-    const authModule = await import("aws-amplify/auth");
-    (authModule.signInWithRedirect as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
-      new Error("Network error")
-    );
-
-    let errorThrown: any = null;
-    const TestComponent = () => {
-      const { login } = useAuth();
-      return (
-        <button
-          onClick={async () => {
-            try {
-              await login("IDIR");
-            } catch (err) {
-              errorThrown = err;
-            }
-          }}
-        >
-          Login
-        </button>
       );
     };
 
@@ -271,44 +80,187 @@ describe("AuthProvider", () => {
       </AuthProvider>
     );
 
-    await act(async () => {
-      getByText("Login").click();
-    });
-
-    expect(errorThrown).toBeInstanceOf(Error);
-    expect(errorThrown.message).toBe("Network error");
+    await waitFor(() => expect(getByText('Loaded')).toBeInTheDocument());
+    expect(getByText('Logged In')).toBeInTheDocument();
+    expect(getByText('Jack')).toBeInTheDocument();
+    expect(getByText('IDIR')).toBeInTheDocument();
+    expect(document.cookie).toContain(`${ACCESS_TOKEN_KEY}=${oidcUser.access_token}`);
   });
 
-  it("persists access token in cookie when accessToken is present", async () => {
-    const authModule = await import("aws-amplify/auth");
-    vi.spyOn(authModule, "fetchAuthSession").mockResolvedValueOnce({
-      tokens: {
-        accessToken: { toString: () => "mock-access-token" },
-        idToken: undefined,
-      },
-    } as any);
+  it('renders logged-out state when no session exists', async () => {
+    vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
 
-    render(
+    const TestComponent = () => {
+      const { user, isLoggedIn, isLoading } = useAuth();
+      return (
+        <div>
+          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
+          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
+          <span>Welcome {user?.firstName ?? 'nobody'}</span>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
       <AuthProvider>
-        <div>Test</div>
+        <TestComponent />
       </AuthProvider>
     );
 
-    await waitFor(() => {
-      expect(document.cookie).toContain("ACCESS_TOKEN=mock-access-token");
+    await waitFor(() => expect(getByText('Loaded')).toBeInTheDocument());
+    expect(getByText('Logged Out')).toBeInTheDocument();
+    expect(getByText('Welcome nobody')).toBeInTheDocument();
+  });
+
+  it('skips ensureFreshUser while mounted on /authCallback', async () => {
+    window.history.replaceState({}, '', '/authCallback?code=abc&state=xyz');
+
+    const TestComponent = () => {
+      const { isLoading, isLoggedIn } = useAuth();
+      return (
+        <div>
+          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
+          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(getByText('Loaded')).toBeInTheDocument());
+    expect(ensureFreshUser).not.toHaveBeenCalled();
+    expect(getByText('Logged Out')).toBeInTheDocument();
+  });
+
+  it('triggers signinRedirect with kc_idp_hint=azureidir for IDIR and bceidbusiness for BCeID', async () => {
+    vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+    mockUserManager.signinRedirect.mockResolvedValue(undefined);
+    window.history.replaceState({}, '', '/openings?foo=1');
+
+    const TestComponent = () => {
+      const { login } = useAuth();
+      return (
+        <div>
+          <button onClick={() => void login('IDIR')}>Login IDIR</button>
+          <button onClick={() => void login('BCEIDBUSINESS', '/dashboard')}>Login BCeID</button>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(ensureFreshUser).toHaveBeenCalled());
+
+    await act(async () => {
+      getByText('Login IDIR').click();
+    });
+
+    expect(localStorage.getItem(REDIRECT_KEY)).toBe('/openings?foo=1');
+    expect(mockUserManager.signinRedirect).toHaveBeenCalledWith({
+      extraQueryParams: { kc_idp_hint: 'azureidir' },
+    });
+
+    await act(async () => {
+      getByText('Login BCeID').click();
+    });
+
+    expect(localStorage.getItem(REDIRECT_KEY)).toBe('/dashboard');
+    expect(mockUserManager.signinRedirect).toHaveBeenCalledWith({
+      extraQueryParams: { kc_idp_hint: 'bceidbusiness' },
     });
   });
 
-  it("handles error during session fetch by clearing user and stopping loading", async () => {
-    const authModule = await import("aws-amplify/auth");
-    vi.spyOn(authModule, "fetchAuthSession").mockRejectedValueOnce(new Error("Amplify error"));
+  it('completes OIDC callback login, stores cookie, invokes callback, and sets user', async () => {
+    vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+    const oidcUser = createSampleOidcUser();
+    mockUserManager.signinRedirectCallback.mockResolvedValueOnce(oidcUser);
+    const onBeforeStateUpdate = vi.fn();
+
+    const TestComponent = () => {
+      const { completeLogin, isLoggedIn, user } = useAuth();
+      return (
+        <div>
+          <button onClick={() => void completeLogin(onBeforeStateUpdate)}>Complete</button>
+          <span>{isLoggedIn ? `User:${user?.userName}` : 'Anon'}</span>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(getByText('Anon')).toBeInTheDocument());
+
+    await act(async () => {
+      getByText('Complete').click();
+    });
+
+    expect(mockUserManager.signinRedirectCallback).toHaveBeenCalled();
+    expect(onBeforeStateUpdate).toHaveBeenCalled();
+    expect(getByText('User:JRYAN')).toBeInTheDocument();
+    expect(document.cookie).toContain(`${ACCESS_TOKEN_KEY}=${oidcUser.access_token}`);
+  });
+
+  it('calls signoutRedirect without clearing user first and clears in catch fallback', async () => {
+    const oidcUser = createSampleOidcUser();
+    vi.mocked(ensureFreshUser).mockResolvedValueOnce(oidcUser);
+    mockUserManager.signoutRedirect.mockResolvedValueOnce(undefined);
+
+    const TestComponent = () => {
+      const { logout, isLoggedIn } = useAuth();
+      return (
+        <div>
+          <button onClick={() => void logout()}>Logout</button>
+          <span>{isLoggedIn ? 'Logged In' : 'Logged Out'}</span>
+        </div>
+      );
+    };
+
+    const { getByText } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(getByText('Logged In')).toBeInTheDocument());
+
+    await act(async () => {
+      getByText('Logout').click();
+    });
+
+    expect(mockUserManager.signoutRedirect).toHaveBeenCalledTimes(1);
+    expect(mockUserManager.removeUser).not.toHaveBeenCalled();
+    expect(document.cookie).not.toContain(oidcUser.access_token);
+
+    mockUserManager.signoutRedirect.mockRejectedValueOnce(new Error('Network fail'));
+    await act(async () => {
+      getByText('Logout').click();
+    });
+
+    await waitFor(() => expect(mockUserManager.removeUser).toHaveBeenCalled());
+    expect(getByText('Logged Out')).toBeInTheDocument();
+  });
+
+  it('handles errors during session fetch cleanly', async () => {
+    vi.mocked(ensureFreshUser).mockRejectedValueOnce(new Error('Session error'));
 
     const TestComponent = () => {
       const { user, isLoading } = useAuth();
       return (
         <div>
-          <span>{isLoading ? "Loading" : "Loaded"}</span>
-          <span>{user ? "Has User" : "No User"}</span>
+          <span>{isLoading ? 'Loading' : 'Loaded'}</span>
+          <span>{user ? 'Has User' : 'No User'}</span>
         </div>
       );
     };
@@ -319,142 +271,81 @@ describe("AuthProvider", () => {
       </AuthProvider>
     );
 
-    await waitFor(() => expect(getByText("Loaded")).toBeInTheDocument());
-    expect(getByText("No User")).toBeInTheDocument();
+    await waitFor(() => expect(getByText('Loaded')).toBeInTheDocument());
+    expect(getByText('No User')).toBeInTheDocument();
   });
 
-  describe("Silent Sign-On (idp_hint)", () => {
-    beforeEach(() => {
-      sessionStorage.clear();
-      localStorage.clear();
-      window.history.replaceState({}, "", "/");
-    });
+  it('throws when useAuth is used outside AuthProvider', () => {
+    const TestComponent = () => {
+      useAuth();
+      return <div />;
+    };
 
-    it("should trigger silent login for IDIR when idp_hint=idir is present and not yet attempted", async () => {
-      setAuthCookies(null);
-      window.history.replaceState({}, "", "/openings?idp_hint=idir");
+    expect(() => render(<TestComponent />)).toThrow(
+      'useAuth must be used within an AuthProvider'
+    );
+  });
 
-      const TestComponent = () => {
-        const { isLoading, isLoggedIn } = useAuth();
-        return (
-          <div>
-            <span>{isLoading ? "Loading" : "Loaded"}</span>
-            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
-          </div>
-        );
-      };
+  describe('Silent Sign-On (idp_hint)', () => {
+    it('triggers silent login for idp_hint=idir once and stores clean redirect path', async () => {
+      vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+      mockUserManager.signinRedirect.mockResolvedValueOnce(undefined);
+      window.history.replaceState({}, '', '/openings?idp_hint=idir');
 
-      await act(async () => {
-        render(
-          <AuthProvider>
-            <TestComponent />
-          </AuthProvider>
-        );
-      });
+      render(
+        <AuthProvider>
+          <div>Child</div>
+        </AuthProvider>
+      );
 
-      const authModule = await import("aws-amplify/auth");
-      const appEnv = isNaN(Number(env.VITE_ZONE)) ? (env.VITE_ZONE ?? "TEST") : "TEST";
       await waitFor(() =>
-        expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
-          provider: { custom: `${appEnv.toLocaleUpperCase()}-IDIR` },
+        expect(mockUserManager.signinRedirect).toHaveBeenCalledWith({
+          extraQueryParams: { kc_idp_hint: 'azureidir' },
         })
       );
-      expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
-      expect(localStorage.getItem("postLoginRedirect")).toBe("/openings");
+      expect(sessionStorage.getItem('silent_login_attempted')).toBe('true');
+      expect(localStorage.getItem(REDIRECT_KEY)).toBe('/openings');
     });
 
-    it("should trigger silent login for BCeID when idp_hint=bceid is present and not yet attempted", async () => {
-      setAuthCookies(null);
-      window.history.replaceState({}, "", "/dashboard?idp_hint=bceid");
+    it('triggers silent login for idp_hint=bceid with bceidbusiness hint', async () => {
+      vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+      mockUserManager.signinRedirect.mockResolvedValueOnce(undefined);
+      window.history.replaceState({}, '', '/dashboard?idp_hint=bceid');
+
+      render(
+        <AuthProvider>
+          <div>Child</div>
+        </AuthProvider>
+      );
+
+      await waitFor(() =>
+        expect(mockUserManager.signinRedirect).toHaveBeenCalledWith({
+          extraQueryParams: { kc_idp_hint: 'bceidbusiness' },
+        })
+      );
+      expect(localStorage.getItem(REDIRECT_KEY)).toBe('/dashboard');
+    });
+
+    it('cleans idp_hint query parameter without looping when already attempted', async () => {
+      vi.mocked(ensureFreshUser).mockResolvedValueOnce(null);
+      sessionStorage.setItem('silent_login_attempted', 'true');
+      window.history.replaceState({}, '', '/openings?idp_hint=idir');
 
       const TestComponent = () => {
         const { isLoading } = useAuth();
-        return <span>{isLoading ? "Loading" : "Loaded"}</span>;
+        return <span>{isLoading ? 'Loading' : 'Loaded'}</span>;
       };
 
-      await act(async () => {
-        render(
-          <AuthProvider>
-            <TestComponent />
-          </AuthProvider>
-        );
-      });
-
-      const authModule = await import("aws-amplify/auth");
-      const appEnv = isNaN(Number(env.VITE_ZONE)) ? (env.VITE_ZONE ?? "TEST") : "TEST";
-      await waitFor(() =>
-        expect(authModule.signInWithRedirect).toHaveBeenCalledWith({
-          provider: { custom: `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS` },
-        })
+      const { getByText } = render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
       );
-      expect(sessionStorage.getItem("silent_login_attempted")).toBe("true");
-      expect(localStorage.getItem("postLoginRedirect")).toBe("/dashboard");
-    });
 
-    it("should NOT trigger silent login if already attempted, but should clean the URL", async () => {
-      setAuthCookies(null);
-      sessionStorage.setItem("silent_login_attempted", "true");
-      window.history.replaceState({}, "", "/openings?idp_hint=idir");
-
-      const TestComponent = () => {
-        const { isLoading, isLoggedIn } = useAuth();
-        return (
-          <div>
-            <span>{isLoading ? "Loading" : "Loaded"}</span>
-            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
-          </div>
-        );
-      };
-
-      let getByText: any;
-      await act(async () => {
-        ({ getByText } = render(
-          <AuthProvider>
-            <TestComponent />
-          </AuthProvider>
-        ));
-      });
-
-      await waitFor(() => expect(getByText("Loaded")).toBeDefined());
-      expect(getByText("Logged Out")).toBeDefined();
-
-      const authModule = await import("aws-amplify/auth");
-      expect(authModule.signInWithRedirect).not.toHaveBeenCalled();
-      expect(window.location.search).toBe("");
-      expect(window.location.pathname).toBe("/openings");
-      expect(localStorage.getItem("postLoginRedirect")).toBeNull();
-    });
-
-    it("should NOT trigger silent login if user is already logged in, and should clean the URL", async () => {
-      setAuthCookies(sampleAuthToken);
-      window.history.replaceState({}, "", "/openings?idp_hint=idir");
-
-      const TestComponent = () => {
-        const { isLoading, isLoggedIn } = useAuth();
-        return (
-          <div>
-            <span>{isLoading ? "Loading" : "Loaded"}</span>
-            <span>{isLoggedIn ? "Logged In" : "Logged Out"}</span>
-          </div>
-        );
-      };
-
-      let getByText: any;
-      await act(async () => {
-        ({ getByText } = render(
-          <AuthProvider>
-            <TestComponent />
-          </AuthProvider>
-        ));
-      });
-
-      await waitFor(() => expect(getByText("Loaded")).toBeDefined());
-      expect(getByText("Logged In")).toBeDefined();
-
-      const authModule = await import("aws-amplify/auth");
-      expect(authModule.signInWithRedirect).not.toHaveBeenCalled();
-      expect(window.location.search).toBe("");
-      expect(window.location.pathname).toBe("/openings");
+      await waitFor(() => expect(getByText('Loaded')).toBeInTheDocument());
+      expect(mockUserManager.signinRedirect).not.toHaveBeenCalled();
+      expect(window.location.search).toBe('');
+      expect(window.location.pathname).toBe('/openings');
     });
   });
 });

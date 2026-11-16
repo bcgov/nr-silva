@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "../setup/coverage";
 import { SideBar } from "../pages/side-bar";
 
 test.describe('Side Bar', () => {
