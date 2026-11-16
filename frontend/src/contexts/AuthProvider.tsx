@@ -1,145 +1,149 @@
-import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from "react";
-import { fetchAuthSession, signInWithRedirect, signOut } from "aws-amplify/auth";
-import { parseToken } from "@/services/AuthService";
-import { env } from "@/env";
-import { FamLoginUser, IdpProviderType } from "@/types/AuthTypes";
-import { REDIRECT_KEY, ACCESS_TOKEN_KEY } from "@/constants";
-import { setCookie } from "@/utils/CookieUtils";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
-// 1. Define an interface for the context value
+import { ACCESS_TOKEN_KEY, REDIRECT_KEY } from '@/constants';
+import { AUTH_CALLBACK_PATH } from '@/routes/paths';
+import { parseToken, setAuthIdToken } from '@/services/AuthService';
+import { ensureFreshUser, getUserManager } from '@/services/keycloak';
+import { FamLoginUser, IdpProviderType } from '@/types/AuthTypes';
+import { deleteCookie, setCookie } from '@/utils/CookieUtils';
+
+const SILENT_LOGIN_ATTEMPTED_KEY = 'silent_login_attempted';
+
 interface AuthContextType {
   user: FamLoginUser | undefined;
   isLoggedIn: boolean;
   isLoading: boolean;
   login: (provider: IdpProviderType, redirectPath?: string) => Promise<void>;
-  logout: () => void;
+  completeLogin: (onBeforeStateUpdate?: () => void) => Promise<FamLoginUser | undefined>;
+  logout: () => Promise<void>;
 }
 
-// 2. Define an interface for the provider's props
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-// 3. Create the context with a default value of `undefined`
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// 4. Create the AuthProvider component with explicit typing
+const resolveKcIdpHint = (provider: IdpProviderType): string => {
+  return provider === 'IDIR' ? 'azureidir' : 'bceidbusiness';
+};
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<FamLoginUser | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  /**
-   * Resolves the application environment.
-   * Defaults to "TEST" if VITE_ZONE is not set or is numeric from PR deployments.
-   */
-  const appEnv = isNaN(Number(env.VITE_ZONE)) ? env.VITE_ZONE ?? "TEST" : "TEST";
-
-  const login = async (provider: IdpProviderType, redirectPath?: string) => {
-    const envProvider =
-      provider === 'IDIR'
-        ? `${appEnv.toLocaleUpperCase()}-IDIR`
-        : `${appEnv.toLocaleUpperCase()}-BCEIDBUSINESS`;
-
-    // Store current path to redirect after login
-    const targetPath = redirectPath ?? (window.location.pathname + window.location.search);
-    if (targetPath && targetPath !== "/") {
+  const login = useCallback(async (provider: IdpProviderType, redirectPath?: string) => {
+    const targetPath = redirectPath ?? `${window.location.pathname}${window.location.search}`;
+    if (targetPath && targetPath !== '/' && !targetPath.startsWith(AUTH_CALLBACK_PATH)) {
       localStorage.setItem(REDIRECT_KEY, targetPath);
     }
 
-    try {
-      await signInWithRedirect({
-        provider: { custom: envProvider.toUpperCase() }
-      });
-    } catch (err: unknown) {
-      // If Amplify thinks a user is already signed in (stale/expired session),
-      // clear it and retry the redirect.
-      if (err instanceof Error && err.name === 'UserAlreadyAuthenticatedException') {
-        await signOut();
-        await signInWithRedirect({
-          provider: { custom: envProvider.toUpperCase() }
-        });
-        return;
-      } else {
-        throw err;
+    await getUserManager().signinRedirect({
+      extraQueryParams: {
+        kc_idp_hint: resolveKcIdpHint(provider),
+      },
+    });
+  }, []);
+
+  const completeLogin = useCallback(
+    async (onBeforeStateUpdate?: () => void | Promise<void>): Promise<FamLoginUser | undefined> => {
+      const oidcUser = await getUserManager().signinRedirectCallback();
+      if (oidcUser?.access_token) {
+        setCookie(ACCESS_TOKEN_KEY, oidcUser.access_token);
       }
+
+      const parsedUser = parseToken(oidcUser);
+      sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
+      await onBeforeStateUpdate?.();
+      setUser(parsedUser);
+      return parsedUser;
+    },
+    []
+  );
+
+  const logout = useCallback(async () => {
+    sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
+    deleteCookie(ACCESS_TOKEN_KEY);
+    setAuthIdToken(null);
+    try {
+      await getUserManager().signoutRedirect();
+    } catch (err) {
+      console.error('Keycloak signout redirect failed:', err);
+      await getUserManager()
+        .removeUser()
+        .catch(() => undefined);
+      setUser(undefined);
     }
-  };
+  }, []);
 
-  const logout = async () => {
-    await signOut();
-    sessionStorage.removeItem("silent_login_attempted");
-    setUser(undefined);
-  };
-
-  // On mount, load current user session once. Token refresh is handled by tanstackConfig when needed.
   useEffect(() => {
     let mounted = true;
     let redirected = false;
+
     void (async () => {
       try {
-        // Prefer to fetch full session to read accessToken if present
-        const session = await fetchAuthSession();
-        const tokens = (session.tokens ?? {}) as { idToken?: any; accessToken?: any };
-        const accessToken = tokens.accessToken?.toString() ?? null;
-
-        // Persist access token for OpenAPI token provider
-        if (accessToken) {
-          setCookie(ACCESS_TOKEN_KEY, accessToken);
+        if (window.location.pathname === AUTH_CALLBACK_PATH) {
+          return;
         }
 
-        const idToken = tokens.idToken;
-        if (!mounted) return;
-        if (idToken) {
-          const parsedUser = parseToken(idToken);
+        const storedUser = await ensureFreshUser();
+        if (!mounted) {
+          return;
+        }
+
+        if (storedUser?.access_token) {
+          setCookie(ACCESS_TOKEN_KEY, storedUser.access_token);
+          const parsedUser = parseToken(storedUser);
           setUser(parsedUser);
-          sessionStorage.removeItem("silent_login_attempted");
+          sessionStorage.removeItem(SILENT_LOGIN_ATTEMPTED_KEY);
 
-          // Clean up idp_hint if present (already logged in)
           const searchParams = new URLSearchParams(window.location.search);
-          if (searchParams.has("idp_hint")) {
-            searchParams.delete("idp_hint");
+          if (searchParams.has('idp_hint')) {
+            searchParams.delete('idp_hint');
             const searchStr = searchParams.toString();
-            const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
-            window.history.replaceState({}, "", cleanPath);
+            const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : '');
+            window.history.replaceState({}, '', cleanPath);
           }
-        } else {
-          setUser(undefined);
+          return;
+        }
 
-          // Handle silent sign-on
-          const searchParams = new URLSearchParams(window.location.search);
-          const idpHint = searchParams.get("idp_hint")?.toLowerCase();
-          if (idpHint && (idpHint === "idir" || idpHint === "bceid" || idpHint === "bceidbusiness")) {
-            const alreadyAttempted = sessionStorage.getItem("silent_login_attempted") === "true";
-            if (!alreadyAttempted) {
-              sessionStorage.setItem("silent_login_attempted", "true");
+        deleteCookie(ACCESS_TOKEN_KEY);
+        setAuthIdToken(null);
+        setUser(undefined);
 
-              let provider: IdpProviderType | null = null;
-              if (idpHint === "idir") {
-                provider = "IDIR";
-              } else if (idpHint === "bceid" || idpHint === "bceidbusiness") {
-                provider = "BCEIDBUSINESS";
-              }
+        const searchParams = new URLSearchParams(window.location.search);
+        const idpHint = searchParams.get('idp_hint')?.toLowerCase();
+        if (idpHint && (idpHint === 'idir' || idpHint === 'bceid' || idpHint === 'bceidbusiness')) {
+          const alreadyAttempted = sessionStorage.getItem(SILENT_LOGIN_ATTEMPTED_KEY) === 'true';
+          if (!alreadyAttempted) {
+            sessionStorage.setItem(SILENT_LOGIN_ATTEMPTED_KEY, 'true');
+            const provider: IdpProviderType = idpHint === 'idir' ? 'IDIR' : 'BCEIDBUSINESS';
+            const cleanSearchParams = new URLSearchParams(window.location.search);
+            cleanSearchParams.delete('idp_hint');
+            const searchStr = cleanSearchParams.toString();
+            const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : '');
 
-              if (provider) {
-                redirected = true;
-                const cleanSearchParams = new URLSearchParams(window.location.search);
-                cleanSearchParams.delete("idp_hint");
-                const searchStr = cleanSearchParams.toString();
-                const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
-
-                await login(provider, cleanPath);
-              }
-            } else {
-              // Already attempted once. Clean the query parameter and render the landing page.
-              const cleanSearchParams = new URLSearchParams(window.location.search);
-              cleanSearchParams.delete("idp_hint");
-              const searchStr = cleanSearchParams.toString();
-              const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : "");
-              window.history.replaceState({}, "", cleanPath);
-            }
+            redirected = true;
+            await login(provider, cleanPath);
+          } else {
+            const cleanSearchParams = new URLSearchParams(window.location.search);
+            cleanSearchParams.delete('idp_hint');
+            const searchStr = cleanSearchParams.toString();
+            const cleanPath = window.location.pathname + (searchStr ? `?${searchStr}` : '');
+            window.history.replaceState({}, '', cleanPath);
           }
         }
       } catch {
+        deleteCookie(ACCESS_TOKEN_KEY);
+        setAuthIdToken(null);
         setUser(undefined);
       } finally {
         if (mounted && !redirected) {
@@ -147,10 +151,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
     })();
+
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [login]);
 
   const contextValue: AuthContextType = useMemo(
     () => ({
@@ -158,24 +163,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoggedIn: !!user,
       isLoading,
       login,
-      logout
+      completeLogin,
+      logout,
     }),
-    [user, isLoading]
+    [user, isLoading, login, completeLogin, logout]
   );
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
-// This is a helper hook to use the Auth context more easily
-// 5. Create a custom hook to consume the context safely
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

@@ -1,3 +1,4 @@
+import { useMemo, type FC } from "react";
 import { Loading } from "@carbon/react";
 import {
   createBrowserRouter,
@@ -12,37 +13,47 @@ import { protectedRoutes, publicRoutes } from "./routes";
 import { ModalProvider } from "./contexts/ModalContext";
 import ModalRenderer from "./components/Modals/ModalRenderer";
 
-const App: React.FC = () => {
+// Wrap all route elements with modal context
+const wrapWithModal = (routes: RouteObject[]): RouteObject[] =>
+  routes.map((route) => ({
+    ...route,
+    element: (
+      <ModalProvider>
+        <ModalRenderer />
+        {route.element}
+      </ModalProvider>
+    ),
+  }));
+
+const AppRoutes: FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
+  const browserRouter = useMemo(
+    () =>
+      createBrowserRouter(
+        isLoggedIn ? wrapWithModal(protectedRoutes) : publicRoutes
+      ),
+    [isLoggedIn]
+  );
+
+  // Key forces React Router v7 to remount with fresh route matches when auth state flips.
+  return (
+    <RouterProvider
+      key={isLoggedIn ? 'protected' : 'public'}
+      router={browserRouter}
+    />
+  );
+};
+
+const App: FC = () => {
   const auth = useAuth();
 
   if (auth.isLoading) {
     return <Loading withOverlay={true} />;
   }
 
-  // Wrap all route elements with modal context
-  const wrapWithModal = (routes: RouteObject[]): RouteObject[] =>
-    routes.map((route) => ({
-      ...route,
-      element: (
-        <ModalProvider>
-          <ModalRenderer />
-          {route.element}
-        </ModalProvider>
-      ),
-    }));
-
-  const selectRouter = (): RouteObject[] => {
-    return auth.isLoggedIn
-      ? wrapWithModal(protectedRoutes)
-      : publicRoutes;
-  };
-
-  const browserRouter = createBrowserRouter(selectRouter());
-
   return (
     <>
       <ReactQueryDevtools initialIsOpen={false} />
-      <RouterProvider router={browserRouter} />
+      <AppRoutes isLoggedIn={auth.isLoggedIn} />
     </>
   );
 };

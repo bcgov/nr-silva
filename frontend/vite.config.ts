@@ -70,7 +70,6 @@ export default defineConfig(({ mode }) => {
       include: ['src/__test__/**/*.{test,spec}.{ts,tsx}'],
       exclude: [
         'src/__e2e__/**/*',
-        'src/amplifyconfiguration.ts',
         'src/module.d.ts',
         'src/react-app-env.d.ts',
         'src/reportWebVitals.ts',
@@ -80,7 +79,6 @@ export default defineConfig(({ mode }) => {
         reporter: ['lcov', 'cobertura', 'html', 'json'],
         include: ['src/**/*'],
         exclude: [
-          'src/amplifyconfiguration.ts',
           'src/module.d.ts',
           'src/react-app-env.d.ts',
           'src/reportWebVitals.ts',

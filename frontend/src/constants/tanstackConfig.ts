@@ -8,8 +8,8 @@ import {
 } from "@tanstack/react-query";
 import { setCookie, deleteCookie } from "@/utils/CookieUtils";
 import { THREE_HOURS } from "@/constants/TimeUnits";
+import { ensureFreshUser } from "@/services/keycloak";
 import { ACCESS_TOKEN_KEY } from ".";
-import { fetchAuthSession } from "aws-amplify/auth";
 
 // === Refresh Token Management ===
 
@@ -40,18 +40,15 @@ const failedQueue: {
 
 async function refreshAccessToken(): Promise<string | null> {
   try {
-    // Use aws-amplify to refresh tokens via the existing session
-    const session = await fetchAuthSession();
-    const tokens = (session.tokens ?? {}) as { idToken?: string; accessToken?: string; refreshToken?: string };
-
-    const newAccess = tokens.accessToken?.toString() ?? null;
+    const freshUser = await ensureFreshUser();
+    const newAccess = freshUser?.access_token ?? null;
 
     if (newAccess) {
       setCookie(ACCESS_TOKEN_KEY, newAccess);
       return newAccess;
     }
 
-    throw new Error("No token returned from amplify session");
+    throw new Error("No token returned from Keycloak session");
   } catch (err) {
     console.error("Token refresh failed:", err);
     deleteCookie(ACCESS_TOKEN_KEY);

@@ -6,6 +6,7 @@
  */
 
 export const DASHBOARD_PATH = '/dashboard';
+export const AUTH_CALLBACK_PATH = '/authCallback';
 export const OPENINGS_PATH = '/openings';
 export const OPENINGS_SEARCH_PATH = '/openings-search';
 export const OPENING_CREATE_SUCCESS_PATH = '/openings/create/success';
