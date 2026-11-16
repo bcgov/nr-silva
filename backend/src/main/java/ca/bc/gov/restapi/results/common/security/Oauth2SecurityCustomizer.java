@@ -115,15 +115,13 @@ public class Oauth2SecurityCustomizer
   }
 
   private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
-    List<String> rawRoles = extractRawRoles(jwt);
-    return rawRoles.stream()
-        .filter(role -> !role.isBlank() && !CssRoleNaming.isSidecarRole(role))
+    return extractRawRoles(jwt).stream()
         .<GrantedAuthority>map(SimpleGrantedAuthority::new)
         .toList();
   }
 
   private List<String> extractRawRoles(Jwt jwt) {
-    List<String> clientRoles = toStringList(jwt.getClaim(CLAIM_CLIENT_ROLES));
+    List<String> clientRoles = filterRoles(toStringList(jwt.getClaim(CLAIM_CLIENT_ROLES)));
     if (!clientRoles.isEmpty()) {
       return clientRoles;
     }
@@ -141,9 +139,15 @@ public class Oauth2SecurityCustomizer
 
     Object clientEntry = resourceAccess.get(clientKey);
     if (clientEntry instanceof Map<?, ?> clientMap) {
-      return toStringList(clientMap.get(CLAIM_ROLES));
+      return filterRoles(toStringList(clientMap.get(CLAIM_ROLES)));
     }
     return List.of();
+  }
+
+  private List<String> filterRoles(List<String> roles) {
+    return roles.stream()
+        .filter(role -> !role.isBlank() && !CssRoleNaming.isSidecarRole(role))
+        .toList();
   }
 
   private List<String> toStringList(Object rawClaim) {

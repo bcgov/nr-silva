@@ -187,6 +187,31 @@ class Oauth2SecurityCustomizerTest {
     assertFalse(authorities.contains("ADMIN"));
   }
 
+  @Test
+  @DisplayName(
+      "Falls back to resource_access when client_roles contains only FAM sidecars or blanks")
+  void shouldFallbackToResourceAccessWhenClientRolesOnlyContainsSidecarsOrBlanks() {
+    Jwt jwt =
+        Jwt.withTokenValue("tok")
+            .header("alg", "RS256")
+            .claim("sub", "user1")
+            .claim("azp", CLIENT_ID)
+            .claim("client_roles", List.of("FAM:EXPIRES:2026-06-01", " "))
+            .claim(
+                "resource_access",
+                Map.of(CLIENT_ID, Map.of("roles", List.of("SILVA_VIEWER"))))
+            .build();
+
+    AbstractAuthenticationToken authentication = customizer.converter().convert(jwt);
+
+    assertNotNull(authentication);
+    Set<String> authorities =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toSet());
+    assertEquals(Set.of("SILVA_VIEWER"), authorities);
+  }
+
   private String signToken(String issuer, String azp, List<String> clientRoles) throws Exception {
     Instant now = Instant.now();
     JWTClaimsSet.Builder claimsBuilder =
