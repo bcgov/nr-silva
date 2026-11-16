@@ -79,13 +79,14 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 
-  # FAM
+  # BC Gov SSO Keycloak
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}
-          jwk-set-uri: ${AWS_COGNITO_ISSUER_URI:aws-cognito-any-url.com}/.well-known/jwks.json
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:https://dev.loginproxy.gov.bc.ca/auth/realms/standard}
+          jwk-set-uri: ${KEYCLOAK_ISSUER_URI:https://dev.loginproxy.gov.bc.ca/auth/realms/standard}/protocol/openid-connect/certs
+          client-id: ${KEYCLOAK_CLIENT_ID:nr-silva}
 
   # Flyway
   flyway:

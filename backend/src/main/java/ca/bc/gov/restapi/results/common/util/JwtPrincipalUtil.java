@@ -1,9 +1,12 @@
 package ca.bc.gov.restapi.results.common.util;
 
 import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
+import ca.bc.gov.restapi.results.common.security.CssRoleNaming;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -16,14 +19,40 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 /**
  * This is a utility class for handling JWT principals. It provides methods to extract various
- * attributes from a JwtAuthenticationToken object. The class is designed with a private constructor
- * to prevent instantiation.
+ * attributes from a JwtAuthenticationToken or Jwt object for BC Gov SSO Keycloak tokens, with
+ * backwards-compatible fallbacks for legacy Cognito test claims.
  */
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class JwtPrincipalUtil {
 
   private static final String FIRST_NAME = "firstName";
   private static final String LAST_NAME = "lastName";
+  private static final String FULL_NAME = "fullName";
+  private static final String DISPLAY_NAME_KEY = "displayName";
+
+  private static final String CLAIM_IDENTITY_PROVIDER = "identity_provider";
+  private static final String CLAIM_PREFERRED_USERNAME = "preferred_username";
+  private static final String CLAIM_IDIR_USERNAME = "idir_username";
+  private static final String CLAIM_BCEID_USERNAME = "bceid_username";
+  private static final String CLAIM_IDIR_GUID = "idir_user_guid";
+  private static final String CLAIM_BCEID_GUID = "bceid_user_guid";
+  private static final String CLAIM_DISPLAY_NAME = "display_name";
+  private static final String CLAIM_GIVEN_NAME = "given_name";
+  private static final String CLAIM_FAMILY_NAME = "family_name";
+  private static final String CLAIM_EMAIL = "email";
+  private static final String CLAIM_AZP = "azp";
+  private static final String CLAIM_CLIENT_ROLES = "client_roles";
+  private static final String CLAIM_RESOURCE_ACCESS = "resource_access";
+  private static final String CLAIM_ROLES = "roles";
+
+  private static final String LEGACY_IDP_NAME = "custom:idp_name";
+  private static final String LEGACY_IDP_USERNAME = "custom:idp_username";
+  private static final String LEGACY_IDP_DISPLAY_NAME = "custom:idp_display_name";
+  private static final String LEGACY_COGNITO_GROUPS = "cognito:groups";
+
+  private static final String PROVIDER_AZURE_IDIR = "AZUREIDIR";
+  private static final String PROVIDER_IDIR = "IDIR";
+  private static final String PROVIDER_BCEID_BUSINESS = "BCEIDBUSINESS";
 
   /**
    * Retrieves the provider of the JWT token from the given JwtAuthenticationToken principal. The
@@ -276,204 +305,181 @@ public class JwtPrincipalUtil {
   }
 
   private static Set<String> getClaimGroups(Map<String, Object> tokenAttributes) {
-    Object groups = tokenAttributes.get("cognito:groups");
-
-    if (groups instanceof List) {
-      return ((List<?>) groups)
-          .stream()
-              .filter(Objects::nonNull)
-              .filter(String.class::isInstance)
-              .map(String.class::cast)
-              .collect(Collectors.toSet());
+    Set<String> clientRoles = extractFilteredStringSet(tokenAttributes.get(CLAIM_CLIENT_ROLES));
+    if (!clientRoles.isEmpty()) {
+      return clientRoles;
     }
 
+    Set<String> resourceRoles = extractResourceAccessRoles(tokenAttributes);
+    if (!resourceRoles.isEmpty()) {
+      return resourceRoles;
+    }
+
+    return extractFilteredStringSet(tokenAttributes.get(LEGACY_COGNITO_GROUPS));
+  }
+
+  private static Set<String> extractResourceAccessRoles(Map<String, Object> tokenAttributes) {
+    String azp = getClaimValue(tokenAttributes, CLAIM_AZP);
+    if (azp.isBlank()) {
+      return Collections.emptySet();
+    }
+    Object resourceAccessObj = tokenAttributes.get(CLAIM_RESOURCE_ACCESS);
+    if (resourceAccessObj instanceof Map<?, ?> resourceAccess
+        && resourceAccess.get(azp) instanceof Map<?, ?> clientAccess) {
+      return extractFilteredStringSet(clientAccess.get(CLAIM_ROLES));
+    }
     return Collections.emptySet();
   }
 
-  /**
-   * Retrieves the value of a specified claim from the claims map. If the claim is not present,
-   * returns an empty string.
-   *
-   * @param claims The map containing the JWT claims.
-   * @param claimName The name of the claim to retrieve.
-   * @return The value of the specified claim as a String, or an empty string if the claim is not
-   *     present.
-   */
+  private static Set<String> extractFilteredStringSet(Object rawClaim) {
+    if (rawClaim instanceof Collection<?> collection) {
+      return collection.stream()
+          .filter(Objects::nonNull)
+          .filter(String.class::isInstance)
+          .map(String.class::cast)
+          .filter(role -> !role.isBlank() && !CssRoleNaming.isSidecarRole(role))
+          .collect(Collectors.toSet());
+    }
+    return Collections.emptySet();
+  }
+
   private static String getClaimValue(Map<String, Object> claims, String claimName) {
-    return claims.getOrDefault(claimName, StringUtils.EMPTY).toString();
+    Object value = claims.get(claimName);
+    return value == null ? StringUtils.EMPTY : value.toString();
   }
 
-  /**
-   * Retrieves the provider value from the JWT claims. The provider is identified by the key
-   * "custom:idp_name" within the claims. If the provider's name starts with "ca.bc.gov.flnr.fam.",
-   * it is replaced with "BCSC". Otherwise, the provider's name is returned in uppercase. If the
-   * provider is not specified, an empty string is returned.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The provider's name in uppercase or "BCSC" if it starts with "ca.bc.gov.flnr.fam.", or
-   *     an empty string if the provider is not specified.
-   */
   private static String getProviderValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "custom:idp_name").toUpperCase();
+    String provider = getClaimValue(claims, CLAIM_IDENTITY_PROVIDER);
+    if (provider.isBlank()) {
+      provider = extractProviderFromPreferredUsername(claims);
+    }
+    if (provider.isBlank()) {
+      provider = getClaimValue(claims, LEGACY_IDP_NAME);
+    }
+    if (provider.isBlank()) {
+      return StringUtils.EMPTY;
+    }
+
+    String normalized = provider.trim().toUpperCase(Locale.ROOT);
+    if (PROVIDER_AZURE_IDIR.equals(normalized) || PROVIDER_IDIR.equals(normalized)) {
+      return PROVIDER_IDIR;
+    }
+    if (PROVIDER_BCEID_BUSINESS.equals(normalized)) {
+      return PROVIDER_BCEID_BUSINESS;
+    }
+    return normalized;
   }
 
-  /**
-   * Constructs the user ID by combining the provider's name with the user's username or user ID.
-   * The method first attempts to retrieve the user's username from the JWT claims using the key
-   * "custom:idp_username". If the username is not present or is blank, it then attempts to retrieve
-   * the user's ID using the key "custom:idp_user_id". If either value is found, it is combined with
-   * the provider's name, separated by a backslash. If neither value is found, an empty string is
-   * returned. This method ensures that the user ID is uniquely identified by prefixing it with the
-   * provider's name.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The constructed user ID in the format "Provider\Username" or "Provider\UserID", or an
-   *     empty string if neither the username nor the user ID is present in the claims.
-   */
+  private static String extractProviderFromPreferredUsername(Map<String, Object> claims) {
+    String preferredUsername = getClaimValue(claims, CLAIM_PREFERRED_USERNAME);
+    int atIndex = preferredUsername.lastIndexOf('@');
+    if (atIndex >= 0 && atIndex < preferredUsername.length() - 1) {
+      return preferredUsername.substring(atIndex + 1);
+    }
+    return StringUtils.EMPTY;
+  }
+
   private static String getUserIdWithProviderValue(Map<String, Object> claims) {
     return getProviderValue(claims) + "\\" + getIdpUsernameValue(claims);
   }
 
   private static String getIdpUsernameValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "custom:idp_username");
+    String idirUsername = getClaimValue(claims, CLAIM_IDIR_USERNAME);
+    if (!idirUsername.isBlank()) {
+      return idirUsername;
+    }
+    String bceidUsername = getClaimValue(claims, CLAIM_BCEID_USERNAME);
+    if (!bceidUsername.isBlank()) {
+      return bceidUsername;
+    }
+    String legacyUsername = getClaimValue(claims, LEGACY_IDP_USERNAME);
+    if (!legacyUsername.isBlank()) {
+      return legacyUsername;
+    }
+    String idirGuid = getClaimValue(claims, CLAIM_IDIR_GUID);
+    if (!idirGuid.isBlank()) {
+      return idirGuid.toUpperCase(Locale.ROOT);
+    }
+    String bceidGuid = getClaimValue(claims, CLAIM_BCEID_GUID);
+    if (!bceidGuid.isBlank()) {
+      return bceidGuid.toUpperCase(Locale.ROOT);
+    }
+    String preferredUsername = getClaimValue(claims, CLAIM_PREFERRED_USERNAME);
+    int atIndex = preferredUsername.indexOf('@');
+    if (atIndex > 0) {
+      return preferredUsername.substring(0, atIndex).toUpperCase(Locale.ROOT);
+    }
+    return StringUtils.EMPTY;
   }
 
-  /**
-   * Retrieves the email value from the JWT claims. This method looks for the "email" key within the
-   * claims map. If the email is specified, its value is returned. Otherwise, an empty string is
-   * returned, indicating that the email claim is not present.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The email value as a String, or an empty string if the "email" claim is not present.
-   */
   private static String getEmailValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "email");
+    return getClaimValue(claims, CLAIM_EMAIL);
   }
 
-  /**
-   * Retrieves the display name value from the JWT claims. This method searches for the
-   * "custom:idp_display_name" key within the claims map. If the display name is specified, its
-   * value is returned. Otherwise, an empty string is returned, indicating that the display name
-   * claim is not present.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The display name value as a String, or an empty string if the "custom:idp_display_name"
-   *     claim is not present.
-   */
   private static String getDisplayNameValue(Map<String, Object> claims) {
-    return getClaimValue(claims, "custom:idp_display_name");
+    String displayName = getClaimValue(claims, CLAIM_DISPLAY_NAME);
+    if (!displayName.isBlank()) {
+      return displayName;
+    }
+    return getClaimValue(claims, LEGACY_IDP_DISPLAY_NAME);
   }
 
-  /**
-   * Processes the given JWT claims to extract and assemble user name information. This method
-   * extracts the first and last names from the JWT claims. For BCEIDBUSINESS providers or when both
-   * first and last names are blank, it parses the display name to extract these names. The method
-   * then assembles and returns a map containing the display name, first name, last name, and full
-   * name (a concatenation of first and last names with trimming).
-   *
-   * @param claims The map containing the JWT claims from which the name information is to be
-   *     extracted.
-   * @return A map with keys "displayName", "firstName", "lastName", and "fullName", containing the
-   *     extracted and/or computed name information. If specific name components are not found,
-   *     their values in the map will be empty strings.
-   */
   private static Map<String, String> processName(Map<String, Object> claims) {
     Map<String, String> additionalInfo = new HashMap<>();
 
-    // Extract first and last names if they exist
-    String firstName = getClaimValue(claims, "given_name");
-    String lastName = getClaimValue(claims, "family_name");
+    String firstName = getClaimValue(claims, CLAIM_GIVEN_NAME);
+    String lastName = getClaimValue(claims, CLAIM_FAMILY_NAME);
 
-    // Determine if special handling for names is required
-    boolean useDisplayName =
-        "bceidbusiness".equals(getProviderValue(claims))
-            || (firstName.isEmpty() && lastName.isEmpty());
+    boolean isBceidWithDisplayName =
+        PROVIDER_BCEID_BUSINESS.equalsIgnoreCase(getProviderValue(claims))
+            && !getDisplayNameValue(claims).isBlank();
+    boolean useDisplayName = isBceidWithDisplayName || (firstName.isEmpty() && lastName.isEmpty());
     if (useDisplayName) {
       Triple<String, String, String> names = extractNameClaim(claims);
       firstName = names.getMiddle();
       lastName = names.getRight();
     }
 
-    // Put extracted or computed first and last names into the map
-    additionalInfo.put("displayName", getDisplayNameValue(claims));
+    additionalInfo.put(DISPLAY_NAME_KEY, getDisplayNameValue(claims));
     additionalInfo.put(FIRST_NAME, firstName.trim());
     additionalInfo.put(LAST_NAME, lastName.trim());
-    additionalInfo.put("fullName", String.join(" ", firstName, lastName).trim());
+    additionalInfo.put(FULL_NAME, String.join(" ", firstName, lastName).trim());
 
     return additionalInfo;
   }
 
-  /**
-   * Retrieves the last name value from the JWT claims. This method utilizes the {@code processName}
-   * method to extract and assemble user name information from the JWT claims, specifically
-   * targeting the last name. If the last name is not specified, an empty string is returned.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The last name extracted from the JWT claims, or an empty string if not specified.
-   */
   private static String getLastNameValue(Map<String, Object> claims) {
     return processName(claims).get(LAST_NAME);
   }
 
-  /**
-   * Retrieves the full name value from the JWT claims. This method leverages the {@code
-   * processName} method to extract and assemble user name information from the JWT claims, focusing
-   * on assembling the full name (a concatenation of first and last names). If both first and last
-   * names are not specified, an empty string is returned.
-   *
-   * @param claims The map containing the JWT claims.
-   * @return The full name (concatenation of first and last names) extracted from the JWT claims, or
-   *     an empty string if not specified.
-   */
   private static String getNameValue(Map<String, Object> claims) {
-    return processName(claims).get("fullName");
+    return processName(claims).get(FULL_NAME);
   }
 
   private static String getFirstNameValue(Map<String, Object> claims) {
     return processName(claims).get(FIRST_NAME);
   }
 
-  /**
-   * Parses the display name claim to extract first and last names. Supports two formats:
-   *
-   * <ul>
-   *   <li>Comma-separated format (typically IDIR): "LastName, FirstName WLRS:EX" or "da Silva,
-   *       Maria WLRS:EX"
-   *   <li>Space-separated format (typically BCEIDBUSINESS): "FirstName LastName"
-   * </ul>
-   *
-   * For comma-separated format, the first part is the last name and the second part is the first
-   * name. Additional information after a space in the first name part (e.g., "WLRS:EX") is removed.
-   * For space-separated format with prefixes (e.g., "da", "de"), the second word is used as the
-   * last name.
-   *
-   * @param claims The map containing the JWT claims with "custom:idp_display_name" key.
-   * @return A Triple containing (displayName, firstName, lastName). If display name cannot be
-   *     parsed, lastName and firstName will be empty strings.
-   */
   private static Triple<String, String, String> extractNameClaim(Map<String, Object> claims) {
-    // User name
     String displayName = getDisplayNameValue(claims);
-    String firstName = "";
-    String lastName = "";
+    String firstName = StringUtils.EMPTY;
+    String lastName = StringUtils.EMPTY;
 
-    // Usually only IDIR contains comma.
     if (displayName.contains(",")) {
-      String[] parts = displayName.split(",");
-      firstName = parts[1].trim();
-
-      // Remove WLRS:EX or any additional info
-      if (firstName.contains(" ")) {
-        firstName = firstName.split(" ")[0].trim();
+      String[] parts = displayName.split(",", 2);
+      if (parts.length > 1) {
+        firstName = parts[1].trim();
+        if (firstName.contains(" ")) {
+          firstName = firstName.split(" ")[0].trim();
+        }
       }
 
       lastName = parts[0].trim();
-      // Remove 'de' or other starting characters before space
       if (lastName.contains(" ")) {
-        lastName = lastName.split(" ")[1].trim();
+        String[] lastParts = lastName.split(" ", 2);
+        lastName = lastParts.length > 1 ? lastParts[1].trim() : lastName;
       }
     } else if (displayName.contains(" ")) {
-      // Usually BCeID contains space. E.g.: NRS Load Test-3
       int indexFirstSpace = displayName.indexOf(' ');
       firstName = displayName.substring(0, indexFirstSpace);
       lastName = displayName.substring(indexFirstSpace).trim();

@@ -4,6 +4,7 @@ import ca.bc.gov.restapi.results.common.enums.IdentityProvider;
 import ca.bc.gov.restapi.results.common.enums.Role;
 import ca.bc.gov.restapi.results.common.exception.UserNotFoundException;
 import ca.bc.gov.restapi.results.common.util.JwtPrincipalUtil;
+import java.util.Locale;
 import java.util.function.Predicate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,13 +53,13 @@ public class LoggedUserHelper {
 
   /**
    * Checks whether the currently authenticated user has the specified concrete role (e.g.,
-   * "VIEWER").
+   * "VIEWER" or "SILVA_VIEWER").
    *
    * @param role the concrete role to check
    * @return true if the user has the role; false otherwise
    */
   public boolean hasConcreteRole(Role role) {
-    if (!role.isConcrete()) {
+    if (role == null || !role.isConcrete()) {
       return false;
     }
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -67,24 +68,24 @@ public class LoggedUserHelper {
       return false;
     }
 
-    return authentication
-        .getAuthorities()
-        .stream()
+    return authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
-        .map(String::toUpperCase)
-        .anyMatch(auth -> auth.equals(role.name()));
+        .filter(auth -> auth != null && !auth.isBlank() && !CssRoleNaming.isSidecarRole(auth))
+        .map(auth -> auth.toUpperCase(Locale.ROOT))
+        .anyMatch(auth -> matchesConcreteAuthority(auth, role));
   }
 
   /**
    * Checks whether the currently authenticated user has the specified abstract role for a given
-   * client ID (e.g., "PLANNER_00001012").
+   * client ID (e.g., "PLANNER_FOREST_CLIENT-00001012", "SILVA_PLANNER_FOREST_CLIENT-00001012", or
+   * legacy "PLANNER_00001012").
    *
-   * @param role     the abstract role to check
-   * @param clientId the client ID to append to the role
+   * @param role the abstract role to check
+   * @param clientId the client ID to match against the role scope
    * @return true if the user has the role; false otherwise
    */
   public boolean hasAbstractRole(Role role, String clientId) {
-    if (role.isConcrete()) {
+    if (role == null || role.isConcrete() || clientId == null || clientId.isBlank()) {
       return false;
     }
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -93,12 +94,12 @@ public class LoggedUserHelper {
       return false;
     }
 
-    return authentication
-        .getAuthorities()
-        .stream()
+    String expectedClientId = clientId.toUpperCase(Locale.ROOT);
+    return authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
-        .map(String::toUpperCase)
-        .anyMatch(auth -> auth.equals(role.name() + "_" + clientId));
+        .filter(auth -> auth != null && !auth.isBlank() && !CssRoleNaming.isSidecarRole(auth))
+        .map(auth -> auth.toUpperCase(Locale.ROOT))
+        .anyMatch(auth -> matchesAbstractAuthority(auth, role, expectedClientId));
   }
 
   /**
@@ -115,11 +116,34 @@ public class LoggedUserHelper {
       return false;
     }
 
-    return authentication
-        .getAuthorities()
-        .stream()
+    return authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
+        .filter(auth -> auth != null && !CssRoleNaming.isSidecarRole(auth))
         .anyMatch(matcher);
+  }
+
+  private boolean matchesConcreteAuthority(String upperAuth, Role role) {
+    CssRoleNaming.ScopedRoleName parsed = CssRoleNaming.parse(upperAuth);
+    if (parsed.isScoped()) {
+      return false;
+    }
+    return matchesRoleName(parsed.baseRoleName(), role);
+  }
+
+  private boolean matchesAbstractAuthority(String upperAuth, Role role, String expectedClientId) {
+    if (upperAuth.equals(role.name() + "_" + expectedClientId)) {
+      return true;
+    }
+    CssRoleNaming.ScopedRoleName parsed = CssRoleNaming.parse(upperAuth);
+    return matchesRoleName(parsed.baseRoleName(), role)
+        && parsed
+            .scopeValue(CssRoleNaming.SCOPE_FOREST_CLIENT)
+            .map(expectedClientId::equals)
+            .orElse(false);
+  }
+
+  private boolean matchesRoleName(String baseRoleName, Role role) {
+    return baseRoleName.equals(role.name()) || baseRoleName.endsWith("_" + role.name());
   }
 
   /**
