@@ -123,22 +123,42 @@ public class DelegatingProviderRouter<T> {
         for (String key : candidatePropertyKeys) {
           if (propertySource.containsProperty(key)) {
             Object value = propertySource.getProperty(key);
-            if (value != null && !value.toString().isBlank()) {
-              return value.toString().trim().toLowerCase(Locale.ROOT);
+            String raw = value != null ? value.toString() : null;
+            String resolved = raw != null ? configurableEnv.resolvePlaceholders(raw) : null;
+            if (resolved != null && isUnresolvedPlaceholder(resolved)) {
+              continue;
             }
+            if (resolved == null || resolved.isBlank()) {
+              throw new IllegalStateException(
+                  String.format(
+                      "Configured provider for domain '%s' via '%s' must not be blank",
+                      domain, key));
+            }
+            return resolved.trim().toLowerCase(Locale.ROOT);
           }
         }
       }
     } else {
       for (String key : candidatePropertyKeys) {
-        String value = environment.getProperty(key);
-        if (value != null && !value.isBlank()) {
+        if (environment.containsProperty(key)) {
+          String value = environment.getProperty(key);
+          if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Configured provider for domain '%s' via '%s' must not be blank",
+                    domain, key));
+          }
           return value.trim().toLowerCase(Locale.ROOT);
         }
       }
     }
 
     return defaultProvider;
+  }
+
+  private static boolean isUnresolvedPlaceholder(String value) {
+    String trimmed = value.trim();
+    return trimmed.startsWith("${") && trimmed.endsWith("}");
   }
 
   /**
