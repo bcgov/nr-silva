@@ -300,8 +300,8 @@ jobs:
       - uses: bcgov/action-test-and-analyse@8f699e3fd3fadd9a6adf6f4b1f2638ef7ecfefb9 # v2.0.0
         env:
           VITE_ZONE: test
-          VITE_USER_POOLS_ID: ${{ vars.VITE_USER_POOLS_ID }}
-          VITE_USER_POOLS_WEB_CLIENT_ID: ${{ vars.VITE_USER_POOLS_WEB_CLIENT_ID }}
+          VITE_KEYCLOAK_URL: ${{ vars.KEYCLOAK_ISSUER_URI }}
+          VITE_KEYCLOAK_CLIENT_ID: ${{ vars.KEYCLOAK_CLIENT_ID }}
           VITE_BACKEND_URL: http://localhost:8080
           TEST_BCEID_USERNAME: ${{ secrets.TEST_BCEID_USERNAME }}
           TEST_BCEID_PASSWORD: ${{ secrets.TEST_BCEID_PASSWORD }}
@@ -319,7 +319,7 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=.nyc_output/coverage/lcov.info
             -Dsonar.typescript.tsconfigPaths=tsconfig.json
             -Dsonar.sources=src/
-            -Dsonar.exclusions=src/__test__/**,src/__e2e__/**,src/amplifyconfiguration.*,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/services/OpenApi/**
+            -Dsonar.exclusions=src/__test__/**,src/__e2e__/**,src/**/*.scss,src/**/*.css,src/**/*.d.*,src/setupTests.*,src/services/OpenApi/**
             -Dsonar.tests=src/__test__/,src/__e2e__/
             -Dsonar.project.monorepo.enabled=true
           sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}

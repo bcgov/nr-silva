@@ -1,19 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Amplify } from 'aws-amplify';
-import amplifyconfig from '../amplifyconfiguration';
-import { CookieStorage } from 'aws-amplify/utils';
-import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
+import { describe, expect, it, vi } from 'vitest';
+
+const renderSpy = vi.fn();
 
 vi.mock('../env', () => ({
   env: {
     VITE_ZONE: 'DEV',
   },
 }));
-vi.mock('aws-amplify');
-vi.mock('aws-amplify/utils');
-vi.mock('aws-amplify/auth/cognito');
 vi.mock('@tanstack/react-query', () => ({
   QueryClient: vi.fn(function () {
     return {
@@ -22,13 +17,21 @@ vi.mock('@tanstack/react-query', () => ({
       },
     };
   }),
-  QueryClientProvider: ({ children }) => <div>{children}</div>,
-  QueryCache: class QueryCache { constructor(_opts?: any) { /* noop */ } },
-  MutationCache: class MutationCache { constructor(_opts?: any) { /* noop */ } },
+  QueryClientProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  QueryCache: class QueryCache {
+    constructor() {
+      /* noop */
+    }
+  },
+  MutationCache: class MutationCache {
+    constructor() {
+      /* noop */
+    }
+  },
 }));
 vi.mock('react-dom/client', () => ({
   createRoot: vi.fn(() => ({
-    render: vi.fn(),
+    render: renderSpy,
   })),
 }));
 vi.mock('../contexts/ToastProvider', () => ({
@@ -36,16 +39,14 @@ vi.mock('../contexts/ToastProvider', () => ({
 }));
 
 describe('index.tsx', () => {
-  it('should initialize the app correctly', async () => {
+  it('should initialize the app root cleanly without Amplify', async () => {
     const container = document.createElement('div');
     container.id = 'root';
     document.body.appendChild(container);
 
-    // Import the index file to execute its code
     await import('../index');
 
     expect(createRoot).toHaveBeenCalledWith(container);
-    expect(Amplify.configure).toHaveBeenCalledWith(amplifyconfig);
-    expect(cognitoUserPoolsTokenProvider.setKeyValueStorage).toHaveBeenCalledWith(expect.any(CookieStorage));
+    expect(renderSpy).toHaveBeenCalledTimes(1);
   }, 15_000);
 });

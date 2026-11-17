@@ -6,18 +6,10 @@ import v8toIstanbul from 'v8-to-istanbul';
 const COVERAGE_DIR = path.resolve(process.cwd(), '.nyc_output');
 
 export const test = base.extend<{
-  context: any;
   page: Page;
 }>({
-  context: async ({ browser }, use) => {
-    const context = await browser.newContext();
-    await use(context);
-    await context.close(); // clean up
-  },
-
-  page: async ({ context }, use, testInfo) => {
+  page: async ({ page }, use, testInfo) => {
     const isChromium = testInfo.project.name === 'chromium';
-    const page = await context.newPage();
 
     if (isChromium) {
       await page.coverage.startJSCoverage({ reportAnonymousScripts: true });

@@ -703,4 +703,117 @@ class JwtPrincipalUtilTest {
       assertThrows(NoSuchElementException.class, () -> JwtPrincipalUtil.getIdentityProvider(jwt));
     }
   }
+
+  @Nested
+  @DisplayName("Keycloak Claims Tests")
+  class KeycloakClaimsTests {
+
+    @Test
+    @DisplayName("Should normalize azureidir to IDIR and read idir_username")
+    void shouldNormalizeAzureIdirAndReadIdirUsername() {
+      Map<String, Object> claims =
+          Map.of(
+              "identity_provider", "azureidir",
+              "idir_username", "rhowell",
+              "idir_user_guid", "abcdef1234567890",
+              "preferred_username", "abcdef1234567890@azureidir",
+              "display_name", "Howell, Robert WLRS:EX",
+              "email", "robert.howell@gov.bc.ca");
+
+      Jwt jwt = createJwt(claims);
+
+      assertEquals("IDIR", JwtPrincipalUtil.getProvider(jwt));
+      assertEquals(IdentityProvider.IDIR, JwtPrincipalUtil.getIdentityProvider(jwt));
+      assertEquals("rhowell", JwtPrincipalUtil.getIdpUsername(jwt));
+      assertEquals("IDIR\\rhowell", JwtPrincipalUtil.getUserId(jwt));
+      assertEquals("Howell, Robert WLRS:EX", JwtPrincipalUtil.getDisplayName(jwt));
+      assertEquals("Robert", JwtPrincipalUtil.getFirstName(jwt));
+      assertEquals("Howell", JwtPrincipalUtil.getLastName(jwt));
+      assertEquals("Robert Howell", JwtPrincipalUtil.getName(jwt));
+      assertEquals("robert.howell@gov.bc.ca", JwtPrincipalUtil.getEmail(jwt));
+    }
+
+    @Test
+    @DisplayName("Should fallback to uppercase GUID and preferred_username suffix for IDIR")
+    void shouldFallbackToUppercaseGuidAndPreferredUsernameForIdir() {
+      Map<String, Object> guidFallbackClaims =
+          Map.of(
+              "identity_provider", "azureidir",
+              "idir_user_guid", "a1b2c3d4e5f6");
+      Jwt guidJwt = createJwt(guidFallbackClaims);
+
+      assertEquals("A1B2C3D4E5F6", JwtPrincipalUtil.getIdpUsername(guidJwt));
+      assertEquals("IDIR\\A1B2C3D4E5F6", JwtPrincipalUtil.getUserId(guidJwt));
+
+      Map<String, Object> preferredOnlyClaims =
+          Map.of("preferred_username", "deadbeef1234@azureidir");
+      Jwt preferredJwt = createJwt(preferredOnlyClaims);
+
+      assertEquals("IDIR", JwtPrincipalUtil.getProvider(preferredJwt));
+      assertEquals(IdentityProvider.IDIR, JwtPrincipalUtil.getIdentityProvider(preferredJwt));
+      assertEquals("DEADBEEF1234", JwtPrincipalUtil.getIdpUsername(preferredJwt));
+      assertEquals("IDIR\\DEADBEEF1234", JwtPrincipalUtil.getUserId(preferredJwt));
+    }
+
+    @Test
+    @DisplayName("Should resolve bceidbusiness claims with GUID fallback and display name parsing")
+    void shouldResolveBceidBusinessClaimsAndFallback() {
+      Map<String, Object> claims =
+          Map.of(
+              "identity_provider", "bceidbusiness",
+              "bceid_user_guid", "99aa88bb77cc",
+              "given_name", "Ignored",
+              "family_name", "Claim",
+              "display_name", "Alice Smith");
+      Jwt jwt = createJwt(claims);
+
+      assertEquals("BCEIDBUSINESS", JwtPrincipalUtil.getProvider(jwt));
+      assertEquals(IdentityProvider.BUSINESS_BCEID, JwtPrincipalUtil.getIdentityProvider(jwt));
+      assertEquals("99AA88BB77CC", JwtPrincipalUtil.getIdpUsername(jwt));
+      assertEquals("BCEIDBUSINESS\\99AA88BB77CC", JwtPrincipalUtil.getUserId(jwt));
+      assertEquals("Alice", JwtPrincipalUtil.getFirstName(jwt));
+      assertEquals("Smith", JwtPrincipalUtil.getLastName(jwt));
+
+      Map<String, Object> usernameClaims =
+          Map.of(
+              "preferred_username", "ff001122@bceidbusiness",
+              "bceid_username", "BIZUSER");
+      Jwt usernameJwt = createJwt(usernameClaims);
+      assertEquals("BCEIDBUSINESS", JwtPrincipalUtil.getProvider(usernameJwt));
+      assertEquals("BIZUSER", JwtPrincipalUtil.getIdpUsername(usernameJwt));
+    }
+
+    @Test
+    @DisplayName(
+        "Should extract client_roles and fallback to resource_access while filtering FAM sidecars")
+    void shouldExtractKeycloakRolesAndFilterSidecars() {
+      Map<String, Object> clientRolesClaims =
+          Map.of(
+              "client_roles",
+              List.of(
+                  "SILVA_VIEWER",
+                  "SUBMITTER_FOREST_CLIENT-00012797",
+                  "FAM:LABEL:Submitter",
+                  "FAM:EXPIRES:2026-12-31"));
+      assertEquals(
+          Set.of("SILVA_VIEWER", "SUBMITTER_FOREST_CLIENT-00012797"),
+          JwtPrincipalUtil.getGroups(createJwt(clientRolesClaims)));
+
+      Map<String, Object> resourceAccessClaims =
+          Map.of(
+              "azp",
+              "nr-silva",
+              "client_roles",
+              Collections.emptyList(),
+              "resource_access",
+              Map.of(
+                  "nr-silva",
+                  Map.of(
+                      "roles",
+                      List.of("SILVA_PLANNER_FOREST_CLIENT-00001012", "FAM:DESC:Planner"))));
+      assertEquals(
+          Set.of("SILVA_PLANNER_FOREST_CLIENT-00001012"),
+          JwtPrincipalUtil.getGroups(createJwt(resourceAccessClaims)));
+    }
+  }
 }
