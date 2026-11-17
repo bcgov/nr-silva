@@ -18,7 +18,7 @@ export const getAddActivityCrumbs = (openingId: string): BreadCrumbType[] => [
   }
 ] as const;
 
-export const NON_BASIC_SILV_BASE_CODES = new Set(['PL', 'DS', 'SP', 'SU']);
+export const NON_BASIC_SILV_BASE_CODES = new Set(['PL', 'DS']);
 
 export const MAX_MULTISELECT_ITEMS = 5;
 
@@ -38,5 +38,9 @@ export const DefaultActivityForm: ActivityFormType = {
   completionDate: { id: 'activity-completion-date-input' },
   treatedArea: { id: 'activity-treated-area-input' },
   actualCost: { id: 'activity-actual-cost-input' },
+  targetPreparedSpots: { id: 'activity-target-prepared-spots-input' },
+  surveyPlannedNumPlots: { id: 'activity-survey-planned-num-plots-input' },
+  surveyActualNumPlots: { id: 'activity-survey-actual-num-plots-input' },
+  surveyMinPlotsPerStratum: { id: 'activity-survey-min-plots-per-stratum-input' },
   file: { id: 'activity-spatial-file-drop-container' },
 };

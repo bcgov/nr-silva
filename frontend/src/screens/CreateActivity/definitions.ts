@@ -1,3 +1,5 @@
+import type { ComponentType, Dispatch, SetStateAction } from "react";
+import type { CreateActivityRequestDto } from "@/services/OpenApi";
 import FormInputType from "@/types/FormInputType";
 import { ActivitySpatialUploadResponseDto } from "@/services/OpenApi";
 
@@ -19,5 +21,23 @@ export type ActivityFormType = {
   completionDate?: FormInputType<string>;
   treatedArea?: FormInputType<string>;
   actualCost?: FormInputType<string>;
+  targetPreparedSpots?: FormInputType<string>;
+  surveyPlannedNumPlots?: FormInputType<string>;
+  surveyActualNumPlots?: FormInputType<string>;
+  surveyMinPlotsPerStratum?: FormInputType<string>;
   file?: FormInputType<File> & { validatedObj?: ActivitySpatialUploadResponseDto };
 }
+
+export type SpecFieldsProps = {
+  form: ActivityFormType;
+  setForm: Dispatch<SetStateAction<ActivityFormType>>;
+};
+
+/** Everything a base-specific "Activity specifications" section owns. */
+export type SpecModule = {
+  Fields: ComponentType<SpecFieldsProps>;
+  /** Marks invalid inputs on the (cloned) form and returns whether all are valid. */
+  validate: (form: ActivityFormType) => boolean;
+  toPayload: (form: ActivityFormType) => Partial<CreateActivityRequestDto>;
+  hasData: (form: ActivityFormType) => boolean;
+};

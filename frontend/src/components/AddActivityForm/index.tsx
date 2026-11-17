@@ -37,6 +37,7 @@ import { DATE_PICKER_FORMAT } from "@/constants";
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES, MAX_FILE_MB } from "@/components/CreateOpeningSteps/StepOne/constants";
 import { ActivityFormType } from "@/screens/CreateActivity/definitions";
 import { MAX_MULTISELECT_ITEMS, NON_BASIC_SILV_BASE_CODES } from "@/screens/CreateActivity/constants";
+import ActivitySpecifications from "./ActivitySpecifications";
 
 import './styles.scss';
 
@@ -562,6 +563,13 @@ const AddActivityForm = ({
                     </Grid>
                   </Form>
                 )}
+            </Column>
+          ) : null}
+
+          {/* Activity specifications */}
+          {selectedBaseCode && !isNoneBasicCode ? (
+            <Column sm={4} md={8} lg={16}>
+              <ActivitySpecifications baseCode={selectedBaseCode} form={form} setForm={setForm} />
             </Column>
           ) : null}
 

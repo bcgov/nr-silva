@@ -4,6 +4,7 @@ import { isValidDecimalInput } from '@/utils/InputUtils';
 import { ApiError, CreateActivityRequestDto } from '@/services/OpenApi';
 import { ActivityFormType } from './definitions';
 import { MAX_MULTISELECT_ITEMS } from './constants';
+import { getSpecModule } from '@/components/AddActivityForm/ActivitySpecifications';
 
 /** Returns the API's useful error detail when it is available. */
 export const getApiErrorMessage = (error: unknown, fallback: string) => {
@@ -113,6 +114,8 @@ export function validateActivityForm(form: ActivityFormType): { isValid: boolean
     }
   }
 
+  if (getSpecModule(updated.baseCode?.value)?.validate(updated) === false) isValid = false;
+
   if (updated.file?.value && !updated.file.validatedObj) {
     isValid = false;
     updated.file = updated.file ?? {};
@@ -130,6 +133,7 @@ export function buildCreateActivityPayload(form: ActivityFormType): CreateActivi
   const isPlanned = form.status?.value === 'PLANNED';
 
   return {
+    ...getSpecModule(form.baseCode?.value)?.toPayload(form),
     status: isPlanned ? CreateActivityRequestDto.status.PLANNED : CreateActivityRequestDto.status.COMPLETED,
     baseCode: form.baseCode?.value ?? '',
     techniqueCode: form.techniqueCode?.value || undefined,
@@ -165,6 +169,7 @@ export function hasActivityFormData(form: ActivityFormType): boolean {
     || form.completionDate?.value
     || form.treatedArea?.value
     || form.actualCost?.value
+    || (form.baseCode?.value ? getSpecModule(form.baseCode.value)?.hasData(form) : false)
     || form.file?.value
   );
 }
