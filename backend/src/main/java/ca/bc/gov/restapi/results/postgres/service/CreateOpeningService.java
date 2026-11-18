@@ -1,5 +1,6 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningCategoryNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
@@ -9,7 +10,6 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateOpeningResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.ExtractedGeoDataDto;
 import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
@@ -212,12 +212,12 @@ public class CreateOpeningService {
 
     // Step 17: associate each tenure, then reconcile CBOA-derived opening data.
     List<TenureRequestDto> tenures = dto.tenures();
-    Map<Integer, CutBlockEntity> resolvedBlocks = tenureValidation.resolvedBlocks();
+    Map<Integer, ExternalCutBlockDetails> resolvedBlocks = tenureValidation.resolvedBlocks();
     List<CutBlockOpenAdminEntity> associatedTenures = new ArrayList<>();
 
     for (int i = 0; i < tenures.size(); i++) {
       TenureRequestDto tenure = tenures.get(i);
-      CutBlockEntity block = resolvedBlocks.get(i);
+      ExternalCutBlockDetails block = resolvedBlocks.get(i);
       CutBlockOpenAdminEntity cboa =
           tenureAssociationService.associate(opening, tenure, block, auditUserId, now);
       associatedTenures.add(cboa);

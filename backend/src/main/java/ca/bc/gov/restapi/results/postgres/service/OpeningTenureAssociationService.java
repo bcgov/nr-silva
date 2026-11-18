@@ -1,7 +1,7 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.activity.ActivityTreatmentUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
@@ -36,7 +36,7 @@ public class OpeningTenureAssociationService {
   public CutBlockOpenAdminEntity associate(
       OpeningEntity opening,
       TenureRequestDto tenure,
-      CutBlockEntity block,
+      ExternalCutBlockDetails block,
       String userId,
       LocalDateTime now) {
     String fileId = tenure.fileId().trim();
@@ -56,8 +56,8 @@ public class OpeningTenureAssociationService {
     row.setForestFileId(fileId);
     row.setCutBlockId(cutBlockId);
     row.setCuttingPermitId(cuttingPermitId);
-    row.setTimberMark(block.getTimberMark());
-    row.setCbSkey(block.getCbSkey());
+    row.setTimberMark(block != null ? block.timberMark() : null);
+    row.setCbSkey(block != null ? block.cbSkey() : null);
     row.setOpeningPrimeLicenceInd(tenure.isPrimary() ? "Y" : "N");
     row.setOpeningGrossArea(opening.getOpeningGrossArea());
     row.setRevisionCount(row.getRevisionCount() == null ? 1 : row.getRevisionCount() + 1);
