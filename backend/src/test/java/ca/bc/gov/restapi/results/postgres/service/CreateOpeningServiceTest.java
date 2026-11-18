@@ -7,8 +7,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceErrorCode;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceException;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.exception.OpeningCategoryNotFoundException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
@@ -20,7 +24,6 @@ import ca.bc.gov.restapi.results.postgres.dto.MapsheetDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.OrgUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.OpenCategoryCodePostgresEntity;
@@ -89,8 +92,8 @@ class CreateOpeningServiceTest {
 
   private static final MapsheetDto FAKE_MAPSHEET = new MapsheetDto("092", "L", "057", "0", "0");
 
-  private static final CutBlockEntity DUMMY_BLOCK =
-      CutBlockEntity.builder().cbSkey(42L).timberMark("TM001").build();
+  private static final ExternalCutBlockDetails DUMMY_BLOCK =
+      ExternalCutBlockDetails.of(42L, true, "TM001", "ACT");
 
   @BeforeEach
   void setUp() {
@@ -139,7 +142,7 @@ class CreateOpeningServiceTest {
         java.util.stream.IntStream.range(0, tenures.size())
             .mapToObj(i -> new TenureValidationResultDto(i, true, null, null))
             .toList();
-    Map<Integer, CutBlockEntity> blocks =
+    Map<Integer, ExternalCutBlockDetails> blocks =
         java.util.stream.IntStream.range(0, tenures.size())
             .boxed()
             .collect(java.util.stream.Collectors.toMap(i -> i, i -> DUMMY_BLOCK));
@@ -332,6 +335,28 @@ class CreateOpeningServiceTest {
     CreateOpeningResponseDto response = service.createOpening(dto, "file.shp", new byte[0]);
 
     assertThat(response.openingId()).isEqualTo(20002L);
+  }
+
+  @Test
+  @DisplayName("ExternalServiceException during validation aborts before sequence or DB writes")
+  void createOpening_externalServiceUnavailable_abortsBeforeWrites() throws Exception {
+    mockGeometryAndMapsheetSteps();
+    when(openCategoryCodeRepository.findById("FTML"))
+        .thenReturn(Optional.of(mock(OpenCategoryCodePostgresEntity.class)));
+    OrgUnitEntity orgUnit = OrgUnitEntity.builder().orgUnitNo(99L).orgUnitCode("DAS").build();
+    when(orgUnitRepository.findByOrgUnitCode("DAS")).thenReturn(Optional.of(orgUnit));
+    when(tenureValidationService.validateTenures(any(), anyString()))
+        .thenThrow(
+            new ExternalServiceException(
+                ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE,
+                "FTA",
+                "External FTA disabled"));
+
+    assertThatThrownBy(
+            () ->
+                service.createOpening(buildDto(List.of(primaryTenure())), "test.zip", new byte[0]))
+        .isInstanceOf(ExternalServiceException.class);
+    verifyNoInteractions(jdbcTemplate, openingGeometryRepository, tenureAssociationService);
   }
 
   @Test

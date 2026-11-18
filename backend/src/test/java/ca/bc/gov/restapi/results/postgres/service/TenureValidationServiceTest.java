@@ -10,19 +10,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceErrorCode;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceException;
+import ca.bc.gov.restapi.results.common.provider.TenureProvider;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockClientPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.security.OperationAccessPolicy;
 import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,29 +40,23 @@ import org.springframework.web.server.ResponseStatusException;
 class TenureValidationServiceTest {
 
   @Mock private OperationAccessPolicy accessPolicy;
-  @Mock private CutBlockPostgresRepository cutBlockRepository;
-  @Mock private CutBlockClientPostgresRepository cutBlockClientRepository;
+  @Mock private TenureProvider tenureProvider;
   @Mock private CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
 
   private TenureValidationService service;
 
   private static final String CLIENT_NUMBER = "12345678";
-  private static final CutBlockEntity DUMMY_BLOCK =
-      CutBlockEntity.builder().cbSkey(99L).timberMark("TM001").build();
+  private static final ExternalCutBlockDetails DUMMY_DETAILS =
+      ExternalCutBlockDetails.of(99L, true, "TM001", "ACT");
 
   @BeforeEach
   void setUp() {
     service =
         new TenureValidationService(
-            accessPolicy,
-            cutBlockRepository,
-            cutBlockClientRepository,
-            cutBlockOpenAdminRepository);
+            accessPolicy, tenureProvider, cutBlockOpenAdminRepository);
     // happy-path stubs; the access policy mock allows the operation unless a test says otherwise
-    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
-        .thenReturn(Optional.of(DUMMY_BLOCK));
-    when(cutBlockClientRepository.existsByCbSkeyAndClientNumber(anyLong(), anyString()))
-        .thenReturn(true);
+    when(tenureProvider.verifyCutBlock(anyString(), any(), anyString(), anyString()))
+        .thenReturn(DUMMY_DETAILS);
     when(cutBlockOpenAdminRepository.existsAllocatedByTenure(anyString(), anyString(), any()))
         .thenReturn(false);
   }
@@ -86,6 +80,8 @@ class TenureValidationServiceTest {
     assertThat(result.tenures()).hasSize(2);
     assertThat(result.tenures().get(0).timberMark()).isEqualTo("TM001");
     assertThat(result.tenures().get(1).timberMark()).isEqualTo("TM001");
+    assertThat(result.resolvedBlocks()).containsEntry(0, DUMMY_DETAILS);
+    assertThat(result.resolvedBlocks()).containsEntry(1, DUMMY_DETAILS);
   }
 
   @Test
@@ -219,7 +215,7 @@ class TenureValidationServiceTest {
     assertThatThrownBy(() -> service.validateTenures(tenures, CLIENT_NUMBER))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining("403");
-    verifyNoInteractions(cutBlockRepository, cutBlockClientRepository, cutBlockOpenAdminRepository);
+    verifyNoInteractions(tenureProvider, cutBlockOpenAdminRepository);
   }
 
   @Test
@@ -230,13 +226,13 @@ class TenureValidationServiceTest {
     verify(accessPolicy).requireClientRole(ProtectedOperation.CREATE_OPENING, CLIENT_NUMBER);
   }
 
-  // ========== validateTenures() — DB checks ==========
+  // ========== validateTenures() — TenureProvider & allocation checks ==========
 
   @Test
-  @DisplayName("Cut block not found in DB should return TENURE_NOT_FOUND")
+  @DisplayName("Cut block not found via TenureProvider should return TENURE_NOT_FOUND")
   void validateTenures_blockNotFound_returnsTenureNotFound() {
-    when(cutBlockRepository.findByTenure(anyString(), anyString(), any()))
-        .thenReturn(Optional.empty());
+    when(tenureProvider.verifyCutBlock(anyString(), any(), anyString(), anyString()))
+        .thenReturn(ExternalCutBlockDetails.notFound());
 
     List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
 
@@ -245,13 +241,32 @@ class TenureValidationServiceTest {
     assertThat(result.isValid()).isFalse();
     assertThat(result.validationResults().get(0).errorCode())
         .isEqualTo(TenureValidationErrorCode.TENURE_NOT_FOUND);
+    assertThat(result.resolvedBlocks()).isEmpty();
+    verifyNoInteractions(cutBlockOpenAdminRepository);
+  }
+
+  @Test
+  @DisplayName("Null details from TenureProvider safely returns TENURE_NOT_FOUND")
+  void validateTenures_providerReturnsNull_returnsTenureNotFound() {
+    when(tenureProvider.verifyCutBlock(anyString(), any(), anyString(), anyString()))
+        .thenReturn(null);
+
+    List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isFalse();
+    assertThat(result.validationResults().get(0).errorCode())
+        .isEqualTo(TenureValidationErrorCode.TENURE_NOT_FOUND);
+    assertThat(result.resolvedBlocks()).isEmpty();
+    verifyNoInteractions(cutBlockOpenAdminRepository);
   }
 
   @Test
   @DisplayName("Client not licensee for cut block should return CLIENT_NOT_LICENSEE")
   void validateTenures_clientNotLicensee_returnsClientNotLicensee() {
-    when(cutBlockClientRepository.existsByCbSkeyAndClientNumber(anyLong(), anyString()))
-        .thenReturn(false);
+    when(tenureProvider.verifyCutBlock(anyString(), any(), anyString(), anyString()))
+        .thenReturn(ExternalCutBlockDetails.of(99L, false, "TM001", "ACT"));
 
     List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
 
@@ -260,6 +275,43 @@ class TenureValidationServiceTest {
     assertThat(result.isValid()).isFalse();
     assertThat(result.validationResults().get(0).errorCode())
         .isEqualTo(TenureValidationErrorCode.CLIENT_NOT_LICENSEE);
+    assertThat(result.resolvedBlocks()).isEmpty();
+    verifyNoInteractions(cutBlockOpenAdminRepository);
+  }
+
+  @Test
+  @DisplayName("Whitespace and blank cuttingPermit are normalized before calling TenureProvider")
+  void validateTenures_blankCuttingPermitAndWhitespace_normalizesInputs() {
+    List<TenureRequestDto> tenures =
+        List.of(new TenureRequestDto(" TFL001 ", "   ", " CB001 ", true));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isTrue();
+    verify(tenureProvider).verifyCutBlock("TFL001", null, "CB001", CLIENT_NUMBER);
+    verify(cutBlockOpenAdminRepository).existsAllocatedByTenure("TFL001", "CB001", null);
+  }
+
+  @Test
+  @DisplayName("ExternalServiceException from TenureProvider propagates without being swallowed")
+  void validateTenures_externalServiceException_propagates() {
+    when(tenureProvider.verifyCutBlock(anyString(), any(), anyString(), anyString()))
+        .thenThrow(
+            new ExternalServiceException(
+                ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT, "FTA", "Timed out"));
+
+    List<TenureRequestDto> tenures = List.of(new TenureRequestDto("TFL001", null, "CB001", true));
+
+    assertThatThrownBy(() -> service.validateTenures(tenures, CLIENT_NUMBER))
+        .isInstanceOf(ExternalServiceException.class)
+        .satisfies(
+            ex -> {
+              ExternalServiceException ese = (ExternalServiceException) ex;
+              assertThat(ese.getErrorCode())
+                  .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT);
+              assertThat(ese.getServiceName()).isEqualTo("FTA");
+            });
+    verifyNoInteractions(cutBlockOpenAdminRepository);
   }
 
   @Test
