@@ -80,10 +80,6 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         new BigDecimal("1500"),
         null,
         null,
-        null,
-        null,
-        null,
-        null,
         null);
   }
 
@@ -103,11 +99,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         null,
         LocalDate.now().minusDays(5),
         new BigDecimal("28.5"),
-        new BigDecimal("1200"),
-        null,
-        null,
-        null,
-        null);
+        new BigDecimal("1200"));
   }
 
   private Map<String, Object> activityRow(Long activityId) {
@@ -286,77 +278,6 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     assertThat(id).isGreaterThan(maxId);
   }
 
-  private CreateActivityRequestDto withBaseFields(
-      ActivityStatus status,
-      String base,
-      Integer spots,
-      Integer plannedPlots,
-      Integer actualPlots,
-      Long minPlots) {
-    boolean completed = status == ActivityStatus.COMPLETED;
-    return new CreateActivityRequestDto(
-        status,
-        base,
-        null,
-        null,
-        null,
-        List.of("BCP"),
-        null,
-        null,
-        null,
-        completed ? null : LocalDate.now().plusDays(30),
-        completed ? null : new BigDecimal("5.0"),
-        null,
-        completed ? LocalDate.now().minusDays(1) : null,
-        completed ? new BigDecimal("5.0") : null,
-        null,
-        spots,
-        plannedPlots,
-        actualPlots,
-        minPlots);
-  }
-
-  @Test
-  @DisplayName("Saves SP target prepared spots")
-  void createActivity_sp_savesTargetPreparedSpots() {
-    Map<String, Object> row =
-        activityRow(
-            service
-                .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SP", 25, null, null, null))
-                .activityId());
-
-    assertThat(row)
-        .containsEntry("silv_base_code", "SP")
-        .containsEntry("target_prepared_spots", 25);
-  }
-
-  @Test
-  @DisplayName("Saves SU planned plots when planned, and planned plus actual plots when completed")
-  void createActivity_su_savesPlotCountsByStatus() {
-    Map<String, Object> planned =
-        activityRow(
-            service
-                .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.PLANNED, "SU", null, 7, null, 3L))
-                .activityId());
-    Map<String, Object> completed =
-        activityRow(
-            service
-                .createActivity(
-                    OPENING_ID, withBaseFields(ActivityStatus.COMPLETED, "SU", null, 5, 8, 4L))
-                .activityId());
-
-    assertThat(planned)
-        .containsEntry("survey_planned_num_plots", 7)
-        .containsEntry("survey_min_plots_per_stratum", 3L);
-    assertThat(planned.get("survey_actual_num_plots")).isNull();
-    assertThat(completed)
-        .containsEntry("survey_planned_num_plots", 5)
-        .containsEntry("survey_actual_num_plots", 8)
-        .containsEntry("survey_min_plots_per_stratum", 4L);
-  }
-
   @Test
   @DisplayName("Creates a completed activity without planned date, area and cost")
   void createActivity_completedWithoutPlannedValues_saves() {
@@ -376,10 +297,6 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             null,
             LocalDate.now().plusDays(3),
             new BigDecimal("5.0"),
-            null,
-            null,
-            null,
-            null,
             null);
 
     Map<String, Object> row = activityRow(service.createActivity(OPENING_ID, request).activityId());
@@ -595,15 +512,20 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
 
   @Test
   @WithMockJwt(cognitoGroups = {"Planner_00010004"})
-  @DisplayName("Allows a holder of the obligation on the cut block")
-  void createActivity_obligationHolder_allowed() {
+  @DisplayName("Rejects a holder of the obligation on the cut block who is not the licensee")
+  void createActivity_obligationHolder_forbidden() {
     jdbcTemplate.update(
         "INSERT INTO silva.cut_block_client (cblk_client_skey, cb_skey, "
             + "cut_block_client_type_code, client_locn_code, client_number, revision_count, "
             + "entry_userid, entry_timestamp, update_userid, update_timestamp) "
             + "VALUES (90000001, 189945, 'O', '00', '00010004', 1, 'TEST', now(), 'TEST', now())");
 
-    assertThat(service.createActivity(OPENING_ID, planned("HC", null)).activityId()).isNotNull();
+    CreateActivityRequestDto request = planned("HC", null);
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
   }
 
   @Test

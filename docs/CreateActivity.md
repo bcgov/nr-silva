@@ -8,10 +8,9 @@ This document describes:
 
 - The common activity creation flow
 - Planned and Completed activity requirements
-- Basic activity bases and the activity bases with extra fields (Site preparation, Survey)
+- Basic activity bases
 - Non-basic activity bases (Planting)
 - Form validation and submission behaviour
-- Site preparation and Survey requirements
 - Planting-specific requirements
 - API contract for the create activity endpoint
 
@@ -42,12 +41,7 @@ After an activity base is selected, the applicable form sections appear.
 
 Basic activity bases do not require an additional base-specific information section.
 
-Basic activity bases: AU, BR, CC, CM, EP, FE, HC, HI, JS, LB, PC, PR, RC, RD, ST, SX.
-
-Activity bases with extra fields:
-
-- Site preparation (SP) — adds one optional field to the Activity Information section (see section 8)
-- Survey (SU) — adds two optional fields to the Activity Information section (see section 9)
+Basic activity bases: AU, BR, CC, CM, EP, FE, HC, HI, JS, LB, PC, PR, RC, RD, SP, ST, SU, SX.
 
 The following are non-basic activity bases:
 
@@ -59,7 +53,7 @@ Non-basic activity bases require an additional information section after the Act
 
 This draft includes the additional requirements for Planting. Requirements for the other non-basic activity bases will be added later.
 
-The create activity endpoint currently accepts the basic bases, SP and SU. Any other base code is rejected.
+The create activity endpoint currently accepts the basic bases only. Any other base code is rejected.
 
 ---
 
@@ -90,7 +84,6 @@ When the user selects Planned, the following sections appear after an activity b
 
 - Activity Information
 - Spatial Information, when applicable
-- Base-specific fields for Site preparation and Survey, shown inside Activity Information
 - A base-specific section when a non-basic activity base is selected
 
 ### 4.1 Planned Activity Information
@@ -234,46 +227,7 @@ If submission succeeds:
 
 ---
 
-## 8. Site Preparation (SP)
-
-Site preparation uses the common Activity Information and Spatial Information sections, with the same Cancel and Create activity actions as a basic activity (section 7).
-
-One additional field is shown in the Activity Information section. It applies to both Planned and Completed activities.
-
-| Field | Requirement | Input | Business rules |
-|---|---|---|---|
-| Target prepared spot | Optional | Whole number | Maximum 4 digits (0 to 9999). In RESULTS this is the number of target prepared spots per hectare, stored as an integer. |
-
-### 8.1 RESULTS Behaviour
-
-- RESULTS screen: Results 317 (Maintain Activity Results), SP section.
-- Saved by `RESULTS_317_MNT_ACT_RSLTS.SAVE` through `RESULTS_ATU`.
-- Stored in `ACTIVITY_TREATMENT_UNIT.TARGET_PREPARED_SPOTS` (`NUMBER(4)`), for both planned and completed activities.
-
----
-
-## 9. Survey (SU)
-
-Survey uses the common Activity Information and Spatial Information sections, with the same Cancel and Create activity actions as a basic activity (section 7).
-
-Three additional fields are shown in the Activity Information section.
-
-| Field | Requirement | Input | Business rules |
-|---|---|---|---|
-| Planned number of plots | Optional | Whole number | Maximum 4 digits (0 to 9999). Planned and Completed. |
-| Actual number of plots | Optional | Whole number | Maximum 4 digits (0 to 9999). Completed only; rejected when Planned. |
-| Min plots per stratum | Optional | Whole number | Maximum 10 digits (0 to 9999999999). Planned and Completed. |
-
-### 9.1 RESULTS Behaviour
-
-- RESULTS screen: Results 317 (Maintain Activity Results), SU section.
-- Saved by `RESULTS_317_MNT_ACT_RSLTS.SAVE` through `RESULTS_ATU`.
-- Planned number of plots is stored in `ACTIVITY_TREATMENT_UNIT.SURVEY_PLANNED_NUM_PLOTS` and actual number of plots in `SURVEY_ACTUAL_NUM_PLOTS`. Actual is only accepted for a Completed activity.
-- Min plots per stratum is stored in `ACTIVITY_TREATMENT_UNIT.SURVEY_MIN_PLOTS_PER_STRATUM` for both statuses.
-
----
-
-## 10. Non-basic Activity Bases
+## 8. Non-basic Activity Bases
 
 A non-basic activity includes:
 
@@ -285,13 +239,13 @@ The following sections currently document the Planting activity base. They are n
 
 ---
 
-## 11. Planting Activity
+## 9. Planting Activity
 
 When the selected activity base is Planting, Silva displays a Planting Specifications section below the Activity Information section.
 
 The Planting Specifications section contains one or more Planting Units.
 
-### 11.1 Planting Unit
+### 9.1 Planting Unit
 
 Each Planting Unit contains the following information.
 
@@ -303,13 +257,13 @@ Each Planting Unit contains the following information.
 | Planting Stocks | Required | Repeatable section | Each Planting Unit must contain at least one Planting Stock. |
 | Upload planting unit spatial file | Optional | Spatial file upload | Records the spatial area associated with the individual Planting Unit. |
 
-### 11.2 Planting Unit Spatial Rules
+### 9.2 Planting Unit Spatial Rules
 
 Polygons belonging to different Planting Units under the same activity cannot overlap.
 
 If an uploaded polygon overlaps a polygon belonging to another Planting Unit in the activity, the spatial input is invalid.
 
-### 11.3 Adding and Removing Planting Units
+### 9.3 Adding and Removing Planting Units
 
 When the Planting form is initialized:
 
@@ -327,11 +281,11 @@ When the activity contains more than one Planting Unit:
 
 ---
 
-## 12. Planting Stock
+## 10. Planting Stock
 
 Each Planting Unit must contain one or more Planting Stocks.
 
-### 12.1 Planting Stock Information
+### 10.1 Planting Stock Information
 
 | Field | Requirement | Input | Business rules |
 |---|---|---|---|
@@ -341,7 +295,7 @@ Each Planting Unit must contain one or more Planting Stocks.
 | Number planted | Required | Number | Included in the Total planted calculation for the Planting Unit. |
 | Number beyond transfer limit | Optional | Number | Records the number planted beyond the applicable transfer limit. |
 
-### 12.2 Seedlot Validation
+### 10.2 Seedlot Validation
 
 The entered seedlot number must:
 
@@ -350,13 +304,13 @@ The entered seedlot number must:
 
 After the seedlot has been validated, Silva displays the species associated with it.
 
-### 12.3 Total Planted
+### 10.3 Total Planted
 
 Total planted is calculated separately for each Planting Unit.
 
 It is the sum of Number planted across all Planting Stocks in that Planting Unit.
 
-### 12.4 Adding and Removing Planting Stocks
+### 10.4 Adding and Removing Planting Stocks
 
 When a Planting Unit is initialized:
 
@@ -374,7 +328,7 @@ When a Planting Unit contains more than one Planting Stock:
 
 ---
 
-## 13. Saving Planting Spatial Information
+## 11. Saving Planting Spatial Information
 
 Planting does not use the activity-level spatial file upload.
 
@@ -390,7 +344,7 @@ When a Planting Stock is saved, don't set CBST flag.
 
 ---
 
-## 14. API Contract
+## 12. API Contract
 
 `POST /api/openings/{openingId}/activities` (multipart/form-data, PostgreSQL mode only).
 
@@ -404,7 +358,7 @@ Request body fields:
 | Field | Applies to | Notes |
 |---|---|---|
 | `status` | All | `PLANNED` or `COMPLETED`, required |
-| `baseCode` | All | Required; a basic base, `SP` or `SU` |
+| `baseCode` | All | Required; a basic base |
 | `techniqueCode`, `methodCode` | All | Optional; must be in effect |
 | `objectiveCodes` | All | Optional, up to 5; must be in effect |
 | `fundingSourceCodes` | All | Required, 1 to 5; must be in effect |
@@ -413,41 +367,17 @@ Request body fields:
 | `plannedCost` | All | Optional, whole dollars |
 | `completionDate`, `treatedArea` | Completed required; not allowed when Planned | Treated area greater than 0 |
 | `actualCost` | Completed only | Optional, whole dollars |
-| `targetPreparedSpots` | `SP` only | Optional, 0 to 9999 |
-| `surveyPlannedNumPlots` | `SU` only | Optional, 0 to 9999; accepted for Planned and Completed |
-| `surveyActualNumPlots` | `SU` and Completed only | Optional, 0 to 9999; not allowed when Planned |
-| `surveyMinPlotsPerStratum` | `SU` only | Optional, 0 to 9999999999 |
 
-Responses: `201` created, `400` validation errors (each listed as `field: message`), `403` no access to the opening's clients, `404` opening not found, `422` file rejected by the virus scanner.
-
-Validation errors for the base-specific fields:
-
-- `targetPreparedSpots: only allowed when the base is SP`
-- `surveyPlannedNumPlots: only allowed when the base is SU`
-- `surveyActualNumPlots: only allowed when the base is SU`
-- `surveyActualNumPlots: only allowed when the status is COMPLETED`
-- `surveyMinPlotsPerStratum: only allowed when the base is SU`
-
-### 14.1 Storage
-
-All values are saved on `silva.activity_treatment_unit`.
-
-| Request field | Column | Condition |
-|---|---|---|
-| `targetPreparedSpots` | `target_prepared_spots` | SP |
-| `surveyPlannedNumPlots` | `survey_planned_num_plots` | SU, any status |
-| `surveyActualNumPlots` | `survey_actual_num_plots` | SU, status Completed |
-| `surveyMinPlotsPerStratum` | `survey_min_plots_per_stratum` | SU |
+Responses: `201` created, `400` validation errors (each listed as `field: message`), `403` no allowed role for the opening's primary licensee client, `404` opening not found, `422` file rejected by the virus scanner.
 
 ---
 
-## 15. Information Still to Be Defined
+## 13. Information Still to Be Defined
 
 The following items require further clarification or additional requirements:
 
 - The remaining Planting Stock fields currently marked as TBD
 - The requirements for Direct seeding
-- Whether Target prepared spot should be labelled "per ha" as in RESULTS, since the stored value is a whole number of spots and not an area
 - The requirements for Native species planting
 - Whether “Native Plants” and “Native species planting” refer to the same activity base
 - Whether Planting specifications apply identically to Planned and Completed activities

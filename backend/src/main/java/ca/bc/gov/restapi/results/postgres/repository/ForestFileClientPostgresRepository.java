@@ -14,13 +14,15 @@ import org.springframework.stereotype.Repository;
 public interface ForestFileClientPostgresRepository
     extends JpaRepository<ForestFileClientEntity, Long> {
 
-  /** Licensee (type A) client numbers of the forest files of the opening's tenures. */
+  /** Licensee (type A) client numbers of the forest file of the opening's primary tenure. */
   @Query(
       """
       SELECT DISTINCT ffc.clientNumber
       FROM CutBlockOpenAdminEntity cboa
       JOIN ForestFileClientEntity ffc ON ffc.forestFileId = cboa.forestFileId
-      WHERE cboa.openingId = :openingId AND ffc.forestFileClientTypeCode = 'A'
+      WHERE cboa.openingId = :openingId
+        AND cboa.openingPrimeLicenceInd = 'Y'
+        AND ffc.forestFileClientTypeCode = 'A'
       """)
   List<String> findLicenseeClientNumbersByOpeningId(@Param("openingId") Long openingId);
 }

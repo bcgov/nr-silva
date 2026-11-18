@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayName("Integration Test | Opening client resolver")
 class OpeningClientResolverIntegrationTest extends AbstractTestContainerIntegrationTest {
 
-  // Opening with forest file TFL47 (licensee 00010003) and cut block 189945, no O/R clients
+  // Opening with primary forest file TFL47 (licensee 00010003) and cut block 189945, no O/R clients
   private static final Long OPENING_ID = 1004185L;
   private static final long CUT_BLOCK = 189945L;
   // Opening that does not exist, so it has no client
@@ -55,32 +55,24 @@ class OpeningClientResolverIntegrationTest extends AbstractTestContainerIntegrat
   }
 
   @Test
-  @DisplayName("Adds the obligation and responsibility holders of the cut block")
-  void clientNumbersOf_obligationAndResponsibility_added() {
+  @DisplayName("Ignores obligation and responsibility holders and other client types")
+  void clientNumbersOf_otherHolders_ignored() {
     addCutBlockClient(90000001L, "O", "00010004");
     addCutBlockClient(90000002L, "R", "00010005");
-
-    assertThat(resolver.clientNumbersOf(OPENING_ID))
-        .containsExactlyInAnyOrder("00010003", "00010004", "00010005");
-  }
-
-  @Test
-  @DisplayName("Ignores other client types")
-  void clientNumbersOf_otherTypes_ignored() {
-    addCutBlockClient(90000003L, "D", "00010006");
     addForestFileClient(90000004L, "C", "00010008");
 
     assertThat(resolver.clientNumbersOf(OPENING_ID)).isEqualTo(Set.of("00010003"));
   }
 
   @Test
-  @DisplayName("Returns each client once when it holds both obligation and responsibility")
-  void clientNumbersOf_sameClientTwice_returnedOnce() {
-    addCutBlockClient(90000005L, "O", "00010004");
-    addCutBlockClient(90000006L, "R", "00010004");
+  @DisplayName("Ignores the licensee of a tenure that is not primary")
+  void clientNumbersOf_nonPrimaryTenure_ignored() {
+    jdbcTemplate.update(
+        "UPDATE silva.cut_block_open_admin SET opening_prime_licence_ind = 'N' "
+            + "WHERE opening_id = ?",
+        OPENING_ID);
 
-    assertThat(resolver.clientNumbersOf(OPENING_ID))
-        .containsExactlyInAnyOrder("00010003", "00010004");
+    assertThat(resolver.clientNumbersOf(OPENING_ID)).isEmpty();
   }
 
   @Test

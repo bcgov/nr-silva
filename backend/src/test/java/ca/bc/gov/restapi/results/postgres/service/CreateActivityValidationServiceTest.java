@@ -64,10 +64,6 @@ class CreateActivityValidationServiceTest {
     LocalDate completionDate = null;
     BigDecimal treatedArea = null;
     BigDecimal actualCost = null;
-    Integer targetPreparedSpots = null;
-    Integer surveyPlannedNumPlots = null;
-    Integer surveyActualNumPlots = null;
-    Long surveyMinPlotsPerStratum = null;
 
     CreateActivityRequestDto build() {
       return new CreateActivityRequestDto(
@@ -85,11 +81,7 @@ class CreateActivityValidationServiceTest {
           plannedCost,
           completionDate,
           treatedArea,
-          actualCost,
-          targetPreparedSpots,
-          surveyPlannedNumPlots,
-          surveyActualNumPlots,
-          surveyMinPlotsPerStratum);
+          actualCost);
     }
   }
 
@@ -240,62 +232,7 @@ class CreateActivityValidationServiceTest {
     assertThat(CreateActivityValidationService.BASIC_BASE_CODES)
         .containsExactlyInAnyOrder(
             "AU", "BR", "CC", "CM", "EP", "FE", "HC", "HI", "JS", "LB", "PC", "PR", "RC", "RD",
-            "ST", "SX");
-  }
-
-  @Test
-  @DisplayName("Accepts SP and SU with their own fields")
-  void validate_spAndSu_passWithOwnFields() {
-    Request sp = new Request();
-    sp.baseCode = "SP";
-    sp.targetPreparedSpots = 12;
-    assertValid(sp);
-
-    Request su = new Request();
-    su.baseCode = "SU";
-    su.surveyPlannedNumPlots = 5;
-    su.surveyMinPlotsPerStratum = 2L;
-    assertValid(su);
-  }
-
-  @Test
-  @DisplayName("Accepts both planned and actual plots for a completed SU activity")
-  void validate_completedSu_acceptsBothPlotCounts() {
-    Request su = new Request();
-    su.baseCode = "SU";
-    su.status = ActivityStatus.COMPLETED;
-    su.completionDate = LocalDate.now().minusDays(1);
-    su.treatedArea = new BigDecimal("5.0");
-    su.surveyPlannedNumPlots = 5;
-    su.surveyActualNumPlots = 6;
-    assertValid(su);
-  }
-
-  @Test
-  @DisplayName("Rejects actual plots for a planned SU activity")
-  void validate_plannedSu_actualPlotsRejected() {
-    Request su = new Request();
-    su.baseCode = "SU";
-    su.surveyActualNumPlots = 6;
-
-    assertThat(errorOf(su))
-        .contains("surveyActualNumPlots: only allowed when the status is COMPLETED");
-  }
-
-  @Test
-  @DisplayName("Rejects SP and SU fields on other bases")
-  void validate_baseSpecificFieldsOnOtherBase_rejected() {
-    Request request = new Request();
-    request.targetPreparedSpots = 1;
-    request.surveyPlannedNumPlots = 1;
-    request.surveyActualNumPlots = 1;
-    request.surveyMinPlotsPerStratum = 1L;
-
-    assertThat(errorOf(request))
-        .contains("targetPreparedSpots: only allowed when the base is SP")
-        .contains("surveyPlannedNumPlots: only allowed when the base is SU")
-        .contains("surveyActualNumPlots: only allowed when the base is SU")
-        .contains("surveyMinPlotsPerStratum: only allowed when the base is SU");
+            "SP", "ST", "SU", "SX");
   }
 
   @Test

@@ -149,12 +149,7 @@ public class CreateActivityService {
             .updateTimestamp(now)
             .revisionCount(1);
 
-    activity.targetPreparedSpots(dto.targetPreparedSpots());
-    activity.surveyMinPlotsPerStratum(dto.surveyMinPlotsPerStratum());
-    activity.surveyPlannedNumPlots(dto.surveyPlannedNumPlots());
-
     if (dto.status() == ActivityStatus.COMPLETED) {
-      activity.surveyActualNumPlots(dto.surveyActualNumPlots());
       activity
           .silvTechniqueCode(dto.techniqueCode())
           .silvMethodCode(dto.methodCode())

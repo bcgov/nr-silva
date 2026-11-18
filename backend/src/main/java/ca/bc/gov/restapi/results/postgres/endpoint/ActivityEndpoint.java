@@ -8,7 +8,6 @@ import ca.bc.gov.restapi.results.postgres.dto.CreateActivityResponseDto;
 import ca.bc.gov.restapi.results.postgres.service.ActivitySpatialUploadService;
 import ca.bc.gov.restapi.results.postgres.service.CreateActivityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -68,7 +67,7 @@ public class ActivityEndpoint {
   @ApiResponse(
       responseCode = "403",
       description =
-          "The user has no role for the licensee or obligation holder clients of the opening",
+          "The user has no allowed role for the primary licensee client of the opening",
       content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
   @ApiResponse(
       responseCode = "404",
@@ -93,12 +92,7 @@ public class ActivityEndpoint {
           MultipartFile file) {
     CreateActivityRequestDto dto;
     try {
-      // Fractional numbers must be rejected, not truncated, for the whole-number fields
-      dto =
-          objectMapper
-              .readerFor(CreateActivityRequestDto.class)
-              .without(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
-              .readValue(rawData);
+      dto = objectMapper.readValue(rawData, CreateActivityRequestDto.class);
     } catch (JsonProcessingException e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid JSON in 'data': " + e.getOriginalMessage());
