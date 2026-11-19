@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,9 +87,9 @@ public class TenureValidationService {
         ExternalCutBlockDetails details = resolvedBlocks.get(i);
         tenuresWithTimberMark.add(
             new TenureDto(
-                tenure.fileId(),
-                tenure.cuttingPermit(),
-                tenure.cutBlock(),
+                normalizeIdentifier(tenure.fileId()),
+                normalizePermit(tenure.cuttingPermit()),
+                normalizeIdentifier(tenure.cutBlock()),
                 tenure.isPrimary(),
                 details != null ? details.timberMark() : null));
       }
@@ -123,7 +124,9 @@ public class TenureValidationService {
         String reason =
             String.format(
                 "fileId=%s, cuttingPermit=%s, cutBlock=%s",
-                first.fileId(), first.cuttingPermit(), first.cutBlock());
+                normalizeIdentifier(first.fileId()),
+                normalizePermit(first.cuttingPermit()),
+                normalizeIdentifier(first.cutBlock()));
         conflicts.add(
             new DuplicateConflictDto(
                 indices, reason, TenureValidationErrorCode.DUPLICATE_IN_REQUEST));
@@ -152,12 +155,9 @@ public class TenureValidationService {
           null);
     }
 
-    String fileId = tenure.fileId().trim();
-    String cutBlock = tenure.cutBlock().trim();
-    String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
-    if (cuttingPermit != null && cuttingPermit.isBlank()) {
-      cuttingPermit = null;
-    }
+    String fileId = normalizeIdentifier(tenure.fileId());
+    String cutBlock = normalizeIdentifier(tenure.cutBlock());
+    String cuttingPermit = normalizePermit(tenure.cuttingPermit());
 
     // Steps 2 & 3: verify cut block existence and licensee authorization via TenureProvider
     ExternalCutBlockDetails details =
@@ -229,7 +229,19 @@ public class TenureValidationService {
   }
 
   private String buildTenureKey(TenureRequestDto tenure) {
-    String permit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : "";
-    return String.format("%s|%s|%s", tenure.fileId().trim(), permit, tenure.cutBlock().trim());
+    String permit = normalizePermit(tenure.cuttingPermit());
+    return String.format(
+        "%s|%s|%s",
+        normalizeIdentifier(tenure.fileId()),
+        permit != null ? permit : "",
+        normalizeIdentifier(tenure.cutBlock()));
+  }
+
+  static String normalizeIdentifier(String value) {
+    return value == null ? null : value.trim().toUpperCase(Locale.ROOT);
+  }
+
+  static String normalizePermit(String value) {
+    return value == null || value.isBlank() ? null : value.trim().toUpperCase(Locale.ROOT);
   }
 }

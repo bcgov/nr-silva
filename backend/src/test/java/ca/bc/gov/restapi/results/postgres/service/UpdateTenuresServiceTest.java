@@ -243,6 +243,24 @@ class UpdateTenuresServiceTest {
   }
 
   @Test
+  @DisplayName("Retained CBOA row matches case-insensitively without unassociating")
+  void updateTenures_caseVariantRetainedKey_retainsExistingCboaRow() {
+    givenOpening();
+    givenUser();
+    CutBlockOpenAdminEntity retained = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 1);
+    List<TenureUpdateItemDto> items =
+        List.of(new TenureUpdateItemDto(1L, 1, "file1", "cp1", "block1", true));
+    when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
+        .thenReturn(validation(true, items));
+    when(cboaRepository.findAllByOpeningId(OPENING_ID)).thenReturn(List.of(retained));
+
+    assertThat(service.updateTenures(OPENING_ID, CLIENT_NUMBER, items)).isEmpty();
+
+    verify(tenureAssociationService, never()).associate(any(), any(), any(), anyString(), any());
+    verify(historyService, never()).record(anyString(), anyLong(), any(), anyString());
+  }
+
+  @Test
   @DisplayName("ExternalServiceException during validation aborts without any CBOA writes")
   void updateTenures_externalServiceUnavailable_abortsWithoutWrites() {
     givenOpening();

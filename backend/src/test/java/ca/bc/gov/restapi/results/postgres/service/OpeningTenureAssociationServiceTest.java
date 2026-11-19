@@ -61,6 +61,26 @@ class OpeningTenureAssociationServiceTest {
   }
 
   @Test
+  @DisplayName("Association normalizes lowercase and padded tenure identifiers to uppercase")
+  void associate_lowercaseInputs_persistsCanonicalUppercaseIdentifiers() {
+    OpeningEntity opening =
+        OpeningEntity.builder().id(1L).openingGrossArea(new BigDecimal("12.3456")).build();
+    TenureRequestDto tenure = new TenureRequestDto(" file ", " cp", " block ", true);
+    ExternalCutBlockDetails block = ExternalCutBlockDetails.of(5L, true, "TM", "ACT");
+    when(cboaRepository
+            .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdAndOpeningIdIsNull(
+                "FILE", "BLOCK", "CP"))
+        .thenReturn(Optional.empty());
+
+    CutBlockOpenAdminEntity associated =
+        service.associate(opening, tenure, block, "tester", LocalDateTime.of(2026, 1, 1, 0, 0));
+
+    assertThat(associated.getForestFileId()).isEqualTo("FILE");
+    assertThat(associated.getCutBlockId()).isEqualTo("BLOCK");
+    assertThat(associated.getCuttingPermitId()).isEqualTo("CP");
+  }
+
+  @Test
   @DisplayName("Association safely handles null ExternalCutBlockDetails without NPE")
   void associate_nullBlock_setsNullTimberMarkAndCbSkey() {
     OpeningEntity opening =

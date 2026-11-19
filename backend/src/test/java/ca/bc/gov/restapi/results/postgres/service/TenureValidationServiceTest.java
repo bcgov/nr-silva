@@ -434,4 +434,39 @@ class TenureValidationServiceTest {
     assertThat(result).hasSize(1);
     assertThat(result.get(0).duplicateIndices()).containsExactlyInAnyOrder(0, 1);
   }
+
+  @Test
+  @DisplayName("Case variants of the same tenure should be detected as DUPLICATE_IN_REQUEST")
+  void validateTenures_caseVariantDuplicates_returnsDuplicateInRequest() {
+    List<TenureRequestDto> tenures =
+        List.of(
+            new TenureRequestDto("TFL001", "CP1", "CB001", true),
+            new TenureRequestDto("tfl001", "cp1", "cb001", false));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isFalse();
+    assertThat(result.duplicateConflicts()).hasSize(1);
+    assertThat(result.duplicateConflicts().get(0).duplicateIndices())
+        .containsExactlyInAnyOrder(0, 1);
+    assertThat(result.duplicateConflicts().get(0).conflictCode())
+        .isEqualTo(TenureValidationErrorCode.DUPLICATE_IN_REQUEST);
+  }
+
+  @Test
+  @DisplayName("Lowercase tenure identifiers are canonicalized to uppercase for lookup and output")
+  void validateTenures_lowercaseInputs_normalizedToUppercaseForProviderRepoAndDto() {
+    List<TenureRequestDto> tenures =
+        List.of(new TenureRequestDto(" tfl001 ", "cp1", " cb001 ", true));
+
+    TenureValidationResponseDto result = service.validateTenures(tenures, CLIENT_NUMBER);
+
+    assertThat(result.isValid()).isTrue();
+    verify(tenureProvider).verifyCutBlock("TFL001", "CP1", "CB001", CLIENT_NUMBER);
+    verify(cutBlockOpenAdminRepository).existsAllocatedByTenure("TFL001", "CB001", "CP1");
+    assertThat(result.tenures()).hasSize(1);
+    assertThat(result.tenures().get(0).fileId()).isEqualTo("TFL001");
+    assertThat(result.tenures().get(0).cuttingPermit()).isEqualTo("CP1");
+    assertThat(result.tenures().get(0).cutBlock()).isEqualTo("CB001");
+  }
 }

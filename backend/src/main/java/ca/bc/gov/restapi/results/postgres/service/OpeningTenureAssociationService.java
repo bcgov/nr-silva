@@ -39,9 +39,9 @@ public class OpeningTenureAssociationService {
       ExternalCutBlockDetails block,
       String userId,
       LocalDateTime now) {
-    String fileId = tenure.fileId().trim();
-    String cutBlockId = tenure.cutBlock().trim();
-    String cuttingPermitId = normalizePermit(tenure.cuttingPermit());
+    String fileId = TenureValidationService.normalizeIdentifier(tenure.fileId());
+    String cutBlockId = TenureValidationService.normalizeIdentifier(tenure.cutBlock());
+    String cuttingPermitId = TenureValidationService.normalizePermit(tenure.cuttingPermit());
     Optional<CutBlockOpenAdminEntity> reusable =
         cuttingPermitId == null
             ? cboaRepository
@@ -144,7 +144,7 @@ public class OpeningTenureAssociationService {
   }
 
   private String normalizePermit(String value) {
-    return value == null || value.isBlank() ? null : value.trim();
+    return TenureValidationService.normalizePermit(value);
   }
 
   private record DisturbanceSummary(BigDecimal amount, LocalDate startDate, LocalDate endDate) {
