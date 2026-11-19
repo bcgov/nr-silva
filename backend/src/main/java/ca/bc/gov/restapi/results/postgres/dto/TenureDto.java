@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
  * @param cuttingPermit the cutting permit ID (cutting_permit_id); may be null
  * @param cutBlock the cut block ID (cut_block_id)
  * @param isPrimary whether this is the primary licence holder for the opening
- * @param timberMark the timber mark resolved from silva.cut_block
+ * @param timberMark the timber mark resolved via TenureProvider
  */
 public record TenureDto(
     @NotBlank @Size(max = 10) String fileId,

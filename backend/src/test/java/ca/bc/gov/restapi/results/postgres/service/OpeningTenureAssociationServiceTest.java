@@ -5,8 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.activity.ActivityTreatmentUnitEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
@@ -40,11 +40,11 @@ class OpeningTenureAssociationServiceTest {
   }
 
   @Test
-  @DisplayName("Association copies the Silva-owned opening gross area")
+  @DisplayName("Association copies the Silva-owned opening gross area and external block details")
   void associate_copiesOpeningGrossArea() {
     OpeningEntity opening = OpeningEntity.builder().id(1L).openingGrossArea(new BigDecimal("12.3456")).build();
     TenureRequestDto tenure = new TenureRequestDto("FILE", " CP ", "BLOCK", true);
-    CutBlockEntity block = CutBlockEntity.builder().cbSkey(5L).timberMark("TM").build();
+    ExternalCutBlockDetails block = ExternalCutBlockDetails.of(5L, true, "TM", "ACT");
     when(cboaRepository
             .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdAndOpeningIdIsNull(
                 "FILE", "BLOCK", "CP"))
@@ -55,7 +55,48 @@ class OpeningTenureAssociationServiceTest {
 
     assertThat(associated.getOpeningGrossArea()).isEqualByComparingTo("12.3456");
     assertThat(associated.getOpeningPrimeLicenceInd()).isEqualTo("Y");
+    assertThat(associated.getTimberMark()).isEqualTo("TM");
+    assertThat(associated.getCbSkey()).isEqualTo(5L);
     assertThat(associated.getRevisionCount()).isEqualTo(1);
+  }
+
+  @Test
+  @DisplayName("Association normalizes lowercase and padded tenure identifiers to uppercase")
+  void associate_lowercaseInputs_persistsCanonicalUppercaseIdentifiers() {
+    OpeningEntity opening =
+        OpeningEntity.builder().id(1L).openingGrossArea(new BigDecimal("12.3456")).build();
+    TenureRequestDto tenure = new TenureRequestDto(" file ", " cp", " block ", true);
+    ExternalCutBlockDetails block = ExternalCutBlockDetails.of(5L, true, "TM", "ACT");
+    when(cboaRepository
+            .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdAndOpeningIdIsNull(
+                "FILE", "BLOCK", "CP"))
+        .thenReturn(Optional.empty());
+
+    CutBlockOpenAdminEntity associated =
+        service.associate(opening, tenure, block, "tester", LocalDateTime.of(2026, 1, 1, 0, 0));
+
+    assertThat(associated.getForestFileId()).isEqualTo("FILE");
+    assertThat(associated.getCutBlockId()).isEqualTo("BLOCK");
+    assertThat(associated.getCuttingPermitId()).isEqualTo("CP");
+  }
+
+  @Test
+  @DisplayName("Association safely handles null ExternalCutBlockDetails without NPE")
+  void associate_nullBlock_setsNullTimberMarkAndCbSkey() {
+    OpeningEntity opening =
+        OpeningEntity.builder().id(1L).openingGrossArea(new BigDecimal("10.0000")).build();
+    TenureRequestDto tenure = new TenureRequestDto("FILE", null, "BLOCK", false);
+    when(cboaRepository
+            .findFirstByForestFileIdAndCutBlockIdAndCuttingPermitIdIsNullAndOpeningIdIsNull(
+                "FILE", "BLOCK"))
+        .thenReturn(Optional.empty());
+
+    CutBlockOpenAdminEntity associated =
+        service.associate(opening, tenure, null, "tester", LocalDateTime.of(2026, 1, 1, 0, 0));
+
+    assertThat(associated.getTimberMark()).isNull();
+    assertThat(associated.getCbSkey()).isNull();
+    assertThat(associated.getOpeningPrimeLicenceInd()).isEqualTo("N");
   }
 
   @Test

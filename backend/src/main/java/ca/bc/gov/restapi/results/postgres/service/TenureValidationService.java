@@ -1,29 +1,29 @@
 package ca.bc.gov.restapi.results.postgres.service;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.provider.TenureProvider;
 import ca.bc.gov.restapi.results.postgres.dto.DuplicateConflictDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureRequestDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockClientPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.CutBlockOpenAdminPostgresRepository;
-import ca.bc.gov.restapi.results.postgres.repository.CutBlockPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.security.OperationAccessPolicy;
 import ca.bc.gov.restapi.results.postgres.security.ProtectedOperation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
- * Service that validates tenure data including cut block existence, client auth, and duplicates.
+ * Service that validates tenure data including external cut block existence and licensee
+ * authorization via {@link TenureProvider}, alongside Silva opening-allocation duplicate checks.
  */
 @Slf4j
 @Service
@@ -32,11 +32,11 @@ import org.springframework.stereotype.Service;
 public class TenureValidationService {
 
   private final OperationAccessPolicy accessPolicy;
-  private final CutBlockPostgresRepository cutBlockRepository;
-  private final CutBlockClientPostgresRepository cutBlockClientRepository;
+  private final TenureProvider tenureProvider;
   private final CutBlockOpenAdminPostgresRepository cutBlockOpenAdminRepository;
 
-  private record ValidatedTenure(TenureValidationResultDto result, CutBlockEntity block) {}
+  private record ValidatedTenure(
+      TenureValidationResultDto result, ExternalCutBlockDetails details) {}
 
   /**
    * Validates a list of new tenures.
@@ -65,15 +65,15 @@ public class TenureValidationService {
     accessPolicy.requireClientRole(ProtectedOperation.CREATE_OPENING, clientNumber);
 
     List<TenureValidationResultDto> validationResults = new ArrayList<>();
-    Map<Integer, CutBlockEntity> resolvedBlocks = new HashMap<>();
+    Map<Integer, ExternalCutBlockDetails> resolvedBlocks = new HashMap<>();
     List<TenureDto> tenuresWithTimberMark = new ArrayList<>();
     List<DuplicateConflictDto> duplicates = detectDuplicates(tenures);
 
     for (int i = 0; i < tenures.size(); i++) {
       ValidatedTenure vt = validateOneTenure(i, tenures.get(i), clientNumber, openingId);
       validationResults.add(vt.result());
-      if (vt.block() != null) {
-        resolvedBlocks.put(i, vt.block());
+      if (vt.details() != null) {
+        resolvedBlocks.put(i, vt.details());
       }
     }
 
@@ -84,14 +84,14 @@ public class TenureValidationService {
     if (isValid) {
       for (int i = 0; i < tenures.size(); i++) {
         TenureRequestDto tenure = tenures.get(i);
-        CutBlockEntity block = resolvedBlocks.get(i);
+        ExternalCutBlockDetails details = resolvedBlocks.get(i);
         tenuresWithTimberMark.add(
             new TenureDto(
-                tenure.fileId(),
-                tenure.cuttingPermit(),
-                tenure.cutBlock(),
+                normalizeIdentifier(tenure.fileId()),
+                normalizePermit(tenure.cuttingPermit()),
+                normalizeIdentifier(tenure.cutBlock()),
                 tenure.isPrimary(),
-                block != null ? block.getTimberMark() : null));
+                details != null ? details.timberMark() : null));
       }
     }
 
@@ -124,7 +124,9 @@ public class TenureValidationService {
         String reason =
             String.format(
                 "fileId=%s, cuttingPermit=%s, cutBlock=%s",
-                first.fileId(), first.cuttingPermit(), first.cutBlock());
+                normalizeIdentifier(first.fileId()),
+                normalizePermit(first.cuttingPermit()),
+                normalizeIdentifier(first.cutBlock()));
         conflicts.add(
             new DuplicateConflictDto(
                 indices, reason, TenureValidationErrorCode.DUPLICATE_IN_REQUEST));
@@ -153,17 +155,14 @@ public class TenureValidationService {
           null);
     }
 
-    String fileId = tenure.fileId().trim();
-    String cutBlock = tenure.cutBlock().trim();
-    String cuttingPermit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : null;
-    if (cuttingPermit != null && cuttingPermit.isBlank()) {
-      cuttingPermit = null;
-    }
+    String fileId = normalizeIdentifier(tenure.fileId());
+    String cutBlock = normalizeIdentifier(tenure.cutBlock());
+    String cuttingPermit = normalizePermit(tenure.cuttingPermit());
 
-    // Step 2: cut block must exist in silva.cut_block
-    Optional<CutBlockEntity> blockOpt =
-        cutBlockRepository.findByTenure(fileId, cutBlock, cuttingPermit);
-    if (blockOpt.isEmpty()) {
+    // Steps 2 & 3: verify cut block existence and licensee authorization via TenureProvider
+    ExternalCutBlockDetails details =
+        tenureProvider.verifyCutBlock(fileId, cuttingPermit, cutBlock, clientNumber);
+    if (details == null || !details.exists()) {
       return new ValidatedTenure(
           new TenureValidationResultDto(
               index,
@@ -175,9 +174,7 @@ public class TenureValidationService {
           null);
     }
 
-    // Step 3: caller's client must be a licensee for this cut block
-    Long cbSkey = blockOpt.get().getCbSkey();
-    if (!cutBlockClientRepository.existsByCbSkeyAndClientNumber(cbSkey, clientNumber)) {
+    if (!details.clientIsLicensee()) {
       return new ValidatedTenure(
           new TenureValidationResultDto(
               index,
@@ -209,7 +206,7 @@ public class TenureValidationService {
     }
 
     return new ValidatedTenure(
-        new TenureValidationResultDto(index, true, null, null), blockOpt.get());
+        new TenureValidationResultDto(index, true, null, null), details);
   }
 
   private String validateFields(TenureRequestDto tenure) {
@@ -232,7 +229,19 @@ public class TenureValidationService {
   }
 
   private String buildTenureKey(TenureRequestDto tenure) {
-    String permit = tenure.cuttingPermit() != null ? tenure.cuttingPermit().trim() : "";
-    return String.format("%s|%s|%s", tenure.fileId().trim(), permit, tenure.cutBlock().trim());
+    String permit = normalizePermit(tenure.cuttingPermit());
+    return String.format(
+        "%s|%s|%s",
+        normalizeIdentifier(tenure.fileId()),
+        permit != null ? permit : "",
+        normalizeIdentifier(tenure.cutBlock()));
+  }
+
+  static String normalizeIdentifier(String value) {
+    return value == null ? null : value.trim().toUpperCase(Locale.ROOT);
+  }
+
+  static String normalizePermit(String value) {
+    return value == null || value.isBlank() ? null : value.trim().toUpperCase(Locale.ROOT);
   }
 }

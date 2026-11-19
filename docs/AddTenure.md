@@ -5,8 +5,8 @@
 The tenure validation endpoint checks one or more tenure (cut block) entries before an opening is created. It verifies that:
 
 1. All required fields are present and within allowed lengths.
-2. Each cut block exists in `silva.cut_block`.
-3. The requesting client is a licensee of each cut block (`silva.cut_block_client`).
+2. Each cut block exists in the external tenure authority (resolved via `TenureProvider`).
+3. The requesting client is a licensee of each cut block (verified via `TenureProvider`).
 4. No cut block already has an allocated opening (`silva.cut_block_open_admin`).
 5. No two tenures in the same request describe the same cut block.
 
@@ -104,8 +104,8 @@ A JSON array of tenure objects:
 | Code                      | HTTP layer | Meaning                                                                  |
 |---------------------------|------------|--------------------------------------------------------------------------|
 | `FIELD_INVALID`           | 200 body   | A required field is blank or exceeds max length.                         |
-| `TENURE_NOT_FOUND`        | 200 body   | No matching row in `silva.cut_block`.                                    |
-| `CLIENT_NOT_LICENSEE`     | 200 body   | The client is not recorded as a licensee in `silva.cut_block_client`.    |
+| `TENURE_NOT_FOUND`        | 200 body   | Cut block not found via `TenureProvider.verifyCutBlock(...)`.            |
+| `CLIENT_NOT_LICENSEE`     | 200 body   | The client is not an authorized licensee (`clientIsLicensee = false`).   |
 | `TENURE_DUPLICATE_OPENING`| 200 body   | A `cut_block_open_admin` row already exists with a non-null `opening_id`.|
 | `DUPLICATE_IN_REQUEST`    | 200 body   | Two or more tenures in the same request resolve to the same cut block.   |
 | *(HTTP 403)*              | 403        | JWT does not contain role ending in `_<clientNumber>`.                   |
@@ -118,15 +118,14 @@ A JSON array of tenure objects:
 For each tenure in request:
   1. Field validation (forestFileId, cutBlockId required; length checks)
      → FIELD_INVALID on failure
-  2. Look up silva.cut_block WHERE forest_file_id / cut_block_id / cutting_permit_id
-     → TENURE_NOT_FOUND if no row
-  3. Check silva.cut_block_client WHERE cb_skey = <found> AND client_number = <clientNumber>
-     → CLIENT_NOT_LICENSEE if no row
-  4. Check silva.cut_block_open_admin WHERE same key AND opening_id IS NOT NULL
+  2. Call TenureProvider.verifyCutBlock(fileId, cuttingPermit, cutBlock, clientNumber)
+     → TENURE_NOT_FOUND if exists = false
+     → CLIENT_NOT_LICENSEE if clientIsLicensee = false
+  3. Check silva.cut_block_open_admin WHERE same key AND opening_id IS NOT NULL
      → TENURE_DUPLICATE_OPENING if row exists
 
 After per-tenure checks:
-  5. Detect duplicates: group by (forestFileId, cutBlockId, cuttingPermitId)
+  4. Detect duplicates: group by (forestFileId, cutBlockId, cuttingPermitId)
      → DUPLICATE_IN_REQUEST conflict for each group with > 1 member
 
 isValid = all validationResults.isValid AND duplicateConflicts.isEmpty()
@@ -216,11 +215,10 @@ Content-Type: application/json
 |-------|---------|------|
 | `TenureEndpoint` | `postgres.endpoint` | REST controller — exposes `POST /api/tenures/validate` |
 | `TenureValidationService` | `postgres.service` | Core validation logic |
-| `CutBlockPostgresRepository` | `postgres.repository` | Queries `silva.cut_block` |
-| `CutBlockClientPostgresRepository` | `postgres.repository` | Queries `silva.cut_block_client` |
-| `CutBlockOpenAdminPostgresRepository` | `postgres.repository` | Queries `silva.cut_block_open_admin` |
-| `CutBlockEntity` | `postgres.entity` | JPA entity for `silva.cut_block` |
-| `CutBlockClientEntity` | `postgres.entity` | JPA entity for `silva.cut_block_client` |
+| `TenureProvider` | `common.provider` | Anti-Corruption Layer port verifying cut blocks and licensees |
+| `DelegatingTenureProvider` | `common.provider` | Runtime router between mock and live Oracle FTA adapters |
+| `CutBlockOpenAdminPostgresRepository` | `postgres.repository` | Queries `silva.cut_block_open_admin` for opening allocations |
+| `ExternalCutBlockDetails` | `common.dto` | Domain record returned from external cut block verification |
 | `TenureValidationResponseDto` | `postgres.dto` | Top-level response shape |
 | `TenureValidationResultDto` | `postgres.dto` | Per-tenure result |
 | `DuplicateConflictDto` | `postgres.dto` | Duplicate group descriptor |
