@@ -21,6 +21,7 @@ import ca.bc.gov.restapi.testconfig.RealTenureEndToEndTestConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import jakarta.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +37,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -51,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayName("Integration Test | Tenure Validation End-to-End (Postgres + Mock)")
 @AutoConfigureMockMvc
 @Import(RealTenureEndToEndTestConfig.class)
+@TestPropertySource(properties = "silva.integrations.tenure.provider=mock")
 @WithMockJwt(cognitoGroups = {"Submitter_00010003"})
 @Transactional
 class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerIntegrationTest {
@@ -91,6 +94,7 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
 
   @Autowired private MockMvc mockMvc;
   @Autowired private JdbcTemplate jdbcTemplate;
+  @Autowired private EntityManager entityManager;
   @Autowired private ConfigurableEnvironment environment;
   @Autowired private ObjectMapper objectMapper;
   @MockitoBean private VirusScanService virusScanService;
@@ -179,7 +183,7 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
                     """))
         .andExpect(status().isBadRequest());
 
-    // 3. Duplicate in request
+    // 3. Duplicate in request (case-insensitive)
     mockMvc
         .perform(
             post("/api/tenures/validate?clientNumber=" + CLIENT_NUMBER)
@@ -195,9 +199,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
                         "isPrimary": true
                       },
                       {
-                        "fileId": "TFL001",
-                        "cuttingPermit": "CP1",
-                        "cutBlock": "CB001",
+                        "fileId": "tfl001",
+                        "cuttingPermit": "cp1",
+                        "cutBlock": "cb001",
                         "isPrimary": false
                       }
                     ]
@@ -314,6 +318,10 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
             .andExpect(jsonPath("$.openingId").isNumber())
             .andReturn();
 
+    // Flush and clear Hibernate session so JdbcTemplate sees the reconciled revision_count=2.
+    entityManager.flush();
+    entityManager.clear();
+
     JsonNode createdJson = objectMapper.readTree(createResult.getResponse().getContentAsString());
     long openingId = createdJson.get("openingId").asLong();
 
@@ -333,8 +341,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
 
     long existingCboaId = ((Number) cboaRow.get("cut_block_open_admin_id")).longValue();
     int existingRevision = ((Number) cboaRow.get("revision_count")).intValue();
+    assertThat(existingRevision).isEqualTo(2);
 
-    // Re-validating TFL001/CP1/CB001 now detects TENURE_DUPLICATE_OPENING against Postgres CBOA.
+    // Re-validating with lowercase identifiers still detects TENURE_DUPLICATE_OPENING.
     mockMvc
         .perform(
             post("/api/tenures/validate?clientNumber=" + CLIENT_NUMBER)
@@ -344,9 +353,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
                     """
                     [
                       {
-                        "fileId": "TFL001",
-                        "cuttingPermit": "CP1",
-                        "cutBlock": "CB001",
+                        "fileId": "tfl001",
+                        "cuttingPermit": "cp1",
+                        "cutBlock": "cb001",
                         "isPrimary": true
                       }
                     ]
@@ -387,6 +396,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
                 .content(updatePayload))
         .andExpect(status().isNoContent());
 
+    entityManager.flush();
+    entityManager.clear();
+
     Map<String, Object> secondCboaRow =
         jdbcTemplate.queryForMap(
             "SELECT cb_skey, timber_mark FROM silva.cut_block_open_admin "
@@ -394,6 +406,13 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
             openingId);
     assertThat(((Number) secondCboaRow.get("cb_skey")).longValue()).isEqualTo(1002L);
     assertThat(secondCboaRow.get("timber_mark")).isEqualTo("47/12M");
+
+    int updatedRevision =
+        jdbcTemplate.queryForObject(
+            "SELECT revision_count FROM silva.cut_block_open_admin "
+                + "WHERE cut_block_open_admin_id = ?",
+            Integer.class,
+            existingCboaId);
 
     // Unauthorized added block is rejected with 422 via TenureProvider.
     String invalidUpdatePayload =
@@ -417,7 +436,7 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
           }
         ]
         """
-            .formatted(existingCboaId, existingRevision);
+            .formatted(existingCboaId, updatedRevision);
 
     mockMvc
         .perform(
