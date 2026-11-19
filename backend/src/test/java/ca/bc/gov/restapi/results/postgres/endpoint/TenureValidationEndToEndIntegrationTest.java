@@ -132,7 +132,7 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
         .andExpect(jsonPath("$.tenures[0].timberMark").value("47/12K"))
         .andExpect(jsonPath("$.tenures[1].timberMark").value("47/12M"));
 
-    // 2. Non-existent, wrong licensee, and invalid field cases
+    // 2. Non-existent, wrong licensee, and bean validation (400) cases
     mockMvc
         .perform(
             post("/api/tenures/validate?clientNumber=" + CLIENT_NUMBER)
@@ -148,15 +148,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
                         "isPrimary": true
                       },
                       {
-                        "fileId": "TFL003",
-                        "cuttingPermit": "CP03",
-                        "cutBlock": "CB003",
-                        "isPrimary": false
-                      },
-                      {
-                        "fileId": " ",
-                        "cuttingPermit": null,
-                        "cutBlock": "CB001",
+                        "fileId": "TFL01",
+                        "cuttingPermit": "104",
+                        "cutBlock": "04",
                         "isPrimary": false
                       }
                     ]
@@ -165,8 +159,25 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
         .andExpect(jsonPath("$.isValid").value(false))
         .andExpect(jsonPath("$.validationResults[0].errorCode").value("TENURE_NOT_FOUND"))
         .andExpect(jsonPath("$.validationResults[1].errorCode").value("CLIENT_NOT_LICENSEE"))
-        .andExpect(jsonPath("$.validationResults[2].errorCode").value("FIELD_INVALID"))
         .andExpect(jsonPath("$.tenures").isEmpty());
+
+    mockMvc
+        .perform(
+            post("/api/tenures/validate?clientNumber=" + CLIENT_NUMBER)
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    [
+                      {
+                        "fileId": " ",
+                        "cuttingPermit": null,
+                        "cutBlock": "CB001",
+                        "isPrimary": false
+                      }
+                    ]
+                    """))
+        .andExpect(status().isBadRequest());
 
     // 3. Duplicate in request
     mockMvc
@@ -399,9 +410,9 @@ class TenureValidationEndToEndIntegrationTest extends AbstractTestContainerInteg
           {
             "cboaId": null,
             "revisionCount": null,
-            "fileId": "TFL003",
-            "cuttingPermit": "CP03",
-            "cutBlock": "CB003",
+            "fileId": "TFL01",
+            "cuttingPermit": "104",
+            "cutBlock": "04",
             "isPrimary": false
           }
         ]
