@@ -5,6 +5,7 @@ import ca.bc.gov.restapi.results.common.repository.GenericCodeRepository;
 import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
+import ca.bc.gov.restapi.results.postgres.repository.ActivityCodeXrefPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -51,6 +52,7 @@ public class CreateActivityValidationService {
   private final SilvMethodCodePostgresRepository methodCodeRepository;
   private final SilvObjectiveCodePostgresRepository objectiveCodeRepository;
   private final SilvFundSrceCodePostgresRepository fundSrceCodeRepository;
+  private final ActivityCodeXrefPostgresRepository xrefRepository;
 
   /**
    * Validates the request.
@@ -71,6 +73,7 @@ public class CreateActivityValidationService {
     validateStatusFields(dto, errors);
     validateBase(dto, errors);
     validateCodes(dto, errors);
+    validateCodeCombinations(dto, errors);
     validatePlannedDate(dto, errors);
 
     if (!errors.isEmpty()) {
@@ -128,6 +131,71 @@ public class CreateActivityValidationService {
     }
     checkList("objectiveCodes", dto.objectiveCodes(), objectiveCodeRepository, errors);
     checkList("fundingSourceCodes", dto.fundingSourceCodes(), fundSrceCodeRepository, errors);
+  }
+
+  // The technique, method, objectives and funding sources each depend on the base (RESULTS rules)
+  private void validateCodeCombinations(CreateActivityRequestDto dto, List<String> errors) {
+    if (dto.baseCode() == null || hasError(errors, "baseCode")) {
+      return;
+    }
+    validateTechniqueAndMethod(dto, errors);
+    validateAllowedForBase(
+        "objectiveCodes",
+        dto.baseCode(),
+        dto.objectiveCodes(),
+        xrefRepository.findObjectivesForBase(dto.baseCode(), nullToEmpty(dto.objectiveCodes())),
+        errors);
+    validateAllowedForBase(
+        "fundingSourceCodes",
+        dto.baseCode(),
+        dto.fundingSourceCodes(),
+        xrefRepository.findFundingSourcesForBase(
+            dto.baseCode(), nullToEmpty(dto.fundingSourceCodes())),
+        errors);
+  }
+
+  private void validateTechniqueAndMethod(CreateActivityRequestDto dto, List<String> errors) {
+    if (hasError(errors, "techniqueCode") || hasError(errors, "methodCode")) {
+      return;
+    }
+    String base = dto.baseCode();
+    String technique = dto.techniqueCode();
+    String method = dto.methodCode();
+    if (xrefRepository.existsBaseTechniqueMethod(base, technique, method)) {
+      return;
+    }
+    if (technique != null && !xrefRepository.existsBaseTechnique(base, technique)) {
+      errors.add("techniqueCode: '" + technique + "' is not valid for base " + base);
+    } else if (method == null) {
+      errors.add("methodCode: must not be null for base " + base + " and technique " + technique);
+    } else {
+      errors.add(
+          "methodCode: '"
+              + method
+              + "' is not valid for base "
+              + base
+              + (technique == null ? " without a technique" : " and technique " + technique));
+    }
+  }
+
+  private void validateAllowedForBase(
+      String field,
+      String base,
+      List<String> requested,
+      Set<String> allowed,
+      List<String> errors) {
+    if (requested == null || hasError(errors, field)) {
+      return;
+    }
+    for (String code : requested) {
+      if (!allowed.contains(code)) {
+        errors.add(field + ": '" + code + "' is not valid for base " + base);
+      }
+    }
+  }
+
+  private List<String> nullToEmpty(List<String> codes) {
+    return codes == null ? List.of() : codes;
   }
 
   private void checkList(

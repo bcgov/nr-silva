@@ -90,10 +90,10 @@ When the user selects Planned, the following sections appear after an activity b
 
 | Field | Requirement | Input | Business rules |
 |---|---|---|---|
-| Technique | Optional | Single-select | The user can select up to one technique. Only options currently in effect can be selected. |
-| Method | Optional | Single-select | The user can select up to one method. Only options currently in effect can be selected. |
-| Objectives | Optional | Multi-select | The user can select up to five objectives. Only options currently in effect can be selected. |
-| Funding sources | Required | Multi-select | The user can select up to five funding sources. Only options currently in effect can be selected. |
+| Technique | Optional | Single-select | The user can select up to one technique. Only options currently in effect can be selected, and only techniques that can be used with the selected activity base (see 4.3). |
+| Method | Optional | Single-select | The user can select up to one method. Only options currently in effect can be selected, and only methods that can be used with the selected activity base and technique (see 4.3). |
+| Objectives | Optional | Multi-select | The user can select up to five objectives. Only options currently in effect can be selected, and only objectives that can be used with the selected activity base (see 4.3). |
+| Funding sources | Required | Multi-select | The user can select up to five funding sources. Only options currently in effect can be selected, and only funding sources that can be used with the selected activity base (see 4.3). |
 | Project number | Optional | Text | This replaces the term “Intra-agency Number” used in RESULTS. |
 | Planned date | Required | Date | The date must be later than the current date. |
 | Planned area | Required | Number, in hectares | The area cannot exceed the gross area of the Opening under which the activity is being created. |
@@ -106,6 +106,16 @@ When the user selects Planned, the following sections appear after an activity b
 Silva allows users to select multiple funding sources for one activity.
 
 This differs from RESULTS, where users can select only one funding source.
+
+### 4.3 Options Depending on the Activity Base
+
+The same rules apply to Planned and Completed activities, as in RESULTS (Results 317, `RESULTS_ATU.validate`).
+
+- Technique and Method: the activity base, technique and method must be a combination defined in `silva.silv_activity_xref`. Choosing a base filters the techniques, and choosing a technique filters the methods. An empty technique or method is only valid when the table defines the combination without one.
+- Objectives: each objective must be defined for the base in `silva.silv_base_objective_xref`.
+- Funding sources: each funding source must be defined for the base in `silva.silv_base_funding_xref`.
+
+The three tables mirror the RESULTS tables `SILV_ACTIVITY_XREF`, `SILV_BASE_OBJECTIVE_XREF` and `SILV_BASE_FUNDING_XREF`. The migrations `V4.0.12` and `V4.0.13` create them and their foreign keys to the code tables. Their data is loaded separately, like the other reference tables; the integration tests load it from `V999.0.4__test_data_activity_xref.sql`.
 
 ---
 
@@ -359,9 +369,9 @@ Request body fields:
 |---|---|---|
 | `status` | All | `PLANNED` or `COMPLETED`, required |
 | `baseCode` | All | Required; a basic base |
-| `techniqueCode`, `methodCode` | All | Optional; must be in effect |
-| `objectiveCodes` | All | Optional, up to 5; must be in effect |
-| `fundingSourceCodes` | All | Required, 1 to 5; must be in effect |
+| `techniqueCode`, `methodCode` | All | Optional; must be in effect and form a valid combination with the base (4.3) |
+| `objectiveCodes` | All | Optional, up to 5; must be in effect and valid for the base (4.3) |
+| `fundingSourceCodes` | All | Required, 1 to 5; must be in effect and valid for the base (4.3) |
 | `projectNumber`, `licenseeActivityId`, `comment` | All | Optional |
 | `plannedDate`, `plannedArea` | Planned required; Completed optional | Planned date must be later than today; planned area greater than 0 |
 | `plannedCost` | All | Optional, whole dollars |

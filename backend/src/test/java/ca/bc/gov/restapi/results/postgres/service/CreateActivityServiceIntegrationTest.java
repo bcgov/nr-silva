@@ -86,7 +86,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   private CreateActivityRequestDto completed() {
     return new CreateActivityRequestDto(
         ActivityStatus.COMPLETED,
-        "HC",
+        "FE",
         "CG",
         "BAGS",
         List.of("A", "AC", "AHM", "ALP", "AMD"),
@@ -139,16 +139,16 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             OPENING_ID);
 
     CreateActivityResponseDto response =
-        service.createActivity(OPENING_ID, planned("HC", "  first comment "));
+        service.createActivity(OPENING_ID, planned("FE", "  first comment "));
 
     assertThat(response.openingId()).isEqualTo(OPENING_ID);
     assertThat(response.status()).isEqualTo(ActivityStatus.PLANNED);
-    assertThat(response.baseCode()).isEqualTo("HC");
+    assertThat(response.baseCode()).isEqualTo("FE");
 
     Map<String, Object> row = activityRow(response.activityId());
     assertThat(row)
         .containsEntry("opening_id", OPENING_ID)
-        .containsEntry("silv_base_code", "HC")
+        .containsEntry("silv_base_code", "FE")
         .containsEntry("results_ind", "N")
         .containsEntry("silv_activity_measurement_code", "HA")
         .containsEntry("activity_licensee_id", "LIC-1")
@@ -230,7 +230,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Saves the comment as an activity comment")
   void createActivity_withComment_savesLinkedComment() {
-    Long id = service.createActivity(OPENING_ID, planned("HC", "  first comment ")).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("FE", "  first comment ")).activityId();
     entityManager.flush();
 
     var comments = commentRepository.getCommentById(null, id, null, null, null);
@@ -244,7 +244,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Does not save a comment when it is blank")
   void createActivity_blankComment_savesNoComment() {
-    Long id = service.createActivity(OPENING_ID, planned("HC", "   ")).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("FE", "   ")).activityId();
     entityManager.flush();
 
     assertThat(commentRepository.getCommentById(null, id, null, null, null)).isEmpty();
@@ -253,7 +253,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Numbers activities under the opening in sequence")
   void createActivity_twice_incrementsSequenceNumber() {
-    Long first = service.createActivity(OPENING_ID, planned("HC", null)).activityId();
+    Long first = service.createActivity(OPENING_ID, planned("FE", null)).activityId();
     Long second = service.createActivity(OPENING_ID, planned("FE", null)).activityId();
 
     Integer firstSeq = (Integer) activityRow(first).get("activity_tu_seq_no");
@@ -273,7 +273,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     jdbcTemplate.queryForObject(
         "SELECT setval('silva.activity_treatment_unit_id_seq', 1)", Long.class);
 
-    Long id = service.createActivity(OPENING_ID, planned("HC", "note")).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("FE", "note")).activityId();
 
     assertThat(id).isGreaterThan(maxId);
   }
@@ -284,7 +284,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
     CreateActivityRequestDto request =
         new CreateActivityRequestDto(
             ActivityStatus.COMPLETED,
-            "HC",
+            "FE",
             null,
             null,
             null,
@@ -334,7 +334,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         service
             .createActivity(
                 OPENING_ID,
-                planned("HC", null),
+                planned("FE", null),
                 "activity.geojson",
                 () -> SQUARE_GEOJSON.getBytes(UTF_8))
             .activityId();
@@ -365,7 +365,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
 
     Long id =
         service
-            .createActivity(OPENING_ID, planned("HC", null), "activity.geojson", () -> file)
+            .createActivity(OPENING_ID, planned("FE", null), "activity.geojson", () -> file)
             .activityId();
     entityManager.flush();
 
@@ -381,7 +381,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @Test
   @DisplayName("Saves no geometry when there is no file")
   void createActivity_withoutFile_savesNoGeometry() {
-    Long id = service.createActivity(OPENING_ID, planned("HC", null)).activityId();
+    Long id = service.createActivity(OPENING_ID, planned("FE", null)).activityId();
     entityManager.flush();
 
     Integer count =
@@ -400,7 +400,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM silva.activity_treatment_unit", Integer.class);
 
-    CreateActivityRequestDto request = planned("HC", "comment");
+    CreateActivityRequestDto request = planned("FE", "comment");
     Supplier<byte[]> invalidFile = () -> "not a spatial file".getBytes(UTF_8);
 
     assertThatThrownBy(
@@ -437,7 +437,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         service
             .createActivity(
                 OPENING_ID,
-                planned("HC", null),
+                planned("FE", null),
                 "activity.geojson",
                 () -> SQUARE_GEOJSON.getBytes(UTF_8))
             .activityId();
@@ -453,7 +453,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
         "POLYGON((800000 1400000, 800100 1400000, 800100 1400100, 800000 1400100, 800000"
             + " 1400000))");
     int before = activityCount();
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
     Supplier<byte[]> file = () -> SQUARE_GEOJSON.getBytes(UTF_8);
 
     assertThatThrownBy(() -> service.createActivity(OPENING_ID, request, "activity.geojson", file))
@@ -477,7 +477,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Rejects a user with a role only for another client and saves nothing")
   void createActivity_roleForAnotherClient_forbidden() {
     int before = activityCount();
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
 
     assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
@@ -491,7 +491,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @WithMockJwt(cognitoGroups = {"Viewer"})
   @DisplayName("Rejects a user with only the viewer role")
   void createActivity_viewerOnly_forbidden() {
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
 
     assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
@@ -500,9 +500,26 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   }
 
   @Test
+  @DisplayName("Rejects a technique and method that cannot be used with the base and saves nothing")
+  void createActivity_combinationNotValidForBase_rejectedAndNothingSaved() {
+    int before = activityCount();
+    CreateActivityRequestDto request = planned("HC", null);
+
+    assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
+        .isInstanceOfSatisfying(
+            ResponseStatusException.class,
+            exception -> {
+              assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+              assertThat(exception.getReason())
+                  .contains("techniqueCode: 'CG' is not valid for base HC");
+            });
+    assertThat(activityCount()).isEqualTo(before);
+  }
+
+  @Test
   @DisplayName("Rejects everyone for an opening without clients")
   void createActivity_openingWithoutClients_forbidden() {
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
 
     assertThatThrownBy(() -> service.createActivity(OPENING_WITHOUT_CLIENTS, request))
         .isInstanceOfSatisfying(
@@ -520,7 +537,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
             + "entry_userid, entry_timestamp, update_userid, update_timestamp) "
             + "VALUES (90000001, 189945, 'O', '00', '00010004', 1, 'TEST', now(), 'TEST', now())");
 
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
 
     assertThatThrownBy(() -> service.createActivity(OPENING_ID, request))
         .isInstanceOfSatisfying(
@@ -532,7 +549,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @WithMockJwt(cognitoGroups = {})
   @DisplayName("Reports an unknown opening as not found before checking access")
   void createActivity_unknownOpening_notFoundBeforeForbidden() {
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
 
     assertThatThrownBy(() -> service.createActivity(-1L, request))
         .isInstanceOf(NotFoundGenericException.class);
@@ -562,7 +579,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Does not read the file of an unknown opening")
   void createActivity_unknownOpening_doesNotReadFile() {
     AtomicInteger calls = new AtomicInteger();
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
     Supplier<byte[]> reader = failingReader(calls, new IllegalStateException("scanned"));
 
     assertThatThrownBy(() -> service.createActivity(-1L, request, "activity.geojson", reader))
@@ -576,7 +593,7 @@ class CreateActivityServiceIntegrationTest extends AbstractTestContainerIntegrat
   @DisplayName("Does not read the file when the user has no access")
   void createActivity_forbidden_doesNotReadFile() {
     AtomicInteger calls = new AtomicInteger();
-    CreateActivityRequestDto request = planned("HC", null);
+    CreateActivityRequestDto request = planned("FE", null);
     Supplier<byte[]> reader = failingReader(calls, new IllegalStateException("scanned"));
 
     assertThatThrownBy(

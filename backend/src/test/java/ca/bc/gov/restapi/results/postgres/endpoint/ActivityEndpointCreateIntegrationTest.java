@@ -100,14 +100,14 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   void create_withFile_returnsCreated() throws Exception {
     mockMvc
         .perform(
-            create(OPENING_ID, data("HC", "[\"BCP\",\"BCT\"]"))
+            create(OPENING_ID, data("FE", "[\"BCP\",\"BCT\"]"))
                 .file(spatialFile())
                 .with(csrf().asHeader()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.activityId").isNumber())
         .andExpect(jsonPath("$.openingId").value(OPENING_ID))
         .andExpect(jsonPath("$.status").value("PLANNED"))
-        .andExpect(jsonPath("$.baseCode").value("HC"));
+        .andExpect(jsonPath("$.baseCode").value("FE"));
 
     verify(virusScanService)
         .scanOrThrow(
@@ -153,7 +153,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
   @DisplayName("Returns not found when the opening does not exist")
   void create_unknownOpening_returnsNotFound() throws Exception {
     mockMvc
-        .perform(create(-1L, data("HC", "[\"BCP\"]")).with(csrf().asHeader()))
+        .perform(create(-1L, data("FE", "[\"BCP\"]")).with(csrf().asHeader()))
         .andExpect(status().isNotFound());
   }
 
@@ -164,7 +164,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
     int before = activityCount();
 
     mockMvc
-        .perform(create(OPENING_ID, data("HC", "[\"BCP\"]")).with(csrf().asHeader()))
+        .perform(create(OPENING_ID, data("FE", "[\"BCP\"]")).with(csrf().asHeader()))
         .andExpect(status().isForbidden())
         .andExpect(jsonPath("$.detail").value("Not authorised for this opening"));
 
@@ -191,7 +191,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
                         "data",
                         "",
                         MediaType.APPLICATION_JSON_VALUE,
-                        data("HC", "[\"BCP\"]").getBytes()))
+                        data("FE", "[\"BCP\"]").getBytes()))
                 .with(csrf().asHeader()))
         .andExpect(status().isBadRequest());
   }
@@ -215,7 +215,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            create(OPENING_ID, data("HC", "[\"BCP\"]"))
+            create(OPENING_ID, data("FE", "[\"BCP\"]"))
                 .file(spatialFile())
                 .with(csrf().asHeader()))
         .andExpect(status().isUnprocessableEntity());
@@ -232,7 +232,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            create(-1L, data("HC", "[\"BCP\"]")).file(spatialFile()).with(csrf().asHeader()))
+            create(-1L, data("FE", "[\"BCP\"]")).file(spatialFile()).with(csrf().asHeader()))
         .andExpect(status().isNotFound());
 
     verifyNoInteractions(virusScanService);
@@ -249,7 +249,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
             new byte[(int) SilvaPostgresConstants.MAX_SPATIAL_FILE_SIZE_BYTES + 1]);
 
     mockMvc
-        .perform(create(-1L, data("HC", "[\"BCP\"]")).file(oversized).with(csrf().asHeader()))
+        .perform(create(-1L, data("FE", "[\"BCP\"]")).file(oversized).with(csrf().asHeader()))
         .andExpect(status().isNotFound());
 
     verifyNoInteractions(virusScanService);
@@ -265,7 +265,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            create(OPENING_ID, data("HC", "[\"BCP\"]"))
+            create(OPENING_ID, data("FE", "[\"BCP\"]"))
                 .file(spatialFile())
                 .with(csrf().asHeader()))
         .andExpect(status().isForbidden());
@@ -295,7 +295,7 @@ class ActivityEndpointCreateIntegrationTest extends AbstractTestContainerIntegra
 
     mockMvc
         .perform(
-            create(OPENING_ID, data("HC", "[\"BCP\"]")).file(bad).with(csrf().asHeader()))
+            create(OPENING_ID, data("FE", "[\"BCP\"]")).file(bad).with(csrf().asHeader()))
         .andExpect(status().isBadRequest());
 
     assertThat(activityCount()).isEqualTo(before);

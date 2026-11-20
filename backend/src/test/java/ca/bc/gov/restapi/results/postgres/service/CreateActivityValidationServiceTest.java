@@ -14,6 +14,7 @@ import ca.bc.gov.restapi.results.postgres.entity.code.SilvMethodCodePostgresEnti
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvObjectiveCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvTechniqueCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.enums.ActivityStatus;
+import ca.bc.gov.restapi.results.postgres.repository.ActivityCodeXrefPostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvBaseCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvFundSrceCodePostgresRepository;
 import ca.bc.gov.restapi.results.postgres.repository.SilvMethodCodePostgresRepository;
@@ -47,6 +48,7 @@ class CreateActivityValidationServiceTest {
   @Mock private SilvMethodCodePostgresRepository methodCodeRepository;
   @Mock private SilvObjectiveCodePostgresRepository objectiveCodeRepository;
   @Mock private SilvFundSrceCodePostgresRepository fundSrceCodeRepository;
+  @Mock private ActivityCodeXrefPostgresRepository xrefRepository;
 
   private CreateActivityValidationService service;
 
@@ -109,7 +111,8 @@ class CreateActivityValidationServiceTest {
             techniqueCodeRepository,
             methodCodeRepository,
             objectiveCodeRepository,
-            fundSrceCodeRepository);
+            fundSrceCodeRepository,
+            xrefRepository);
 
     when(baseCodeRepository.findAllById(any()))
         .thenAnswer(
@@ -135,6 +138,13 @@ class CreateActivityValidationServiceTest {
                 codes(
                     (Iterable<String>) call.getArgument(0),
                     code -> SilvObjectiveCodePostgresEntity.builder().code(code).build()));
+    // Every combination is valid unless a test says otherwise
+    when(xrefRepository.existsBaseTechniqueMethod(any(), any(), any())).thenReturn(true);
+    when(xrefRepository.existsBaseTechnique(any(), any())).thenReturn(true);
+    when(xrefRepository.findObjectivesForBase(any(), any()))
+        .thenAnswer(call -> new java.util.HashSet<String>(call.getArgument(1)));
+    when(xrefRepository.findFundingSourcesForBase(any(), any()))
+        .thenAnswer(call -> new java.util.HashSet<String>(call.getArgument(1)));
     when(fundSrceCodeRepository.findAllById(any()))
         .thenAnswer(
             call ->
@@ -233,6 +243,85 @@ class CreateActivityValidationServiceTest {
         .containsExactlyInAnyOrder(
             "AU", "BR", "CC", "CM", "EP", "FE", "HC", "HI", "JS", "LB", "PC", "PR", "RC", "RD",
             "SP", "ST", "SU", "SX");
+  }
+
+  @Test
+  @DisplayName("Rejects a technique that cannot be used with the base")
+  void validate_techniqueNotForBase_rejected() {
+    Request request = new Request();
+    request.techniqueCode = "BU";
+    when(xrefRepository.existsBaseTechniqueMethod("HC", "BU", null)).thenReturn(false);
+    when(xrefRepository.existsBaseTechnique("HC", "BU")).thenReturn(false);
+
+    assertThat(errorOf(request)).contains("techniqueCode: 'BU' is not valid for base HC");
+  }
+
+  @Test
+  @DisplayName("Rejects a method that cannot be used with the base and technique")
+  void validate_methodNotForTechnique_rejected() {
+    Request request = new Request();
+    request.techniqueCode = "BU";
+    request.methodCode = "MACH";
+    when(xrefRepository.existsBaseTechniqueMethod("HC", "BU", "MACH")).thenReturn(false);
+
+    assertThat(errorOf(request))
+        .contains("methodCode: 'MACH' is not valid for base HC and technique BU");
+  }
+
+  @Test
+  @DisplayName("Rejects a method given without a technique when the base has no such combination")
+  void validate_methodWithoutTechnique_rejected() {
+    Request request = new Request();
+    request.methodCode = "MACH";
+    when(xrefRepository.existsBaseTechniqueMethod("HC", null, "MACH")).thenReturn(false);
+
+    assertThat(errorOf(request))
+        .contains("methodCode: 'MACH' is not valid for base HC without a technique");
+  }
+
+  @Test
+  @DisplayName("Requires a method when the base and technique are only valid with one")
+  void validate_techniqueWithoutRequiredMethod_rejected() {
+    Request request = new Request();
+    request.techniqueCode = "BU";
+    when(xrefRepository.existsBaseTechniqueMethod("HC", "BU", null)).thenReturn(false);
+
+    assertThat(errorOf(request))
+        .contains("methodCode: must not be null for base HC and technique BU");
+  }
+
+  @Test
+  @DisplayName("Rejects objectives and funding sources that cannot be used with the base")
+  void validate_objectiveAndFundingNotForBase_rejected() {
+    Request request = new Request();
+    request.objectiveCodes = List.of("A", "B");
+    request.fundingSourceCodes = List.of("BCP", "FIP");
+    when(xrefRepository.findObjectivesForBase("HC", request.objectiveCodes))
+        .thenReturn(java.util.Set.of("A"));
+    when(xrefRepository.findFundingSourcesForBase("HC", request.fundingSourceCodes))
+        .thenReturn(java.util.Set.of("BCP"));
+
+    assertThat(errorOf(request))
+        .contains("objectiveCodes: 'B' is not valid for base HC")
+        .contains("fundingSourceCodes: 'FIP' is not valid for base HC")
+        .doesNotContain("'A'")
+        .doesNotContain("'BCP'");
+  }
+
+  @Test
+  @DisplayName("Does not check combinations for codes that are already invalid")
+  void validate_invalidCodes_combinationsNotChecked() {
+    Request request = new Request();
+    request.techniqueCode = "BU";
+    request.objectiveCodes = List.of("A", "A");
+    when(xrefRepository.existsBaseTechniqueMethod(any(), any(), any())).thenReturn(false);
+    when(xrefRepository.existsBaseTechnique(any(), any())).thenReturn(false);
+    org.mockito.Mockito.doReturn(List.of()).when(techniqueCodeRepository).findAllById(any());
+
+    assertThat(errorOf(request))
+        .contains("techniqueCode: 'BU' is not a valid code currently in effect")
+        .contains("objectiveCodes: duplicate values are not allowed")
+        .doesNotContain("is not valid for base");
   }
 
   @Test
