@@ -4,6 +4,7 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import ErrorHandling from '@/screens/ErrorHandling';
 import { Navigate, type RouteObject } from "react-router-dom";
 import {
+  AuthCallbackRoute,
   CreateOpeningRoute,
   CreateOpeningSuccessRoute,
   DashboardRoute,
@@ -19,8 +20,10 @@ import {
   EditTenureRoute,
   CreateActivityRoute,
 } from "@/routes/config";
+import { AUTH_CALLBACK_PATH, DASHBOARD_PATH } from "@/routes/paths";
 
 export const publicRoutes: RouteObject[] = [
+  AuthCallbackRoute,
   {
     path: '*',
     element: <Landing />
@@ -57,6 +60,10 @@ export const protectedRoutes: RouteObject[] = [
     element: <ProtectedRoute />,
     errorElement: <ErrorHandling />, // Global error element for protected routes
     children: protectedRouteList
+  },
+  {
+    path: AUTH_CALLBACK_PATH,
+    element: <Navigate to={DashboardRoute?.path ?? DASHBOARD_PATH} replace />
   },
   // Catch-all route for unmatched paths
   {

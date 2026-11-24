@@ -1,4 +1,5 @@
-import test, { expect } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "../setup/coverage";
 import { TopNavBar } from "../pages/top-nav-bar";
 
 test.describe('Top Navigation Bar', () => {

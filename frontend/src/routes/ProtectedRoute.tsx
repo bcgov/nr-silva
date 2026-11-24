@@ -14,9 +14,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If the user is not logged in, redirect to the landing page.
   // Do NOT call logout() here — AuthProvider already cleared session state,
-  // and firing signOut() async during render creates a race condition where
-  // a subsequent signInWithRedirect() call on the Landing page is silently
-  // dropped by Amplify while signOut() is still in flight.
+  // and triggering a logout redirect during render can race with a subsequent
+  // login redirect initiated from the Landing page.
   if (!isLoggedIn) {
     return <Navigate to={redirectTo} replace />;
   }

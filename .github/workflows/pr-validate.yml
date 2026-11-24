@@ -11,38 +11,17 @@ concurrency:
 permissions: {}
 
 jobs:
-  init:
-    name: Initialize
-    concurrency:
-      group: fam-routes-global
-      cancel-in-progress: false
-    outputs:
-      hybrid_route_number: ${{ steps.allocate.outputs.route_hybrid }}
-      postgres_route_number: ${{ steps.allocate.outputs.route_postgres }}
-    runs-on: ubuntu-26.04
-    steps:
-      - uses: actions/checkout@v7
-      - name: Allocate FAM routes
-        id: allocate
-        uses: ./.github/actions/allocate-fam-routes
-        with:
-          oc_token: ${{ secrets.OC_TOKEN }}
-          oc_namespace: ${{ vars.OC_NAMESPACE }}
-          oc_server: ${{ vars.OC_SERVER }}
-          pr_number: ${{ github.event.number }}
-
   validate:
     name: Validate PR
-    needs: [init]
     uses: bcgov/quickstart-openshift-helpers/.github/workflows/.pr-validate.yml@a11ad3d1b9288fb40757c4314a62eb86ff227931 # v1.2.1
     permissions:
       pull-requests: write
     with:
       markdown_links: |
         - [Hybrid Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-hybrid-backend.apps.silver.devops.gov.bc.ca/actuator/health)
-        - [Hybrid Frontend](https://${{ github.event.repository.name }}-${{ needs.init.outputs.hybrid_route_number }}-frontend.apps.silver.devops.gov.bc.ca)
+        - [Hybrid Frontend](https://${{ github.event.repository.name }}-${{ github.event.number }}-hybrid-frontend.apps.silver.devops.gov.bc.ca)
         - [Postgres Backend](https://${{ github.event.repository.name }}-${{ github.event.number }}-postgres-backend.apps.silver.devops.gov.bc.ca/actuator/health)
-        - [Postgres Frontend](https://${{ github.event.repository.name }}-${{ needs.init.outputs.postgres_route_number }}-frontend.apps.silver.devops.gov.bc.ca)
+        - [Postgres Frontend](https://${{ github.event.repository.name }}-${{ github.event.number }}-postgres-frontend.apps.silver.devops.gov.bc.ca)
 
   # ==========================================================================
   # WARNING: This job acts as the required merge gate for this workflow.
@@ -51,7 +30,7 @@ jobs:
   # ==========================================================================
   results:
     name: Validate Results
-    needs: [init, validate]
+    needs: [validate]
     if: always()
     runs-on: ubuntu-26.04
     timeout-minutes: 1

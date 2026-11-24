@@ -1,4 +1,5 @@
-import test, { expect } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "../setup/coverage";
 import { OpeningsPage } from "../pages/openings-page";
 import { loadStub } from "../utils/stubLoader";
 

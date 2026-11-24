@@ -56,7 +56,7 @@ test and deploy.
   - [Carbon Design System](https://github.com/bcgov/nr-theme)
   - [Bootstrap CSS](https://getbootstrap.com/)
 - Authentication & Authorization
-  - [FAM (AWS Cognito)](https://github.com/bcgov/nr-forests-access-management)
+  - [BC Gov SSO (Keycloak / CSS)](https://github.com/bcgov/sso-keycloak) with [`oidc-client-ts`](https://github.com/authts/oidc-client-ts)
 
 ## Back end
 - REST API

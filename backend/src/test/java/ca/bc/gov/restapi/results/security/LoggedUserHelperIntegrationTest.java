@@ -59,4 +59,23 @@ class LoggedUserHelperIntegrationTest extends AbstractTestContainerIntegrationTe
   void shouldReturnTrueIfIdirUser() {
     Assertions.assertTrue(userAuthenticationHelper.isIdirUser());
   }
+
+  @Test
+  @WithMockJwt(
+      value = "FRODO",
+      idp = "azureidir",
+      roles = {"SILVA_VIEWER", "SUBMITTER_FOREST_CLIENT-00012797", "FAM:EXPIRES:2026-12-31"},
+      email = "frodo.baggins@gov.bc.ca")
+  @DisplayName("Supports Keycloak roles, azureidir normalization, and FAM sidecar filtering")
+  void shouldSupportKeycloakRolesAndAzureIdir() {
+    Assertions.assertTrue(userAuthenticationHelper.isIdirUser());
+    assertEquals("IDIR\\FRODO", userAuthenticationHelper.getLoggedUserId());
+    assertEquals("IDIR\\FRODO", userAuthenticationHelper.getAuditUserId());
+    assertEquals("frodo.baggins@gov.bc.ca", userAuthenticationHelper.getLoggedUserEmail());
+    Assertions.assertTrue(userAuthenticationHelper.hasConcreteRole(Role.VIEWER));
+    Assertions.assertTrue(
+        userAuthenticationHelper.hasAbstractRole(Role.SUBMITTER, "00012797"));
+    Assertions.assertFalse(
+        userAuthenticationHelper.hasRoleMatching(role -> role.startsWith("FAM:")));
+  }
 }

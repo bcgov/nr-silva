@@ -1,7 +1,8 @@
 import { env } from "@/env";
 import { OpenAPI } from "./OpenApi/core/OpenAPI";
-import { getCookie } from "@/utils/CookieUtils";
+import { getCookie, setCookie } from "@/utils/CookieUtils";
 import { ACCESS_TOKEN_KEY } from "@/constants";
+import { ensureFreshUser } from "@/services/keycloak";
 
 // All service imports (static classes)
 import {
@@ -29,6 +30,11 @@ OpenAPI.WITH_CREDENTIALS = false;
 
 // Provide token dynamically before each request
 OpenAPI.TOKEN = async () => {
+    const freshUser = await ensureFreshUser().catch(() => null);
+    if (freshUser?.access_token) {
+        setCookie(ACCESS_TOKEN_KEY, freshUser.access_token);
+        return freshUser.access_token;
+    }
     const storedToken = getCookie(ACCESS_TOKEN_KEY);
     return storedToken ?? '';
 };

@@ -37,12 +37,12 @@ jobs:
             allowed_origins: https://nr-silva-test-frontend.apps.silver.devops.gov.bc.ca/
             target: test
             deployment_model: hybrid
-            fam_route: test
+            frontend_route: test
           - primary_db: postgres
             allowed_origins: https://nr-silva-preview-frontend.apps.silver.devops.gov.bc.ca/
             target: test-postgres
             deployment_model: postgres
-            fam_route: preview
+            frontend_route: preview
     secrets: inherit
     uses: ./.github/workflows/.deploy.yml
     with:
@@ -54,7 +54,7 @@ jobs:
       tag: ${{ needs.init.outputs.pr }}
       target: ${{ matrix.target }}
       deployment_model: ${{ matrix.deployment_model }}
-      fam_route: ${{ matrix.fam_route }}
+      frontend_route: ${{ matrix.frontend_route }}
 
   deploys-prod:
     name: PROD Deploys (${{ needs.init.outputs.pr }})

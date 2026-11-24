@@ -2,9 +2,11 @@ import { lazy, Suspense } from "react";
 import { type RouteObject, Outlet, Navigate } from "react-router-dom";
 import { Loading } from "@carbon/react";
 import SideLayout from '@/layouts/SideLayout';
+import AuthCallback from '@/pages/AuthCallback';
 import FeatureGateRoute from '@/routes/FeatureGateRoute';
 import {
   DASHBOARD_PATH,
+  AUTH_CALLBACK_PATH,
   OPENINGS_PATH,
   OPENINGS_SEARCH_PATH,
   OPENING_CREATE_SUCCESS_PATH,
@@ -40,6 +42,11 @@ const EditTenure = lazy(() => import('@/screens/EditTenure'));
 const CreateActivity = lazy(() => import('@/screens/CreateActivity'));
 
 const PageLoader = () => <Loading withOverlay />;
+
+export const AuthCallbackRoute: RouteObject = {
+  path: AUTH_CALLBACK_PATH,
+  element: <AuthCallback />,
+};
 
 export const DashboardRoute: RouteObject = {
   path: DASHBOARD_PATH,
