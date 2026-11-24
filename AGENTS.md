@@ -185,7 +185,7 @@ Silva is deployed via GitHub Actions to OpenShift. The pipeline:
 See `.github/actions` for specific workflow definitions.
 
 ### Route TLS
-- Vanity Route TLS (`bcgov/actions-openshift/route-tls`) is strictly managed via the standalone on-demand workflow (`.github/workflows/route-tls.yml` with `workflow_dispatch`). Never embed `route-tls` into `merge.yml`, `release.yml`, or continuous deployment pipelines.
+- Vanity Route TLS (`bcgov/actions-openshift/cert-keeper`) is strictly managed via the standalone workflow (`.github/workflows/cert-keeper.yml`). Never embed `cert-keeper` into `merge.yml`, `release.yml`, or continuous deployment pipelines.
 
 ## Testing Strategy
 

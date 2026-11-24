@@ -94,7 +94,7 @@ our [CONTRIBUTING](CONTRIBUTING.md) guide.
 
 ## Route TLS
 
-Custom vanity URL TLS for the PROD frontend OpenShift Route is validated and applied on-demand via the standalone [`.github/workflows/route-tls.yml`](./.github/workflows/route-tls.yml) workflow using [`bcgov/actions-openshift/route-tls`](https://github.com/bcgov/actions-openshift/tree/main/route-tls).
+Custom vanity URL TLS for the PROD frontend OpenShift Route is validated and applied on-demand via the standalone [`.github/workflows/cert-keeper.yml`](./.github/workflows/cert-keeper.yml) workflow using [`bcgov/actions-openshift/cert-keeper`](https://github.com/bcgov/actions-openshift/tree/main/cert-keeper).
 
 ### GitHub Secrets & Variables (prod environment)
 
@@ -120,10 +120,10 @@ Trigger the workflow with `dry_run=true` to validate certificates and hostname m
 
 ```bash
 # Validate certificates
-gh workflow run route-tls.yml -f dry_run=true
+gh workflow run cert-keeper.yml -f dry_run=true
 
 # Apply to OpenShift
-gh workflow run route-tls.yml -f dry_run=false
+gh workflow run cert-keeper.yml -f dry_run=false
 ```
 
 ## Getting help

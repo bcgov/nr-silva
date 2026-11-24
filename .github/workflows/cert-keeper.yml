@@ -1,4 +1,4 @@
-name: Route TLS
+name: Cert Keeper
 
 on:
   workflow_dispatch:
@@ -19,15 +19,15 @@ concurrency:
 permissions: {}
 
 jobs:
-  route-tls:
-    name: Route TLS (dry_run=${{ inputs.dry_run }})
+  cert-keeper:
+    name: Cert Keeper (dry_run=${{ inputs.dry_run }})
     environment: prod
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - uses: bcgov/actions-openshift/route-tls@4ad9f97c20e0e00454bfd35e54537ee8622fa166 # v0.7.0
+      - uses: bcgov/actions-openshift/cert-keeper@47805d2fc4e919382757c1fbeb68d39313abe64f # v0.11.0
         with:
           hostname: ${{ vars.ROUTE_HOST }}
           route_name: ${{ github.event.repository.name }}-prod-frontend-vanity
@@ -35,7 +35,7 @@ jobs:
           tls_certificate: ${{ secrets.TLS_CERTIFICATE }}
           tls_private_key: ${{ secrets.TLS_PRIVATE_KEY }}
           tls_ca_certificate: ${{ secrets.TLS_CA_CERTIFICATE }}
+          dry_run: ${{ inputs.dry_run }}
           oc_namespace: ${{ vars.OC_NAMESPACE }}
           oc_server: ${{ vars.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          dry_run: ${{ inputs.dry_run }}
