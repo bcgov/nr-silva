@@ -331,11 +331,13 @@ describe("OpeningForestCover", () => {
       const expandBtn = document.querySelector("#fc-row-101-1 .cds--table-expand__button")!;
       fireEvent.click(expandBtn);
 
+      // "Polygon details" heading renders during loading; the CardItem label
+      // "Reserve type" appears only after details have finished loading.
       await waitFor(() => {
         expect(screen.getByText("Polygon details")).toBeInTheDocument();
+        expect(screen.getByText("Reserve type")).toBeInTheDocument();
       });
 
-      expect(screen.getByText("Reserve type")).toBeInTheDocument();
       expect(screen.getByText("G - Group")).toBeInTheDocument();
       expect(screen.getByText("Forest management")).toBeInTheDocument();
       expect(screen.getByText("Forest cover ID")).toBeInTheDocument();
@@ -409,8 +411,8 @@ describe("OpeningForestCover", () => {
         );
       });
 
-      // In historical view, map polygon checkbox is disabled
-      const checkbox = screen.getByRole("checkbox", { name: "Select polygon on map" });
+      // In historical view, map polygon checkbox is disabled once the table reloads
+      const checkbox = await screen.findByRole("checkbox", { name: "Select polygon on map" });
       expect(checkbox).toBeDisabled();
     });
   });

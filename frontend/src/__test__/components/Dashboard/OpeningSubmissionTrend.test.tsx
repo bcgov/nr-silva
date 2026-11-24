@@ -187,11 +187,17 @@ describe("OpeningSubmissionTrend Component", () => {
       expect(within(container!).getByText("District")).toBeInTheDocument();
     });
 
-    // Find the FilterableMultiSelect input field
-    const districtInput = document.getElementById(
-      "district-dropdown-input"
-    ) as HTMLInputElement;
-    expect(districtInput).toBeInTheDocument();
+    // Carbon assigns an instance-scoped input id, so query by role and name.
+    // The control is omitted while org units load and is disabled while trends refetch.
+    const districtInput = await waitFor(() => {
+      const container = document.querySelector(
+        ".submission-trend-input-container"
+      );
+      expect(container).toBeTruthy();
+      const input = within(container!).getByRole("combobox", { name: /District/i });
+      expect(input).not.toBeDisabled();
+      return input;
+    });
 
     // Click on the input to open the menu
     await user.click(districtInput);
