@@ -27,6 +27,17 @@ jobs:
       contents: read
     timeout-minutes: 10
     steps:
+      - name: Require pre-supplied TLS secrets
+        env:
+          TLS_CERTIFICATE: ${{ secrets.TLS_CERTIFICATE }}
+          TLS_PRIVATE_KEY: ${{ secrets.TLS_PRIVATE_KEY }}
+          TLS_CA_CERTIFICATE: ${{ secrets.TLS_CA_CERTIFICATE }}
+        run: |
+          if [ -z "$TLS_CERTIFICATE" ] || [ -z "$TLS_PRIVATE_KEY" ] || [ -z "$TLS_CA_CERTIFICATE" ]; then
+            echo "::error::Pre-supplied mode requires non-empty TLS_CERTIFICATE, TLS_PRIVATE_KEY, and TLS_CA_CERTIFICATE secrets in the prod environment."
+            exit 1
+          fi
+
       - uses: bcgov/actions-openshift/cert-keeper@47805d2fc4e919382757c1fbeb68d39313abe64f # v0.11.0
         with:
           hostname: ${{ vars.ROUTE_HOST }}
