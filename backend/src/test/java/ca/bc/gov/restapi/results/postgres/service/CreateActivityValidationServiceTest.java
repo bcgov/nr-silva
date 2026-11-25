@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.common.entity.GenericCodeEntity;
+import ca.bc.gov.restapi.results.common.util.DateUtil;
 import ca.bc.gov.restapi.results.postgres.dto.CreateActivityRequestDto;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvBaseCodePostgresEntity;
 import ca.bc.gov.restapi.results.postgres.entity.code.SilvFundSrceCodePostgresEntity;
@@ -58,7 +59,7 @@ class CreateActivityValidationServiceTest {
     String methodCode = null;
     List<String> objectiveCodes = List.of("A");
     List<String> fundingSourceCodes = List.of("BCP");
-    LocalDate plannedDate = LocalDate.now().plusDays(1);
+    LocalDate plannedDate = DateUtil.todayInVancouver().plusDays(1);
     BigDecimal plannedArea = new BigDecimal("10.5");
     BigDecimal plannedCost = null;
     LocalDate completionDate = null;
@@ -176,7 +177,7 @@ class CreateActivityValidationServiceTest {
   void validate_validCompleted_passes() {
     Request request = new Request();
     request.status = ActivityStatus.COMPLETED;
-    request.completionDate = LocalDate.now().minusYears(1);
+    request.completionDate = DateUtil.todayInVancouver().minusYears(1);
     request.treatedArea = new BigDecimal("20.0");
     request.techniqueCode = "BU";
     request.methodCode = "MACH";
@@ -193,16 +194,16 @@ class CreateActivityValidationServiceTest {
   void validate_completedWithoutPlannedFields_passes() {
     Request request = new Request();
     request.status = ActivityStatus.COMPLETED;
-    request.completionDate = LocalDate.now().plusDays(10);
+    request.completionDate = DateUtil.todayInVancouver().plusDays(10);
     request.treatedArea = new BigDecimal("20.0");
     request.plannedDate = null;
     request.plannedArea = null;
     request.plannedCost = null;
     assertValid(request);
 
-    request.plannedDate = LocalDate.now().minusYears(2);
+    request.plannedDate = DateUtil.todayInVancouver().minusYears(2);
     assertValid(request);
-    request.plannedDate = LocalDate.now().plusYears(2);
+    request.plannedDate = DateUtil.todayInVancouver().plusYears(2);
     assertValid(request);
   }
 
@@ -264,7 +265,7 @@ class CreateActivityValidationServiceTest {
     Request su = new Request();
     su.baseCode = "SU";
     su.status = ActivityStatus.COMPLETED;
-    su.completionDate = LocalDate.now().minusDays(1);
+    su.completionDate = DateUtil.todayInVancouver().minusDays(1);
     su.treatedArea = new BigDecimal("5.0");
     su.surveyPlannedNumPlots = 5;
     su.surveyActualNumPlots = 6;
@@ -365,7 +366,7 @@ class CreateActivityValidationServiceTest {
   @DisplayName("Rejects completed-only fields on a planned activity")
   void validate_plannedWithCompletedFields_rejected() {
     Request request = new Request();
-    request.completionDate = LocalDate.now();
+    request.completionDate = DateUtil.todayInVancouver();
     request.treatedArea = new BigDecimal("5.0");
     request.actualCost = new BigDecimal("100");
 
@@ -379,9 +380,9 @@ class CreateActivityValidationServiceTest {
   @DisplayName("Planned date must be later than the current date")
   void validate_plannedDate_mustBeInTheFuture() {
     Request today = new Request();
-    today.plannedDate = LocalDate.now();
+    today.plannedDate = DateUtil.todayInVancouver();
     Request past = new Request();
-    past.plannedDate = LocalDate.now().minusDays(1);
+    past.plannedDate = DateUtil.todayInVancouver().minusDays(1);
 
     assertThat(errorOf(today)).contains("plannedDate: must be later than the current date");
     assertThat(errorOf(past)).contains("plannedDate: must be later than the current date");
@@ -392,10 +393,10 @@ class CreateActivityValidationServiceTest {
   void validate_codesNotInEffect_rejected() {
     SilvTechniqueCodePostgresEntity expired =
         inEffect(SilvTechniqueCodePostgresEntity.builder().code("BU").build());
-    expired.setExpiryDate(LocalDate.now().minusDays(1));
+    expired.setExpiryDate(DateUtil.todayInVancouver().minusDays(1));
     SilvObjectiveCodePostgresEntity notStarted =
         inEffect(SilvObjectiveCodePostgresEntity.builder().code("A").build());
-    notStarted.setEffectiveDate(LocalDate.now().plusDays(1));
+    notStarted.setEffectiveDate(DateUtil.todayInVancouver().plusDays(1));
     doReturn(List.of(expired)).when(techniqueCodeRepository).findAllById(any());
     doReturn(List.of(notStarted)).when(objectiveCodeRepository).findAllById(any());
     doReturn(List.of()).when(fundSrceCodeRepository).findAllById(any());

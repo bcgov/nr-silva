@@ -24,8 +24,8 @@ export class DashboardPage extends BasePage {
     this.recentOpeningsTable = this.recentOpeningsSection.getByRole('table', { name: 'Recent openings table' });
     this.recentOpeningsTableRows = this.recentOpeningsTable.locator('tbody tr');
     this.openingSubmissionsTrendSection = page.locator('.submission-trend-container');
-    this.districtDropDownBtn = this.openingSubmissionsTrendSection.locator('#district-dropdown-toggle-button');
-    this.statusDropDownBtn = this.openingSubmissionsTrendSection.locator('#status-dropdown-toggle-button');
+    this.districtDropDownBtn = this.openingSubmissionsTrendSection.getByRole('combobox', { name: /District/i });
+    this.statusDropDownBtn = this.openingSubmissionsTrendSection.getByRole('combobox', { name: /Status/i });
     this.submissionYearDropDownBtn = this.openingSubmissionsTrendSection.locator('[id="downshift-«ri0»-toggle-button"]');
     this.submissionYearDropDownMenu = this.openingSubmissionsTrendSection.getByTestId('trend-year-selection');
     this.favouritesSection = page.locator('.favourite-openings-container');
@@ -173,14 +173,12 @@ export class DashboardPage extends BasePage {
 
   async chooseDistrict(district: string) {
     await this.districtDropDownBtn.click();
-    const menu = this.openingSubmissionsTrendSection.locator('#district-dropdown__menu');
-    await menu.getByRole('option', { name: district }).click();
+    await this.openingSubmissionsTrendSection.getByRole('option', { name: district }).click();
   }
 
   async chooseStatus(status: string) {
     await this.statusDropDownBtn.click();
-    const menu = this.openingSubmissionsTrendSection.locator('#status-dropdown__menu');
-    await menu.getByRole('option', { name: status }).click();
+    await this.openingSubmissionsTrendSection.getByRole('option', { name: status }).click();
   }
 
   async chooseSubmissionYear(year: string) {
