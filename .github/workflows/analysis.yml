@@ -282,7 +282,7 @@ jobs:
           dir: frontend
           node_version: "20"
           # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+          triggers: ${{ github.event_name == 'pull_request' && '(''frontend/'')' || '' }}
 
   tests-frontend:
     name: Tests (Frontend)
@@ -324,7 +324,7 @@ jobs:
             -Dsonar.project.monorepo.enabled=true
           sonar_token: ${{ secrets.SONAR_TOKEN_FRONTEND }}
           # Only use triggers for PRs
-          triggers: ${{ github.event_name == 'pull_request' && '("frontend/")' || '' }}
+          triggers: ${{ github.event_name == 'pull_request' && '(''frontend/'')' || '' }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
