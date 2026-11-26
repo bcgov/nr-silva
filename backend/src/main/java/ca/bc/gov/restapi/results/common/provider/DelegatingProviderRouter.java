@@ -143,9 +143,9 @@ public class DelegatingProviderRouter<T> {
       return Optional.empty();
     }
     Object value = propertySource.getProperty(key);
-    String raw = value != null ? value.toString() : null;
-    String resolved = raw != null ? configurableEnv.resolvePlaceholders(raw) : null;
-    if (resolved != null && isUnresolvedPlaceholder(resolved)) {
+    String raw = Objects.toString(value, "");
+    String resolved = configurableEnv.resolvePlaceholders(raw);
+    if (isUnresolvedPlaceholder(resolved)) {
       return Optional.empty();
     }
     return Optional.of(requireNonBlankProvider(resolved, key));
