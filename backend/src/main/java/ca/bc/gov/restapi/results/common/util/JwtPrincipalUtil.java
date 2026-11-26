@@ -460,16 +460,21 @@ public class JwtPrincipalUtil {
     // Usually only IDIR contains comma.
     if (displayName.contains(",")) {
       String[] parts = displayName.split(",", 2);
+      if (parts.length > 0) {
+        lastName = parts[0].trim();
+      }
       if (parts.length > 1) {
         firstName = parts[1].trim();
       }
 
       // Remove WLRS:EX or any additional info
       if (firstName.contains(" ")) {
-        firstName = firstName.split(" ")[0].trim();
+        String[] firstNameParts = firstName.split(" ");
+        if (firstNameParts.length > 0) {
+          firstName = firstNameParts[0].trim();
+        }
       }
 
-      lastName = parts[0].trim();
       // Remove 'de' or other starting characters before space
       if (lastName.contains(" ")) {
         String[] lastNameParts = lastName.split(" ", 2);
