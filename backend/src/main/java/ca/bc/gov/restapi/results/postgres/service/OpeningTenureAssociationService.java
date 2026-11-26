@@ -143,25 +143,30 @@ public class OpeningTenureAssociationService {
     return new DisturbanceSummary(hasAmount ? amount : null, startDate, endDate);
   }
 
-  private String normalizePermit(String value) {
-    return TenureValidationService.normalizePermit(value);
-  }
-
   private record DisturbanceSummary(BigDecimal amount, LocalDate startDate, LocalDate endDate) {
     private DisturbanceSummary combine(DisturbanceSummary other) {
-      BigDecimal combinedAmount =
-          amount == null ? other.amount : other.amount == null ? amount : amount.add(other.amount);
-      LocalDate combinedStart =
-          startDate == null
-              ? other.startDate
-              : other.startDate == null || !other.startDate.isBefore(startDate)
-                  ? startDate
-                  : other.startDate;
-      LocalDate combinedEnd =
-          endDate == null
-              ? other.endDate
-              : other.endDate == null || !other.endDate.isAfter(endDate) ? endDate : other.endDate;
-      return new DisturbanceSummary(combinedAmount, combinedStart, combinedEnd);
+      return new DisturbanceSummary(
+          combineAmount(amount, other.amount),
+          pickExtremeDate(startDate, other.startDate, true),
+          pickExtremeDate(endDate, other.endDate, false));
+    }
+
+    private static BigDecimal combineAmount(BigDecimal first, BigDecimal second) {
+      if (first == null) {
+        return second;
+      }
+      return second == null ? first : first.add(second);
+    }
+
+    private static LocalDate pickExtremeDate(LocalDate first, LocalDate second, boolean pickEarlier) {
+      if (first == null) {
+        return second;
+      }
+      if (second == null) {
+        return first;
+      }
+      boolean useSecond = pickEarlier ? second.isBefore(first) : second.isAfter(first);
+      return useSecond ? second : first;
     }
   }
 }
