@@ -24,10 +24,10 @@ public class OpenMapsService {
   private final RestClient restClient;
 
   // null in oracle mode; present in postgres mode to read geometry from the local DB
-  private OpeningGeometryService openingGeometryService;
+  private final OpeningGeometryService openingGeometryService;
 
   // null in oracle mode; present in postgres mode to read activity geometry from the local DB
-  private ActivityGeometryReadService activityGeometryService;
+  private final ActivityGeometryReadService activityGeometryService;
 
   /**
    * Instantiates a new Open maps service.
