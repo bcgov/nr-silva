@@ -147,8 +147,8 @@ public class OpeningTenureAssociationService {
     private DisturbanceSummary combine(DisturbanceSummary other) {
       return new DisturbanceSummary(
           combineAmount(amount, other.amount),
-          pickExtremeDate(startDate, other.startDate, true),
-          pickExtremeDate(endDate, other.endDate, false));
+          earlierOf(startDate, other.startDate),
+          laterOf(endDate, other.endDate));
     }
 
     private static BigDecimal combineAmount(BigDecimal first, BigDecimal second) {
@@ -158,15 +158,23 @@ public class OpeningTenureAssociationService {
       return second == null ? first : first.add(second);
     }
 
-    private static LocalDate pickExtremeDate(LocalDate first, LocalDate second, boolean pickEarlier) {
+    private static LocalDate earlierOf(LocalDate first, LocalDate second) {
+      return selectDate(first, second, Comparator.naturalOrder());
+    }
+
+    private static LocalDate laterOf(LocalDate first, LocalDate second) {
+      return selectDate(first, second, Comparator.reverseOrder());
+    }
+
+    private static LocalDate selectDate(
+        LocalDate first, LocalDate second, Comparator<LocalDate> preference) {
       if (first == null) {
         return second;
       }
       if (second == null) {
         return first;
       }
-      boolean useSecond = pickEarlier ? second.isBefore(first) : second.isAfter(first);
-      return useSecond ? second : first;
+      return preference.compare(first, second) <= 0 ? first : second;
     }
   }
 }
