@@ -15,9 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -168,5 +170,19 @@ class ActivityGeometryServiceOpeningTest {
     // Bow-tie polygon: self-intersecting, repaired by buffer(0) to the larger lobe
     givenOpening("POLYGON((0 0, 100 100, 100 0, 0 100, 0 0))");
     assertAccepted("POLYGON((90 40, 99 40, 99 60, 90 60, 90 40))");
+  }
+
+  @Test
+  @DisplayName("Skips containment check when opening geometry cannot be repaired")
+  void unrepairableOpeningGeometry_skipsCheck() {
+    Geometry unrepairable = Mockito.mock(Geometry.class);
+    when(unrepairable.isEmpty()).thenReturn(false);
+    when(unrepairable.getGeometryType()).thenReturn("Polygon");
+    when(unrepairable.buffer(0.0)).thenThrow(new TopologyException("repair failed"));
+    when(unrepairable.buffer(4.0)).thenThrow(new TopologyException("invalid topology"));
+    when(openingGeometryRepository.findById(OPENING_ID))
+        .thenReturn(Optional.of(OpeningGeometryEntity.builder().geometry(unrepairable).build()));
+
+    assertAccepted("POLYGON((200 200, 250 200, 250 250, 200 250, 200 200))");
   }
 }

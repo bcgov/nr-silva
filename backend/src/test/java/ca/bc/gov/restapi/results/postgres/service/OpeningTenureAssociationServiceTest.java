@@ -145,4 +145,57 @@ class OpeningTenureAssociationServiceTest {
     assertThat(primary.getDisturbanceEndDate()).isEqualTo(LocalDate.of(2026, 1, 3));
     verify(cboaRepository).save(primary);
   }
+
+  @Test
+  @DisplayName("Reconciliation combines assigned primary DN summary with unassigned DN activities")
+  void reconcile_primaryAndUnassignedDn_combinesAmountsAndDates() {
+    OpeningEntity opening =
+        OpeningEntity.builder().id(1L).openingGrossArea(new BigDecimal("12.3456")).build();
+    CutBlockOpenAdminEntity primary =
+        CutBlockOpenAdminEntity.builder().id(10L).openingPrimeLicenceInd("Y").revisionCount(1).build();
+    ActivityTreatmentUnitEntity assignedPrimary =
+        ActivityTreatmentUnitEntity.builder()
+            .openingId(1L)
+            .silvBaseCode("DN")
+            .cutBlockOpenAdminId(10L)
+            .treatmentAmount(new BigDecimal("4.5"))
+            .atuStartDate(LocalDateTime.of(2026, 2, 10, 8, 0))
+            .atuCompletionDate(LocalDateTime.of(2026, 2, 12, 17, 0))
+            .build();
+    ActivityTreatmentUnitEntity unassignedEarlier =
+        ActivityTreatmentUnitEntity.builder()
+            .openingId(1L)
+            .silvBaseCode("DN")
+            .cutBlockOpenAdminId(null)
+            .treatmentAmount(new BigDecimal("2.5"))
+            .atuStartDate(LocalDateTime.of(2026, 1, 5, 8, 0))
+            .atuCompletionDate(LocalDateTime.of(2026, 3, 1, 17, 0))
+            .build();
+    when(activityRepository.findByOpeningIdAndSilvBaseCode(1L, "DN"))
+        .thenReturn(List.of(assignedPrimary, unassignedEarlier));
+
+    service.reconcile(
+        opening, List.of(primary), null, "tester", LocalDateTime.of(2026, 4, 1, 0, 0));
+
+    assertThat(primary.getDisturbanceGrossArea()).isEqualByComparingTo("7.0");
+    assertThat(primary.getDisturbanceStartDate()).isEqualTo(LocalDate.of(2026, 1, 5));
+    assertThat(primary.getDisturbanceEndDate()).isEqualTo(LocalDate.of(2026, 3, 1));
+
+    // Also cover case where unassigned has null amount/dates while primary has values
+    ActivityTreatmentUnitEntity unassignedNullFields =
+        ActivityTreatmentUnitEntity.builder()
+            .openingId(1L)
+            .silvBaseCode("DN")
+            .cutBlockOpenAdminId(null)
+            .build();
+    when(activityRepository.findByOpeningIdAndSilvBaseCode(1L, "DN"))
+        .thenReturn(List.of(assignedPrimary, unassignedNullFields));
+
+    service.reconcile(
+        opening, List.of(primary), null, "tester", LocalDateTime.of(2026, 4, 2, 0, 0));
+
+    assertThat(primary.getDisturbanceGrossArea()).isEqualByComparingTo("4.5");
+    assertThat(primary.getDisturbanceStartDate()).isEqualTo(LocalDate.of(2026, 2, 10));
+    assertThat(primary.getDisturbanceEndDate()).isEqualTo(LocalDate.of(2026, 2, 12));
+  }
 }
