@@ -118,6 +118,7 @@ public class ActivityGeometryService {
       try {
         return !opening.buffer(0).buffer(tolerance).covers(activity);
       } catch (TopologyException repairFailure) {
+        repairFailure.addSuppressed(e);
         log.warn(
             "Skipping activity containment check, opening {} geometry is invalid",
             openingId,
