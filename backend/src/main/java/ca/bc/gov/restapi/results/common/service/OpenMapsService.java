@@ -34,7 +34,7 @@ public class OpenMapsService {
    *
    * @param openMapsApi the open maps api
    */
-  public OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
+  OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
     this(openMapsApi, null, null);
   }
 
