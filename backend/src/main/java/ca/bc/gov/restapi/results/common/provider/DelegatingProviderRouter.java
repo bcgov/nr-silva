@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -104,7 +105,7 @@ public class DelegatingProviderRouter<T> {
     this.propertyKey = PROPERTY_PREFIX + normalizedDomain + PROPERTY_SUFFIX;
 
     String envDomain = normalizedDomain.replace("-", "_").toUpperCase(Locale.ROOT);
-    String singularPropertyKey = "silva.integration." + normalizedDomain + ".provider";
+    String singularPropertyKey = "silva.integration." + normalizedDomain + PROPERTY_SUFFIX;
     String singularEnvKey = "SILVA_INTEGRATION_" + envDomain + "_PROVIDER";
     String pluralEnvKey = "SILVA_INTEGRATIONS_" + envDomain + "_PROVIDER";
 
@@ -119,41 +120,53 @@ public class DelegatingProviderRouter<T> {
    */
   public String resolveProviderName() {
     if (environment instanceof ConfigurableEnvironment configurableEnv) {
-      for (PropertySource<?> propertySource : configurableEnv.getPropertySources()) {
-        for (String key : candidatePropertyKeys) {
-          if (propertySource.containsProperty(key)) {
-            Object value = propertySource.getProperty(key);
-            String raw = value != null ? value.toString() : null;
-            String resolved = raw != null ? configurableEnv.resolvePlaceholders(raw) : null;
-            if (resolved != null && isUnresolvedPlaceholder(resolved)) {
-              continue;
-            }
-            if (resolved == null || resolved.isBlank()) {
-              throw new IllegalStateException(
-                  String.format(
-                      "Configured provider for domain '%s' via '%s' must not be blank",
-                      domain, key));
-            }
-            return resolved.trim().toLowerCase(Locale.ROOT);
-          }
-        }
-      }
-    } else {
+      return resolveFromPropertySources(configurableEnv).orElse(defaultProvider);
+    }
+    return resolveFromStandardEnvironment().orElse(defaultProvider);
+  }
+
+  private Optional<String> resolveFromPropertySources(ConfigurableEnvironment configurableEnv) {
+    for (PropertySource<?> propertySource : configurableEnv.getPropertySources()) {
       for (String key : candidatePropertyKeys) {
-        if (environment.containsProperty(key)) {
-          String value = environment.getProperty(key);
-          if (value == null || value.isBlank()) {
-            throw new IllegalStateException(
-                String.format(
-                    "Configured provider for domain '%s' via '%s' must not be blank",
-                    domain, key));
-          }
-          return value.trim().toLowerCase(Locale.ROOT);
+        Optional<String> resolved = resolveFromPropertySource(propertySource, configurableEnv, key);
+        if (resolved.isPresent()) {
+          return resolved;
         }
       }
     }
+    return Optional.empty();
+  }
 
-    return defaultProvider;
+  private Optional<String> resolveFromPropertySource(
+      PropertySource<?> propertySource, ConfigurableEnvironment configurableEnv, String key) {
+    if (!propertySource.containsProperty(key)) {
+      return Optional.empty();
+    }
+    Object value = propertySource.getProperty(key);
+    String raw = value != null ? value.toString() : null;
+    String resolved = raw != null ? configurableEnv.resolvePlaceholders(raw) : null;
+    if (resolved != null && isUnresolvedPlaceholder(resolved)) {
+      return Optional.empty();
+    }
+    return Optional.of(requireNonBlankProvider(resolved, key));
+  }
+
+  private Optional<String> resolveFromStandardEnvironment() {
+    for (String key : candidatePropertyKeys) {
+      if (environment.containsProperty(key)) {
+        return Optional.of(requireNonBlankProvider(environment.getProperty(key), key));
+      }
+    }
+    return Optional.empty();
+  }
+
+  private String requireNonBlankProvider(String value, String key) {
+    if (value == null || value.isBlank()) {
+      throw new IllegalStateException(
+          String.format(
+              "Configured provider for domain '%s' via '%s' must not be blank", domain, key));
+    }
+    return value.trim().toLowerCase(Locale.ROOT);
   }
 
   private static boolean isUnresolvedPlaceholder(String value) {
