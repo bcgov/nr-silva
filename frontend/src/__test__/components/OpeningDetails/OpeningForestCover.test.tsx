@@ -333,9 +333,9 @@ describe("OpeningForestCover", () => {
 
       await waitFor(() => {
         expect(screen.getByText("Polygon details")).toBeInTheDocument();
+        expect(screen.getByText("Reserve type")).toBeInTheDocument();
       });
 
-      expect(screen.getByText("Reserve type")).toBeInTheDocument();
       expect(screen.getByText("G - Group")).toBeInTheDocument();
       expect(screen.getByText("Forest management")).toBeInTheDocument();
       expect(screen.getByText("Forest cover ID")).toBeInTheDocument();
@@ -410,7 +410,7 @@ describe("OpeningForestCover", () => {
       });
 
       // In historical view, map polygon checkbox is disabled
-      const checkbox = screen.getByRole("checkbox", { name: "Select polygon on map" });
+      const checkbox = await screen.findByRole("checkbox", { name: "Select polygon on map" });
       expect(checkbox).toBeDisabled();
     });
   });
