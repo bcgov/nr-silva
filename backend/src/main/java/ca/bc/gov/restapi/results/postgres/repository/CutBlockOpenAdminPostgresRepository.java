@@ -56,10 +56,11 @@ public interface CutBlockOpenAdminPostgresRepository
       """
       SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
       FROM CutBlockOpenAdminEntity c
-      WHERE c.forestFileId = :fileId
-        AND c.cutBlockId = :cutBlockId
-        AND (:cuttingPermit IS NULL AND c.cuttingPermitId IS NULL
-             OR c.cuttingPermitId = :cuttingPermit)
+      WHERE UPPER(TRIM(c.forestFileId)) = UPPER(CAST(:fileId AS string))
+        AND UPPER(TRIM(c.cutBlockId)) = UPPER(CAST(:cutBlockId AS string))
+        AND ((:cuttingPermit IS NULL
+              AND (c.cuttingPermitId IS NULL OR TRIM(c.cuttingPermitId) = ''))
+             OR UPPER(TRIM(c.cuttingPermitId)) = UPPER(CAST(:cuttingPermit AS string)))
         AND c.openingId IS NOT NULL
       """)
   boolean existsAllocatedByTenure(
@@ -71,10 +72,11 @@ public interface CutBlockOpenAdminPostgresRepository
       """
       SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
       FROM CutBlockOpenAdminEntity c
-      WHERE c.forestFileId = :fileId
-        AND c.cutBlockId = :cutBlockId
-        AND (:cuttingPermit IS NULL AND c.cuttingPermitId IS NULL
-             OR c.cuttingPermitId = :cuttingPermit)
+      WHERE UPPER(TRIM(c.forestFileId)) = UPPER(CAST(:fileId AS string))
+        AND UPPER(TRIM(c.cutBlockId)) = UPPER(CAST(:cutBlockId AS string))
+        AND ((:cuttingPermit IS NULL
+              AND (c.cuttingPermitId IS NULL OR TRIM(c.cuttingPermitId) = ''))
+             OR UPPER(TRIM(c.cuttingPermitId)) = UPPER(CAST(:cuttingPermit AS string)))
         AND c.openingId IS NOT NULL
         AND c.openingId <> :openingId
       """)
