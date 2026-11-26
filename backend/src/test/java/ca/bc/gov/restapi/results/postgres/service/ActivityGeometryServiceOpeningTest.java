@@ -2,6 +2,7 @@ package ca.bc.gov.restapi.results.postgres.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.bc.gov.restapi.results.postgres.entity.OpeningGeometryEntity;
@@ -19,7 +20,6 @@ import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -175,7 +175,7 @@ class ActivityGeometryServiceOpeningTest {
   @Test
   @DisplayName("Skips containment check when opening geometry cannot be repaired")
   void unrepairableOpeningGeometry_skipsCheck() {
-    Geometry unrepairable = Mockito.mock(Geometry.class);
+    Geometry unrepairable = mock(Geometry.class);
     when(unrepairable.isEmpty()).thenReturn(false);
     when(unrepairable.getGeometryType()).thenReturn("Polygon");
     when(unrepairable.buffer(0.0)).thenThrow(new TopologyException("repair failed"));
