@@ -459,8 +459,10 @@ public class JwtPrincipalUtil {
 
     // Usually only IDIR contains comma.
     if (displayName.contains(",")) {
-      String[] parts = displayName.split(",");
-      firstName = parts[1].trim();
+      String[] parts = displayName.split(",", 2);
+      if (parts.length > 1) {
+        firstName = parts[1].trim();
+      }
 
       // Remove WLRS:EX or any additional info
       if (firstName.contains(" ")) {
@@ -470,7 +472,10 @@ public class JwtPrincipalUtil {
       lastName = parts[0].trim();
       // Remove 'de' or other starting characters before space
       if (lastName.contains(" ")) {
-        lastName = lastName.split(" ")[1].trim();
+        String[] lastNameParts = lastName.split(" ", 2);
+        if (lastNameParts.length > 1) {
+          lastName = lastNameParts[1].trim();
+        }
       }
     } else if (displayName.contains(" ")) {
       // Usually BCeID contains space. E.g.: NRS Load Test-3
