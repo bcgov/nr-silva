@@ -226,6 +226,9 @@ class OracleTenureJdbcAdapterTest {
                   .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT);
               assertThat(ese.getServiceName()).isEqualTo(SERVICE_FTA);
               assertThat(ese.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+              assertThat(ese.getReason())
+                  .isEqualTo("External FTA service timed out while verifying cut block")
+                  .doesNotContainIgnoringCase("oracle");
             });
   }
 
@@ -250,6 +253,9 @@ class OracleTenureJdbcAdapterTest {
                   .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE);
               assertThat(ese.getServiceName()).isEqualTo(SERVICE_FTA);
               assertThat(ese.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+              assertThat(ese.getReason())
+                  .isEqualTo("External FTA service is unavailable while verifying cut block")
+                  .doesNotContainIgnoringCase("oracle");
             });
   }
 
@@ -373,6 +379,9 @@ class OracleTenureJdbcAdapterTest {
                   .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT);
               assertThat(ese.getServiceName()).isEqualTo(SERVICE_FTA);
               assertThat(ese.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+              assertThat(ese.getReason())
+                  .isEqualTo("External FTA service timed out while fetching tenure summary")
+                  .doesNotContainIgnoringCase("oracle");
             });
   }
 
@@ -395,6 +404,9 @@ class OracleTenureJdbcAdapterTest {
                   .isEqualTo(ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE);
               assertThat(ese.getServiceName()).isEqualTo(SERVICE_FTA);
               assertThat(ese.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+              assertThat(ese.getReason())
+                  .isEqualTo("External FTA service is unavailable while fetching tenure summary")
+                  .doesNotContainIgnoringCase("oracle");
             });
   }
 

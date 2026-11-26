@@ -254,8 +254,12 @@ public class UpdateTenuresService {
   /** Returns whether the persisted CBOA and submitted item identify the same tenure. */
   private boolean sameKey(CutBlockOpenAdminEntity row, TenureUpdateItemDto item) {
     return row != null
-        && Objects.equals(row.getForestFileId(), item.fileId().trim())
-        && Objects.equals(row.getCutBlockId(), item.cutBlock().trim())
+        && Objects.equals(
+            TenureValidationService.normalizeIdentifier(row.getForestFileId()),
+            TenureValidationService.normalizeIdentifier(item.fileId()))
+        && Objects.equals(
+            TenureValidationService.normalizeIdentifier(row.getCutBlockId()),
+            TenureValidationService.normalizeIdentifier(item.cutBlock()))
         && Objects.equals(
             normalizePermit(row.getCuttingPermitId()), normalizePermit(item.cuttingPermit()));
   }
@@ -285,9 +289,9 @@ public class UpdateTenuresService {
     row.setUpdateTimestamp(now);
   }
 
-  /** Converts blank cutting permits to {@code null} for CBOA key comparison and lookup. */
+  /** Converts blank cutting permits to {@code null} and uppercases for CBOA key comparison. */
   private String normalizePermit(String value) {
-    return value == null || value.isBlank() ? null : value.trim();
+    return TenureValidationService.normalizePermit(value);
   }
 
   /**

@@ -8,15 +8,18 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.bc.gov.restapi.results.common.dto.ExternalCutBlockDetails;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceErrorCode;
+import ca.bc.gov.restapi.results.common.exception.ExternalServiceException;
 import ca.bc.gov.restapi.results.common.exception.NotFoundGenericException;
 import ca.bc.gov.restapi.results.common.security.LoggedUserHelper;
 import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateItemDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureUpdateValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResponseDto;
 import ca.bc.gov.restapi.results.postgres.dto.TenureValidationResultDto;
-import ca.bc.gov.restapi.results.postgres.entity.CutBlockEntity;
 import ca.bc.gov.restapi.results.postgres.entity.CutBlockOpenAdminEntity;
 import ca.bc.gov.restapi.results.postgres.entity.opening.OpeningEntity;
 import ca.bc.gov.restapi.results.postgres.enums.TenureValidationErrorCode;
@@ -239,6 +242,43 @@ class UpdateTenuresServiceTest {
     verify(historyService).record(eq("ASSOCIATED"), eq(OPENING_ID), any(), eq("IDIR\\tester"));
   }
 
+  @Test
+  @DisplayName("Retained CBOA row matches case-insensitively without unassociating")
+  void updateTenures_caseVariantRetainedKey_retainsExistingCboaRow() {
+    givenOpening();
+    givenUser();
+    CutBlockOpenAdminEntity retained = cboa(1L, "FILE1", "CP1", "BLOCK1", "Y", 1);
+    List<TenureUpdateItemDto> items =
+        List.of(new TenureUpdateItemDto(1L, 1, "file1", "cp1", "block1", true));
+    when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
+        .thenReturn(validation(true, items));
+    when(cboaRepository.findAllByOpeningId(OPENING_ID)).thenReturn(List.of(retained));
+
+    assertThat(service.updateTenures(OPENING_ID, CLIENT_NUMBER, items)).isEmpty();
+
+    verify(tenureAssociationService, never()).associate(any(), any(), any(), anyString(), any());
+    verify(historyService, never()).record(anyString(), anyLong(), any(), anyString());
+  }
+
+  @Test
+  @DisplayName("ExternalServiceException during validation aborts without any CBOA writes")
+  void updateTenures_externalServiceUnavailable_abortsWithoutWrites() {
+    givenOpening();
+    List<TenureUpdateItemDto> items = List.of(item(null, null, true));
+    when(tenureValidationService.validateTenures(any(), eq(CLIENT_NUMBER), eq(OPENING_ID)))
+        .thenThrow(
+            new ExternalServiceException(
+                ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE,
+                "FTA",
+                "External FTA disabled"));
+
+    assertThatThrownBy(() -> service.updateTenures(OPENING_ID, CLIENT_NUMBER, items))
+        .isInstanceOf(ExternalServiceException.class);
+    verify(cboaRepository, never()).findAllByOpeningId(anyLong());
+    verify(cboaRepository, never()).save(any());
+    verifyNoInteractions(tenureAssociationService, historyService);
+  }
+
   private TenureUpdateItemDto item(Long cboaId, Integer revisionCount, boolean primary) {
     return new TenureUpdateItemDto(cboaId, revisionCount, "FILE1", "CP1", "BLOCK1", primary);
   }
@@ -288,13 +328,13 @@ class UpdateTenuresServiceTest {
         java.util.stream.IntStream.range(0, items.size())
             .mapToObj(index -> new TenureValidationResultDto(index, valid, null, null))
             .toList();
-    Map<Integer, CutBlockEntity> blocks =
+    Map<Integer, ExternalCutBlockDetails> blocks =
         java.util.stream.IntStream.range(0, items.size())
             .boxed()
             .collect(
                 java.util.stream.Collectors.toMap(
                     index -> index,
-                    index -> CutBlockEntity.builder().cbSkey(1L).timberMark("TM").build()));
+                    index -> ExternalCutBlockDetails.of(1L, true, "TM", "ACT")));
     return new TenureValidationResponseDto(results, List.of(), valid, List.of(), blocks);
   }
 }

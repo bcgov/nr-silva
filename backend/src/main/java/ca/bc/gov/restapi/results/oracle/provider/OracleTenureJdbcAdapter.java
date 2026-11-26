@@ -206,14 +206,14 @@ public class OracleTenureJdbcAdapter implements TenureProvider {
       throw new ExternalServiceException(
           ExternalServiceErrorCode.EXTERNAL_SERVICE_TIMEOUT,
           SERVICE_NAME,
-          "External FTA Oracle query timed out while " + operation,
+          "External FTA service timed out while " + operation,
           e);
     } catch (DataAccessException e) {
       log.error("External Oracle query failed while {}: {}", operation, e.getMessage());
       throw new ExternalServiceException(
           ExternalServiceErrorCode.EXTERNAL_SERVICE_UNAVAILABLE,
           SERVICE_NAME,
-          "External FTA Oracle integration is unavailable while " + operation,
+          "External FTA service is unavailable while " + operation,
           e);
     }
   }
