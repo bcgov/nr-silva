@@ -388,8 +388,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="cut_block_open_admin.cb_skey references cut_block.cb_skey via cboa_cb_fk"><a href='cut_block.html'>cut_block</a><span class='relatedKey'>.cb_skey</span></td>
-                                                <td class="constraint detail">cboa_cb_fk</td>
+                                                <td title="cut_block_open_admin.cb_skey&#39;s name implies that it&#39;s a child of cut_block.cb_skey, but it doesn&#39;t reference that column."><a href='cut_block.html'>cut_block</a><span class='relatedKey'>.cb_skey</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -598,78 +598,141 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="789,5,1094,944">
+<area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="339,715,715,1371">
+<area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="5,952,295,1744">
+<area shape="rect" id="node4" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="759,1180,1124,1385">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/cut_block_open_admin.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="activity_treatment_geometry.html" target="_top" title="activity_treatment_geometry" alt="" coords="1661,2527,1973,2615">
+<area shape="rect" id="node2" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1301,2626,1569,2714">
+<area shape="rect" id="node3" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="832,506,1208,1162">
+<area shape="rect" id="node4" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="911,2340,1129,2428">
+<area shape="rect" id="node5" href="opening.html" target="_top" title="opening" alt="" coords="600,748,744,836">
+<area shape="rect" id="node6" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1814,151,1902">
+<area shape="rect" id="node7" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="903,2870,1137,2958">
+<area shape="rect" id="node8" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="910,2446,1130,2534">
+<area shape="rect" id="node9" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="905,2764,1135,2852">
+<area shape="rect" id="node10" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="901,2623,1139,2711">
+<area shape="rect" id="node11" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,1760,512,1848">
+<area shape="rect" id="node12" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="852,1919,1188,2007">
+<area shape="rect" id="node13" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="256,2656,451,2744">
+<area shape="rect" id="node14" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="901,2024,1139,2112">
+<area shape="rect" id="node15" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="913,2130,1127,2218">
+<area shape="rect" id="node16" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="881,2235,1159,2323">
+<area shape="rect" id="node17" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="893,2975,1147,3063">
+<area shape="rect" id="node18" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="556,1934,788,2022">
+<area shape="rect" id="node23" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="254,14,453,102">
+<area shape="rect" id="node24" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="221,124,485,212">
+<area shape="rect" id="node25" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="235,242,471,330">
+<area shape="rect" id="node27" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="229,371,477,459">
+<area shape="rect" id="node28" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="243,483,464,571">
+<area shape="rect" id="node30" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="249,1866,457,1954">
+<area shape="rect" id="node31" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="233,1010,473,1098">
+<area shape="rect" id="node32" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="231,588,475,676">
+<area shape="rect" id="node33" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="255,694,452,782">
+<area shape="rect" id="node34" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="243,799,463,887">
+<area shape="rect" id="node35" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="244,904,463,992">
+<area shape="rect" id="node19" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1676,2632,1959,2720">
+<area shape="rect" id="node20" href="activity_tu_fund_srce.html" target="_top" title="activity_tu_fund_srce" alt="" coords="1694,2847,1941,2935">
+<area shape="rect" id="node21" href="activity_tu_objective.html" target="_top" title="activity_tu_objective" alt="" coords="1696,2739,1939,2827">
+<area shape="rect" id="node22" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1346,78,1523,166">
+<area shape="rect" id="node26" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="887,256,1153,344">
+<area shape="rect" id="node29" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="926,1179,1114,1267">
+<area shape="rect" id="node36" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1279,434,1591,522">
+<area shape="rect" id="node37" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="897,1284,1143,1372">
+<area shape="rect" id="node38" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="888,1390,1152,1478">
+<area shape="rect" id="node39" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="907,1495,1133,1583">
+<area shape="rect" id="node40" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="899,1600,1141,1688">
+<area shape="rect" id="node41" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="1252,539,1617,627">
+<area shape="rect" id="node42" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1727,2959,1907,3047">
+<area shape="rect" id="node43" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1692,503,1943,591">
+<area shape="rect" id="node44" href="spar_request.html" target="_top" title="spar_request" alt="" coords="929,1706,1111,1794">
+<area shape="rect" id="node45" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1328,184,1541,272">
+<area shape="rect" id="node46" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1687,398,1948,486">
+<area shape="rect" id="node47" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1338,291,1531,379">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/cut_block_open_admin.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
 <area shape="rect" id="node1" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="791,5,1097,944">
 <area shape="rect" id="node2" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="341,715,717,1371">
 <area shape="rect" id="node3" href="opening.html" target="_top" title="opening" alt="" coords="7,680,296,1472">
 <area shape="rect" id="node4" href="cut_block.html" target="_top" title="cut_block" alt="" coords="5,1489,297,1900">
 <area shape="rect" id="node5" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="761,1180,1127,1385">
 </map>
-                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/cut_block_open_admin.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/cut_block_open_admin.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="activity_treatment_geometry.html" target="_top" title="activity_treatment_geometry" alt="" coords="1721,2649,2033,2737">
-<area shape="rect" id="node2" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1361,2721,1629,2809">
-<area shape="rect" id="node3" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="892,1269,1268,1925">
-<area shape="rect" id="node4" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="971,2577,1189,2665">
-<area shape="rect" id="node5" href="opening.html" target="_top" title="opening" alt="" coords="630,809,774,897">
-<area shape="rect" id="node6" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,2102,151,2190">
-<area shape="rect" id="node7" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="963,3070,1197,3158">
-<area shape="rect" id="node8" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="970,2718,1190,2806">
-<area shape="rect" id="node9" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="965,2965,1195,3053">
-<area shape="rect" id="node10" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="961,2014,1199,2102">
-<area shape="rect" id="node11" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,1840,512,1928">
-<area shape="rect" id="node12" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="912,2120,1248,2208">
-<area shape="rect" id="node13" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="256,2086,451,2174">
-<area shape="rect" id="node14" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="961,2225,1199,2313">
-<area shape="rect" id="node15" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="973,2330,1187,2418">
-<area shape="rect" id="node16" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="941,2436,1219,2524">
-<area shape="rect" id="node17" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="953,3176,1207,3264">
-<area shape="rect" id="node18" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="586,2014,818,2102">
-<area shape="rect" id="node22" href="cut_block.html" target="_top" title="cut_block" alt="" coords="556,2444,848,2854">
-<area shape="rect" id="node32" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="254,1112,453,1200">
-<area shape="rect" id="node33" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="221,1217,485,1305">
-<area shape="rect" id="node34" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="235,1322,471,1410">
-<area shape="rect" id="node36" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="229,1006,477,1094">
-<area shape="rect" id="node37" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="243,901,464,989">
-<area shape="rect" id="node39" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="249,1945,457,2033">
-<area shape="rect" id="node40" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="233,744,473,832">
-<area shape="rect" id="node41" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="231,322,475,410">
-<area shape="rect" id="node42" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="255,428,452,516">
-<area shape="rect" id="node43" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="243,533,463,621">
-<area shape="rect" id="node44" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="244,638,463,726">
-<area shape="rect" id="node19" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1736,2754,2019,2842">
-<area shape="rect" id="node20" href="activity_tu_fund_srce.html" target="_top" title="activity_tu_fund_srce" alt="" coords="1754,2972,2001,3060">
-<area shape="rect" id="node21" href="activity_tu_objective.html" target="_top" title="activity_tu_objective" alt="" coords="1756,2862,1999,2950">
-<area shape="rect" id="node23" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="242,2613,465,2701">
-<area shape="rect" id="node24" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="234,2508,473,2596">
-<area shape="rect" id="node25" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="201,2824,506,2912">
-<area shape="rect" id="node26" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="230,2192,477,2280">
-<area shape="rect" id="node27" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="205,2718,501,2806">
-<area shape="rect" id="node28" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="243,2402,464,2490">
-<area shape="rect" id="node29" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="262,2297,445,2385">
-<area shape="rect" id="node30" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="977,2824,1183,2912">
-<area shape="rect" id="node31" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1406,1105,1583,1193">
-<area shape="rect" id="node35" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="947,524,1213,612">
-<area shape="rect" id="node38" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="986,172,1174,260">
-<area shape="rect" id="node45" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="1339,592,1651,680">
-<area shape="rect" id="node46" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="957,277,1203,365">
-<area shape="rect" id="node47" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="948,382,1212,470">
-<area shape="rect" id="node48" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="967,701,1193,789">
-<area shape="rect" id="node49" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="959,806,1201,894">
-<area shape="rect" id="node50" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="1312,848,1677,936">
-<area shape="rect" id="node51" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1787,3086,1967,3174">
-<area shape="rect" id="node52" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1752,645,2003,733">
-<area shape="rect" id="node53" href="spar_request.html" target="_top" title="spar_request" alt="" coords="989,912,1171,1000">
-<area shape="rect" id="node54" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1388,249,1601,337">
-<area shape="rect" id="node55" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1747,540,2008,628">
-<area shape="rect" id="node56" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1398,468,1591,556">
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="activity_treatment_geometry.html" target="_top" title="activity_treatment_geometry" alt="" coords="1721,2660,2033,2748">
+<area shape="rect" id="node2" href="activity_treatment_unit.html" target="_top" title="activity_treatment_unit" alt="" coords="1361,2767,1629,2855">
+<area shape="rect" id="node3" href="cut_block_open_admin.html" target="_top" title="cut_block_open_admin" alt="" coords="892,1280,1268,1936">
+<area shape="rect" id="node4" href="disturbance_code.html" target="_top" title="disturbance_code" alt="" coords="971,1989,1189,2077">
+<area shape="rect" id="node5" href="opening.html" target="_top" title="opening" alt="" coords="630,679,774,767">
+<area shape="rect" id="node6" href="org_unit.html" target="_top" title="org_unit" alt="" coords="5,1777,151,1865">
+<area shape="rect" id="node7" href="silv_fund_srce_code.html" target="_top" title="silv_fund_srce_code" alt="" coords="963,3081,1197,3169">
+<area shape="rect" id="node8" href="silv_method_code.html" target="_top" title="silv_method_code" alt="" coords="970,2095,1190,2183">
+<area shape="rect" id="node9" href="silv_objective_code.html" target="_top" title="silv_objective_code" alt="" coords="965,2976,1195,3064">
+<area shape="rect" id="node10" href="silv_technique_code.html" target="_top" title="silv_technique_code" alt="" coords="961,2236,1199,2324">
+<area shape="rect" id="node11" href="results_electronic_submission.html" target="_top" title="results_electronic_submission" alt="" coords="195,1636,512,1724">
+<area shape="rect" id="node12" href="silv_activity_measurement_code.html" target="_top" title="silv_activity_measurement_code" alt="" coords="912,2447,1248,2535">
+<area shape="rect" id="node13" href="silv_base_code.html" target="_top" title="silv_base_code" alt="" coords="256,2656,451,2744">
+<area shape="rect" id="node14" href="silv_cut_phase_code.html" target="_top" title="silv_cut_phase_code" alt="" coords="961,2552,1199,2640">
+<area shape="rect" id="node15" href="silv_system_code.html" target="_top" title="silv_system_code" alt="" coords="973,2729,1187,2817">
+<area shape="rect" id="node16" href="silv_system_variant_code.html" target="_top" title="silv_system_variant_code" alt="" coords="941,2835,1219,2923">
+<area shape="rect" id="node17" href="silv_tree_species_code.html" target="_top" title="silv_tree_species_code" alt="" coords="953,3187,1207,3275">
+<area shape="rect" id="node18" href="silviculture_project.html" target="_top" title="silviculture_project" alt="" coords="586,2583,818,2671">
+<area shape="rect" id="node22" href="cut_block.html" target="_top" title="cut_block" alt="" coords="556,2047,848,2457">
+<area shape="rect" id="node32" href="site_class_code.html" target="_top" title="site_class_code" alt="" coords="254,1273,453,1361">
+<area shape="rect" id="node33" href="site_index_source_code.html" target="_top" title="site_index_source_code" alt="" coords="221,957,485,1045">
+<area shape="rect" id="node34" href="stocking_class_code.html" target="_top" title="stocking_class_code" alt="" coords="235,1063,471,1151">
+<area shape="rect" id="node36" href="stocking_status_code.html" target="_top" title="stocking_status_code" alt="" coords="229,1168,477,1256">
+<area shape="rect" id="node37" href="tree_species_code.html" target="_top" title="tree_species_code" alt="" coords="243,852,464,940">
+<area shape="rect" id="node39" href="silv_admin_zone.html" target="_top" title="silv_admin_zone" alt="" coords="249,2409,457,2497">
+<area shape="rect" id="node40" href="open_category_code.html" target="_top" title="open_category_code" alt="" coords="233,325,473,413">
+<area shape="rect" id="node41" href="opening_status_code.html" target="_top" title="opening_status_code" alt="" coords="231,431,475,519">
+<area shape="rect" id="node42" href="age_class_code.html" target="_top" title="age_class_code" alt="" coords="255,536,452,624">
+<area shape="rect" id="node43" href="height_class_code.html" target="_top" title="height_class_code" alt="" coords="243,641,463,729">
+<area shape="rect" id="node44" href="tsb_number_code.html" target="_top" title="tsb_number_code" alt="" coords="244,747,463,835">
+<area shape="rect" id="node19" href="activity_tu_comment_link.html" target="_top" title="activity_tu_comment_link" alt="" coords="1736,2765,2019,2853">
+<area shape="rect" id="node20" href="activity_tu_fund_srce.html" target="_top" title="activity_tu_fund_srce" alt="" coords="1754,2989,2001,3077">
+<area shape="rect" id="node21" href="activity_tu_objective.html" target="_top" title="activity_tu_objective" alt="" coords="1756,2875,1999,2963">
+<area shape="rect" id="node23" href="block_status_code.html" target="_top" title="block_status_code" alt="" coords="242,2199,465,2287">
+<area shape="rect" id="node24" href="cut_regulation_code.html" target="_top" title="cut_regulation_code" alt="" coords="234,2093,473,2181">
+<area shape="rect" id="node25" href="fire_harvesting_reason_code.html" target="_top" title="fire_harvesting_reason_code" alt="" coords="201,2515,506,2603">
+<area shape="rect" id="node26" href="harvesting_authority.html" target="_top" title="harvesting_authority" alt="" coords="230,1777,477,1865">
+<area shape="rect" id="node27" href="reforest_declare_type_code.html" target="_top" title="reforest_declare_type_code" alt="" coords="205,2304,501,2392">
+<area shape="rect" id="node28" href="hauling_authority.html" target="_top" title="hauling_authority" alt="" coords="243,1988,464,2076">
+<area shape="rect" id="node29" href="timber_mark.html" target="_top" title="timber_mark" alt="" coords="262,1883,445,1971">
+<area shape="rect" id="node30" href="cut_block_client.html" target="_top" title="cut_block_client" alt="" coords="977,2341,1183,2429">
+<area shape="rect" id="node31" href="forest_cover.html" target="_top" title="forest_cover" alt="" coords="1406,1011,1583,1099">
+<area shape="rect" id="node35" href="stocking_standard_unit.html" target="_top" title="stocking_standard_unit" alt="" coords="947,288,1213,376">
+<area shape="rect" id="node38" href="forhealth_rslt.html" target="_top" title="forhealth_rslt" alt="" coords="986,535,1174,623">
+<area shape="rect" id="node45" href="opening_amendment_history.html" target="_top" title="opening_amendment_history" alt="" coords="924,393,1236,481">
+<area shape="rect" id="node46" href="opening_attachment.html" target="_top" title="opening_attachment" alt="" coords="957,676,1203,764">
+<area shape="rect" id="node47" href="opening_comment_link.html" target="_top" title="opening_comment_link" alt="" coords="948,781,1212,869">
+<area shape="rect" id="node48" href="opening_geometry.html" target="_top" title="opening_geometry" alt="" coords="967,5,1193,93">
+<area shape="rect" id="node49" href="opening_land_status.html" target="_top" title="opening_land_status" alt="" coords="959,111,1201,199">
+<area shape="rect" id="node50" href="opening_tenure_association_history.html" target="_top" title="opening_tenure_association_history" alt="" coords="1312,755,1677,843">
+<area shape="rect" id="node51" href="planting_rslt.html" target="_top" title="planting_rslt" alt="" coords="1787,3112,1967,3200">
+<area shape="rect" id="node52" href="silv_relief_application.html" target="_top" title="silv_relief_application" alt="" coords="1752,393,2003,481">
+<area shape="rect" id="node53" href="spar_request.html" target="_top" title="spar_request" alt="" coords="989,1175,1171,1263">
+<area shape="rect" id="node54" href="stocking_ecology.html" target="_top" title="stocking_ecology" alt="" coords="1388,287,1601,375">
+<area shape="rect" id="node55" href="stocking_event_history.html" target="_top" title="stocking_event_history" alt="" coords="1364,475,1625,563">
+<area shape="rect" id="node56" href="stocking_layer.html" target="_top" title="stocking_layer" alt="" coords="1398,180,1591,268">
 </map>
-                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/cut_block_open_admin.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/cut_block_open_admin.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

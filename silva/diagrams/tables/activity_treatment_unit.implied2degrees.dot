@@ -38,7 +38,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "client_location":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block":"elipses":w -> "harvesting_authority":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block":"elipses":w -> "timber_mark":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_open_admin":"cb_skey":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "cut_block_open_admin":"cb_skey":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "cut_block_open_admin":"opening_id":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_client":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_client":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];

@@ -411,7 +411,7 @@
       <table name="cut_block" remarks="Information about harvesting that takes place on a cut block within a cutting permit, for a file on a harvesting tenure." schema="silva" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="cb_skey" nullable="false" remarks="The unique identifer for a cut block." size="19" type="int8" typeCode="-5">
             <child column="cb_skey" foreignKey="cbc_cb_fk" implied="false" onDeleteCascade="false" schema="silva" table="cut_block_client"/>
-            <child column="cb_skey" foreignKey="cboa_cb_fk" implied="false" onDeleteCascade="false" schema="silva" table="cut_block_open_admin"/>
+            <child column="cb_skey" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="cut_block_open_admin"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="hva_skey" nullable="true" remarks="The unique identifer for the harvesting authority." size="19" type="int8" typeCode="-5">
             <parent column="hva_skey" foreignKey="cb_hva_fk" implied="false" onDeleteCascade="false" schema="silva" table="harvesting_authority"/>
@@ -419,8 +419,8 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="forest_file_id" nullable="false" remarks="File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="cutting_permit_id" nullable="true" remarks="Identifier for a cutting permit associated with a harvesting tenure." size="3" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="timber_mark" nullable="true" remarks="Unique identifying set of characters to be stamped or marked on the end of each log to associate the log with the specific authority to harvest and move timber." size="10" type="varchar" typeCode="12">
-            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
             <parent column="timber_mark" foreignKey="cblk_tm_fk" implied="false" onDeleteCascade="false" schema="silva" table="timber_mark"/>
+            <parent column="timber_mark" foreignKey="cb_haa_fk" implied="false" onDeleteCascade="false" schema="silva" table="hauling_authority"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="cut_block_id" nullable="false" remarks="Identifier for a cut block of a harvesting tenure (within a cutting permit for tenures with cp&quot;s)." size="10" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="'N'::character varying" digits="0" id="6" name="sp_exempt_ind" nullable="false" remarks="Only set to &quot;Y&quot; for &quot;Exemption for silviculture Prescriptions&quot; under sec. 30 of the Forest Practices Code of British Columbia Act, eg cut blocks under one hectare, or the use of the land will be incompatible with the establishment of a free growing stand." size="1" type="varchar" typeCode="12"/>
@@ -568,7 +568,7 @@
          <column autoUpdated="false" defaultValue="null" digits="4" id="12" name="planned_net_block_area" nullable="true" remarks="Estimated planned gross area of the cut block, in hectares, from the PHSP." size="11" type="numeric" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="opening_prime_licence_ind" nullable="true" remarks="A (Y/N) indicator used to show whether or not this is the primary licence holder for the Opening." size="1" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="cb_skey" nullable="true" remarks="The unique identifer for a cut block." size="19" type="int8" typeCode="-5">
-            <parent column="cb_skey" foreignKey="cboa_cb_fk" implied="false" onDeleteCascade="false" schema="silva" table="cut_block"/>
+            <parent column="cb_skey" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="silva" table="cut_block"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="revision_count" nullable="false" remarks="A count of the number of times an entry in the entity has been modified. Used to validate if the current information displayed on a user&quot;s web browser is the most current." size="10" type="int4" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="entry_userid" nullable="false" remarks="The unique user id of the resource who initially added the entry." size="30" type="varchar" typeCode="12"/>

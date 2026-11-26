@@ -30,15 +30,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "activity_tu_fund_srce":"elipses":w -> "silv_fund_srce_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "activity_tu_objective":"elipses":w -> "activity_treatment_unit":"activity_treatment_unit_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "activity_tu_objective":"elipses":w -> "silv_objective_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"block_status_st":w -> "block_status_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"cut_regulation_code":w -> "cut_regulation_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"fire_harvesting_reason_code":w -> "fire_harvesting_reason_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"hva_skey":w -> "harvesting_authority":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"reforest_declare_type_code":w -> "reforest_declare_type_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"timber_mark":w -> "hauling_authority":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"timber_mark":w -> "timber_mark":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_client":"elipses":w -> "cut_block":"cb_skey":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_open_admin":"cb_skey":w -> "cut_block":"cb_skey":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block_open_admin":"opening_id":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_cover":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_cover":"elipses":w -> "results_electronic_submission":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -49,8 +40,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "forest_cover":"elipses":w -> "stocking_status_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_cover":"elipses":w -> "tree_species_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "forhealth_rslt":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "harvesting_authority":"elipses":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "harvesting_authority":"elipses":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "opening":"admin_district_no":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "opening":"dist_admin_zone":w -> "silv_admin_zone":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "opening":"geo_district_no":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -94,8 +83,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "stocking_layer":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_layer":"elipses":w -> "stocking_standard_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "stocking_standard_unit":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
-  "timber_mark":"elipses":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "timber_mark":"elipses":w -> "org_unit":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "activity_treatment_geometry" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -162,50 +149,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="age_class_code"
   ];
-  "block_status_code" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="107" HEIGHT="16"><B>block_status_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="block_status_code.html"
-    target="_top"
-    tooltip="block_status_code"
-  ];
-  "cut_block" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="56" HEIGHT="16"><B>cut_block</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cb_skey" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">cb_skey</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="hva_skey" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">hva_skey</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="forest_file_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">forest_file_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cutting_permit_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">cutting_permit_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="timber_mark" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">timber_mark</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cut_block_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">cut_block_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cut_regulation_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">cut_regulation_code</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="block_status_st" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">block_status_st</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="reforest_declare_type_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">reforest_declare_type_code</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cut_block_guid" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">cut_block_guid</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="fire_harvesting_reason_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">fire_harvesting_reason_code</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
-    </TABLE>>
-    URL="cut_block.html"
-    target="_top"
-    tooltip="cut_block"
-  ];
-  "cut_block_client" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="95" HEIGHT="16"><B>cut_block_client</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
-    </TABLE>>
-    URL="cut_block_client.html"
-    target="_top"
-    tooltip="cut_block_client"
-  ];
   "cut_block_open_admin" [
    label=<
     <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -230,22 +173,11 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="entry_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">entry_timestamp</TD></TR></TABLE></TD><TD PORT="entry_timestamp.type" ALIGN="LEFT">timestamp[22]</TD></TR>
       <TR><TD PORT="update_userid" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">update_userid</TD></TR></TABLE></TD><TD PORT="update_userid.type" ALIGN="LEFT">varchar[30]</TD></TR>
       <TR><TD PORT="update_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">update_timestamp</TD></TR></TABLE></TD><TD PORT="update_timestamp.type" ALIGN="LEFT">timestamp[22]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="cut_block_open_admin.html"
     target="_top"
     tooltip="cut_block_open_admin"
-  ];
-  "cut_regulation_code" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="119" HEIGHT="16"><B>cut_regulation_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="cut_regulation_code.html"
-    target="_top"
-    tooltip="cut_regulation_code"
   ];
   "disturbance_code" [
    label=<
@@ -257,17 +189,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="disturbance_code.html"
     target="_top"
     tooltip="disturbance_code"
-  ];
-  "fire_harvesting_reason_code" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="169" HEIGHT="16"><B>fire_harvesting_reason_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="fire_harvesting_reason_code.html"
-    target="_top"
-    tooltip="fire_harvesting_reason_code"
   ];
   "forest_cover" [
    label=<
@@ -290,28 +211,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="forhealth_rslt.html"
     target="_top"
     tooltip="forhealth_rslt"
-  ];
-  "harvesting_authority" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="125" HEIGHT="16"><B>harvesting_authority</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 12</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="harvesting_authority.html"
-    target="_top"
-    tooltip="harvesting_authority"
-  ];
-  "hauling_authority" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="106" HEIGHT="16"><B>hauling_authority</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="hauling_authority.html"
-    target="_top"
-    tooltip="hauling_authority"
   ];
   "height_class_code" [
    label=<
@@ -444,17 +343,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="planting_rslt.html"
     target="_top"
     tooltip="planting_rslt"
-  ];
-  "reforest_declare_type_code" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="162" HEIGHT="16"><B>reforest_declare_type_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="reforest_declare_type_code.html"
-    target="_top"
-    tooltip="reforest_declare_type_code"
   ];
   "results_electronic_submission" [
    label=<
@@ -708,17 +596,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="stocking_status_code.html"
     target="_top"
     tooltip="stocking_status_code"
-  ];
-  "timber_mark" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="77" HEIGHT="16"><B>timber_mark</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 11</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
-    </TABLE>>
-    URL="timber_mark.html"
-    target="_top"
-    tooltip="timber_mark"
   ];
   "tree_species_code" [
    label=<

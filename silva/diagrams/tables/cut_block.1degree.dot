@@ -8,7 +8,6 @@ digraph "oneDegreeRelationshipsDiagram" {
   "cut_block":"timber_mark":w -> "hauling_authority":"timber_mark":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block":"timber_mark":w -> "timber_mark":"timber_mark":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block_client":"cb_skey":w -> "cut_block":"cb_skey.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_open_admin":"cb_skey":w -> "cut_block":"cb_skey.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "block_status_code" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -47,7 +46,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="fire_harvesting_reason_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">fire_harvesting_reason_code</TD></TR></TABLE></TD><TD PORT="fire_harvesting_reason_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
       <TR><TD PORT="is_under_partition_order" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">is_under_partition_order</TD></TR></TABLE></TD><TD PORT="is_under_partition_order.type" ALIGN="LEFT">varchar[1]</TD></TR>
       <TR><TD PORT="reported_fire_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="182" HEIGHT="16">reported_fire_date</TD></TR></TABLE></TD><TD PORT="reported_fire_date.type" ALIGN="LEFT">timestamp[22]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
     </TABLE>>
     URL="cut_block.html"
     target="_top"
@@ -69,23 +68,6 @@ digraph "oneDegreeRelationshipsDiagram" {
     URL="cut_block_client.html"
     target="_top"
     tooltip="cut_block_client"
-  ];
-  "cut_block_open_admin" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="134" HEIGHT="16"><B>cut_block_open_admin</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cut_block_open_admin_id" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">cut_block_open_admin_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="forest_file_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">forest_file_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="timber_mark" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">timber_mark</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cut_block_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">cut_block_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="opening_id" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">opening_id</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="cb_skey" COLSPAN="3" BGCOLOR="#ffffff" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="159" HEIGHT="16">cb_skey</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
-    </TABLE>>
-    URL="cut_block_open_admin.html"
-    target="_top"
-    tooltip="cut_block_open_admin"
   ];
   "cut_regulation_code" [
    label=<

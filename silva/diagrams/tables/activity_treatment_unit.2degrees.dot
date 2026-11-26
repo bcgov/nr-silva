@@ -34,9 +34,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "client_location":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "client_location":"elipses":w -> "forest_client":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "client_location":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"elipses":w -> "harvesting_authority":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block":"elipses":w -> "timber_mark":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_open_admin":"cb_skey":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block_open_admin":"opening_id":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_client":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
   "forest_client":"elipses":w -> "org_unit":"org_unit_no":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -272,23 +269,12 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="crew_contract_hire_code"
   ];
-  "cut_block" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="56" HEIGHT="16"><B>cut_block</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
-    </TABLE>>
-    URL="cut_block.html"
-    target="_top"
-    tooltip="cut_block"
-  ];
   "cut_block_open_admin" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="134" HEIGHT="16"><B>cut_block_open_admin</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="cut_block_open_admin.html"
     target="_top"

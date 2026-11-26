@@ -39,7 +39,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "cut_block_client":"elipses":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block_client":"elipses":w -> "client_location":"client_locn_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "cut_block_client":"elipses":w -> "client_location":"client_number":e [arrowhead=none dir=back arrowtail=crowodot];
-  "cut_block_open_admin":"elipses":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "cut_block_open_admin":"elipses":w -> "cut_block":"elipses":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "cut_block_open_admin":"elipses":w -> "opening":"opening_id":e [arrowhead=none dir=back arrowtail=crowodot];
   "for_client_link":"elipses":w -> "client_location":"client_locn_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "for_client_link":"elipses":w -> "client_location":"client_number":e [arrowhead=none dir=back arrowtail=crowodot];
