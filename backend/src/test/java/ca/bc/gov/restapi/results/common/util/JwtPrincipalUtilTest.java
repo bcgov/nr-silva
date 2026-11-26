@@ -289,6 +289,38 @@ class JwtPrincipalUtilTest {
     }
 
     @Test
+    @DisplayName("Should ignore extra comma-separated segments after first name")
+    void shouldIgnoreExtraCommaSegmentsInDisplayName() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "Smith, John, Extra");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("John Smith", name);
+    }
+
+    @Test
+    @DisplayName("Should preserve remaining last name tokens after removing first prefix")
+    void shouldPreserveRemainingLastNameTokensAfterPrefix() {
+      Map<String, Object> claims =
+          Map.of(
+              "given_name", "",
+              "family_name", "",
+              "custom:idp_name", "idir",
+              "custom:idp_display_name", "van der Berg, Jan");
+
+      Jwt jwt = createJwt(claims);
+      String name = JwtPrincipalUtil.getName(jwt);
+
+      assertEquals("Jan der Berg", name);
+    }
+
+    @Test
     @DisplayName("Should return empty string when all name fields are missing")
     void shouldReturnEmptyStringWhenAllNameFieldsAreMissing() {
       Map<String, Object> claims =
