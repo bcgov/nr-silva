@@ -128,7 +128,7 @@ describe('ForestClientMultiSelect', () => {
       expect(API.ForestClientEndpointService.searchByClientNumbers).toHaveBeenCalled();
     });
 
-    const input = screen.getByRole('combobox');
+    const input = await screen.findByRole('combobox');
     fireEvent.click(input);
 
     const option = await screen.findByText(/MINISTRY OF FORESTS/i);
@@ -152,7 +152,7 @@ describe('ForestClientMultiSelect', () => {
       expect(API.ForestClientEndpointService.searchByClientNumbers).toHaveBeenCalled();
     });
 
-    const input = screen.getByRole('combobox');
+    const input = await screen.findByRole('combobox');
     fireEvent.click(input);
 
     const option = await screen.findByText(/MINISTRY OF FORESTS/i);

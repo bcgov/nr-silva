@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.Profiles;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.mock.env.MockPropertySource;
 
@@ -336,6 +339,117 @@ class DelegatingProviderRouterTest {
     assertThatThrownBy(router::getDelegate)
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("must not be blank");
+  }
+
+  @Test
+  @DisplayName("Should resolve, default, and reject blank values using standard Environment")
+  void shouldResolveUsingStandardEnvironment() {
+    DummyPort mockPort = () -> "mock";
+    Map<String, DummyPort> adapters = Map.of("mockTenureAdapter", mockPort);
+
+    Environment configuredEnv = standardEnvironment(Map.of("silva.integrations.tenure.provider", "MOCK"));
+    DelegatingProviderRouter<DummyPort> configuredRouter =
+        new DelegatingProviderRouter<>("tenure", adapters, configuredEnv, "oracle", null);
+    assertThat(configuredRouter.resolveProviderName()).isEqualTo("mock");
+
+    Environment emptyEnv = standardEnvironment(Map.of());
+    DelegatingProviderRouter<DummyPort> fallbackRouter =
+        new DelegatingProviderRouter<>("tenure", adapters, emptyEnv, "oracle", null);
+    assertThat(fallbackRouter.resolveProviderName()).isEqualTo("oracle");
+
+    Environment blankEnv = standardEnvironment(Map.of("silva.integrations.tenure.provider", "   "));
+    DelegatingProviderRouter<DummyPort> blankRouter =
+        new DelegatingProviderRouter<>("tenure", adapters, blankEnv, "oracle", null);
+    assertThatThrownBy(blankRouter::resolveProviderName)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("must not be blank");
+  }
+
+  @Test
+  @DisplayName("Should reject null property value in property source as blank")
+  void shouldRejectNullPropertyValueInPropertySource() {
+    MockEnvironment env = new MockEnvironment();
+    Map<String, Object> props = new HashMap<>();
+    props.put("silva.integrations.tenure.provider", null);
+    env.getPropertySources()
+        .addFirst(new MapPropertySource("nullSource", props));
+
+    DelegatingProviderRouter<DummyPort> router =
+        new DelegatingProviderRouter<>("tenure", Map.of(), env, "oracle", null);
+
+    assertThatThrownBy(router::resolveProviderName)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("must not be blank");
+  }
+
+  private static Environment standardEnvironment(Map<String, String> values) {
+    return new Environment() {
+      @Override
+      public String[] getActiveProfiles() {
+        return new String[0];
+      }
+
+      @Override
+      public String[] getDefaultProfiles() {
+        return new String[0];
+      }
+
+      @Override
+      @Deprecated
+      public boolean acceptsProfiles(String... profiles) {
+        return false;
+      }
+
+      @Override
+      public boolean acceptsProfiles(Profiles profiles) {
+        return false;
+      }
+
+      @Override
+      public boolean containsProperty(String key) {
+        return values.containsKey(key);
+      }
+
+      @Override
+      public String getProperty(String key) {
+        return values.get(key);
+      }
+
+      @Override
+      public String getProperty(String key, String defaultValue) {
+        return values.getOrDefault(key, defaultValue);
+      }
+
+      @Override
+      public <T> T getProperty(String key, Class<T> targetType) {
+        return null;
+      }
+
+      @Override
+      public <T> T getProperty(String key, Class<T> targetType, T defaultValue) {
+        return defaultValue;
+      }
+
+      @Override
+      public String getRequiredProperty(String key) {
+        throw new IllegalStateException(key);
+      }
+
+      @Override
+      public <T> T getRequiredProperty(String key, Class<T> targetType) {
+        throw new IllegalStateException(key);
+      }
+
+      @Override
+      public String resolvePlaceholders(String text) {
+        return text;
+      }
+
+      @Override
+      public String resolveRequiredPlaceholders(String text) {
+        return text;
+      }
+    };
   }
 }
 

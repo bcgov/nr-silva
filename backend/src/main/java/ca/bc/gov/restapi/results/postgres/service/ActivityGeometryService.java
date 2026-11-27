@@ -83,8 +83,7 @@ public class ActivityGeometryService {
     if (opening == null || opening.isEmpty() || !opening.getGeometryType().contains("Polygon")) {
       return;
     }
-    Boolean covered = coversWithTolerance(openingId, opening, geometry3005);
-    if (Boolean.FALSE.equals(covered)) {
+    if (isActivityOutsideOpening(openingId, opening, geometry3005)) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Activity geometry must be within the opening geometry"
@@ -106,19 +105,25 @@ public class ActivityGeometryService {
     }
   }
 
-  /** Returns null when the check cannot be run because the stored opening geometry is invalid. */
-  private Boolean coversWithTolerance(Long openingId, Geometry opening, Geometry activity) {
+  /**
+   * Returns true when the activity reaches outside the opening (plus tolerance). Returns false
+   * when covered or when the stored opening geometry is invalid and cannot be repaired.
+   */
+  private boolean isActivityOutsideOpening(Long openingId, Geometry opening, Geometry activity) {
     double tolerance = SilvaPostgresConstants.OPENING_CONTAINMENT_TOLERANCE_METERS;
     try {
-      return opening.buffer(tolerance).covers(activity);
+      return !opening.buffer(tolerance).covers(activity);
     } catch (TopologyException e) {
       // Legacy opening geometry can be invalid (e.g. overlapping parts); buffer(0) repairs it
       try {
-        return opening.buffer(0).buffer(tolerance).covers(activity);
+        return !opening.buffer(0).buffer(tolerance).covers(activity);
       } catch (TopologyException repairFailure) {
+        repairFailure.addSuppressed(e);
         log.warn(
-            "Skipping activity containment check, opening {} geometry is invalid", openingId, e);
-        return null;
+            "Skipping activity containment check, opening {} geometry is invalid",
+            openingId,
+            repairFailure);
+        return false;
       }
     }
   }

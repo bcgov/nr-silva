@@ -12,6 +12,7 @@ import ca.bc.gov.restapi.results.common.service.opening.history.OpeningStandardU
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -76,7 +77,7 @@ public abstract class AbstractOpeningStandardUnitHistoryService
     List<Long> distinctRegimeIds =
         projections.stream()
             .map(OpeningStockingHistoryDetailsProjection::getSrid)
-            .filter(srid -> srid != null)
+            .filter(Objects::nonNull)
             .distinct()
             .toList();
 

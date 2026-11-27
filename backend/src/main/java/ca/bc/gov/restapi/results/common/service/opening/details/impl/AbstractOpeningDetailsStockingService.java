@@ -11,6 +11,7 @@ import ca.bc.gov.restapi.results.common.service.opening.conversion.OpeningDetail
 import ca.bc.gov.restapi.results.common.service.opening.details.OpeningDetailsStockingService;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -48,7 +49,7 @@ public abstract class AbstractOpeningDetailsStockingService
     List<Long> distinctRegimeIds =
         projections.stream()
             .map(OpeningStockingDetailsProjection::getSrid)
-            .filter(srid -> srid != null)
+            .filter(Objects::nonNull)
             .distinct()
             .toList();
 
