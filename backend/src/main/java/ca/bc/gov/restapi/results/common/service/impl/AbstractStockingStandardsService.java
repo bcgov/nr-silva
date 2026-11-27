@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -134,7 +135,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         parseCodeDescriptionList(projection.getOrgUnitCodes(), projection.getOrgUnitNames());
     List<String> fspIds = parseFspIds(projection.getFspIds());
     List<CodeDescriptionDto> preferredSpecies =
-        parsePreferredSpecies(
+        parseCodeDescriptionList(
             projection.getPreferredSpeciesCodes(), projection.getPreferredSpeciesNames());
     List<String> bgcList = parseBgcList(projection.getBgcList());
     boolean isDefaultStandard = "Y".equalsIgnoreCase(projection.getMofDefaultStandardInd());
@@ -151,23 +152,6 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         orgUnits,
         clients,
         projection.getApprovedDate());
-  }
-
-  private List<CodeDescriptionDto> parsePreferredSpecies(String codes, String names) {
-    if (codes == null || codes.isBlank()) {
-      return List.of();
-    }
-    String[] codeArr = codes.split(",");
-    String[] nameArr = names != null ? names.split(PIPE_DELIMITER) : new String[0];
-    List<CodeDescriptionDto> result = new ArrayList<>();
-    for (int i = 0; i < codeArr.length; i++) {
-      String code = codeArr[i].trim();
-      String name = i < nameArr.length ? nameArr[i].trim() : null;
-      if (!code.isBlank()) {
-        result.add(new CodeDescriptionDto(code, StringUtil.nullIfBlank(name)));
-      }
-    }
-    return result;
   }
 
   private List<CodeDescriptionDto> parseCodeDescriptionList(String codes, String names) {
@@ -204,7 +188,7 @@ public abstract class AbstractStockingStandardsService implements StockingStanda
         .filter(s -> !s.isBlank())
         .distinct()
         .map(clientMap::get)
-        .filter(dto -> dto != null)
+        .filter(Objects::nonNull)
         .toList();
   }
 

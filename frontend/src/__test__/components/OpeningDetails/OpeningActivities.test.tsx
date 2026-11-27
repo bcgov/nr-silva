@@ -588,7 +588,7 @@ describe("OpeningActivities", () => {
         );
       });
 
-      const sortableHeader = screen.getByRole("button", { name: "Activity treatment unit ID" });
+      const sortableHeader = await screen.findByRole("button", { name: "Activity treatment unit ID" });
       fireEvent.click(sortableHeader);
 
       await waitFor(() => {

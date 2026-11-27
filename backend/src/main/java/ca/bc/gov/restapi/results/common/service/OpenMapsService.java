@@ -8,6 +8,7 @@ import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,20 +24,35 @@ public class OpenMapsService {
   private final RestClient restClient;
 
   // null in oracle mode; present in postgres mode to read geometry from the local DB
-  @Autowired(required = false)
-  private OpeningGeometryService openingGeometryService;
+  private final OpeningGeometryService openingGeometryService;
 
   // null in oracle mode; present in postgres mode to read activity geometry from the local DB
-  @Autowired(required = false)
-  private ActivityGeometryReadService activityGeometryService;
+  private final ActivityGeometryReadService activityGeometryService;
 
   /**
    * Instantiates a new Open maps service.
    *
    * @param openMapsApi the open maps api
    */
-  public OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
+  OpenMapsService(@Qualifier("openMapsApi") RestClient openMapsApi) {
+    this(openMapsApi, null, null);
+  }
+
+  /**
+   * Instantiates a new Open maps service with optional local geometry services.
+   *
+   * @param openMapsApi the open maps api
+   * @param openingGeometryService optional postgres opening geometry service
+   * @param activityGeometryService optional postgres activity geometry service
+   */
+  @Autowired
+  public OpenMapsService(
+      @Qualifier("openMapsApi") RestClient openMapsApi,
+      @Nullable OpeningGeometryService openingGeometryService,
+      @Nullable ActivityGeometryReadService activityGeometryService) {
     this.restClient = openMapsApi;
+    this.openingGeometryService = openingGeometryService;
+    this.activityGeometryService = activityGeometryService;
   }
 
   /**
@@ -174,7 +190,7 @@ public class OpenMapsService {
     if (kindsSet.size() == 1 && kindsSet.contains("WHSE_FOREST_TENURE.FTEN_CUT_BLOCK_POLY_SVW")) {
       return propertyName + ",HARVEST_AUTH_CUTTING_PERMIT_ID";
     } else if (kindsSet.size() == 1
-        && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_ACTIVITY_TREATMENT_SVW")) {
+        && kindsSet.contains(ACTIVITY_TREATMENT_KIND)) {
       return propertyName + ",ACTUAL_TREATMENT_AREA,DISTURBANCE_CODE,ATU_COMPLETION_DATE";
     } else if (kindsSet.size() == 1
         && kindsSet.contains("WHSE_FOREST_VEGETATION.RSLT_STANDARDS_UNIT_SVW")) {

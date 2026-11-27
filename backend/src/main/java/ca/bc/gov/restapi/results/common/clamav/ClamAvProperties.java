@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 /** ClamAV connection and policy settings, bound from {@code ca.bc.gov.nrs.clamav.*}. */
 @Data
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 @With
 @Builder
 @Configuration
-@Component
 @ConfigurationProperties("ca.bc.gov.nrs.clamav")
 public class ClamAvProperties {
 

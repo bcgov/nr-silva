@@ -143,25 +143,38 @@ public class OpeningTenureAssociationService {
     return new DisturbanceSummary(hasAmount ? amount : null, startDate, endDate);
   }
 
-  private String normalizePermit(String value) {
-    return TenureValidationService.normalizePermit(value);
-  }
-
   private record DisturbanceSummary(BigDecimal amount, LocalDate startDate, LocalDate endDate) {
     private DisturbanceSummary combine(DisturbanceSummary other) {
-      BigDecimal combinedAmount =
-          amount == null ? other.amount : other.amount == null ? amount : amount.add(other.amount);
-      LocalDate combinedStart =
-          startDate == null
-              ? other.startDate
-              : other.startDate == null || !other.startDate.isBefore(startDate)
-                  ? startDate
-                  : other.startDate;
-      LocalDate combinedEnd =
-          endDate == null
-              ? other.endDate
-              : other.endDate == null || !other.endDate.isAfter(endDate) ? endDate : other.endDate;
-      return new DisturbanceSummary(combinedAmount, combinedStart, combinedEnd);
+      return new DisturbanceSummary(
+          combineAmount(amount, other.amount),
+          earlierOf(startDate, other.startDate),
+          laterOf(endDate, other.endDate));
+    }
+
+    private static BigDecimal combineAmount(BigDecimal first, BigDecimal second) {
+      if (first == null) {
+        return second;
+      }
+      return second == null ? first : first.add(second);
+    }
+
+    private static LocalDate earlierOf(LocalDate first, LocalDate second) {
+      return selectDate(first, second, Comparator.naturalOrder());
+    }
+
+    private static LocalDate laterOf(LocalDate first, LocalDate second) {
+      return selectDate(first, second, Comparator.reverseOrder());
+    }
+
+    private static LocalDate selectDate(
+        LocalDate first, LocalDate second, Comparator<LocalDate> preference) {
+      if (first == null) {
+        return second;
+      }
+      if (second == null) {
+        return first;
+      }
+      return preference.compare(first, second) <= 0 ? first : second;
     }
   }
 }

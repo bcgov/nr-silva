@@ -188,9 +188,9 @@ describe("OpeningSubmissionTrend Component", () => {
     });
 
     // Find the FilterableMultiSelect input field
-    const districtInput = document.getElementById(
-      "district-dropdown-input"
-    ) as HTMLInputElement;
+    const districtDropdown = document.getElementById("district-dropdown");
+    expect(districtDropdown).toBeInTheDocument();
+    const districtInput = within(districtDropdown!).getByRole("combobox");
     expect(districtInput).toBeInTheDocument();
 
     // Click on the input to open the menu

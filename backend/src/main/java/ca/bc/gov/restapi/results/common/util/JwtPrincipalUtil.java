@@ -454,30 +454,42 @@ public class JwtPrincipalUtil {
   private static Triple<String, String, String> extractNameClaim(Map<String, Object> claims) {
     // User name
     String displayName = getDisplayNameValue(claims);
-    String firstName = "";
-    String lastName = "";
 
     // Usually only IDIR contains comma.
     if (displayName.contains(",")) {
-      String[] parts = displayName.split(",");
-      firstName = parts[1].trim();
+      return extractCommaSeparatedName(displayName);
+    }
 
-      // Remove WLRS:EX or any additional info
-      if (firstName.contains(" ")) {
-        firstName = firstName.split(" ")[0].trim();
-      }
-
-      lastName = parts[0].trim();
-      // Remove 'de' or other starting characters before space
-      if (lastName.contains(" ")) {
-        lastName = lastName.split(" ")[1].trim();
-      }
-    } else if (displayName.contains(" ")) {
+    if (displayName.contains(" ")) {
       // Usually BCeID contains space. E.g.: NRS Load Test-3
       int indexFirstSpace = displayName.indexOf(' ');
-      firstName = displayName.substring(0, indexFirstSpace);
-      lastName = displayName.substring(indexFirstSpace).trim();
+      String firstName = displayName.substring(0, indexFirstSpace);
+      String lastName = displayName.substring(indexFirstSpace).trim();
+      return Triple.of(displayName, firstName, lastName);
     }
+
+    return Triple.of(displayName, "", "");
+  }
+
+  private static Triple<String, String, String> extractCommaSeparatedName(String displayName) {
+    int commaIndex = displayName.indexOf(',');
+    String rawLastName = displayName.substring(0, commaIndex).trim();
+    String rawFirstName = displayName.substring(commaIndex + 1).trim();
+
+    // Ignore any extra comma segments (e.g. "Smith, John, Extra") and trailing info (e.g. "WLRS:EX")
+    int secondCommaIndex = rawFirstName.indexOf(',');
+    String firstCandidate =
+        secondCommaIndex >= 0
+            ? rawFirstName.substring(0, secondCommaIndex).trim()
+            : rawFirstName;
+    int firstSpaceIndex = firstCandidate.indexOf(' ');
+    String firstName =
+        firstSpaceIndex >= 0 ? firstCandidate.substring(0, firstSpaceIndex).trim() : firstCandidate;
+
+    // Remove 'de' or other starting prefix before the first space
+    int lastSpaceIndex = rawLastName.indexOf(' ');
+    String lastName =
+        lastSpaceIndex >= 0 ? rawLastName.substring(lastSpaceIndex + 1).trim() : rawLastName;
 
     return Triple.of(displayName, firstName, lastName);
   }

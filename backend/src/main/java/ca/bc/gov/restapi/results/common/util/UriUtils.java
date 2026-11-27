@@ -6,6 +6,8 @@ import org.springframework.util.MultiValueMap;
 
 public class UriUtils {
 
+  private UriUtils() {}
+
   /**
    * Builds a MultiValueMap with the given key mapped to all values in the list.
    *

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -296,14 +295,15 @@ class OpenMapsServiceIntegrationTest {
                         + "[{\"type\":\"Feature\",\"id\":\"2\",\"properties\":{}}]}")));
 
     ActivityGeometryReadService activityService = id -> local;
-    ReflectionTestUtils.setField(openMapsService, "activityGeometryService", activityService);
-    try {
-      FeatureCollection response = openMapsService.getOpeningPolygonAndProperties(123L, kind);
+    OpenMapsService postgresMapsService =
+        new OpenMapsService(
+            RestClient.builder().baseUrl("http://localhost:10001").build(),
+            null,
+            activityService);
 
-      Assertions.assertEquals(2, response.getFeatures().size());
-    } finally {
-      ReflectionTestUtils.setField(openMapsService, "activityGeometryService", null);
-    }
+    FeatureCollection response = postgresMapsService.getOpeningPolygonAndProperties(123L, kind);
+
+    Assertions.assertEquals(2, response.getFeatures().size());
   }
 
   @Test
